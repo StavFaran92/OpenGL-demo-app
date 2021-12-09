@@ -1,5 +1,3 @@
-#define STB_IMAGE_IMPLEMENTATION
-
 #include <stdio.h>
 #include <string.h>
 #include <cmath>
@@ -8,17 +6,17 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "Utils/Math/LinearAlgebraUtil.h"
 
-#include "Mesh.h"
-#include "Shader.h"
 #include "Window.h"
-#include "Camera.h"
-#include "Texture.h"
-#include "DirectionalLight.h"
-#include "Renderer.h"
+
+#include "Renderer/Geometry/Mesh.h"
+#include "Renderer/Shader/Shader.h"
+#include "Renderer/Camera/Camera.h"
+#include "Renderer/Shader/Texture.h"
+#include "Renderer/Lighting/DirectionalLight.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/Shader/Material.h"
 
 #include "Vendor/imgui/imgui.h"
 #include "Vendor/imgui/imgui_impl_glfw_gl3.h"
@@ -27,14 +25,11 @@
 #include "Tests/TestMenu.h"
 #include "Tests/TestClearColor.h"
 
-#include "Material.h"
 
 const float toRadians = 3.1315265f / 180;
 
-Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader*> shaderList;
-Camera camera;
 
 Texture brickTexture;
 Texture dirtTexture;
@@ -55,47 +50,6 @@ static const char* vShader = "Shaders/shader.vert";
 
 // Fragment Shader
 static const char* fShader = "Shaders/shader.frag";
-
-void calcAverageNormal(unsigned int *indices, unsigned int indiceCount, GLfloat *vertices,
-	unsigned int verticeCount, unsigned int vLength, unsigned int normalOffset)
-{
-	for (size_t i=0; i<indiceCount; i+=3)
-	{
-		unsigned int in0 = indices[i] * vLength;
-		unsigned int in1 = indices[i+1] * vLength;
-		unsigned int in2 = indices[i+2] * vLength;
-		glm::vec3 v1(vertices[in1] - vertices[in0], vertices[in1 + 1] - vertices[in0 + 1], vertices[in1 + 2] - vertices[in0 + 2]);
-		glm::vec3 v2(vertices[in2] - vertices[in0], vertices[in2 + 1] - vertices[in0 + 1], vertices[in2 + 2] - vertices[in0 + 2]);
-		glm::vec3 normal = glm::cross(v1, v2);
-		normal = glm::normalize(normal);
-
-		in0 += normalOffset;
-		vertices[in0] += normal.x;
-		vertices[in0+1] += normal.y;
-		vertices[in0+2] += normal.z;
-
-		in1 += normalOffset;
-		vertices[in1] += normal.x;
-		vertices[in1 + 1] += normal.y;
-		vertices[in1 + 2] += normal.z;
-
-		in2 += normalOffset;
-		vertices[in2] += normal.x;
-		vertices[in2 + 1] += normal.y;
-		vertices[in2 + 2] += normal.z;
-	}
-
-	//Normalize the normals in each vertex
-	for (size_t i = 0; i < verticeCount / vLength; i++)
-	{
-		unsigned int nOffset = i * vLength + normalOffset;
-		glm::vec3 vec(vertices[nOffset], vertices[nOffset + 1], vertices[nOffset + 2]);
-		vec = glm::normalize(vec);
-		vertices[nOffset] = vec.x; 
-		vertices[nOffset+1] = vec.y; 
-		vertices[nOffset+2] = vec.z; 
-	}
-}
 
 void CreateObject(const Shader& shader, const Renderer& renderer)
 {
@@ -124,31 +78,28 @@ void CreateObject(const Shader& shader, const Renderer& renderer)
 
 int main()
 {
-	mainWindow = Window(800, 600);
+	Window mainWindow(800, 600);
 	mainWindow.initialize();
-
-
 
 	Renderer renderer;
 
-	ImGui::CreateContext();
-	ImGui_ImplGlfwGL3_Init(mainWindow.GetWindow(), true);
-	ImGui::StyleColorsDark();
+	//ImGui::CreateContext();
+	//ImGui_ImplGlfwGL3_Init(mainWindow.GetWindow(), true);
+	//ImGui::StyleColorsDark();
 
-	Shader shader("Shaders/shader.vert", "Shaders/shader.frag");
-	shader.ParseShader(vShader, fShader);
+	Shader shader("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
 	shaderList.push_back(&shader);
 
 	CreateObject(shader, renderer);
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 5.0f, 1.0f);
+	Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 5.0f, 1.0f);
 
 	shinyMaterial = Material(1.0f, 32);
 	dullMaterial = Material(.3f, 4);
 
-	brickTexture = Texture("Textures/brick.png");
+	brickTexture = Texture("Resources\\Textures\\brick.png");
 	brickTexture.LoadTexture();
-	dirtTexture = Texture("Textures/dirt.png");
+	dirtTexture = Texture("Resources\\Textures\\dirt.png");
 	dirtTexture.LoadTexture();
 
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
@@ -165,11 +116,11 @@ int main()
 
 	glm::vec3 translation(0.0f, 0.0f, -2.5f);
 
-	test::Test* currentTest = nullptr;
-	test::TestMenu* menu = new test::TestMenu(currentTest);
-	currentTest = menu;
+	//test::Test* currentTest = nullptr;
+	//test::TestMenu* menu = new test::TestMenu(currentTest);
+	//currentTest = menu;
 
-	menu->RegisterTest<test::TestClearColor>("Clear Color");
+	//menu->RegisterTest<test::TestClearColor>("Clear Color");
 
 	// Loop until window closed
 	while (!mainWindow.getShouldClose())
@@ -186,20 +137,20 @@ int main()
 
 		renderer.Clear();
 
-		ImGui_ImplGlfwGL3_NewFrame();
-		if (currentTest)
-		{
-			currentTest->OnUpdate(0.0f);
-			currentTest->OnRender();
-			ImGui::Begin("Test");
-			if (currentTest != menu && ImGui::Button("<-"))
-			{
-				currentTest = menu;
-			}
-			currentTest->OnGuiRender();
-			ImGui::End();
+		//ImGui_ImplGlfwGL3_NewFrame();
+		//if (currentTest)
+		//{
+		//	currentTest->OnUpdate(0.0f);
+		//	currentTest->OnRender();
+		//	ImGui::Begin("Test");
+		//	if (currentTest != menu && ImGui::Button("<-"))
+		//	{
+		//		currentTest = menu;
+		//	}
+		//	currentTest->OnGuiRender();
+		//	ImGui::End();
 
-		}
+		//}
 
 		shaderList[0]->UseShader();
 		uniformModel = shaderList[0]->GetUniformLocation("model");
@@ -230,18 +181,18 @@ int main()
 
 		meshList[0]->RenderMesh();
 
-		{
-			ImGui::SliderFloat2("translation", &translation.x, -1.0f, 1.0f);
-		}
+		//{
+		//	ImGui::SliderFloat2("translation", &translation.x, -1.0f, 1.0f);
+		//}
 
-		ImGui::Render();
-		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+		//ImGui::Render();
+		//ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
 		mainWindow.SwapBuffer();
 	}
 
-	ImGui_ImplGlfwGL3_Shutdown();
-	ImGui::DestroyContext();
+	//ImGui_ImplGlfwGL3_Shutdown();
+	//ImGui::DestroyContext();
 
 	return 0;
 }
