@@ -15,33 +15,33 @@ void Camera::keyControl(bool* keys, GLfloat deltaTime)
 {
 	GLfloat velocity =  movementSpeed * deltaTime;
 
-	if (keys[GLFW_KEY_W]) 
-	{
-		position += front * velocity;
-	}
+	//if (keys[GLFW_KEY_W]) 
+	//{
+	//	position += front * velocity;
+	//}
 
-	if (keys[GLFW_KEY_S])
-	{
-		position -= front * velocity;
-	}
+	//if (keys[GLFW_KEY_S])
+	//{
+	//	position -= front * velocity;
+	//}
 
-	if (keys[GLFW_KEY_A])
-	{
-		position -= right * velocity;
-	}
+	//if (keys[GLFW_KEY_A])
+	//{
+	//	position -= right * velocity;
+	//}
 
-	if (keys[GLFW_KEY_D])
-	{
-		position += right * velocity;
-	}
+	//if (keys[GLFW_KEY_D])
+	//{
+	//	position += right * velocity;
+	//}
 
-	if (keys[GLFW_KEY_X])
-	{
-		mIsCameraLocked = true;
-	}
-	else {
-		//mIsCameraLocked = false;
-	}
+	//if (keys[GLFW_KEY_X])
+	//{
+	//	mIsCameraLocked = true;
+	//}
+	//else {
+	//	//mIsCameraLocked = false;
+	//}
 }
 
 void Camera::mouseControl(GLfloat xChange, GLfloat yChange)

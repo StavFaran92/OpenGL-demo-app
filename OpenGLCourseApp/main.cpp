@@ -3,8 +3,7 @@
 #include <cmath>
 #include <vector>
 
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
+#include <GL/glew.h>
 
 #include "Utils/Math/LinearAlgebraUtil.h"
 
@@ -19,12 +18,13 @@
 #include "Renderer/Shader/Material.h"
 
 #include "Vendor/imgui/imgui.h"
-#include "Vendor/imgui/imgui_impl_glfw_gl3.h"
+//#include "Vendor/imgui/imgui_impl_glfw_gl3.h"
 
 #include "Tests/Test.h"
 #include "Tests/TestMenu.h"
 #include "Tests/TestClearColor.h"
 
+void handleKeys(unsigned char key, int x, int y);
 
 const float toRadians = 3.1315265f / 180;
 
@@ -44,12 +44,6 @@ Material shinyMaterial;
 Material dullMaterial;
 
 float curAngle = 0;
-
-// Vertex Shader code
-static const char* vShader = "Shaders/shader.vert";
-
-// Fragment Shader
-static const char* fShader = "Shaders/shader.frag";
 
 void CreateObject(const Shader& shader, const Renderer& renderer)
 {
@@ -76,7 +70,7 @@ void CreateObject(const Shader& shader, const Renderer& renderer)
 	meshList.push_back(obj);
 }
 
-int main()
+int main(int argc, char* argv[])
 {
 	Window mainWindow(800, 600);
 	mainWindow.initialize();
@@ -108,7 +102,9 @@ int main()
 
 	GLuint uniformModel = 0, uniformProjection = 0, uniformView = 0, uniformEyePosition, uniformAmbientColor = 0, uniformAmbientIntensity = 0,
 		uniformDirection = 0, uniformDiffuseIntensity = 0, uniformSpecularIntensity, uniformShininess;
-	glm::mat4 projection = glm::perspective(45.0f, ((GLfloat)mainWindow.getBufferWidth() / (GLfloat)mainWindow.getBufferHeight()), 0.1f, 100.0f);
+	std::cout << "buffer width: " + mainWindow.getBufferWidth() << std::endl;
+	std::cout << "buffer height: " + mainWindow.getBufferHeight() << std::endl;
+	glm::mat4 projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
 
 	bool show_demo_window = true;
     bool show_another_window = false;
@@ -122,37 +118,38 @@ int main()
 
 	//menu->RegisterTest<test::TestClearColor>("Clear Color");
 
+			//Main loop flag
+	bool quit = false;
+
+	//Event handler
+	SDL_Event e;
+
 	// Loop until window closed
-	while (!mainWindow.getShouldClose())
+	while (!quit)
 	{
-		GLfloat now = glfwGetTime();
-		deltaTime = now - lastTime;
-		lastTime = now;
+		//Handle events on queue
+		while (SDL_PollEvent(&e) != 0)
+		{
+			//User requests quit
+			if (e.type == SDL_QUIT)
+			{
+				quit = true;
+			}
+			//Handle keypress with current mouse position
+			else if (e.type == SDL_TEXTINPUT)
+			{
+				int x = 0, y = 0;
+				SDL_GetMouseState(&x, &y);
+			}
+		}
 
-		// Get + Handle user input events
-		glfwPollEvents();
-
-		camera.keyControl(mainWindow.getKeys(), deltaTime);
-		camera.mouseControl(mainWindow.GetXChange(), mainWindow.GetYChange());
+		//camera.keyControl(mainWindow.getKeys(), deltaTime);
+		//camera.mouseControl(mainWindow.GetXChange(), mainWindow.GetYChange());
 
 		renderer.Clear();
 
-		//ImGui_ImplGlfwGL3_NewFrame();
-		//if (currentTest)
-		//{
-		//	currentTest->OnUpdate(0.0f);
-		//	currentTest->OnRender();
-		//	ImGui::Begin("Test");
-		//	if (currentTest != menu && ImGui::Button("<-"))
-		//	{
-		//		currentTest = menu;
-		//	}
-		//	currentTest->OnGuiRender();
-		//	ImGui::End();
 
-		//}
 
-		shaderList[0]->UseShader();
 		uniformModel = shaderList[0]->GetUniformLocation("model");
 		uniformProjection = shaderList[0]->GetUniformLocation("projection");
 		uniformView = shaderList[0]->GetUniformLocation("view");
@@ -196,3 +193,4 @@ int main()
 
 	return 0;
 }
+

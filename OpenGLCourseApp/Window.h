@@ -2,44 +2,57 @@
 
 #include <stdio.h>
 
+#include <SDL.h>
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <SDL_opengl.h>
+
+
+static const int SCREEN_WIDTH = 800;
+static const int SCREEN_HEIGHT = 600;
+
+
 
 class Window
 {
 public:
-	bool keys[1024];
+	
 
-	Window();
-	Window(GLint windowWidth, GLint windowHeight);
+	Window(GLint width = SCREEN_WIDTH, GLint height = SCREEN_HEIGHT);
 
 	int initialize();
 
-	GLint getBufferWidth() { return bufferWidth; }
-	GLint getBufferHeight() { return bufferHeight; }
+	GLint getBufferWidth() { return m_bufferWidth; }
+	GLint getBufferHeight() { return m_bufferHeight; }
 
-	bool getShouldClose() { return glfwWindowShouldClose(mainWindow); }
+	void Close() { 
 
-	bool* getKeys() { return keys; }
-	GLfloat GetXChange();
-	GLfloat GetYChange();
+		//Destroy window	
+		SDL_DestroyWindow(m_mainWindow);
+		m_mainWindow = NULL;
+	}
 
-	void SwapBuffer() { glfwSwapBuffers(mainWindow); }
+	void SwapBuffer() { SDL_GL_SwapWindow(m_mainWindow); }
 
-	GLFWwindow* GetWindow() { return mainWindow; }
+	SDL_Window* GetWindow() { return m_mainWindow; }
 
 	~Window();
-
 private:
-	GLFWwindow *mainWindow;
-	GLint bufferWidth, bufferHeight, width, height;
+	void SetWindowCallbacks();
 
-	GLfloat lastX, lastY, xChange, yChange;
-	bool mouseFirstMoved;
+	static void handleKeys(SDL_Window* window, int key, int code, int action, int mode);
+	static void handleMouse(SDL_Window* window, double xPos, double yPos);
+private:
+	SDL_Window* m_mainWindow = nullptr;
+	SDL_GLContext m_glContext = nullptr;
 
-	void CreateCallback();
+	GLint m_bufferWidth = 0;
+	GLint m_bufferHeight = 0;
+	GLint m_width = 0;
+	GLint m_height = 0;
 
-	static void handleKeys(GLFWwindow* window, int key, int code, int action, int mode);
-	static void handleMouse(GLFWwindow* window, double xPos, double yPos);
+	bool m_mouseFirstMoved = false;
+
+
+
 };
 
