@@ -78,10 +78,6 @@ int main(int argc, char* argv[])
 
 	Renderer renderer;
 
-	//ImGui::CreateContext();
-	//ImGui_ImplGlfwGL3_Init(mainWindow.GetWindow(), true);
-	//ImGui::StyleColorsDark();
-
 	Shader shader("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
 	shaderList.push_back(&shader);
 
@@ -103,9 +99,7 @@ int main(int argc, char* argv[])
 
 	GLuint uniformModel = 0, uniformProjection = 0, uniformView = 0, uniformEyePosition, uniformAmbientColor = 0, uniformAmbientIntensity = 0,
 		uniformDirection = 0, uniformDiffuseIntensity = 0, uniformSpecularIntensity, uniformShininess;
-	std::cout << "buffer width: " + mainWindow.getBufferWidth() << std::endl;
-	std::cout << "buffer height: " + mainWindow.getBufferHeight() << std::endl;
-	glm::mat4 projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(45.0f, (float)mainWindow.getWidth() / mainWindow.getHeight(), 0.1f, 100.0f);
 
 	bool show_demo_window = true;
     bool show_another_window = false;
@@ -113,13 +107,7 @@ int main(int argc, char* argv[])
 
 	glm::vec3 translation(0.0f, 0.0f, -2.5f);
 
-	//test::Test* currentTest = nullptr;
-	//test::TestMenu* menu = new test::TestMenu(currentTest);
-	//currentTest = menu;
-
-	//menu->RegisterTest<test::TestClearColor>("Clear Color");
-
-			//Main loop flag
+	//Main loop flag
 	bool quit = false;
 
 	//Event handler
@@ -128,7 +116,8 @@ int main(int argc, char* argv[])
 	Uint64 NOW = SDL_GetPerformanceCounter();
 	Uint64 LAST = 0;
 	double deltaTime = 0;
-
+	glEnable(GL_DEPTH_TEST);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Loop until window closed
 	while (!quit)
 	{
@@ -157,12 +146,7 @@ int main(int argc, char* argv[])
 			}
 		}
 
-		//camera.keyControl(mainWindow.getKeys(), deltaTime);
-		//camera.mouseControl(mainWindow.GetXChange(), mainWindow.GetYChange());
-
 		renderer.Clear();
-
-
 
 		uniformModel = shaderList[0]->GetUniformLocation("model");
 		uniformProjection = shaderList[0]->GetUniformLocation("projection");
@@ -192,18 +176,13 @@ int main(int argc, char* argv[])
 
 		meshList[0]->RenderMesh();
 
-		//{
-		//	ImGui::SliderFloat2("translation", &translation.x, -1.0f, 1.0f);
-		//}
-
-		//ImGui::Render();
-		//ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
-
 		mainWindow.SwapBuffer();
 	}
 
-	//ImGui_ImplGlfwGL3_Shutdown();
-	//ImGui::DestroyContext();
+	mainWindow.Close();
+
+	//Quit SDL subsystems
+	SDL_Quit();
 
 	return 0;
 }

@@ -53,71 +53,12 @@ int Window::initialize()
 				{
 					printf("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
 				}
-
-				////Initialize OpenGL
-				//if (!initGL())
-				//{
-				//	printf("Unable to initialize OpenGL!\n");
-				//	success = false;
-				//}
 			}
 		}
 	}
 
 	return success;
 }
-
-//void Window::SetWindowCallbacks()
-//{
-//	glfwSetKeyCallback(m_mainWindow, handleKeys);
-//	glfwSetCursorPosCallback(m_mainWindow, handleMouse);
-//}
-
-
-
-
-
-//void Window::handleKeys(GLFWwindow* window, int key, int code, int action, int mode)
-//{
-//	Window* myWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
-//
-//	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-//	{
-//		glfwSetWindowShouldClose(window, GL_TRUE);
-//	}
-//
-//	if (key >= 0 && key < 1024) {
-//		if (action == GLFW_PRESS)
-//		{
-//			myWindow->keys[key] = true;
-//			printf("Pressed %d\n", key);
-//		}
-//		else if (action == GLFW_RELEASE)
-//		{
-//			myWindow->keys[key] = false;
-//			printf("Released %d\n", key);
-//		}
-//	}
-//}
-//
-//void Window::handleMouse(double xPos, double yPos)
-//{
-//
-//	if (m_mouseFirstMoved)
-//	{
-//		m_mousePreviousX = xPos;
-//		m_mousePreviousY = yPos;
-//		m_mouseFirstMoved = false;
-//	}
-//
-//	int xChange = xPos - m_mousePreviousX;
-//	int yChange = m_mousePreviousY - yPos;
-//
-//	m_mousePreviousX = xPos;
-//	m_mousePreviousY = yPos;
-//}
-
-
 
 Window::~Window() {
 	Close();

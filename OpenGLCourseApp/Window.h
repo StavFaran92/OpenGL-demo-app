@@ -21,8 +21,8 @@ public:
 
 	int initialize();
 
-	GLint getBufferWidth() { return m_bufferWidth; }
-	GLint getBufferHeight() { return m_bufferHeight; }
+	GLint getWidth() { return m_width; }
+	GLint getHeight() { return m_height; }
 
 	void Close() { 
 
@@ -37,16 +37,9 @@ public:
 
 	~Window();
 private:
-	void SetWindowCallbacks();
-
-	static void handleKeys(SDL_Window* window, int key, int code, int action, int mode);
-	static void handleMouse(SDL_Window* window, double xPos, double yPos);
-private:
 	SDL_Window* m_mainWindow = nullptr;
 	SDL_GLContext m_glContext = nullptr;
 
-	GLint m_bufferWidth = 0;
-	GLint m_bufferHeight = 0;
 	GLint m_width = 0;
 	GLint m_height = 0;
 
