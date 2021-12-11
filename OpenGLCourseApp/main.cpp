@@ -23,6 +23,7 @@
 #include "Tests/Test.h"
 #include "Tests/TestMenu.h"
 #include "Tests/TestClearColor.h"
+#include "main.h"
 
 void handleKeys(unsigned char key, int x, int y);
 
@@ -86,7 +87,7 @@ int main(int argc, char* argv[])
 
 	CreateObject(shader, renderer);
 
-	Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 5.0f, 1.0f);
+	Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 5.0f, .5f);
 
 	shinyMaterial = Material(1.0f, 32);
 	dullMaterial = Material(.3f, 4);
@@ -136,10 +137,20 @@ int main(int argc, char* argv[])
 				quit = true;
 			}
 			//Handle keypress with current mouse position
-			else if (e.type == SDL_TEXTINPUT)
+			else if (e.type == SDL_MOUSEMOTION)
 			{
-				int x = 0, y = 0;
-				SDL_GetMouseState(&x, &y);
+				camera.mouseControl(e.motion.xrel, e.motion.yrel);
+					
+			}
+			if (e.type == SDL_KEYDOWN)
+			{
+				switch (e.key.keysym.sym)
+				{
+				case SDLK_RIGHT:
+					camera.moveRight(.1f);
+					std::cout << "pressed right" << std::endl;
+					break;
+				}
 			}
 		}
 

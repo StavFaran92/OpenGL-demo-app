@@ -100,22 +100,21 @@ int Window::initialize()
 //	}
 //}
 //
-//void Window::handleMouse(GLFWwindow* window, double xPos, double yPos)
+//void Window::handleMouse(double xPos, double yPos)
 //{
-//	Window* myWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
 //
-//	if (myWindow->m_mouseFirstMoved)
+//	if (m_mouseFirstMoved)
 //	{
-//		myWindow->lastX = xPos;
-//		myWindow->lastY = yPos;
-//		myWindow->m_mouseFirstMoved = false;
+//		m_mousePreviousX = xPos;
+//		m_mousePreviousY = yPos;
+//		m_mouseFirstMoved = false;
 //	}
 //
-//	myWindow->xChange = xPos - myWindow->lastX;
-//	myWindow->yChange = myWindow->lastY - yPos;
+//	int xChange = xPos - m_mousePreviousX;
+//	int yChange = m_mousePreviousY - yPos;
 //
-//	myWindow->lastX = xPos;
-//	myWindow->lastY = yPos;
+//	m_mousePreviousX = xPos;
+//	m_mousePreviousY = yPos;
 //}
 
 

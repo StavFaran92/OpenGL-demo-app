@@ -18,6 +18,8 @@ public:
 
 	glm::vec3 getCameraPosition() { return position; }
 
+	void moveRight(float x);
+
 	~Camera();
 private:
 	glm::vec3 position;

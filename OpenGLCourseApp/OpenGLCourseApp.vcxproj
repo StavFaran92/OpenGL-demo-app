@@ -119,6 +119,7 @@
     <ClInclude Include="IO\Input.h" />
     <ClInclude Include="IO\Keyboard.h" />
     <ClInclude Include="IO\Mouse.h" />
+    <ClInclude Include="main.h" />
     <ClInclude Include="Renderer\Camera\Camera.h" />
     <ClInclude Include="Renderer\Lighting\DirectionalLight.h" />
     <ClInclude Include="Renderer\Buffers\IndexBuffer.h" />

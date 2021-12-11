@@ -50,6 +50,11 @@ private:
 	GLint m_width = 0;
 	GLint m_height = 0;
 
+	int m_mousePreviousX = 0;
+	int m_mousePreviousY = 0;
+	int m_mouseX = 0;
+	int m_mouseY = 0;
+
 	bool m_mouseFirstMoved = false;
 
 
