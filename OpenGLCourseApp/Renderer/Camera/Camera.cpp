@@ -11,37 +11,29 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
 	update();
 }
 
-void Camera::keyControl(bool* keys, GLfloat deltaTime)
+void Camera::keyControl(SDL_Keycode key, double deltaTime)
 {
-	GLfloat velocity =  movementSpeed * deltaTime;
+	GLfloat velocity =  deltaTime;
 
-	//if (keys[GLFW_KEY_W]) 
-	//{
-	//	position += front * velocity;
-	//}
+	if (key == SDLK_w)
+	{
+		position += front * velocity;
+	}
 
-	//if (keys[GLFW_KEY_S])
-	//{
-	//	position -= front * velocity;
-	//}
+	if (key == SDLK_s)
+	{
+		position -= front * velocity;
+	}
 
-	//if (keys[GLFW_KEY_A])
-	//{
-	//	position -= right * velocity;
-	//}
+	if (key == SDLK_a)
+	{
+		position -= right * velocity;
+	}
 
-	//if (keys[GLFW_KEY_D])
-	//{
-	//	position += right * velocity;
-	//}
-
-	//if (keys[GLFW_KEY_X])
-	//{
-	//	mIsCameraLocked = true;
-	//}
-	//else {
-	//	//mIsCameraLocked = false;
-	//}
+	if (key == SDLK_d)
+	{
+		position += right * velocity;
+	}
 }
 
 void Camera::mouseControl(GLfloat xChange, GLfloat yChange)

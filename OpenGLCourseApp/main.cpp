@@ -125,9 +125,18 @@ int main(int argc, char* argv[])
 	//Event handler
 	SDL_Event e;
 
+	Uint64 NOW = SDL_GetPerformanceCounter();
+	Uint64 LAST = 0;
+	double deltaTime = 0;
+
 	// Loop until window closed
 	while (!quit)
 	{
+		LAST = NOW;
+		NOW = SDL_GetPerformanceCounter();
+
+		deltaTime = (double)SDL_GetPerformanceFrequency() / ((NOW - LAST) * 1000);
+
 		//Handle events on queue
 		while (SDL_PollEvent(&e) != 0)
 		{
@@ -144,13 +153,7 @@ int main(int argc, char* argv[])
 			}
 			if (e.type == SDL_KEYDOWN)
 			{
-				switch (e.key.keysym.sym)
-				{
-				case SDLK_RIGHT:
-					camera.moveRight(.1f);
-					std::cout << "pressed right" << std::endl;
-					break;
-				}
+				camera.keyControl(e.key.keysym.sym, deltaTime);
 			}
 		}
 
