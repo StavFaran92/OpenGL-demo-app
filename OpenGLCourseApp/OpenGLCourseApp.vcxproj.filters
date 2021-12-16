@@ -36,13 +36,13 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Buffers\VertexBuffer.cpp">
+    <ClCompile Include="Renderer\Buffers\VertexBufferObjectWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\Buffers\IndexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Buffers\VertexArray.cpp">
+    <ClCompile Include="Renderer\Buffers\VertexArrayObjectWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\Buffers\VertexBufferLayout.cpp">
@@ -95,13 +95,13 @@
     <ClInclude Include="Renderer\Lighting\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Buffers\VertexBuffer.h">
+    <ClInclude Include="Renderer\Buffers\VertexBufferObjectWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\Buffers\IndexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Buffers\VertexArray.h">
+    <ClInclude Include="Renderer\Buffers\VertexArrayObjectWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\Buffers\VertexBufferLayout.h">
@@ -135,6 +135,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\Buffers\VertexBufferElement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

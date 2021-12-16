@@ -1,20 +1,22 @@
 #pragma once
 
+#include <memory>
+
 #include <GL\glew.h>
 
 #include "Renderer/Renderer.h"
 #include "Renderer/Shader/Shader.h"
 
-#include "Renderer/Buffers/VertexBuffer.h"
+#include "Renderer/Buffers/VertexBufferObjectWrapper.h"
 #include "Renderer/Buffers/IndexBuffer.h"
 #include "Renderer/Buffers/VertexBufferLayout.h"
-#include "Renderer/Buffers/VertexArray.h"
+#include "Renderer/Buffers/VertexArrayObjectWrapper.h"
 
 class Mesh
 {  
 public:
 	Mesh();
-	Mesh(const Shader &shader, const Renderer& renderer);
+	Mesh(const Shader &m_shader, const Renderer& m_renderer);
 	void CreateMesh(GLfloat *vertices, unsigned int *indices, unsigned int numOfVertices, unsigned int numOf);
 	void RenderMesh();
 	void ClearMesh();
@@ -22,12 +24,13 @@ public:
 	~Mesh();
 
 private:
-	IndexBuffer *ibo;
-	VertexBuffer *vbo;
-	VertexArray *vao;
-	GLsizei indexCount;
+	std::shared_ptr<IndexBuffer> m_ibo;
+	std::shared_ptr < VertexBufferObjectWrapper> m_vbo;
+	std::shared_ptr < VertexArrayObjectWrapper> m_vao;
 
-	const Shader *shader;
-	const Renderer *renderer;
+	GLsizei m_indexCount = 0;
+
+	const Shader *m_shader;
+	const Renderer *m_renderer;
 };
 

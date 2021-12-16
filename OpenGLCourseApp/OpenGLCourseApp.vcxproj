@@ -109,8 +109,8 @@
     <ClCompile Include="Renderer\Shader\Shader.cpp" />
     <ClCompile Include="Renderer\Shader\Texture.cpp" />
     <ClCompile Include="Utils\IO\Utils.cpp" />
-    <ClCompile Include="Renderer\Buffers\VertexArray.cpp" />
-    <ClCompile Include="Renderer\Buffers\VertexBuffer.cpp" />
+    <ClCompile Include="Renderer\Buffers\VertexArrayObjectWrapper.cpp" />
+    <ClCompile Include="Renderer\Buffers\VertexBufferObjectWrapper.cpp" />
     <ClCompile Include="Renderer\Buffers\VertexBufferLayout.cpp" />
     <ClCompile Include="Utils\Math\LinearAlgebraUtil.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -120,6 +120,7 @@
     <ClInclude Include="IO\Keyboard.h" />
     <ClInclude Include="IO\Mouse.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="Renderer\Buffers\VertexBufferElement.h" />
     <ClInclude Include="Renderer\Camera\Camera.h" />
     <ClInclude Include="Renderer\Lighting\DirectionalLight.h" />
     <ClInclude Include="Renderer\Buffers\IndexBuffer.h" />
@@ -131,8 +132,8 @@
     <ClInclude Include="Renderer\Shader\Shader.h" />
     <ClInclude Include="Renderer\Shader\Texture.h" />
     <ClInclude Include="Utils\IO\Utils.h" />
-    <ClInclude Include="Renderer\Buffers\VertexArray.h" />
-    <ClInclude Include="Renderer\Buffers\VertexBuffer.h" />
+    <ClInclude Include="Renderer\Buffers\VertexArrayObjectWrapper.h" />
+    <ClInclude Include="Renderer\Buffers\VertexBufferObjectWrapper.h" />
     <ClInclude Include="Renderer\Buffers\VertexBufferLayout.h" />
     <ClInclude Include="Utils\Math\LinearAlgebraUtil.h" />
     <ClInclude Include="Window.h" />

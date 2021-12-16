@@ -1,12 +1,11 @@
 #include "Renderer.h"
 
-void Renderer::Draw(const VertexArray & vao, const IndexBuffer & ibo, const Shader & shader) const
+void Renderer::Draw(const VertexArrayObjectWrapper & vao, const Shader & m_shader) const
 {
-	shader.UseShader();
+	m_shader.UseShader();
 	vao.Bind();
-	ibo.Bind();
 
-	glDrawElements(GL_TRIANGLES, ibo.getLength(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, vao.GetIndexCount(), GL_UNSIGNED_INT, 0);
 }
 
 void Renderer::Clear() const

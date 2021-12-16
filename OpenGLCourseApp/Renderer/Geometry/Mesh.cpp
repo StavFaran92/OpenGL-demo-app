@@ -4,63 +4,33 @@
 
 Mesh::Mesh() {}
 
-Mesh::Mesh(const Shader &shader, const Renderer &renderer):
-	shader(&shader), renderer(&renderer)
+Mesh::Mesh(const Shader &m_shader, const Renderer &m_renderer):
+	m_shader(&m_shader), m_renderer(&m_renderer)
 {
 }
 
 void Mesh::CreateMesh(GLfloat *vertices, unsigned int *indices, unsigned int numOfVertices, unsigned int numOfIndices)
 {
-	indexCount = numOfIndices;
+	m_indexCount = numOfIndices;
 
-	vao = new VertexArray();
-	ibo = new IndexBuffer(indices, numOfIndices);
-	vbo = new VertexBuffer(vertices, sizeof(vertices[0]) * numOfVertices);
+	m_vao = std::make_shared<VertexArrayObjectWrapper>();
+	m_ibo = std::make_shared <IndexBuffer>(indices, numOfIndices);
+	m_vbo = std::make_shared <VertexBufferObjectWrapper>(vertices, sizeof(vertices[0]) * numOfVertices);
 
 	VertexBufferLayout layout;
 	layout.Push<float>(3);
 	layout.Push<float>(2);
 	layout.Push<float>(3);
-	vao->AddBuffer(*vbo, layout);
+	m_vao->AttachBuffer(*m_vbo, *m_ibo, layout);
 }
 
 void Mesh::RenderMesh() 
 {
-
-	renderer->Draw(*vao, *ibo, *shader);
-
-	//if (vao && ibo) {
-	//	vao->Bind();
-	//	ibo->Bind();
-
-	//	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
-
-	//	ibo->Unbind();
-	//	vao->Unbind();
-	//}
+	m_renderer->Draw(*m_vao, *m_shader);
 }
 void Mesh::ClearMesh() 
 {
-
-	if (ibo) {
-
-		delete ibo;
-		ibo = 0;
-	}
-
-	if (vbo) {
-
-		delete vbo;
-		vbo = 0;
-	}
-
-	if (vao) {
-
-		delete vao;
-		vao = 0;
-	}
-
-	indexCount = 0;
+	m_indexCount = 0;
 }
 
 Mesh::~Mesh() {

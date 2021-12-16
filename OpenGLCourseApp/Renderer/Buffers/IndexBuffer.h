@@ -1,9 +1,6 @@
 #pragma once
 class IndexBuffer
 {
-private:
-	unsigned int mRendererID;
-	unsigned int mLength;
 public:
 	IndexBuffer(const unsigned int * data, unsigned int length);
 	~IndexBuffer();
@@ -12,5 +9,8 @@ public:
 	void Unbind() const;
 
 	unsigned int getLength() const;
+private:
+	unsigned int m_id = 0;
+	unsigned int m_length = 0;
 };
 

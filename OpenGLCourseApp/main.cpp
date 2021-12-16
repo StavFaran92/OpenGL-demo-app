@@ -78,10 +78,10 @@ int main(int argc, char* argv[])
 
 	Renderer renderer;
 
-	Shader shader("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
-	shaderList.push_back(&shader);
+	Shader m_shader("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
+	shaderList.push_back(&m_shader);
 
-	CreateObject(shader, renderer);
+	CreateObject(m_shader, renderer);
 
 	Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 5.0f, .5f);
 
