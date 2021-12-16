@@ -3,7 +3,7 @@
 
 #include "VertexBufferLayout.h"
 #include "VertexBufferElement.h"
-#include "IndexBuffer.h"
+#include "ElementBufferObjectWrapper.h"
 
 class VertexArrayObjectWrapper
 {
@@ -11,7 +11,7 @@ public:
 	VertexArrayObjectWrapper();
 	~VertexArrayObjectWrapper();
 
-	void AttachBuffer(const VertexBufferObjectWrapper& vbo, const IndexBuffer& ibo, const VertexBufferLayout& layout);
+	void AttachBuffer(const VertexBufferObjectWrapper& vbo, const ElementBufferObjectWrapper& ebo, const VertexBufferLayout& layout);
 
 	void Bind() const;
 	void Unbind() const;

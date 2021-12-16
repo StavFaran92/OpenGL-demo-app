@@ -99,7 +99,7 @@
     <ClCompile Include="IO\Mouse.cpp" />
     <ClCompile Include="Renderer\Camera\Camera.cpp" />
     <ClCompile Include="Renderer\Lighting\DirectionalLight.cpp" />
-    <ClCompile Include="Renderer\Buffers\IndexBuffer.cpp" />
+    <ClCompile Include="Renderer\Buffers\ElementBufferObjectWrapper.cpp" />
     <ClCompile Include="Renderer\Lighting\Light.cpp" />
     <ClCompile Include="Renderer\Shader\Material.cpp" />
     <ClCompile Include="Renderer\Lighting\PointLight.cpp" />
@@ -123,7 +123,7 @@
     <ClInclude Include="Renderer\Buffers\VertexBufferElement.h" />
     <ClInclude Include="Renderer\Camera\Camera.h" />
     <ClInclude Include="Renderer\Lighting\DirectionalLight.h" />
-    <ClInclude Include="Renderer\Buffers\IndexBuffer.h" />
+    <ClInclude Include="Renderer\Buffers\ElementBufferObjectWrapper.h" />
     <ClInclude Include="Renderer\Lighting\Light.h" />
     <ClInclude Include="Renderer\Shader\Material.h" />
     <ClInclude Include="Renderer\Lighting\PointLight.h" />

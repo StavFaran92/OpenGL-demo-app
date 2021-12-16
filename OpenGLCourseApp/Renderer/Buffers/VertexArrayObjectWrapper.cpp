@@ -10,7 +10,7 @@ VertexArrayObjectWrapper::~VertexArrayObjectWrapper()
 	glDeleteVertexArrays(1, &m_id);
 }
 
-void VertexArrayObjectWrapper::AttachBuffer(const VertexBufferObjectWrapper& vbo, const IndexBuffer& ibo, const VertexBufferLayout & layout)
+void VertexArrayObjectWrapper::AttachBuffer(const VertexBufferObjectWrapper& vbo, const ElementBufferObjectWrapper& ebo, const VertexBufferLayout & layout)
 {
 	// Bind this VAO
 	Bind();
@@ -19,8 +19,8 @@ void VertexArrayObjectWrapper::AttachBuffer(const VertexBufferObjectWrapper& vbo
 	vbo.Bind();
 
 	// Bind IBO to associate with this VAO
-	ibo.Bind();
-	m_indexCount = ibo.getLength();
+	ebo.Bind();
+	m_indexCount = ebo.getLength();
 
 	// Set vertex attribute pointers
 	const auto& elements = layout.GetElements();

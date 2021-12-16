@@ -1,9 +1,9 @@
 #pragma once
-class IndexBuffer
+class ElementBufferObjectWrapper
 {
 public:
-	IndexBuffer(const unsigned int * data, unsigned int length);
-	~IndexBuffer();
+	ElementBufferObjectWrapper(const unsigned int * data, unsigned int length);
+	~ElementBufferObjectWrapper();
 
 	void Bind() const;
 	void Unbind() const;

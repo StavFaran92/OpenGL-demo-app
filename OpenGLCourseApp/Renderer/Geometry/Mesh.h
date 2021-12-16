@@ -8,7 +8,7 @@
 #include "Renderer/Shader/Shader.h"
 
 #include "Renderer/Buffers/VertexBufferObjectWrapper.h"
-#include "Renderer/Buffers/IndexBuffer.h"
+#include "Renderer/Buffers/ElementBufferObjectWrapper.h"
 #include "Renderer/Buffers/VertexBufferLayout.h"
 #include "Renderer/Buffers/VertexArrayObjectWrapper.h"
 
@@ -24,7 +24,7 @@ public:
 	~Mesh();
 
 private:
-	std::shared_ptr<IndexBuffer> m_ibo;
+	std::shared_ptr<ElementBufferObjectWrapper> m_ibo;
 	std::shared_ptr < VertexBufferObjectWrapper> m_vbo;
 	std::shared_ptr < VertexArrayObjectWrapper> m_vao;
 

@@ -39,7 +39,7 @@
     <ClCompile Include="Renderer\Buffers\VertexBufferObjectWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Buffers\IndexBuffer.cpp">
+    <ClCompile Include="Renderer\Buffers\ElementBufferObjectWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\Buffers\VertexArrayObjectWrapper.cpp">
@@ -98,7 +98,7 @@
     <ClInclude Include="Renderer\Buffers\VertexBufferObjectWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Buffers\IndexBuffer.h">
+    <ClInclude Include="Renderer\Buffers\ElementBufferObjectWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\Buffers\VertexArrayObjectWrapper.h">

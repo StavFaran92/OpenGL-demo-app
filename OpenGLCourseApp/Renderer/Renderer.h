@@ -1,6 +1,5 @@
 #pragma once
 #include "Renderer/Buffers/VertexArrayObjectWrapper.h"
-#include "Renderer/Buffers/IndexBuffer.h"
 #include "Renderer/Shader/Shader.h"
 
 class Renderer
