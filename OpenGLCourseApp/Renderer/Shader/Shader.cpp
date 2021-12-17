@@ -3,77 +3,93 @@
 
 
 Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath):
-	mRendererID(0), mVertexFilePath(vertexFilePath), mFragmentFilePath(fragmentFilePath)
+	m_id(0)
 {
-	ShaderProgramSource sources = ParseShader(mVertexFilePath, mFragmentFilePath);
-
-	const char* vertexCode = sources.vertexSource.c_str();
-	const char* fragmentCode = sources.fragmentSource.c_str();
-
-	CompileShader(vertexCode, fragmentCode);
+	Init(vertexFilePath, fragmentFilePath);
 }
 
-ShaderProgramSource Shader::ParseShader(const std::string& vertexLocation, const std::string& fragmentLocation) {
-	std::string vertexString = Utils::ReadFile(vertexLocation.c_str());
-	std::string fragmentString = Utils::ReadFile(fragmentLocation.c_str());
+void Shader::Init(const std::string& vertexFilePath, const std::string& fragmentFilePath)
+{
+	// Parse shaders
+	std::string vertexCode = Utils::ReadFile(vertexFilePath);
+	std::string fragmentCode = Utils::ReadFile(fragmentFilePath);
 
-	return { vertexString, fragmentString };
+	// Build shaders
+	BuildShaders(vertexCode, fragmentCode);
 }
 
-void Shader::CompileShader(const char* vertexCode, const char* fragmentCode)
+void Shader::BuildShaders(const std::string& vertexCode, const std::string& fragmentCode)
 {
-	//Create a new renderer
-	mRendererID = glCreateProgram();
+	//Create a new shader program
+	m_id = glCreateProgram();
 
-	ValidateRenderer();
+	// Validate shader program creation
+	if (!ValidateRenderer())
+		return;
 
-	AddShader(mRendererID, vertexCode, GL_VERTEX_SHADER);
-	AddShader(mRendererID, fragmentCode, GL_FRAGMENT_SHADER);
+	// Create and attach vertex shader to program
+	GLuint vertexShader = AddShader(vertexCode, GL_VERTEX_SHADER);
+	glAttachShader(m_id, vertexShader);
 
-	glLinkProgram(mRendererID);
+	// Create and attach fragment shader to program
+	GLuint fragShader = AddShader(fragmentCode, GL_FRAGMENT_SHADER);
+	glAttachShader(m_id, fragShader);
 
+	// Link shader program
+	glLinkProgram(m_id);
+
+	// Validate shader program link
 	ValidateProgramLink();
+
+	// Delete shaders
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragShader);
 }
 
-void Shader::ValidateRenderer()
+bool Shader::ValidateRenderer()
 {
-	if (!mRendererID)
-		throw new std::exception("Failed to create shader");
+	if (!m_id)
+	{
+		fprintf(stderr, "Error creating program\n");
+		return false;
+	}
 }
 
-void Shader::ValidateProgramLink()
+bool Shader::ValidateProgramLink()
 {
-	GLchar eLog[1024] = { 0 };
 	GLint result = 0;
-	glGetProgramiv(mRendererID, GL_LINK_STATUS, &result);
+	glGetProgramiv(m_id, GL_LINK_STATUS, &result);
 	if (!result)
 	{
-		glGetProgramInfoLog(mRendererID, sizeof(eLog), NULL, eLog);
-		printf("Error linking program: '%s'\n", eLog);
-		throw new std::exception("Error linking program");
+		GLchar eLog[1024] = { 0 };
+		glGetProgramInfoLog(m_id, sizeof(eLog), NULL, eLog);
+		fprintf(stderr, "Error linking program: '%s'\n", eLog);
+		return false;
 	}
 
-	glValidateProgram(mRendererID);
+	glValidateProgram(m_id);
 
-	glGetProgramiv(mRendererID, GL_VALIDATE_STATUS, &result);
+	glGetProgramiv(m_id, GL_VALIDATE_STATUS, &result);
 	if (!result)
 	{
-		glGetProgramInfoLog(mRendererID, sizeof(eLog), NULL, eLog);
-		printf("Error validating program: '%s'\n", eLog);
-		throw new std::exception("Error validating program");
+		GLchar eLog[1024] = { 0 };
+		glGetProgramInfoLog(m_id, sizeof(eLog), NULL, eLog);
+		fprintf(stderr, "Error validating program: '%s'\n", eLog);
+		return false;
 	}
+	return true;
 }
 
 void Shader::UseShader() const
 {
-	glUseProgram(mRendererID);
+	glUseProgram(m_id);
 }
 
 void Shader::ClearShader()
 {
-	if (mRendererID != 0) {
-		glDeleteProgram(mRendererID);
-		mRendererID = 0;
+	if (m_id != 0) {
+		glDeleteProgram(m_id);
+		m_id = 0;
 	}
 }
 
@@ -82,31 +98,34 @@ void Shader::SetUniform4f(const std::string & name, float v0, float v1, float v2
 	glUniform4f(GetUniformLocation(name), v0, v1, v2, v3);
 }
 
-void Shader::AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderType)
+GLuint Shader::AddShader(const std::string& shaderCode, GLenum shaderType)
 {
-	GLuint theShader = glCreateShader(shaderType);
+	GLuint shader = glCreateShader(shaderType);
 
-	const GLchar* theCode[1];
-	theCode[0] = shaderCode;
+	const GLchar* code[] = { shaderCode.c_str() };
+	const GLint length[] = { shaderCode.size() };
 
-	GLint codeLength[1];
-	codeLength[0] = strlen(shaderCode);
+	glShaderSource(shader, 1, code, length);
+	glCompileShader(shader);
 
-	glShaderSource(theShader, 1, theCode, codeLength);
-	glCompileShader(theShader);
+	if (!validateCompilation(shader, shaderType))
+		return -1;
 
+	return shader;
+}
+
+bool Shader::validateCompilation(const GLuint& shader, const GLenum& shaderType)
+{
 	GLint result = 0;
-	GLchar eLog[1024] = { 0 };
-
-	glGetShaderiv(theShader, GL_COMPILE_STATUS, &result);
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
 	if (!result)
 	{
-		glGetShaderInfoLog(theShader, 1024, NULL, eLog);
+		GLchar eLog[1024] = { 0 };
+		glGetShaderInfoLog(shader, 1024, NULL, eLog);
 		fprintf(stderr, "Error compiling the %d shader: '%s'\n", shaderType, eLog);
-		return;
+		return false;
 	}
-
-	glAttachShader(theProgram, theShader);
+	return true;
 }
 
 int Shader::GetUniformLocation(const std::string & name)
@@ -114,7 +133,7 @@ int Shader::GetUniformLocation(const std::string & name)
 	if (mUniformLocationCache.find(name) != mUniformLocationCache.end())
 		return mUniformLocationCache[name];
 
-	int location = glGetUniformLocation(mRendererID, name.c_str());
+	int location = glGetUniformLocation(m_id, name.c_str());
 
 	if (location == -1) {
 		printf("Warning: uniform %s doesn't exists!", name.c_str());

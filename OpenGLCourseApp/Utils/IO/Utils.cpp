@@ -1,22 +1,30 @@
 #include "Utils.h"
 
-std::string Utils::ReadFile(const char * filePath)
+std::string Utils::ReadFile(const std::string& filePath)
 {
-	std::string content;
-	std::ifstream fileStream(filePath, std::ios::in);
+	std::string content = "";
+	std::ifstream fileStream;
+	fileStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
-	if (!fileStream.is_open())
+	try
 	{
-		printf("Failed to read %s! File doesn't exists", filePath);
-		return "";
+		// open files
+		fileStream.open(filePath.c_str());
+
+		// read file's buffer contents into streams
+		std::stringstream stream;
+		stream << fileStream.rdbuf();
+
+		// close file handlers
+		fileStream.close();
+
+		// convert stream into string
+		content = stream.str();
+	}
+	catch (std::ifstream::failure e)
+	{
+		std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
 	}
 
-	std::string line = "";
-	while (!fileStream.eof()) {
-		std::getline(fileStream, line);
-		content.append(line + "\n");
-	}
-
-	fileStream.close();
 	return content;
 }

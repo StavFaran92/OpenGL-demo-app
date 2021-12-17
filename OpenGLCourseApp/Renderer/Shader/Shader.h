@@ -18,10 +18,12 @@ class Shader
 public:
 	Shader(const std::string& vertexfilePath, const std::string& fragmentFilePath);
 
-	ShaderProgramSource ParseShader(const std::string& vertexLocation, const std::string& fragmentLocation);
+	void Init(const std::string& vertexFilePath, const std::string& fragmentFilePath);
 
 	void UseShader() const;
 	void ClearShader();
+
+	inline GLuint getID() const { return m_id; }
 
 	void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3 );
 	int GetUniformLocation(const std::string& name);
@@ -29,16 +31,17 @@ public:
 
 	~Shader();
 
-private:
-	unsigned int mRendererID;
-	const std::string mVertexFilePath;
-	const std::string mFragmentFilePath;
-	std::unordered_map<std::string, int> mUniformLocationCache;
 
-	void CompileShader(const char* vertexCode, const char* fragmentCode);
-	void ValidateRenderer();
-	void ValidateProgramLink();
-	void AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderType);
+private:
+	void BuildShaders(const std::string& vertexCode, const std::string& fragmentCode);
+	GLuint AddShader(const std::string& shaderCode, GLenum shaderType);
+
+	bool ValidateRenderer();
+	bool ValidateProgramLink();
+	bool validateCompilation(const GLuint& theShader, const GLenum& shaderType);
+private:
+	GLuint m_id;
+	std::unordered_map<std::string, int> mUniformLocationCache;
 
 	
 };
