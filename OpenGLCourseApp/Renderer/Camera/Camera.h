@@ -5,39 +5,41 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "SDL.h"
+#include "IO/Keyboard.h"
 
 class Camera
 {
 public:
-	Camera();
 	Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLfloat startPitch, GLfloat startMoveSpeed, GLfloat startTurnSpeed);
 
-	void keyControl(SDL_Keycode key,  double deltaTime);
+	void keyControl(double deltaTime);
 	void mouseControl(GLfloat xChange, GLfloat yChange);
 
 	glm::mat4 calculateViewMatrix();
 
-	glm::vec3 getCameraPosition() { return position; }
+	glm::vec3 getCameraPosition() { return m_position; }
 
 	void moveRight(float x);
 
 	~Camera();
 private:
-	glm::vec3 position;
-	glm::vec3 front;
-	glm::vec3 up;
-	glm::vec3 right;
-	glm::vec3 worldUp;
+	void recalculate();
+private:
+	glm::vec3 m_position;
+	glm::vec3 m_front;
+	glm::vec3 m_up;
+	glm::vec3 m_right;
+	glm::vec3 m_worldUp;
 
-	GLfloat yaw;
-	GLfloat pitch;
+	GLfloat m_yaw;
+	GLfloat m_pitch;
 
-	GLfloat movementSpeed;
-	GLfloat turnSpeed;
+	GLfloat m_movementSpeed;
+	GLfloat m_turnSpeed;
 
-	bool mIsCameraLocked;
+	bool m_isCameraLocked;
 
-	void update();
+	std::shared_ptr<Keyboard> keyboard;
+
 };
 

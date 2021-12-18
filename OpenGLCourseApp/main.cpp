@@ -31,9 +31,6 @@ const float toRadians = 3.1315265f / 180;
 
 std::vector<Mesh*> meshList;
 
-Texture brickTexture;
-Texture dirtTexture;
-
 DirectionalLight mainLight;
 
 
@@ -86,9 +83,9 @@ int main(int argc, char* argv[])
 	shinyMaterial = Material(1.0f, 32);
 	dullMaterial = Material(.3f, 4);
 
-	brickTexture = Texture("Resources\\Textures\\brick.png");
+	Texture brickTexture("Resources\\Textures\\brick.png");
 	brickTexture.LoadTexture();
-	dirtTexture = Texture("Resources\\Textures\\dirt.png");
+	Texture dirtTexture("Resources\\Textures\\dirt.png");
 	dirtTexture.LoadTexture();
 
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
@@ -142,6 +139,8 @@ int main(int argc, char* argv[])
 
 		meshList[0]->RenderMesh();
 
+		camera.keyControl(deltaTime);
+
 		mainWindow.SwapBuffer();
 	}
 
@@ -170,7 +169,7 @@ void handleEvents(SDL_Event& e, bool& quit, Camera& camera, double deltaTime)
 		}
 		if (e.type == SDL_KEYDOWN)
 		{
-			camera.keyControl(e.key.keysym.sym, deltaTime);
+			
 		}
 	}
 }

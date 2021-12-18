@@ -1,19 +1,16 @@
 #include "Keyboard.h"
 
 Keyboard::Keyboard() {
-	for (size_t i = 0; i < 1024; i++)
-	{
-		m_keys[i] = 0;
-	}
+	m_keyboardState = SDL_GetKeyboardState(&m_length);
 }
 
-bool Keyboard::getKeyPressed(int index)
+int Keyboard::getKeyState(int index)
 {
-	if (index < 0 || index > NUM_OF_KEYS)
+	if (index < 0 || index > m_length)
 	{
 		std::cout << "Invalid key specified : " + index << std::endl;
-		return false; //TODO fix
+		return false;
 	}
 
-	return m_keys[index];
+	return m_keyboardState[index];
 }

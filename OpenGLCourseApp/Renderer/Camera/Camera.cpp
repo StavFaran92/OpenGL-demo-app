@@ -1,87 +1,78 @@
 #include "Camera.h"
 
-Camera::Camera()
-{
-}
-
 Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLfloat startPitch, GLfloat startMoveSpeed, GLfloat startTurnSpeed)
-	:position(startPosition), worldUp(startUp), yaw(startYaw), pitch(startPitch), 
-	front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(startMoveSpeed), turnSpeed(startTurnSpeed), mIsCameraLocked(true)
+	:m_position(startPosition), m_worldUp(startUp), m_yaw(startYaw), m_pitch(startPitch),
+	m_front(glm::vec3(0.0f, 0.0f, -1.0f)), m_movementSpeed(startMoveSpeed), m_turnSpeed(startTurnSpeed), m_isCameraLocked(true)
 {
-	update();
+	keyboard = std::make_shared<Keyboard>();
 }
 
-void Camera::keyControl(SDL_Keycode key, double deltaTime)
+void Camera::keyControl( double deltaTime)
 {
-	GLfloat velocity =  deltaTime;
+	GLfloat velocity =  deltaTime;	
 
-	if (key == SDLK_w)
+	if (keyboard->getKeyState(SDL_SCANCODE_W))
 	{
-		position += front * velocity;
+		m_position += m_front * velocity;
 	}
 
-	if (key == SDLK_s)
+	if (keyboard->getKeyState(SDL_SCANCODE_S))
 	{
-		position -= front * velocity;
+		m_position -= m_front * velocity;
 	}
 
-	if (key == SDLK_a)
+	if (keyboard->getKeyState(SDL_SCANCODE_A))
 	{
-		position -= right * velocity;
+		m_position -= m_right * velocity;
 	}
 
-	if (key == SDLK_d)
+	if (keyboard->getKeyState(SDL_SCANCODE_D))
 	{
-		position += right * velocity;
+		m_position += m_right * velocity;
 	}
 }
 
 void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 {
-	if (mIsCameraLocked) 
+	if (m_isCameraLocked) 
 	{
-		xChange *= turnSpeed;
-		yChange *= turnSpeed;
+		xChange *= m_turnSpeed;
+		yChange *= m_turnSpeed;
 
-		yaw += xChange;
-		pitch -= yChange;
+		m_yaw += xChange;
+		m_pitch -= yChange;
 
-		if (pitch > 89.0f)
+		if (m_pitch > 89.0f)
 		{
-			pitch = 89.0f;
+			m_pitch = 89.0f;
 		}
 
-		if (pitch < -89.0f)
+		if (m_pitch < -89.0f)
 		{
-			pitch = -89.0f;
+			m_pitch = -89.0f;
 		}
 
-		update();
+		recalculate();
 	}
 }
 
 glm::mat4 Camera::calculateViewMatrix()
 {
-	return glm::lookAt(position, position + front, up);
+	return glm::lookAt(m_position, m_position + m_front, m_up);
 }
 
-void Camera::update()
+void Camera::recalculate()
 {
 	
 
-	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front.y = sin(glm::radians(pitch));
-	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	m_front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	m_front.y = sin(glm::radians(m_pitch));
+	m_front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
 
-	front = glm::normalize(front);
+	m_front = glm::normalize(m_front);
 
-	right = glm::normalize(glm::cross(front, worldUp));
-	up = glm::normalize(glm::cross(right, front));
-}
-
-void Camera::moveRight(float x)
-{
-	position += right * x;
+	m_right = glm::normalize(glm::cross(m_front, m_worldUp));
+	m_up = glm::normalize(glm::cross(m_right, m_front));
 }
 
 Camera::~Camera()

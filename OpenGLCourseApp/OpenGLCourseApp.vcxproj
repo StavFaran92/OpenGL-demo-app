@@ -131,6 +131,7 @@
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="Renderer\Shader\Shader.h" />
     <ClInclude Include="Renderer\Shader\Texture.h" />
+    <ClInclude Include="Resources\Primitives\cube_vertices.h" />
     <ClInclude Include="Utils\IO\Utils.h" />
     <ClInclude Include="Renderer\Buffers\VertexArrayObjectWrapper.h" />
     <ClInclude Include="Renderer\Buffers\VertexBufferObjectWrapper.h" />

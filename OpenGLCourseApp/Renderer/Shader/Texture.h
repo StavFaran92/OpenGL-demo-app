@@ -7,19 +7,21 @@
 class Texture
 {
 public:
-	Texture();
-	Texture(const char* fileLocation);
+	Texture(const std::string& fileLocation, int slot = 0);
 
 	void LoadTexture();
-	void Bind(unsigned int slot = 0);
-	void ClearTexture();
-
+	void Bind();
 	~Texture();
 
 private:
-	GLuint textureID;
-	int width, height, bitDepth;
+	void ClearTexture();
 
-	const char* fileLocation;
+
+private:
+	GLuint m_id;
+	int m_width, m_height, m_bitDepth;
+	int m_slot;
+
+	std::string m_fileLocation;
 };
 

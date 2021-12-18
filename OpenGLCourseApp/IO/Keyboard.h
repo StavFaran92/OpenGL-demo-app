@@ -2,15 +2,16 @@
 
 #include <iostream>
 
-static const int NUM_OF_KEYS = 1024;
+#include "SDL.h"
 
 class Keyboard
 {
 public:
 	Keyboard();
-	bool getKeyPressed(int index);
+	int getKeyState(int index);
 
 private:
-	bool m_keys[NUM_OF_KEYS];
+	const Uint8* m_keyboardState;
+	int m_length;
 };
 
