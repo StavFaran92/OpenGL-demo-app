@@ -2,9 +2,13 @@
 
 #include <stdio.h>
 #include <string>
-#include "Utils/IO/Utils.h"
+#include <stdexcept>
 #include <unordered_map>
 
+#include "glm/glm.hpp"
+#include <glm/gtc/type_ptr.hpp>
+
+#include "Utils/IO/Utils.h"
 
 #include <GL/glew.h>
 
@@ -25,7 +29,14 @@ public:
 
 	inline GLuint getID() const { return m_id; }
 
-	void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3 );
+	void SetFloat(const std::string& name, float v);
+	void SetFloat(const std::string& name, glm::vec2 v);
+	void SetFloat(const std::string& name, glm::vec3 v);
+	void SetFloat(const std::string& name, glm::vec4 v);
+	void SetInt(const std::string& name, int v);
+	void SetMat3(const std::string& name, const glm::mat3& v);
+	void SetMat4(const std::string& name, const glm::mat4& v);
+
 	int GetUniformLocation(const std::string& name);
 
 

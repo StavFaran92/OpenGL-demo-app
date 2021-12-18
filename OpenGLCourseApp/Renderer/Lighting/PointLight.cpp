@@ -1,12 +1,12 @@
 #include "PointLight.h"
 
-void PointLight::useLight(GLfloat ambientIntensityLocation, GLfloat ambientColorLocation, GLfloat diffuseIntensityLocation,
-	GLfloat positionLocation, GLfloat constantLocation, GLfloat linearLocation, GLfloat exponentLocation)
+void PointLight::useLight(Shader& shader)
 {
-	Light::useLight(ambientIntensityLocation, ambientColorLocation, diffuseIntensityLocation);
+	Light::useLight(shader);
 
-	glUniform3f(positionLocation, position.x, position.y, position.z);
-	glUniform1f(constantLocation, constant);
-	glUniform1f(linearLocation, linear);
-	glUniform1f(exponentLocation, exponent);
+
+	//glUniform3f(positionLocation, position.x, position.y, position.z);
+	//glUniform1f(constantLocation, constant);
+	//glUniform1f(linearLocation, linear);
+	//glUniform1f(exponentLocation, exponent);
 }

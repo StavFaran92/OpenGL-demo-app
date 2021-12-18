@@ -30,7 +30,7 @@ void handleKeys(unsigned char key, int x, int y);
 const float toRadians = 3.1315265f / 180;
 
 std::vector<Mesh*> meshList;
-std::vector<Shader*> shaderList;
+//std::vector<Shader*> shaderList;
 
 Texture brickTexture;
 Texture dirtTexture;
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
 	Renderer renderer;
 
 	Shader shader("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
-	shaderList.push_back(&shader);
+	//shaderList.push_back(&shader);
 
 	CreateObject(shader, renderer);
 
@@ -97,8 +97,6 @@ int main(int argc, char* argv[])
 		0.3f, 2.0f, 
 		0.0f, 0.0f, -1.0f);
 
-	GLuint uniformModel = 0, uniformProjection = 0, uniformView = 0, uniformEyePosition, uniformAmbientColor = 0, uniformAmbientIntensity = 0,
-		uniformDirection = 0, uniformDiffuseIntensity = 0, uniformSpecularIntensity, uniformShininess;
 	glm::mat4 projection = glm::perspective(45.0f, (float)mainWindow.getWidth() / mainWindow.getHeight(), 0.1f, 100.0f);
 
 	bool show_demo_window = true;
@@ -127,52 +125,27 @@ int main(int argc, char* argv[])
 		deltaTime = (double)SDL_GetPerformanceFrequency() / ((NOW - LAST) * 1000);
 
 		//Handle events on queue
-		while (SDL_PollEvent(&e) != 0)
-		{
-			//User requests quit
-			if (e.type == SDL_QUIT)
-			{
-				quit = true;
-			}
-			//Handle keypress with current mouse position
-			else if (e.type == SDL_MOUSEMOTION)
-			{
-				camera.mouseControl(e.motion.xrel, e.motion.yrel);
-					
-			}
-			if (e.type == SDL_KEYDOWN)
-			{
-				camera.keyControl(e.key.keysym.sym, deltaTime);
-			}
-		}
+		handleEvents(e, quit, camera, deltaTime);
 
 		renderer.Clear();
 
-		uniformModel = shaderList[0]->GetUniformLocation("model");
-		uniformProjection = shaderList[0]->GetUniformLocation("projection");
-		uniformView = shaderList[0]->GetUniformLocation("view");
-		uniformAmbientColor = shaderList[0]->GetUniformLocation("directionalLight.color");
-		uniformAmbientIntensity = shaderList[0]->GetUniformLocation("directionalLight.ambientIntensity");
-		uniformDirection = shaderList[0]->GetUniformLocation("directionalLight.direction");
-		uniformDiffuseIntensity = shaderList[0]->GetUniformLocation("directionalLight.diffuseIntensity");
-		uniformSpecularIntensity = shaderList[0]->GetUniformLocation("material.specularIntensity");
-		uniformShininess = shaderList[0]->GetUniformLocation("material.shininess");
-		uniformEyePosition = shaderList[0]->GetUniformLocation("eyePosition");
+		shader.UseShader();
 
-		mainLight.useLight(uniformAmbientIntensity, uniformAmbientColor, uniformDiffuseIntensity, uniformDirection);
+		mainLight.useLight(shader);
+
 
 		glm::mat4 model(1.0f);
 		model = glm::translate(model, translation);
 		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1));
 		model = glm::rotate(model, curAngle * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
-		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+		shader.SetMat4("model", model);
+		shader.SetMat4("projection", projection);
+		shader.SetMat4("view", camera.calculateViewMatrix());
+		shader.SetFloat("eyePosition", camera.getCameraPosition());
 
 		brickTexture.Bind();
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		shinyMaterial.UseMaterial(shader);
 
 		meshList[0]->RenderMesh();
 
@@ -185,5 +158,27 @@ int main(int argc, char* argv[])
 	SDL_Quit();
 
 	return 0;
+}
+
+void handleEvents(SDL_Event& e, bool& quit, Camera& camera, double deltaTime)
+{
+	while (SDL_PollEvent(&e) != 0)
+	{
+		//User requests quit
+		if (e.type == SDL_QUIT)
+		{
+			quit = true;
+		}
+		//Handle keypress with current mouse position
+		else if (e.type == SDL_MOUSEMOTION)
+		{
+			camera.mouseControl(e.motion.xrel, e.motion.yrel);
+
+		}
+		if (e.type == SDL_KEYDOWN)
+		{
+			camera.keyControl(e.key.keysym.sym, deltaTime);
+		}
+	}
 }
 

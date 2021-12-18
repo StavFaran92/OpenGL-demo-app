@@ -1,19 +1,21 @@
 #include "Material.h"
 
 Material::Material()
-	:specularIntensity(0), shininess(0)
+	:m_specularIntensity(0), m_shininess(0)
 {
 }
 
 Material::Material(GLfloat sIntensity, GLfloat shine)
-	:specularIntensity(sIntensity), shininess(shine)
+	:m_specularIntensity(sIntensity), m_shininess(shine)
 {
 }
 
-void Material::UseMaterial(GLuint specularIntensityLocation, GLuint shininessLocation)
+void Material::UseMaterial(Shader& shader)
 {
-	glUniform1f(specularIntensityLocation, specularIntensity);
-	glUniform1f(shininessLocation, shininess);
+	shader.SetFloat("material.specularIntensity", m_specularIntensity);
+	shader.SetFloat("material.shininess", m_shininess);
+	//glUniform1f(specularIntensityLocation, specularIntensity);
+	//glUniform1f(shininessLocation, shininess);
 }
 
 Material::~Material()

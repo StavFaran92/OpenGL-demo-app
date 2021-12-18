@@ -1,10 +1,9 @@
 #pragma once
 #include "Light.h"
-class PointLight :
-	public Light
+
+class PointLight : public Light
 {
 public:
-	//Default constructor
 	PointLight() :
 		Light(), position(0.0f, 0.0f, 0.0f), constant(1), linear(0), exponent(0)
 	{}
@@ -15,8 +14,7 @@ public:
 		position(xPos, yPos, zPos), constant(constant), linear(linear), exponent(exponent)
 	{}
 
-	void useLight(GLfloat ambientIntensityLocation, GLfloat ambientColorLocation, GLfloat diffuseIntensityLocation,
-		GLfloat positionLocation, GLfloat constantLocation, GLfloat linearLocation, GLfloat exponentLocation);
+	void useLight(Shader& shader);
 
 private:
 	glm::vec3 position;

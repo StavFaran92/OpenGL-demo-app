@@ -3,19 +3,21 @@
 #include <glm/glm.hpp>
 #include <GL/glew.h>
 
+#include "../Shader/Shader.h"
+
 class Light
 {
 public:
 	Light();
 	Light( GLfloat red, GLfloat green, GLfloat blue, GLfloat aIntensity, GLfloat dIntensity);
 
-	void useLight( GLfloat ambientIntensityLocation, GLfloat ambientColorLocation, GLfloat diffuseIntensityLocation);
+	void useLight(Shader& shader);
 
 	~Light();
 
 protected:
-	glm::vec3 color;
-	GLfloat ambientIntensity;
-	GLfloat diffuseIntensity;
+	glm::vec3 m_color;
+	GLfloat m_ambientIntensity;
+	GLfloat m_diffuseIntensity;
 };
 

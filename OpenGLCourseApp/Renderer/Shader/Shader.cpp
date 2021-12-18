@@ -1,5 +1,4 @@
 #include "Shader.h"
-#include <stdexcept>
 
 
 Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath):
@@ -53,6 +52,7 @@ bool Shader::ValidateRenderer()
 		fprintf(stderr, "Error creating program\n");
 		return false;
 	}
+	return true;
 }
 
 bool Shader::ValidateProgramLink()
@@ -93,11 +93,6 @@ void Shader::ClearShader()
 	}
 }
 
-void Shader::SetUniform4f(const std::string & name, float v0, float v1, float v2, float v3)
-{
-	glUniform4f(GetUniformLocation(name), v0, v1, v2, v3);
-}
-
 GLuint Shader::AddShader(const std::string& shaderCode, GLenum shaderType)
 {
 	GLuint shader = glCreateShader(shaderType);
@@ -136,12 +131,48 @@ int Shader::GetUniformLocation(const std::string & name)
 	int location = glGetUniformLocation(m_id, name.c_str());
 
 	if (location == -1) {
-		printf("Warning: uniform %s doesn't exists!", name.c_str());
+		fprintf(stderr, "Warning: uniform %s doesn't exists!", name.c_str());
+		return -1;
 	}
 
 	mUniformLocationCache[name] = location;
 
 	return location;
+}
+
+void Shader::SetFloat(const std::string& name, float v)
+{
+	glUniform1f(GetUniformLocation(name), v);
+}
+
+void Shader::SetFloat(const std::string& name, glm::vec2 v)
+{
+	glUniform2f(GetUniformLocation(name), v.x, v.y);
+}
+
+void Shader::SetFloat(const std::string& name, glm::vec3 v)
+{
+	glUniform3f(GetUniformLocation(name), v.x, v.y, v.z);
+}
+
+void Shader::SetFloat(const std::string& name, glm::vec4 v)
+{
+	glUniform4f(GetUniformLocation(name), v.x, v.y, v.z, v.w);
+}
+
+void Shader::SetInt(const std::string& name, int v)
+{
+	glUniform1i(GetUniformLocation(name), v);
+}
+
+void Shader::SetMat3(const std::string& name, const glm::mat3& v)
+{
+	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(v));
+}
+
+void Shader::SetMat4(const std::string& name, const glm::mat4& v)
+{
+	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(v));
 }
 
 Shader::~Shader() {
