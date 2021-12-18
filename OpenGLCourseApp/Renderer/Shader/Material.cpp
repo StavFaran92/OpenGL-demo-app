@@ -14,8 +14,6 @@ void Material::UseMaterial(Shader& shader)
 {
 	shader.SetFloat("material.specularIntensity", m_specularIntensity);
 	shader.SetFloat("material.shininess", m_shininess);
-	//glUniform1f(specularIntensityLocation, specularIntensity);
-	//glUniform1f(shininessLocation, shininess);
 }
 
 Material::~Material()

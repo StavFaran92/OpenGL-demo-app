@@ -30,7 +30,6 @@ void handleKeys(unsigned char key, int x, int y);
 const float toRadians = 3.1315265f / 180;
 
 std::vector<Mesh*> meshList;
-//std::vector<Shader*> shaderList;
 
 Texture brickTexture;
 Texture dirtTexture;
@@ -79,7 +78,6 @@ int main(int argc, char* argv[])
 	Renderer renderer;
 
 	Shader shader("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
-	//shaderList.push_back(&shader);
 
 	CreateObject(shader, renderer);
 
@@ -99,11 +97,12 @@ int main(int argc, char* argv[])
 
 	glm::mat4 projection = glm::perspective(45.0f, (float)mainWindow.getWidth() / mainWindow.getHeight(), 0.1f, 100.0f);
 
-	bool show_demo_window = true;
-    bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	glm::vec3 translation(0.0f, 0.0f, -2.5f);
+
+	glm::mat4 model(1.0f);
+	model = glm::translate(model, translation);
 
 	//Main loop flag
 	bool quit = false;
@@ -132,12 +131,7 @@ int main(int argc, char* argv[])
 		shader.UseShader();
 
 		mainLight.useLight(shader);
-
-
-		glm::mat4 model(1.0f);
-		model = glm::translate(model, translation);
-		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1));
-		model = glm::rotate(model, curAngle * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		shinyMaterial.UseMaterial(shader);
 
 		shader.SetMat4("model", model);
 		shader.SetMat4("projection", projection);
@@ -145,7 +139,6 @@ int main(int argc, char* argv[])
 		shader.SetFloat("eyePosition", camera.getCameraPosition());
 
 		brickTexture.Bind();
-		shinyMaterial.UseMaterial(shader);
 
 		meshList[0]->RenderMesh();
 
