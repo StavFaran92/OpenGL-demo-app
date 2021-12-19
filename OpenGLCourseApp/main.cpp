@@ -51,19 +51,19 @@ void CreateObject(const Shader& shader, const Renderer& renderer)
 		0, 1, 2
 	};
 
+	//{0.0f, -1.0f, 1.0f}, { 0.5f, 0.0f }, { 0.0f, 0.0f, 0.0f },
+	//{ 1.0f, -1.0f, 0.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 0.0f },
+	//{ 0.0f, 1.0f, 0.0f }, { 0.5f, 1.0f }, { 0.0f, 0.0f, 0.0f }
 	
-	GLfloat vertices[] = {
+	Vertex vertices[] = {
 	//	x		y		z		u	  v  		nx,	  ny,   nz
-		-1.0f, -1.0f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, -1.0f, 1.0f,		0.5f, 0.0f,		0.0f, 0.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,		0.5f, 1.0f,		0.0f, 0.0f, 0.0f
+		glm::vec3{-1.0f, -1.0f, 0.0f},		{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}
+
 	};
 
-	calcAverageNormal(indices, 12, vertices, 32, 8, 5);
+	calcAverageNormal(indices, sizeof(indices) / sizeof(unsigned int), vertices, sizeof(vertices) / sizeof(unsigned int), 8, 5);
 
-	Mesh *obj = new Mesh(shader, renderer);
-	obj->CreateMesh(vertices, indices, 32, 12);
+	Mesh *obj = new Mesh(vertices, 32, indices, 12, (Texture*)0, 0);
 	meshList.push_back(obj);
 }
 
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 
 	CreateObject(shader, renderer);
 
-	Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 5.0f, .5f);
+	Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), -90.0f, 0.0f, 1.0f, .5f);
 
 	shinyMaterial = Material(1.0f, 32);
 	dullMaterial = Material(.3f, 4);
@@ -132,14 +132,14 @@ int main(int argc, char* argv[])
 
 		shader.SetMat4("model", model);
 		shader.SetMat4("projection", projection);
-		shader.SetMat4("view", camera.calculateViewMatrix());
-		shader.SetFloat("eyePosition", camera.getCameraPosition());
+		shader.SetMat4("view", camera.getView());
+		shader.SetFloat("eyePosition", camera.getPosition());
 
 		brickTexture.Bind();
 
-		meshList[0]->RenderMesh();
+		meshList[0]->RenderMesh(shader, renderer);
 
-		camera.keyControl(deltaTime);
+		camera.update(deltaTime);
 
 		mainWindow.SwapBuffer();
 	}
@@ -166,10 +166,6 @@ void handleEvents(SDL_Event& e, bool& quit, Camera& camera, double deltaTime)
 		{
 			camera.mouseControl(e.motion.xrel, e.motion.yrel);
 
-		}
-		if (e.type == SDL_KEYDOWN)
-		{
-			
 		}
 	}
 }

@@ -1,15 +1,13 @@
 #include "Mesh.h"
 
-Mesh::Mesh() {}
-
-Mesh::Mesh(const Shader &m_shader, const Renderer &m_renderer):
-	m_shader(&m_shader), m_renderer(&m_renderer) {}
-
-void Mesh::CreateMesh(GLfloat *vertices, unsigned int *indices, unsigned int numOfVertices, unsigned int numOfIndices)
+Mesh::Mesh(Vertex* vertices, int numOfVertices,
+	unsigned int* indices, int numOfIndices,
+	Texture* textures, int numOfTextures) :
+	m_vertices(vertices), m_indices(indices), m_textures(textures)
 {
 	m_vao = std::make_shared<VertexArrayObjectWrapper>();
-	m_ibo = std::make_shared <ElementBufferObjectWrapper>(indices, numOfIndices);
-	m_vbo = std::make_shared <VertexBufferObjectWrapper>(vertices, sizeof(vertices[0]) * numOfVertices);
+	m_ibo = std::make_shared<ElementBufferObjectWrapper>(m_indices, numOfIndices);
+	m_vbo = std::make_shared<VertexBufferObjectWrapper>(vertices, sizeof(vertices[0]) * numOfVertices);
 
 	VertexBufferLayout layout;
 	layout.Push<float>(3);
@@ -18,9 +16,14 @@ void Mesh::CreateMesh(GLfloat *vertices, unsigned int *indices, unsigned int num
 	m_vao->AttachBuffer(*m_vbo, *m_ibo, layout);
 }
 
-void Mesh::RenderMesh() 
+//void Mesh::CreateMesh()
+//{
+//
+//}
+
+void Mesh::RenderMesh(const Shader& shader, const Renderer& renderer)
 {
-	m_renderer->Draw(*m_vao, *m_shader);
+	renderer.Draw(*m_vao, shader);
 }
 void Mesh::ClearMesh() 
 {
