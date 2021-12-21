@@ -44,27 +44,27 @@ float curAngle = 0;
 
 void CreateObject(const Shader& shader, const Renderer& renderer)
 {
-	unsigned int indices[] = {
-		0, 3, 1,
-		1, 3, 2,
-		2, 3, 0,
-		0, 1, 2
-	};
+	//unsigned int indices[] = {
+	//	0, 3, 1,
+	//	1, 3, 2,
+	//	2, 3, 0,
+	//	0, 1, 2
+	//};
 
 	//{0.0f, -1.0f, 1.0f}, { 0.5f, 0.0f }, { 0.0f, 0.0f, 0.0f },
 	//{ 1.0f, -1.0f, 0.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 0.0f },
 	//{ 0.0f, 1.0f, 0.0f }, { 0.5f, 1.0f }, { 0.0f, 0.0f, 0.0f }
 	
-	Vertex vertices[] = {
-	//	x		y		z		u	  v  		nx,	  ny,   nz
-		glm::vec3{-1.0f, -1.0f, 0.0f},		{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}
+	//Vertex vertices[] = {
+	////	x		y		z		u	  v  		nx,	  ny,   nz
+	//	glm::vec3{-1.0f, -1.0f, 0.0f},		{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}
 
-	};
+	//};
 
-	calcAverageNormal(indices, sizeof(indices) / sizeof(unsigned int), vertices, sizeof(vertices) / sizeof(unsigned int), 8, 5);
+	//calcAverageNormal(indices, sizeof(indices) / sizeof(unsigned int), vertices, sizeof(vertices) / sizeof(unsigned int), 8, 5);
 
-	Mesh *obj = new Mesh(vertices, 32, indices, 12, (Texture*)0, 0);
-	meshList.push_back(obj);
+	//Mesh *obj = new Mesh(vertices, 32, indices, 12, (Texture*)0, 0);
+	//meshList.push_back(obj);
 }
 
 int main(int argc, char* argv[])
