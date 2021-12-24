@@ -11,7 +11,7 @@ void Model::Draw(Shader& shader, const Renderer& renderer)
 void Model::loadModel(std::string path)
 {
     Assimp::Importer import;
-    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
@@ -54,11 +54,14 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         pos.z = mesh->mVertices[i].z;
         vertex.Position = pos;
 
-        glm::vec3 normal;
-        normal.x = mesh->mNormals[i].x;
-        normal.y = mesh->mNormals[i].y;
-        normal.z = mesh->mNormals[i].z;
-        vertex.Normal = normal;
+        if (mesh->HasNormals())
+        {
+            glm::vec3 normal;
+            normal.x = mesh->mNormals[i].x;
+            normal.y = mesh->mNormals[i].y;
+            normal.z = mesh->mNormals[i].z;
+            vertex.Normal = normal;
+        }
 
         if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
         {

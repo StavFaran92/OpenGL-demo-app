@@ -61,6 +61,6 @@ void Texture::ClearTexture()
 
 Texture::~Texture() 
 {
-	std::cout << "Texture "+std::to_string(m_id)+ " destructor was called" << std::endl;
+	std::cout << __FUNCTION__ << std::endl;
 	//ClearTexture();
 }

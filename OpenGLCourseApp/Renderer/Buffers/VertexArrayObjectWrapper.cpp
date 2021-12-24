@@ -1,12 +1,16 @@
 #include "VertexArrayObjectWrapper.h"
 
+
+
 VertexArrayObjectWrapper::VertexArrayObjectWrapper()
 {
 	glGenVertexArrays(1, &m_id);
+	glBindVertexArray(m_id);
 }
 
 VertexArrayObjectWrapper::~VertexArrayObjectWrapper()
 {
+	std::cout << __FUNCTION__ << std::endl;
 	glDeleteVertexArrays(1, &m_id);
 }
 

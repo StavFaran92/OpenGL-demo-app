@@ -33,9 +33,9 @@ void Mesh::RenderMesh(Shader& shader, const Renderer& renderer)
         shader.SetInt((name + number).c_str(), i);
         glBindTexture(GL_TEXTURE_2D, m_textures[i].GetID());
     }
-    glActiveTexture(GL_TEXTURE0);
 
 	renderer.Draw(*m_vao, shader);
+    glActiveTexture(GL_TEXTURE0);
 }
 void Mesh::ClearMesh() 
 {
@@ -46,6 +46,6 @@ void Mesh::ClearMesh()
 
 Mesh::~Mesh() 
 {
-    std::cout << "Mesh destructor was called" << std::endl;
+    std::cout << __FUNCTION__ << std::endl;
 	//ClearMesh();
 }

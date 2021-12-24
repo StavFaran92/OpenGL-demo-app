@@ -11,6 +11,7 @@ VertexBufferObjectWrapper::VertexBufferObjectWrapper(const void * data, unsigned
 
 VertexBufferObjectWrapper::~VertexBufferObjectWrapper()
 {
+	std::cout << __FUNCTION__ << std::endl;
 	glDeleteBuffers(1, &m_id);
 }
 
