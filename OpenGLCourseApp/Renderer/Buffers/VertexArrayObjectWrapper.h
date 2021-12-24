@@ -11,7 +11,7 @@ public:
 	VertexArrayObjectWrapper();
 	~VertexArrayObjectWrapper();
 
-	void AttachBuffer(const VertexBufferObjectWrapper& vbo, const ElementBufferObjectWrapper& ebo, const VertexBufferLayout& layout);
+	void AttachBuffer(const VertexBufferObjectWrapper& vbo, const ElementBufferObjectWrapper& ebo);
 
 	void Bind() const;
 	void Unbind() const;

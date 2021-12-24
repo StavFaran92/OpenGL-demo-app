@@ -59,6 +59,7 @@
       <PreprocessorDefinitions>STB_IMAGE_IMPLEMENTATION;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)Vendor\assimp\include;$(ProjectDir);$(SDL2)\include;$(SolutionDir)include/GLM/;$(glew)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -74,13 +75,14 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>STB_IMAGE_IMPLEMENTATION;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)Vendor\assimp\include;$(ProjectDir);$(SDL2)\include;$(SolutionDir)include/GLM/;$(glew)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -97,6 +99,7 @@
     <ClCompile Include="IO\Input.cpp" />
     <ClCompile Include="IO\Keyboard.cpp" />
     <ClCompile Include="IO\Mouse.cpp" />
+    <ClCompile Include="Renderer\Geometry\Model.cpp" />
     <ClCompile Include="Renderer\Camera\Camera.cpp" />
     <ClCompile Include="Renderer\Lighting\DirectionalLight.cpp" />
     <ClCompile Include="Renderer\Buffers\ElementBufferObjectWrapper.cpp" />
@@ -120,6 +123,7 @@
     <ClInclude Include="IO\Keyboard.h" />
     <ClInclude Include="IO\Mouse.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="Renderer\Geometry\Model.h" />
     <ClInclude Include="Renderer\Buffers\VertexBufferElement.h" />
     <ClInclude Include="Renderer\Camera\Camera.h" />
     <ClInclude Include="Renderer\Lighting\DirectionalLight.h" />

@@ -21,15 +21,10 @@ struct Material
 	float shininess;
 };
 
-
+uniform sampler2D myTexture;
 uniform DirectionalLight directionalLight;
 uniform Material material;
-
 uniform sampler2D texture_diffuse1;
-uniform sampler2D texture_diffuse2;
-uniform sampler2D texture_diffuse3;
-uniform sampler2D texture_specular1;
-uniform sampler2D texture_specular2;
 
 uniform vec3 eyePosition;
 
@@ -54,6 +49,6 @@ void main()
 			specularColor = vec4(directionalLight.color * material.specularIntensity * specularFactor, 1.0f);
 		}
 	}
-	vec4 ccc = texture(texture_specular1, texCoord) ;
-	colour = texture(texture_diffuse1, texCoord) * (ambientColor + diffuseColor + specularColor);
+
+	colour = texture(myTexture, texCoord) * (ambientColor + diffuseColor + specularColor);
 }

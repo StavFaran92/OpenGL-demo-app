@@ -2,7 +2,7 @@
 class ElementBufferObjectWrapper
 {
 public:
-	ElementBufferObjectWrapper(const unsigned int * data, unsigned int length);
+	ElementBufferObjectWrapper( unsigned int * data, unsigned int length);
 	~ElementBufferObjectWrapper();
 
 	void Bind() const;

@@ -10,7 +10,7 @@ VertexArrayObjectWrapper::~VertexArrayObjectWrapper()
 	glDeleteVertexArrays(1, &m_id);
 }
 
-void VertexArrayObjectWrapper::AttachBuffer(const VertexBufferObjectWrapper& vbo, const ElementBufferObjectWrapper& ebo, const VertexBufferLayout & layout)
+void VertexArrayObjectWrapper::AttachBuffer(const VertexBufferObjectWrapper& vbo, const ElementBufferObjectWrapper& ebo)
 {
 	// Bind this VAO
 	Bind();
@@ -22,17 +22,15 @@ void VertexArrayObjectWrapper::AttachBuffer(const VertexBufferObjectWrapper& vbo
 	ebo.Bind();
 	m_indexCount = ebo.getLength();
 
-	// Set vertex attribute pointers
-	const auto& elements = layout.GetElements();
-	unsigned int offset = 0;
-	for (int i = 0; i < elements.size(); i++)
-	{
-		const auto& element = elements[i];
-		glVertexAttribPointer(i, element.count, element.type, element.normalized, layout.GetStride(), (const void*)offset);
-		glEnableVertexAttribArray(i);
-		offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
-	}
-	
+	// vertex positions
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+	// vertex normals
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+	// vertex texture coords
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
 }
 
 void VertexArrayObjectWrapper::Bind() const

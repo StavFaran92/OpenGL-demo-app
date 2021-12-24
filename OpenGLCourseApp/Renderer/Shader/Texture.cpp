@@ -1,8 +1,8 @@
 #include "Texture.h"
 #include "Vendor/stb_image/stb_image.h"
 
-Texture::Texture(const std::string& fileLocation, int slot)
-	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_fileLocation(fileLocation), m_slot(slot)
+Texture::Texture(const std::string& fileLocation, std::string typeName, int slot)
+	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_fileLocation(fileLocation), m_slot(slot), m_type(typeName)
 {
 
 }
@@ -25,6 +25,14 @@ void Texture::LoadTexture()
 	glGenTextures(1, &m_id);
 	glBindTexture(GL_TEXTURE_2D, m_id);
 
+	GLenum format = GL_RGB;
+	if (m_bitDepth == 1)
+		format = GL_RED;
+	else if (m_bitDepth == 3)
+		format = GL_RGB;
+	else if (m_bitDepth == 4)
+		format = GL_RGBA;
+
 	// sets the texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -32,7 +40,7 @@ void Texture::LoadTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// generate texture and mipmaps
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, format, m_width, m_height, 0, format, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	// unbind texture and release the image.
@@ -53,5 +61,6 @@ void Texture::ClearTexture()
 
 Texture::~Texture() 
 {
-	ClearTexture();
+	std::cout << "Texture "+std::to_string(m_id)+ " destructor was called" << std::endl;
+	//ClearTexture();
 }

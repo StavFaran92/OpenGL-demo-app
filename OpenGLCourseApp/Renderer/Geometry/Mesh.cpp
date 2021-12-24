@@ -1,19 +1,13 @@
 #include "Mesh.h"
 
-Mesh::Mesh(Vertex* vertices, int numOfVertices,
-	unsigned int* indices, int numOfIndices,
-	Texture* textures, int numOfTextures) :
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) :
 	m_vertices(vertices), m_indices(indices), m_textures(textures)
 {
 	m_vao = std::make_shared<VertexArrayObjectWrapper>();
-	m_ibo = std::make_shared<ElementBufferObjectWrapper>(m_indices, numOfIndices);
-	m_vbo = std::make_shared<VertexBufferObjectWrapper>(vertices, sizeof(vertices[0]) * numOfVertices);
+	m_ibo = std::make_shared<ElementBufferObjectWrapper>(&m_indices[0], indices.size());
+	m_vbo = std::make_shared<VertexBufferObjectWrapper>(&vertices[0], vertices.size());
 
-	VertexBufferLayout layout;
-	layout.Push<float>(3);
-	layout.Push<float>(2);
-	layout.Push<float>(3);
-	m_vao->AttachBuffer(*m_vbo, *m_ibo, layout);
+	m_vao->AttachBuffer(*m_vbo, *m_ibo);
 }
 
 //void Mesh::CreateMesh()
@@ -21,8 +15,26 @@ Mesh::Mesh(Vertex* vertices, int numOfVertices,
 //
 //}
 
-void Mesh::RenderMesh(const Shader& shader, const Renderer& renderer)
+void Mesh::RenderMesh(Shader& shader, const Renderer& renderer)
 {
+    unsigned int diffuseNr = 1;
+    unsigned int specularNr = 1;
+    for (unsigned int i = 0; i < m_textures.size(); i++)
+    {
+        glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
+        // retrieve texture number (the N in diffuse_textureN)
+        std::string number;
+        std::string name = m_textures[i].GetType();
+        if (name == "texture_diffuse")
+            number = std::to_string(diffuseNr++);
+        else if (name == "texture_specular")
+            number = std::to_string(specularNr++);
+
+        shader.SetInt((name + number).c_str(), i);
+        glBindTexture(GL_TEXTURE_2D, m_textures[i].GetID());
+    }
+    glActiveTexture(GL_TEXTURE0);
+
 	renderer.Draw(*m_vao, shader);
 }
 void Mesh::ClearMesh() 
@@ -32,7 +44,8 @@ void Mesh::ClearMesh()
 	m_vbo = nullptr;
 }
 
-Mesh::~Mesh() {
-
-	ClearMesh();
+Mesh::~Mesh() 
+{
+    std::cout << "Mesh destructor was called" << std::endl;
+	//ClearMesh();
 }

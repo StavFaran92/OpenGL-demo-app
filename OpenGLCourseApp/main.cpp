@@ -2,6 +2,7 @@
 #include <string.h>
 #include <cmath>
 #include <vector>
+#include <filesystem>
 
 #include <GL/glew.h>
 
@@ -24,6 +25,8 @@
 #include "Tests/TestMenu.h"
 #include "Tests/TestClearColor.h"
 #include "main.h"
+
+#include "Renderer/Geometry/Model.h"
 
 void handleKeys(unsigned char key, int x, int y);
 
@@ -83,10 +86,10 @@ int main(int argc, char* argv[])
 	shinyMaterial = Material(1.0f, 32);
 	dullMaterial = Material(.3f, 4);
 
-	Texture brickTexture("Resources\\Textures\\brick.png");
-	brickTexture.LoadTexture();
-	Texture dirtTexture("Resources\\Textures\\dirt.png");
-	dirtTexture.LoadTexture();
+	//Texture brickTexture("D:\\program files\\downloads\\backpack\\diffuse.jpg");
+	//brickTexture.LoadTexture();
+	//Texture dirtTexture("Resources\\Textures\\dirt.png");
+	//dirtTexture.LoadTexture();
 
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
 		0.3f, 2.0f, 
@@ -100,6 +103,9 @@ int main(int argc, char* argv[])
 
 	glm::mat4 model(1.0f);
 	model = glm::translate(model, translation);
+
+	Model backpack("D:\\program files\\downloads\\backpack\\backpack.obj");
+	//Model backpack("D:\\program files\\downloads\\cube-companion\\source\\model\\model.dae");
 
 	//Main loop flag
 	bool quit = false;
@@ -135,9 +141,11 @@ int main(int argc, char* argv[])
 		shader.SetMat4("view", camera.getView());
 		shader.SetFloat("eyePosition", camera.getPosition());
 
-		brickTexture.Bind();
+		//brickTexture.Bind();
 
-		meshList[0]->RenderMesh(shader, renderer);
+		//meshList[0]->RenderMesh(shader, renderer);
+
+		backpack.Draw(shader, renderer);
 
 		camera.update(deltaTime);
 
