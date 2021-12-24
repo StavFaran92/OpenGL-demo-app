@@ -2,23 +2,27 @@
 
 void Model::Draw(Shader& shader, const Renderer& renderer)
 {
-    for (unsigned int i = 0; i < meshes.size(); i++)
+    for (unsigned int i = 0; i < m_meshes.size(); i++)
     {
-        meshes[i].RenderMesh(shader, renderer);
+        m_meshes[i].RenderMesh(shader, renderer);
     }
 }
 
-void Model::loadModel(std::string path)
+void Model::loadModel(const std::string& path)
 {
-    Assimp::Importer import;
-    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(path, 
+        aiProcess_Triangulate | 
+        aiProcess_GenSmoothNormals | 
+        aiProcess_FlipUVs | 
+        aiProcess_CalcTangentSpace);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
-        std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+        std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
         return;
     }
-    directory = path.substr(0, path.find_last_of('\\'));
+    m_modelDir = path.substr(0, path.find_last_of('\\'));
 
     processNode(scene->mRootNode, scene);
 }
@@ -29,7 +33,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.push_back(processMesh(mesh, scene));
+        m_meshes.push_back(processMesh(mesh, scene));
     }
     // then do the same for each of its children
     for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -48,11 +52,14 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     {
         Vertex vertex;
         // process vertex positions, normals and texture coordinates
-        glm::vec3 pos;
-        pos.x = mesh->mVertices[i].x;
-        pos.y = mesh->mVertices[i].y;
-        pos.z = mesh->mVertices[i].z;
-        vertex.Position = pos;
+        if (mesh->HasPositions())
+        {
+            glm::vec3 pos;
+            pos.x = mesh->mVertices[i].x;
+            pos.y = mesh->mVertices[i].y;
+            pos.z = mesh->mVertices[i].z;
+            vertex.Position = pos;
+        }
 
         if (mesh->HasNormals())
         {
@@ -86,18 +93,20 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     if (mesh->mMaterialIndex >= 0)
     {
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-        std::vector<Texture> diffuseMaps = loadMaterialTextures(material,
-            aiTextureType_DIFFUSE, "texture_diffuse");
+
+        std::vector<Texture> diffuseMaps = loadMaterialTextures(material, 
+            aiTextureType_DIFFUSE, Constants::g_textureDiffuse);
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+
         std::vector<Texture> specularMaps = loadMaterialTextures(material,
-            aiTextureType_SPECULAR, "texture_specular");
+            aiTextureType_SPECULAR, Constants::g_textureSpecular);
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
 
     return Mesh(vertices, indices, textures);
 }
 
-std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
+std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName)
 {
     std::vector<Texture> textures;
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
@@ -105,21 +114,21 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
         aiString str;
         mat->GetTexture(type, i, &str);
         bool skip = false;
-        for (unsigned int j = 0; j < textures_loaded.size(); j++)
+        for (unsigned int j = 0; j < m_texturesCache.size(); j++)
         {
-            if (textures_loaded[j].GetPath().compare(directory + "\\" + str.C_Str()) == 0)
+            if (m_texturesCache[j].GetPath().compare(m_modelDir + "\\" + str.C_Str()) == 0)
             {
-                textures.push_back(textures_loaded[j]);
+                textures.push_back(m_texturesCache[j]);
                 skip = true;
                 break;
             }
         }
         if (!skip)
         {
-            Texture texture(directory + "\\" + str.C_Str(), typeName);
+            Texture texture(m_modelDir + "\\" + str.C_Str(), typeName);
             texture.LoadTexture();
             textures.push_back(texture);
-            textures_loaded.push_back(texture);
+            m_texturesCache.push_back(texture);
         }
     }
     return textures;

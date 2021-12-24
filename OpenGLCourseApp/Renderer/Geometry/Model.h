@@ -9,6 +9,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "ApplicationConstants.h"
 
 class Model
 {
@@ -19,14 +20,13 @@ public:
     }
     void Draw(Shader& shader, const Renderer& renderer);
 private:
-    void loadModel(const std::string path);
+    void loadModel(const std::string& path);
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-    std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type,
-        std::string typeName);
+    std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName);
 private:
     // model data
-    std::vector<Mesh> meshes;
-    std::string directory;
-    std::vector<Texture> textures_loaded;
+    std::vector<Mesh> m_meshes;
+    std::string m_modelDir;
+    std::vector<Texture> m_texturesCache;
 };

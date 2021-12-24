@@ -125,8 +125,8 @@ bool Shader::validateCompilation(const GLuint& shader, const GLenum& shaderType)
 
 int Shader::GetUniformLocation(const std::string & name)
 {
-	if (mUniformLocationCache.find(name) != mUniformLocationCache.end())
-		return mUniformLocationCache[name];
+	if (m_uniformLocationCache.find(name) != m_uniformLocationCache.end())
+		return m_uniformLocationCache[name];
 
 	int location = glGetUniformLocation(m_id, name.c_str());
 
@@ -135,7 +135,7 @@ int Shader::GetUniformLocation(const std::string & name)
 		return -1;
 	}
 
-	mUniformLocationCache[name] = location;
+	m_uniformLocationCache[name] = location;
 
 	return location;
 }

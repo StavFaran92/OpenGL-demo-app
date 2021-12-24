@@ -52,7 +52,7 @@ private:
 	bool validateCompilation(const GLuint& theShader, const GLenum& shaderType);
 private:
 	GLuint m_id;
-	std::unordered_map<std::string, int> mUniformLocationCache;
+	std::unordered_map<std::string, int> m_uniformLocationCache;
 
 	
 };
