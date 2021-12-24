@@ -18,7 +18,7 @@
 class Mesh
 {  
 public:
-	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+	Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices, std::vector<std::shared_ptr<Texture>> textures);
 	
 	void RenderMesh(Shader& shader, const Renderer& renderer);
 
@@ -27,9 +27,9 @@ private:
 	void ClearMesh();
 private:
 	// mesh data
-	std::vector<Vertex>       m_vertices;
-	std::vector<unsigned int> m_indices;
-	std::vector<Texture>      m_textures;
+	std::shared_ptr<std::vector<Vertex>>       m_vertices;
+	std::shared_ptr<std::vector<unsigned int>> m_indices;
+	std::vector<std::shared_ptr<Texture>>      m_textures;
 
 	// render data
 	std::shared_ptr<ElementBufferObjectWrapper>  m_ibo;

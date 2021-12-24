@@ -1,11 +1,13 @@
 #include "Mesh.h"
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) :
+Mesh::Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices, std::vector<std::shared_ptr<Texture>> textures) :
 	m_vertices(vertices), m_indices(indices), m_textures(textures)
 {
+    std::cout << __FUNCTION__ << std::endl;
+
 	m_vao = std::make_shared<VertexArrayObjectWrapper>();
-	m_ibo = std::make_shared<ElementBufferObjectWrapper>(&m_indices[0], indices.size());
-	m_vbo = std::make_shared<VertexBufferObjectWrapper>(&vertices[0], vertices.size());
+	m_ibo = std::make_shared<ElementBufferObjectWrapper>(&(m_indices->at(0)), indices->size());
+	m_vbo = std::make_shared<VertexBufferObjectWrapper>(&(vertices->at(0)), vertices->size());
 
 	m_vao->AttachBuffer(*m_vbo, *m_ibo);
 }
@@ -24,14 +26,14 @@ void Mesh::RenderMesh(Shader& shader, const Renderer& renderer)
         glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
         // retrieve texture number (the N in diffuse_textureN)
         std::string number;
-        std::string name = m_textures[i].GetType();
+        std::string name = m_textures[i]->GetType();
         if (name == "texture_diffuse")
             number = std::to_string(diffuseNr++);
         else if (name == "texture_specular")
             number = std::to_string(specularNr++);
 
         shader.SetInt((name + number).c_str(), i);
-        glBindTexture(GL_TEXTURE_2D, m_textures[i].GetID());
+        glBindTexture(GL_TEXTURE_2D, m_textures[i]->GetID());
     }
 
 	renderer.Draw(*m_vao, shader);
@@ -47,5 +49,5 @@ void Mesh::ClearMesh()
 Mesh::~Mesh() 
 {
     std::cout << __FUNCTION__ << std::endl;
-	//ClearMesh();
+	ClearMesh();
 }

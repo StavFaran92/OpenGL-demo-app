@@ -4,6 +4,7 @@
 Texture::Texture(const std::string& fileLocation, std::string typeName, int slot)
 	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_fileLocation(fileLocation), m_slot(slot), m_type(typeName)
 {
+	std::cout << __FUNCTION__ << std::endl;
 
 }
 
@@ -62,5 +63,5 @@ void Texture::ClearTexture()
 Texture::~Texture() 
 {
 	std::cout << __FUNCTION__ << std::endl;
-	//ClearTexture();
+	ClearTexture();
 }

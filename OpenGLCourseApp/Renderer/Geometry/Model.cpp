@@ -4,7 +4,7 @@ void Model::Draw(Shader& shader, const Renderer& renderer)
 {
     for (unsigned int i = 0; i < m_meshes.size(); i++)
     {
-        m_meshes[i].RenderMesh(shader, renderer);
+        m_meshes[i]->RenderMesh(shader, renderer);
     }
 }
 
@@ -42,11 +42,11 @@ void Model::processNode(aiNode* node, const aiScene* scene)
     }
 }
 
-Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
+std::shared_ptr<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
-    std::vector<Vertex> vertices;
-    std::vector<unsigned int> indices;
-    std::vector<Texture> textures;
+    auto vertices = std::make_shared<std::vector<Vertex>>();
+    auto indices = std::make_shared<std::vector<unsigned int>>();
+    std::vector<std::shared_ptr<Texture>> textures;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
@@ -80,35 +80,35 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         else
             vertex.TexCoords = glm::vec2(0.0f, 0.0f);
 
-        vertices.push_back(vertex);
+        vertices->push_back(vertex);
     }
     // process indices
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
         aiFace face = mesh->mFaces[i];
         for (unsigned int j = 0; j < face.mNumIndices; j++)
-            indices.push_back(face.mIndices[j]);
+            indices->push_back(face.mIndices[j]);
     }
     // process material
     if (mesh->mMaterialIndex >= 0)
     {
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-        std::vector<Texture> diffuseMaps = loadMaterialTextures(material, 
+        auto diffuseMaps = loadMaterialTextures(material, 
             aiTextureType_DIFFUSE, Constants::g_textureDiffuse);
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-        std::vector<Texture> specularMaps = loadMaterialTextures(material,
+        auto specularMaps = loadMaterialTextures(material,
             aiTextureType_SPECULAR, Constants::g_textureSpecular);
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
 
-    return Mesh(vertices, indices, textures);
+    return std::make_shared<Mesh>(vertices, indices, textures);
 }
 
-std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName)
+std::vector<std::shared_ptr<Texture>> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName)
 {
-    std::vector<Texture> textures;
+    std::vector<std::shared_ptr<Texture>> textures;
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
@@ -116,7 +116,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
         bool skip = false;
         for (unsigned int j = 0; j < m_texturesCache.size(); j++)
         {
-            if (m_texturesCache[j].GetPath().compare(m_modelDir + "\\" + str.C_Str()) == 0)
+            if (m_texturesCache[j]->GetPath().compare(m_modelDir + "\\" + str.C_Str()) == 0)
             {
                 textures.push_back(m_texturesCache[j]);
                 skip = true;
@@ -125,8 +125,8 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
         }
         if (!skip)
         {
-            Texture texture(m_modelDir + "\\" + str.C_Str(), typeName);
-            texture.LoadTexture();
+            std::shared_ptr<Texture> texture = std::make_shared<Texture>(m_modelDir + "\\" + str.C_Str(), typeName);
+            texture->LoadTexture();
             textures.push_back(texture);
             m_texturesCache.push_back(texture);
         }

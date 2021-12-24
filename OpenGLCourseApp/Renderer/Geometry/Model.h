@@ -16,17 +16,22 @@ class Model
 public:
     Model(const std::string path)
     {
+        std::cout << __FUNCTION__ << std::endl;
+
         loadModel(path);
+    }
+    ~Model() {
+        std::cout << __FUNCTION__ << std::endl;
     }
     void Draw(Shader& shader, const Renderer& renderer);
 private:
     void loadModel(const std::string& path);
     void processNode(aiNode* node, const aiScene* scene);
-    Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-    std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName);
+    std::shared_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene);
+    std::vector<std::shared_ptr<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName);
 private:
     // model data
-    std::vector<Mesh> m_meshes;
+    std::vector<std::shared_ptr<Mesh>> m_meshes;
     std::string m_modelDir;
-    std::vector<Texture> m_texturesCache;
+    std::vector<std::shared_ptr<Texture>> m_texturesCache;
 };
