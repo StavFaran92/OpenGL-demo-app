@@ -7,10 +7,10 @@ Texture::Texture(const std::string& fileLocation, std::string typeName, int slot
 
 }
 
-void Texture::LoadTexture()
+void Texture::LoadTexture(bool isFlipped)
 {
 	// flip the image
-	stbi_set_flip_vertically_on_load(true);
+	stbi_set_flip_vertically_on_load(isFlipped);
 
 	// load texture from file
 	unsigned char *data = stbi_load(m_fileLocation.c_str(), &m_width, &m_height, &m_bitDepth, 0);

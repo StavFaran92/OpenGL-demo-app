@@ -11,7 +11,7 @@ public:
 	Texture() = delete;
 	Texture(const std::string& fileLocation, std::string typeName = "", int slot = 0);
 
-	void LoadTexture();
+	void LoadTexture(bool isFlipped = false);
 	void Bind();
 	inline GLuint GetID() const { return m_id; }
 	inline std::string GetType() const { return m_type; }

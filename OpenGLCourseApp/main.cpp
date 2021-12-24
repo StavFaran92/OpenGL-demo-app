@@ -32,10 +32,7 @@ void handleKeys(unsigned char key, int x, int y);
 
 const float toRadians = 3.1315265f / 180;
 
-std::vector<Mesh*> meshList;
-
 DirectionalLight mainLight;
-
 
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
@@ -44,31 +41,6 @@ Material shinyMaterial;
 Material dullMaterial;
 
 float curAngle = 0;
-
-void CreateObject(const Shader& shader, const Renderer& renderer)
-{
-	//unsigned int indices[] = {
-	//	0, 3, 1,
-	//	1, 3, 2,
-	//	2, 3, 0,
-	//	0, 1, 2
-	//};
-
-	//{0.0f, -1.0f, 1.0f}, { 0.5f, 0.0f }, { 0.0f, 0.0f, 0.0f },
-	//{ 1.0f, -1.0f, 0.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 0.0f },
-	//{ 0.0f, 1.0f, 0.0f }, { 0.5f, 1.0f }, { 0.0f, 0.0f, 0.0f }
-	
-	//Vertex vertices[] = {
-	////	x		y		z		u	  v  		nx,	  ny,   nz
-	//	glm::vec3{-1.0f, -1.0f, 0.0f},		{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}
-
-	//};
-
-	//calcAverageNormal(indices, sizeof(indices) / sizeof(unsigned int), vertices, sizeof(vertices) / sizeof(unsigned int), 8, 5);
-
-	//Mesh *obj = new Mesh(vertices, 32, indices, 12, (Texture*)0, 0);
-	//meshList.push_back(obj);
-}
 
 int main(int argc, char* argv[])
 {
@@ -79,17 +51,10 @@ int main(int argc, char* argv[])
 
 	Shader shader("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
 
-	CreateObject(shader, renderer);
-
 	Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), -90.0f, 0.0f, 1.0f, .5f);
 
 	shinyMaterial = Material(1.0f, 32);
 	dullMaterial = Material(.3f, 4);
-
-	//Texture brickTexture("D:\\program files\\downloads\\backpack\\diffuse.jpg");
-	//brickTexture.LoadTexture();
-	//Texture dirtTexture("Resources\\Textures\\dirt.png");
-	//dirtTexture.LoadTexture();
 
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
 		0.3f, 2.0f, 
@@ -104,8 +69,7 @@ int main(int argc, char* argv[])
 	glm::mat4 model(1.0f);
 	model = glm::translate(model, translation);
 
-	Model backpack("D:\\program files\\downloads\\backpack\\backpack.obj");
-	//Model backpack("D:\\program files\\downloads\\cube-companion\\source\\model\\model.dae");
+	Model backpack("D:\\program files\\downloads\\source\\model.obj");
 
 	//Main loop flag
 	bool quit = false;
@@ -140,10 +104,6 @@ int main(int argc, char* argv[])
 		shader.SetMat4("projection", projection);
 		shader.SetMat4("view", camera.getView());
 		shader.SetFloat("eyePosition", camera.getPosition());
-
-		//brickTexture.Bind();
-
-		//meshList[0]->RenderMesh(shader, renderer);
 
 		backpack.Draw(shader, renderer);
 
