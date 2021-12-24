@@ -13,8 +13,8 @@ public:
 
 	void LoadTexture(bool isFlipped = false);
 	void Bind();
-	inline GLuint GetID() const { return m_id; }
-	inline std::string GetType() const { return m_type; }
+	inline const GLuint GetID() const { return m_id; }
+	inline const std::string GetType() const { return m_type; }
 	inline const std::string GetPath() const { return m_fileLocation; }
 	~Texture();
 private:

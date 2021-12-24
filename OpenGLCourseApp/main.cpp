@@ -70,6 +70,7 @@ int main(int argc, char* argv[])
 	model = glm::translate(model, translation);
 
 	Model backpack("D:\\program files\\downloads\\source\\model.obj");
+	backpack.loadModel();
 
 	//Main loop flag
 	bool quit = false;

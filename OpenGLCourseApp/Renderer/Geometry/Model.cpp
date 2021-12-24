@@ -2,16 +2,25 @@
 
 void Model::Draw(Shader& shader, const Renderer& renderer)
 {
+    //shader.SetMat4("model", )
+
     for (unsigned int i = 0; i < m_meshes.size(); i++)
     {
         m_meshes[i]->RenderMesh(shader, renderer);
     }
 }
 
-void Model::loadModel(const std::string& path)
+void Model::Update(float delta)
+{
+    //m_transform = glm::mat4();
+    //m_transform = glm::rotate(m_transform, m_rotation);
+    //m_transform = glm::translate(m_transform, m_translation);
+}
+
+void Model::loadModel()
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(path, 
+    const aiScene* scene = importer.ReadFile(m_path, 
         aiProcess_Triangulate | 
         aiProcess_GenSmoothNormals | 
         aiProcess_FlipUVs | 
@@ -22,7 +31,6 @@ void Model::loadModel(const std::string& path)
         std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
         return;
     }
-    m_modelDir = path.substr(0, path.find_last_of('\\'));
 
     processNode(scene->mRootNode, scene);
 }

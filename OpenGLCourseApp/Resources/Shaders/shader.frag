@@ -57,5 +57,5 @@ void main()
 		}
 	}
 	vec4 ccc = texture(texture_specular1, texCoord) ;
-	colour = texture(texture_diffuse1, texCoord) ;
+	colour = texture(texture_diffuse1, texCoord) * (ambientColor + diffuseColor + specularColor);
 }

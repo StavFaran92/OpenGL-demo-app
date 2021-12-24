@@ -111,6 +111,7 @@
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="Renderer\Shader\Shader.cpp" />
     <ClCompile Include="Renderer\Shader\Texture.cpp" />
+    <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Utils\IO\Utils.cpp" />
     <ClCompile Include="Renderer\Buffers\VertexArrayObjectWrapper.cpp" />
     <ClCompile Include="Renderer\Buffers\VertexBufferObjectWrapper.cpp" />
@@ -136,6 +137,7 @@
     <ClInclude Include="Renderer\Shader\Shader.h" />
     <ClInclude Include="Renderer\Shader\Texture.h" />
     <ClInclude Include="Resources\Primitives\cube_vertices.h" />
+    <ClInclude Include="Transform.h" />
     <ClInclude Include="Utils\IO\Utils.h" />
     <ClInclude Include="Renderer\Buffers\VertexArrayObjectWrapper.h" />
     <ClInclude Include="Renderer\Buffers\VertexBufferObjectWrapper.h" />
