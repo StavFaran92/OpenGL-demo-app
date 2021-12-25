@@ -107,21 +107,23 @@ int main(int argc, char* argv[])
 
 		modelShader.UseShader();
 
-		modelShader.SetFloat("lightColor", { 1.0f, 1.0f, 1.0f });
-		modelShader.SetFloat("lightPos", lightCube.GetTransformation()->GetPosition());
+		
 
 		modelShader.SetFloat("material.ambient", {1.0f, 0.5f, 0.31f});
 		modelShader.SetFloat("material.diffuse", {1.0f, 0.5f, 0.31f});
 		modelShader.SetFloat("material.specular",{ 0.5f, 0.5f, 0.5f});
 		modelShader.SetFloat("material.shininess", 32.0f);
 
+		modelShader.SetFloat("light.color", { 1.0f, 1.0f, 1.0f });
+		modelShader.SetFloat("light.position", lightCube.GetTransformation()->GetPosition());
+		modelShader.SetFloat("light.ambient", {0.2f, 0.2f, 0.2f});
+		modelShader.SetFloat("light.diffuse", {0.5f, 0.5f, 0.5f}); // darken diffuse light a bit
+		modelShader.SetFloat("light.specular", { 1.0f, 1.0f, 1.0f });
+
 		modelShader.SetFloat("viewPos", camera.getPosition());
-		//mainLight.useLight(modelShader);
-		//shinyMaterial.UseMaterial(modelShader);
 
 		modelShader.SetMat4("projection", projection);
 		modelShader.SetMat4("view", camera.getView());
-		//modelShader.SetFloat("eyePosition", camera.getPosition());
 
 		backpack.GetTransformation()->SetPosition({0,0,0});
 		backpack.Update(deltaTime);
