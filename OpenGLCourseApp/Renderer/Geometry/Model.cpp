@@ -2,7 +2,7 @@
 
 void Model::Draw(Shader& shader, const Renderer& renderer)
 {
-    //shader.SetMat4("model", )
+    shader.SetMat4("model", transformation->GetTransformation());
 
     for (unsigned int i = 0; i < m_meshes.size(); i++)
     {
@@ -12,9 +12,7 @@ void Model::Draw(Shader& shader, const Renderer& renderer)
 
 void Model::Update(float delta)
 {
-    //m_transform = glm::mat4();
-    //m_transform = glm::rotate(m_transform, m_rotation);
-    //m_transform = glm::translate(m_transform, m_translation);
+    transformation->Update(delta);
 }
 
 void Model::loadModel()

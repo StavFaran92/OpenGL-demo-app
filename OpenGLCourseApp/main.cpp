@@ -69,8 +69,11 @@ int main(int argc, char* argv[])
 	glm::mat4 model(1.0f);
 	model = glm::translate(model, translation);
 
-	Model backpack("D:\\program files\\downloads\\source\\model.obj");
-	backpack.loadModel();
+	Model backpack1("D:\\program files\\downloads\\source\\model.obj");
+	backpack1.loadModel();
+
+	Model backpack2("D:\\program files\\downloads\\source\\model.obj");
+	backpack2.loadModel();
 
 	//Main loop flag
 	bool quit = false;
@@ -106,9 +109,15 @@ int main(int argc, char* argv[])
 		shader.SetMat4("view", camera.getView());
 		shader.SetFloat("eyePosition", camera.getPosition());
 
-		backpack.Draw(shader, renderer);
-
 		camera.update(deltaTime);
+
+		backpack1.Update(deltaTime);
+		backpack1.Draw(shader, renderer);
+
+		backpack2.GetTransformation()->SetPosition({2,0,-2});
+		backpack2.Update(deltaTime);
+		backpack2.Draw(shader, renderer);
+
 
 		mainWindow.SwapBuffer();
 	}

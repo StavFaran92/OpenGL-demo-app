@@ -11,6 +11,8 @@
 #include <assimp/postprocess.h>
 #include "ApplicationConstants.h"
 
+#include "Transform.h"
+
 class Model
 {
 public:
@@ -19,6 +21,8 @@ public:
     {
         std::cout << __FUNCTION__ << std::endl;
         m_modelDir = m_path.substr(0, m_path.find_last_of('\\'));
+
+        transformation = std::make_shared<Transform>();
     }
     ~Model() {
         std::cout << __FUNCTION__ << std::endl;
@@ -27,6 +31,7 @@ public:
     void Draw(Shader& shader, const Renderer& renderer);
 
     void Update(float delta);
+    std::shared_ptr<Transform> GetTransformation() const { return transformation; }
 private:
     void processNode(aiNode* node, const aiScene* scene);
     std::shared_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene);
@@ -37,4 +42,6 @@ private:
     std::string m_modelDir = "";
     std::vector<std::shared_ptr<Texture>> m_texturesCache;
     const std::string m_path = "";
+
+    std::shared_ptr<Transform> transformation;
 };
