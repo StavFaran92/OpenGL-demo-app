@@ -9,7 +9,7 @@ class Light
 {
 public:
 	Light();
-	Light( GLfloat red, GLfloat green, GLfloat blue, GLfloat aIntensity, GLfloat dIntensity);
+	Light(GLfloat red, GLfloat green, GLfloat blue, GLfloat aIntensity, GLfloat dIntensity);
 
 	void useLight(Shader& shader);
 
@@ -20,4 +20,3 @@ protected:
 	GLfloat m_ambientIntensity;
 	GLfloat m_diffuseIntensity;
 };
-

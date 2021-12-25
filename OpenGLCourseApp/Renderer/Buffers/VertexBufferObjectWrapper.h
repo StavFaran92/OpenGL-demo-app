@@ -21,4 +21,3 @@ public:
 private:
 	unsigned int m_id;
 };
-

@@ -1,10 +1,10 @@
 #include "Window.h"
 
-Window::Window(GLint width, GLint height):
+Window::Window(GLint width, GLint height) :
 	m_width(width), m_height(height)
 {}
 
-int Window::initialize() 
+int Window::initialize()
 {
 	//Initialization flag
 	bool success = true;

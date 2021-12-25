@@ -4,6 +4,5 @@ void DirectionalLight::useLight(Shader& shader)
 {
 	Light::useLight(shader);
 
-	shader.SetFloat( "directionalLight.direction", m_direction);
+	shader.SetFloat("directionalLight.direction", m_direction);
 }
-

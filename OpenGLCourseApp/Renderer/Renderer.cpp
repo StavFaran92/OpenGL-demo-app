@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-void Renderer::Draw(const VertexArrayObjectWrapper & vao, const Shader & m_shader) const
+void Renderer::Draw(const VertexArrayObjectWrapper& vao, const Shader& m_shader) const
 {
 	vao.Bind();
 

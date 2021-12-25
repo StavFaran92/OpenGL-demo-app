@@ -5,7 +5,6 @@ Texture::Texture(const std::string& fileLocation, std::string typeName, int slot
 	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_fileLocation(fileLocation), m_slot(slot), m_type(typeName)
 {
 	std::cout << __FUNCTION__ << std::endl;
-
 }
 
 void Texture::LoadTexture(bool isFlipped)
@@ -14,7 +13,7 @@ void Texture::LoadTexture(bool isFlipped)
 	stbi_set_flip_vertically_on_load(isFlipped);
 
 	// load texture from file
-	unsigned char *data = stbi_load(m_fileLocation.c_str(), &m_width, &m_height, &m_bitDepth, 0);
+	unsigned char* data = stbi_load(m_fileLocation.c_str(), &m_width, &m_height, &m_bitDepth, 0);
 
 	// load validation
 	if (!data) {
@@ -60,7 +59,7 @@ void Texture::ClearTexture()
 	glDeleteTextures(1, &m_id);
 }
 
-Texture::~Texture() 
+Texture::~Texture()
 {
 	std::cout << __FUNCTION__ << std::endl;
 	ClearTexture();

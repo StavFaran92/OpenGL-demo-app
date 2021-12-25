@@ -4,7 +4,6 @@
 #include <GL/glew.h>
 #include <string>
 
-
 class Texture
 {
 public:
@@ -20,7 +19,6 @@ public:
 private:
 	void ClearTexture();
 
-
 private:
 	GLuint m_id;
 	int m_width, m_height, m_bitDepth;
@@ -29,4 +27,3 @@ private:
 
 	std::string m_fileLocation;
 };
-

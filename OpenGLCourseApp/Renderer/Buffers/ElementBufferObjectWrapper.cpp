@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 
-ElementBufferObjectWrapper::ElementBufferObjectWrapper(unsigned int *data, unsigned int length)
+ElementBufferObjectWrapper::ElementBufferObjectWrapper(unsigned int* data, unsigned int length)
 	:m_length(length)
 {
 	glGenBuffers(1, &m_id);

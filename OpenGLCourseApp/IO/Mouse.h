@@ -37,4 +37,3 @@ private:
 	bool mouseRight = false;
 	bool mouseMiddle = false;
 };
-

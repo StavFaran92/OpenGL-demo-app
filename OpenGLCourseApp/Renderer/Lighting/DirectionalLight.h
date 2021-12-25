@@ -4,8 +4,8 @@
 class DirectionalLight : public Light
 {
 public:
-	DirectionalLight() 
-		: Light(), m_direction(0.0f, -1.0f, 0.0f) 
+	DirectionalLight()
+		: Light(), m_direction(0.0f, -1.0f, 0.0f)
 	{}
 
 	DirectionalLight(GLfloat red, GLfloat green, GLfloat blue, GLfloat aIntensity, GLfloat dIntensity,
@@ -18,4 +18,3 @@ public:
 private:
 	glm::vec3 m_direction;
 };
-

@@ -39,9 +39,7 @@ public:
 
 	int GetUniformLocation(const std::string& name);
 
-
 	~Shader();
-
 
 private:
 	void BuildShaders(const std::string& vertexCode, const std::string& fragmentCode);
@@ -53,7 +51,4 @@ private:
 private:
 	GLuint m_id;
 	std::unordered_map<std::string, int> m_uniformLocationCache;
-
-	
 };
-

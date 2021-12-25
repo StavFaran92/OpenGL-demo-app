@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 
-VertexBufferObjectWrapper::VertexBufferObjectWrapper(const void * data, unsigned int size)
+VertexBufferObjectWrapper::VertexBufferObjectWrapper(const void* data, unsigned int size)
 {
 	glGenBuffers(1, &m_id);
 	glBindBuffer(GL_ARRAY_BUFFER, m_id);

@@ -1,20 +1,20 @@
 #include "Camera.h"
 
 Camera::Camera(glm::vec3 startPosition, GLfloat startYaw, GLfloat startPitch, GLfloat startMoveSpeed, GLfloat startTurnSpeed)
-	:m_position(startPosition), 
-	m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)), 
-	m_yaw(startYaw), 
+	:m_position(startPosition),
+	m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
+	m_yaw(startYaw),
 	m_pitch(startPitch),
-	m_front(glm::vec3(0.0f, 0.0f, -1.0f)), 
-	m_movementSpeed(startMoveSpeed), 
+	m_front(glm::vec3(0.0f, 0.0f, -1.0f)),
+	m_movementSpeed(startMoveSpeed),
 	m_turnSpeed(startTurnSpeed)
 {
 	keyboard = std::make_shared<Keyboard>();
 }
 
-void Camera::keyControl( double deltaTime)
+void Camera::keyControl(double deltaTime)
 {
-	GLfloat velocity =  m_movementSpeed * deltaTime;	
+	GLfloat velocity = m_movementSpeed * deltaTime;
 
 	if (keyboard->getKeyState(SDL_SCANCODE_W))
 	{

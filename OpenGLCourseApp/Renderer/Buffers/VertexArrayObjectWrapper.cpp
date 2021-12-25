@@ -1,7 +1,5 @@
 #include "VertexArrayObjectWrapper.h"
 
-
-
 VertexArrayObjectWrapper::VertexArrayObjectWrapper()
 {
 	glGenVertexArrays(1, &m_id);

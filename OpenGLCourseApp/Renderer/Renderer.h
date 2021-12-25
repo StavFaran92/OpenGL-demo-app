@@ -8,4 +8,3 @@ public:
 	void Draw(const VertexArrayObjectWrapper& vao, const Shader& m_shader) const;
 	void Clear() const;
 };
-

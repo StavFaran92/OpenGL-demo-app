@@ -44,4 +44,3 @@ private:
 	std::vector<VertexBufferElement> m_elements;
 	unsigned int m_stride = 0;
 };
-

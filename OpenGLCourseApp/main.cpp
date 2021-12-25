@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
 		handleEvents(e, quit, camera, deltaTime);
 
 		renderer.Clear();
-		
+
 		camera.update(deltaTime);
 
 		lightShader.UseShader();
@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
 		lightShader.SetMat4("projection", projection);
 		lightShader.SetMat4("view", camera.getView());
 
-		lightCube.GetTransformation()->SetPosition({ 10 * cos(angle * toRadians) ,0, 10*sin(angle * toRadians) });
+		lightCube.GetTransformation()->SetPosition({ 10 * cos(angle * toRadians) ,0, 10 * sin(angle * toRadians) });
 		angle++;
 		lightCube.GetTransformation()->SetScale({ .25f, .25f, .25f });
 		lightCube.Update(deltaTime);
@@ -97,13 +97,12 @@ int main(int argc, char* argv[])
 
 		modelShader.UseShader();
 
-		
 		modelShader.SetFloat("material.shininess", 32.0f);
 
 		modelShader.SetFloat("light.color", { 1.0f, 1.0f, 1.0f });
 		modelShader.SetFloat("light.position", lightCube.GetTransformation()->GetPosition());
-		modelShader.SetFloat("light.ambient", {0.2f, 0.2f, 0.2f});
-		modelShader.SetFloat("light.diffuse", {0.5f, 0.5f, 0.5f}); // darken diffuse light a bit
+		modelShader.SetFloat("light.ambient", { 0.2f, 0.2f, 0.2f });
+		modelShader.SetFloat("light.diffuse", { 0.5f, 0.5f, 0.5f }); // darken diffuse light a bit
 		modelShader.SetFloat("light.specular", { 1.0f, 1.0f, 1.0f });
 
 		modelShader.SetFloat("viewPos", camera.getPosition());
@@ -111,10 +110,9 @@ int main(int argc, char* argv[])
 		modelShader.SetMat4("projection", projection);
 		modelShader.SetMat4("view", camera.getView());
 
-		backpack.GetTransformation()->SetPosition({0,0,0});
+		backpack.GetTransformation()->SetPosition({ 0,0,0 });
 		backpack.Update(deltaTime);
 		backpack.Draw(modelShader, renderer);
-
 
 		mainWindow.SwapBuffer();
 	}
@@ -140,8 +138,6 @@ void handleEvents(SDL_Event& e, bool& quit, Camera& camera, double deltaTime)
 		else if (e.type == SDL_MOUSEMOTION)
 		{
 			camera.mouseControl(e.motion.xrel, e.motion.yrel);
-
 		}
 	}
 }
-

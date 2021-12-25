@@ -16,10 +16,10 @@
 #include "ApplicationConstants.h"
 
 class Mesh
-{  
+{
 public:
 	Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices, std::vector<std::shared_ptr<Texture>> textures);
-	
+
 	void RenderMesh(Shader& shader, const Renderer& renderer);
 
 	~Mesh();
@@ -38,4 +38,3 @@ private:
 
 	GLsizei m_indexCount = 0;
 };
-

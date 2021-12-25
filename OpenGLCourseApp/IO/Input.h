@@ -8,4 +8,3 @@ namespace Input
 	Keyboard keyboard;
 	Mouse mouse;
 };
-

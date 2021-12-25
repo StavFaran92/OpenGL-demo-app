@@ -6,16 +6,12 @@
 #include <GL/glew.h>
 #include <SDL_opengl.h>
 
-
 static const int SCREEN_WIDTH = 800;
 static const int SCREEN_HEIGHT = 600;
-
-
 
 class Window
 {
 public:
-	
 
 	Window(GLint width = SCREEN_WIDTH, GLint height = SCREEN_HEIGHT);
 
@@ -24,9 +20,8 @@ public:
 	GLint getWidth() { return m_width; }
 	GLint getHeight() { return m_height; }
 
-	void Close() { 
-
-		//Destroy window	
+	void Close() {
+		//Destroy window
 		SDL_DestroyWindow(m_mainWindow);
 		m_mainWindow = NULL;
 	}
@@ -49,8 +44,4 @@ private:
 	int m_mouseY = 0;
 
 	bool m_mouseFirstMoved = false;
-
-
-
 };
-

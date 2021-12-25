@@ -37,6 +37,4 @@ private:
 	GLfloat m_turnSpeed;
 
 	std::shared_ptr<Keyboard> keyboard;
-
 };
-

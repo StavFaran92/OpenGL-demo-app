@@ -6,7 +6,7 @@ Material::Material()
 }
 
 Material::Material(GLfloat sIntensity, GLfloat shine)
-	:m_specularIntensity(sIntensity), m_shininess(shine)
+	: m_specularIntensity(sIntensity), m_shininess(shine)
 {
 }
 

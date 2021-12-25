@@ -1,7 +1,6 @@
 #include "Shader.h"
 
-
-Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath):
+Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath) :
 	m_id(0)
 {
 	Init(vertexFilePath, fragmentFilePath);
@@ -123,7 +122,7 @@ bool Shader::validateCompilation(const GLuint& shader, const GLenum& shaderType)
 	return true;
 }
 
-int Shader::GetUniformLocation(const std::string & name)
+int Shader::GetUniformLocation(const std::string& name)
 {
 	if (m_uniformLocationCache.find(name) != m_uniformLocationCache.end())
 		return m_uniformLocationCache[name];

@@ -18,4 +18,3 @@ private:
 	GLfloat m_specularIntensity;
 	GLfloat m_shininess;
 };
-
