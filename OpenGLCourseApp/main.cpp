@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
 	glm::mat4 model(1.0f);
 	model = glm::translate(model, translation);
 
-	Model backpack1("D:\\program files\\downloads\\source\\model.obj");
+	Model backpack1("D:\\program files\\downloads\\backpack\\backpack.obj");
 	backpack1.loadModel();
 
 	Model backpack2("D:\\program files\\downloads\\source\\model.obj");
