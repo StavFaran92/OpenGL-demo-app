@@ -40,8 +40,6 @@ GLfloat lastTime = 0.0f;
 Material shinyMaterial;
 Material dullMaterial;
 
-float curAngle = 0;
-
 int main(int argc, char* argv[])
 {
 	Window mainWindow(800, 600);
@@ -49,7 +47,8 @@ int main(int argc, char* argv[])
 
 	Renderer renderer;
 
-	Shader shader("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
+	Shader modelShader("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
+	Shader lightShader("Resources\\Shaders\\LightShader.vert", "Resources\\Shaders\\LightShader.frag");
 
 	Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), -90.0f, 0.0f, 1.0f, .5f);
 
@@ -62,18 +61,11 @@ int main(int argc, char* argv[])
 
 	glm::mat4 projection = glm::perspective(45.0f, (float)mainWindow.getWidth() / mainWindow.getHeight(), 0.1f, 100.0f);
 
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	Model lightCube("D:\\program files\\downloads\\cube-companion\\source\\model\\model.dae");
+	lightCube.loadModel();
 
-	glm::vec3 translation(0.0f, 0.0f, -2.5f);
-
-	glm::mat4 model(1.0f);
-	model = glm::translate(model, translation);
-
-	Model backpack1("D:\\program files\\downloads\\backpack\\backpack.obj");
-	backpack1.loadModel();
-
-	Model backpack2("D:\\program files\\downloads\\source\\model.obj");
-	backpack2.loadModel();
+	Model backpack("D:\\program files\\downloads\\source\\model.obj");
+	backpack.loadModel();
 
 	//Main loop flag
 	bool quit = false;
@@ -86,6 +78,7 @@ int main(int argc, char* argv[])
 	double deltaTime = 0;
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	float angle = 0;
 	// Loop until window closed
 	while (!quit)
 	{
@@ -99,24 +92,40 @@ int main(int argc, char* argv[])
 
 		renderer.Clear();
 
-		shader.UseShader();
 
-		mainLight.useLight(shader);
-		shinyMaterial.UseMaterial(shader);
+		//mainLight.useLight(modelShader);
+		//shinyMaterial.UseMaterial(modelShader);
 
-		shader.SetMat4("model", model);
-		shader.SetMat4("projection", projection);
-		shader.SetMat4("view", camera.getView());
-		shader.SetFloat("eyePosition", camera.getPosition());
-
+		
 		camera.update(deltaTime);
 
-		backpack1.Update(deltaTime);
-		backpack1.Draw(shader, renderer);
+		lightShader.UseShader();
 
-		backpack2.GetTransformation()->SetPosition({2,0,-2});
-		backpack2.Update(deltaTime);
-		backpack2.Draw(shader, renderer);
+		lightShader.SetMat4("projection", projection);
+		lightShader.SetMat4("view", camera.getView());
+
+		lightCube.GetTransformation()->SetPosition({ 5 * cos(angle * toRadians) ,0,0  + 5*sin(angle * toRadians) });
+		angle++;
+		lightCube.GetTransformation()->SetScale({ .25f, .25f, .25f });
+		lightCube.Update(deltaTime);
+		lightCube.Draw(modelShader, renderer);
+
+		modelShader.UseShader();
+
+		modelShader.SetFloat("lightColor", { 1.0f, 1.0f, 1.0f });
+		modelShader.SetFloat("lightPos", lightCube.GetTransformation()->GetPosition());
+
+		modelShader.SetFloat("viewPos", camera.getPosition());
+		//mainLight.useLight(modelShader);
+		//shinyMaterial.UseMaterial(modelShader);
+
+		modelShader.SetMat4("projection", projection);
+		modelShader.SetMat4("view", camera.getView());
+		//modelShader.SetFloat("eyePosition", camera.getPosition());
+
+		backpack.GetTransformation()->SetPosition({0,0,0});
+		backpack.Update(deltaTime);
+		backpack.Draw(modelShader, renderer);
 
 
 		mainWindow.SwapBuffer();
