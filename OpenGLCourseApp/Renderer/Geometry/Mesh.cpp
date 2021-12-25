@@ -27,12 +27,12 @@ void Mesh::RenderMesh(Shader& shader, const Renderer& renderer)
         // retrieve texture number (the N in diffuse_textureN)
         std::string number;
         std::string name = m_textures[i]->GetType();
-        if (name == "texture_diffuse")
+        if (name == Constants::g_textureDiffuse)
             number = std::to_string(diffuseNr++);
-        else if (name == "texture_specular")
+        else if (name == Constants::g_textureSpecular)
             number = std::to_string(specularNr++);
 
-        shader.SetInt((name + number).c_str(), i);
+        shader.SetInt(("material." + name + number).c_str(), i);
         glBindTexture(GL_TEXTURE_2D, m_textures[i]->GetID());
     }
 

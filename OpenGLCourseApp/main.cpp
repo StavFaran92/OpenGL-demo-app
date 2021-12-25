@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 	Model lightCube("D:\\program files\\downloads\\cube-companion\\source\\model\\model.dae");
 	lightCube.loadModel();
 
-	Model backpack("D:\\program files\\downloads\\source\\model.obj");
+	Model backpack("D:\\program files\\downloads\\backpack\\backpack.obj");
 	backpack.loadModel();
 
 	//Main loop flag
@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 		lightShader.SetMat4("projection", projection);
 		lightShader.SetMat4("view", camera.getView());
 
-		lightCube.GetTransformation()->SetPosition({ 5 * cos(angle * toRadians) ,0, 5*sin(angle * toRadians) });
+		lightCube.GetTransformation()->SetPosition({ 10 * cos(angle * toRadians) ,0, 10*sin(angle * toRadians) });
 		angle++;
 		lightCube.GetTransformation()->SetScale({ .25f, .25f, .25f });
 		lightCube.Update(deltaTime);
@@ -108,10 +108,6 @@ int main(int argc, char* argv[])
 		modelShader.UseShader();
 
 		
-
-		modelShader.SetFloat("material.ambient", {1.0f, 0.5f, 0.31f});
-		modelShader.SetFloat("material.diffuse", {1.0f, 0.5f, 0.31f});
-		modelShader.SetFloat("material.specular",{ 0.5f, 0.5f, 0.5f});
 		modelShader.SetFloat("material.shininess", 32.0f);
 
 		modelShader.SetFloat("light.color", { 1.0f, 1.0f, 1.0f });
