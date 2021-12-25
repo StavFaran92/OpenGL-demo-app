@@ -37,9 +37,6 @@ DirectionalLight mainLight;
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 
-Material shinyMaterial;
-Material dullMaterial;
-
 int main(int argc, char* argv[])
 {
 	Window mainWindow(800, 600);
@@ -51,13 +48,6 @@ int main(int argc, char* argv[])
 	Shader lightShader("Resources\\Shaders\\LightShader.vert", "Resources\\Shaders\\LightShader.frag");
 
 	Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), -90.0f, 0.0f, 1.0f, .5f);
-
-	shinyMaterial = Material(1.0f, 32);
-	dullMaterial = Material(.3f, 4);
-
-	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
-		0.3f, 2.0f, 
-		0.0f, 0.0f, -1.0f);
 
 	glm::mat4 projection = glm::perspective(45.0f, (float)mainWindow.getWidth() / mainWindow.getHeight(), 0.1f, 100.0f);
 
@@ -103,7 +93,7 @@ int main(int argc, char* argv[])
 		angle++;
 		lightCube.GetTransformation()->SetScale({ .25f, .25f, .25f });
 		lightCube.Update(deltaTime);
-		lightCube.Draw(modelShader, renderer);
+		lightCube.Draw(lightShader, renderer);
 
 		modelShader.UseShader();
 

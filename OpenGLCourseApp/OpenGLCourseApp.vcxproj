@@ -111,7 +111,7 @@
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="Renderer\Shader\Shader.cpp" />
     <ClCompile Include="Renderer\Shader\Texture.cpp" />
-    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Renderer\Geometry\Transform.cpp" />
     <ClCompile Include="Utils\IO\Utils.cpp" />
     <ClCompile Include="Renderer\Buffers\VertexArrayObjectWrapper.cpp" />
     <ClCompile Include="Renderer\Buffers\VertexBufferObjectWrapper.cpp" />
@@ -120,6 +120,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ApplicationConstants.h" />
     <ClInclude Include="IO\Input.h" />
     <ClInclude Include="IO\Keyboard.h" />
     <ClInclude Include="IO\Mouse.h" />
@@ -137,7 +138,7 @@
     <ClInclude Include="Renderer\Shader\Shader.h" />
     <ClInclude Include="Renderer\Shader\Texture.h" />
     <ClInclude Include="Resources\Primitives\cube_vertices.h" />
-    <ClInclude Include="Transform.h" />
+    <ClInclude Include="Renderer\Geometry\Transform.h" />
     <ClInclude Include="Utils\IO\Utils.h" />
     <ClInclude Include="Renderer\Buffers\VertexArrayObjectWrapper.h" />
     <ClInclude Include="Renderer\Buffers\VertexBufferObjectWrapper.h" />
@@ -148,6 +149,8 @@
   <ItemGroup>
     <None Include="Resources\Shaders\LightShader.frag" />
     <None Include="Resources\Shaders\LightShader.vert" />
+    <None Include="Resources\Shaders\shader.frag" />
+    <None Include="Resources\Shaders\shader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

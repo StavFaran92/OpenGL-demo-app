@@ -39,7 +39,6 @@ uniform Material material;
 
 // light
 uniform Light light;
-uniform vec3 lightColor;
 
 // camera
 uniform vec3 viewPos;
