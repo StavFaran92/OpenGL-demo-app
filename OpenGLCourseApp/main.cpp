@@ -91,11 +91,6 @@ int main(int argc, char* argv[])
 		handleEvents(e, quit, camera, deltaTime);
 
 		renderer.Clear();
-
-
-		//mainLight.useLight(modelShader);
-		//shinyMaterial.UseMaterial(modelShader);
-
 		
 		camera.update(deltaTime);
 
@@ -104,7 +99,7 @@ int main(int argc, char* argv[])
 		lightShader.SetMat4("projection", projection);
 		lightShader.SetMat4("view", camera.getView());
 
-		lightCube.GetTransformation()->SetPosition({ 5 * cos(angle * toRadians) ,0,0  + 5*sin(angle * toRadians) });
+		lightCube.GetTransformation()->SetPosition({ 5 * cos(angle * toRadians) ,0, 5*sin(angle * toRadians) });
 		angle++;
 		lightCube.GetTransformation()->SetScale({ .25f, .25f, .25f });
 		lightCube.Update(deltaTime);
@@ -114,6 +109,11 @@ int main(int argc, char* argv[])
 
 		modelShader.SetFloat("lightColor", { 1.0f, 1.0f, 1.0f });
 		modelShader.SetFloat("lightPos", lightCube.GetTransformation()->GetPosition());
+
+		modelShader.SetFloat("material.ambient", {1.0f, 0.5f, 0.31f});
+		modelShader.SetFloat("material.diffuse", {1.0f, 0.5f, 0.31f});
+		modelShader.SetFloat("material.specular",{ 0.5f, 0.5f, 0.5f});
+		modelShader.SetFloat("material.shininess", 32.0f);
 
 		modelShader.SetFloat("viewPos", camera.getPosition());
 		//mainLight.useLight(modelShader);
