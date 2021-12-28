@@ -19,13 +19,13 @@ public:
 	Model(const std::string& path)
 		:m_path(path)
 	{
-		std::cout << __FUNCTION__ << std::endl;
+		logInfo( __FUNCTION__ );
 		m_modelDir = m_path.substr(0, m_path.find_last_of('\\'));
 
 		transformation = std::make_shared<Transform>();
 	}
 	~Model() {
-		std::cout << __FUNCTION__ << std::endl;
+		logInfo( __FUNCTION__ );
 	}
 	void loadModel();
 	void Draw(Shader& shader, const Renderer& renderer);

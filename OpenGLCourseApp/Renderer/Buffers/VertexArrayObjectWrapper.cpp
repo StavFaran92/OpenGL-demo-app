@@ -8,7 +8,7 @@ VertexArrayObjectWrapper::VertexArrayObjectWrapper()
 
 VertexArrayObjectWrapper::~VertexArrayObjectWrapper()
 {
-	std::cout << __FUNCTION__ << std::endl;
+	logInfo( __FUNCTION__ );
 	glDeleteVertexArrays(1, &m_id);
 }
 

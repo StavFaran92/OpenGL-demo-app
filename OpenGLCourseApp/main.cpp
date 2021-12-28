@@ -28,6 +28,9 @@
 
 #include "Renderer/Geometry/Model.h"
 
+#include "Utils/Logger/Logger.h"
+#include "spdlog/spdlog.h"
+
 void handleKeys(unsigned char key, int x, int y);
 
 const float toRadians = 3.1315265f / 180;
@@ -38,7 +41,7 @@ GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 
 int main(int argc, char* argv[])
-{
+{ 
 	Window mainWindow(800, 600);
 	mainWindow.initialize();
 

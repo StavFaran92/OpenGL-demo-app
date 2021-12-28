@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "Utils/Logger/Logger.h"
+
 #include "SDL.h"
 
 class Keyboard

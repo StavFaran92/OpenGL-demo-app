@@ -3,7 +3,7 @@
 Mesh::Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices, std::vector<std::shared_ptr<Texture>> textures) :
 	m_vertices(vertices), m_indices(indices), m_textures(textures)
 {
-	std::cout << __FUNCTION__ << std::endl;
+	logInfo( __FUNCTION__ );
 
 	m_vao = std::make_shared<VertexArrayObjectWrapper>();
 	m_ibo = std::make_shared<ElementBufferObjectWrapper>(&(m_indices->at(0)), indices->size());
@@ -48,6 +48,6 @@ void Mesh::ClearMesh()
 
 Mesh::~Mesh()
 {
-	std::cout << __FUNCTION__ << std::endl;
+	logInfo( __FUNCTION__ );
 	ClearMesh();
 }

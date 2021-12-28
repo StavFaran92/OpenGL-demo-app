@@ -4,6 +4,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "Utils/Logger/Logger.h"
+
 class Utils
 {
 public:

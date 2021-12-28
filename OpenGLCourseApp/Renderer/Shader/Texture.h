@@ -4,6 +4,8 @@
 #include <GL/glew.h>
 #include <string>
 
+#include "Utils/Logger/Logger.h"
+
 class Texture
 {
 public:

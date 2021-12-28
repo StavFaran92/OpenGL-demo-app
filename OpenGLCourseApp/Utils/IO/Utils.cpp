@@ -23,7 +23,7 @@ std::string Utils::ReadFile(const std::string& filePath)
 	}
 	catch (std::ifstream::failure e)
 	{
-		std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+		logError( "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" );
 	}
 
 	return content;

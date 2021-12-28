@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "Utils/Logger/Logger.h"
+
 #include "glm/glm.hpp"
 
 struct Vertex {

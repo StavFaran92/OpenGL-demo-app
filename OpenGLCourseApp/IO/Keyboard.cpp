@@ -8,7 +8,7 @@ int Keyboard::getKeyState(int index)
 {
 	if (index < 0 || index > m_length)
 	{
-		std::cout << "Invalid key specified : " + index << std::endl;
+		logError("Invalid key specified : " + index);
 		return false;
 	}
 

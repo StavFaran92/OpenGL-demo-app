@@ -12,7 +12,7 @@ ElementBufferObjectWrapper::ElementBufferObjectWrapper(unsigned int* data, unsig
 
 ElementBufferObjectWrapper::~ElementBufferObjectWrapper()
 {
-	std::cout << __FUNCTION__ << std::endl;
+	logInfo( __FUNCTION__ );
 	glDeleteBuffers(1, &m_id);
 }
 
