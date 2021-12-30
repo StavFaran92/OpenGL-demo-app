@@ -12,7 +12,7 @@
 
 #include "Renderer/Geometry/Mesh.h"
 #include "Renderer/Shader/Shader.h"
-#include "Renderer/Camera/Camera.h"
+#include "Renderer/Camera/FlyCamera.h"
 #include "Renderer/Shader/Texture.h"
 #include "Renderer/Lighting/DirectionalLight.h"
 #include "Renderer/Renderer.h"
@@ -28,7 +28,7 @@
 #include "imgui/ImguiHandler.h"
 
 void handleKeys(unsigned char key, int x, int y);
-void handleEvents(SDL_Event& e, ImguiHandler& imgui, bool& quit, Camera& camera, double deltaTime);
+void handleEvents(SDL_Event& e, ImguiHandler& imgui, bool& quit, std::shared_ptr<ICamera> camera, double deltaTime);
 
 const float toRadians = 3.1315265f / 180;
 
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 	Shader modelShader("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
 	Shader lightShader("Resources\\Shaders\\LightShader.vert", "Resources\\Shaders\\LightShader.frag");
 
-	Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), -90.0f, 0.0f, 1.0f, .5f);
+	std::shared_ptr<ICamera> camera = std::make_shared<FlyCamera>(glm::vec3(0.0f, 0.0f, 0.0f), -90.0f, 0.0f, 1.0f, .5f);
 
 	glm::mat4 projection = glm::perspective(45.0f, (float)mainWindow.getWidth() / mainWindow.getHeight(), 0.1f, 100.0f);
 
@@ -93,12 +93,12 @@ int main(int argc, char* argv[])
 
 		renderer.Clear();
 
-		camera.update(deltaTime);
+		camera->update(deltaTime);
 
 		lightShader.UseShader();
 
 		lightShader.SetMat4("projection", projection);
-		lightShader.SetMat4("view", camera.getView());
+		lightShader.SetMat4("view", camera->getView());
 
 		lightCube.GetTransformation()->SetPosition({ 10 * cos(angle * toRadians) ,0, 10 * sin(angle * toRadians) });
 		angle++;
@@ -116,10 +116,10 @@ int main(int argc, char* argv[])
 		modelShader.SetFloat("light.diffuse", { 0.5f, 0.5f, 0.5f }); // darken diffuse light a bit
 		modelShader.SetFloat("light.specular", { 1.0f, 1.0f, 1.0f });
 
-		modelShader.SetFloat("viewPos", camera.getPosition());
+		modelShader.SetFloat("viewPos", camera->getPosition());
 
 		modelShader.SetMat4("projection", projection);
-		modelShader.SetMat4("view", camera.getView());
+		modelShader.SetMat4("view", camera->getView());
 
 		backpack.GetTransformation()->SetPosition({ 0,0,0 });
 		backpack.Update(deltaTime);
@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
-void handleEvents(SDL_Event& e, ImguiHandler& imgui, bool& quit, Camera& camera, double deltaTime)
+void handleEvents(SDL_Event& e, ImguiHandler& imgui, bool& quit, std::shared_ptr<ICamera> camera, double deltaTime)
 {
 	while (SDL_PollEvent(&e) != 0)
 	{
@@ -151,7 +151,7 @@ void handleEvents(SDL_Event& e, ImguiHandler& imgui, bool& quit, Camera& camera,
 		//Handle keypress with current mouse position
 		else if (e.type == SDL_MOUSEMOTION)
 		{
-			camera.mouseControl(e.motion.xrel, e.motion.yrel);
+			camera->mouseControl(e.motion.xrel, e.motion.yrel);
 		}
 	}
 }

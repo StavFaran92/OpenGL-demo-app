@@ -101,7 +101,7 @@
     <ClCompile Include="IO\Keyboard.cpp" />
     <ClCompile Include="IO\Mouse.cpp" />
     <ClCompile Include="Renderer\Geometry\Model.cpp" />
-    <ClCompile Include="Renderer\Camera\Camera.cpp" />
+    <ClCompile Include="Renderer\Camera\FlyCamera.cpp" />
     <ClCompile Include="Renderer\Lighting\DirectionalLight.cpp" />
     <ClCompile Include="Renderer\Buffers\ElementBufferObjectWrapper.cpp" />
     <ClCompile Include="Renderer\Lighting\Light.cpp" />
@@ -134,9 +134,10 @@
     <ClInclude Include="IO\Keyboard.h" />
     <ClInclude Include="IO\Mouse.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="Renderer\Camera\ICamera.h" />
     <ClInclude Include="Renderer\Geometry\Model.h" />
     <ClInclude Include="Renderer\Buffers\VertexBufferElement.h" />
-    <ClInclude Include="Renderer\Camera\Camera.h" />
+    <ClInclude Include="Renderer\Camera\FlyCamera.h" />
     <ClInclude Include="Renderer\Lighting\DirectionalLight.h" />
     <ClInclude Include="Renderer\Buffers\ElementBufferObjectWrapper.h" />
     <ClInclude Include="Renderer\Lighting\Light.h" />

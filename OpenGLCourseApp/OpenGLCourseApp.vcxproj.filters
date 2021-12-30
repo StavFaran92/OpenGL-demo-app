@@ -24,7 +24,7 @@
     <ClCompile Include="Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Camera\Camera.cpp">
+    <ClCompile Include="Renderer\Camera\FlyCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\Shader\Texture.cpp">
@@ -116,7 +116,7 @@
     <ClInclude Include="Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Camera\Camera.h">
+    <ClInclude Include="Renderer\Camera\FlyCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\Shader\Texture.h">
@@ -213,6 +213,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="imgui\ImguiHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\Camera\ICamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

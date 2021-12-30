@@ -1,6 +1,6 @@
-#include "Camera.h"
+#include "FlyCamera.h"
 
-Camera::Camera(glm::vec3 startPosition, GLfloat startYaw, GLfloat startPitch, GLfloat startMoveSpeed, GLfloat startTurnSpeed)
+FlyCamera::FlyCamera(glm::vec3 startPosition, GLfloat startYaw, GLfloat startPitch, GLfloat startMoveSpeed, GLfloat startTurnSpeed)
 	:m_position(startPosition),
 	m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
 	m_yaw(startYaw),
@@ -12,7 +12,7 @@ Camera::Camera(glm::vec3 startPosition, GLfloat startYaw, GLfloat startPitch, GL
 	keyboard = std::make_shared<Keyboard>();
 }
 
-void Camera::keyControl(double deltaTime)
+void FlyCamera::keyControl(double deltaTime)
 {
 	GLfloat velocity = m_movementSpeed * deltaTime;
 
@@ -37,7 +37,7 @@ void Camera::keyControl(double deltaTime)
 	}
 }
 
-void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
+void FlyCamera::mouseControl(GLfloat xChange, GLfloat yChange)
 {
 	xChange *= m_turnSpeed;
 	yChange *= m_turnSpeed;
@@ -58,7 +58,7 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 	calculateOrientation();
 }
 
-void Camera::calculateOrientation()
+void FlyCamera::calculateOrientation()
 {
 	m_front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
 	m_front.y = sin(glm::radians(m_pitch));
@@ -70,10 +70,10 @@ void Camera::calculateOrientation()
 	m_up = glm::normalize(glm::cross(m_right, m_front));
 }
 
-void Camera::update(float deltaTime)
+void FlyCamera::update(float deltaTime)
 {
 	keyControl(deltaTime);
 }
 
-Camera::~Camera()
+FlyCamera::~FlyCamera()
 {}
