@@ -43,7 +43,11 @@ GLfloat lastTime = 0.0f;
 int main(int argc, char* argv[])
 { 
 	Window mainWindow(800, 600);
-	mainWindow.initialize();
+	if (!mainWindow.initialize())
+	{
+		logError("Window init failed!");
+		return -1;
+	}
 
 	Renderer renderer;
 
@@ -121,9 +125,6 @@ int main(int argc, char* argv[])
 	}
 
 	mainWindow.Close();
-
-	//Quit SDL subsystems
-	SDL_Quit();
 
 	return 0;
 }

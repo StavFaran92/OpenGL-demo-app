@@ -6,6 +6,8 @@
 #include <GL/glew.h>
 #include <SDL_opengl.h>
 
+#include "Utils/Logger/Logger.h"
+
 static const int SCREEN_WIDTH = 800;
 static const int SCREEN_HEIGHT = 600;
 
@@ -17,12 +19,20 @@ public:
 
 	int initialize();
 
-	GLint getWidth() { return m_width; }
-	GLint getHeight() { return m_height; }
+	inline GLint getWidth() { return m_width; }
+	inline GLint getHeight() { return m_height; }
 
 	void Close() {
+
+		// Delete context
+		SDL_GL_DeleteContext(m_glContext);
+
 		//Destroy window
 		SDL_DestroyWindow(m_mainWindow);
+
+		//Quit SDL subsystems
+		SDL_Quit();
+
 		m_mainWindow = NULL;
 	}
 
