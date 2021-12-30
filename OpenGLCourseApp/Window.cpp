@@ -66,6 +66,7 @@ int Window::initialize()
 		
 	logInfo("SDL has initialized successfully.");
 
+
 	return true;
 }
 

@@ -18,12 +18,6 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/Shader/Material.h"
 
-#include "Vendor/imgui/imgui.h"
-//#include "Vendor/imgui/imgui_impl_glfw_gl3.h"
-
-#include "Tests/Test.h"
-#include "Tests/TestMenu.h"
-#include "Tests/TestClearColor.h"
 #include "main.h"
 
 #include "Renderer/Geometry/Model.h"
@@ -31,7 +25,10 @@
 #include "Utils/Logger/Logger.h"
 #include "spdlog/spdlog.h"
 
+#include "imgui/ImguiHandler.h"
+
 void handleKeys(unsigned char key, int x, int y);
+void handleEvents(SDL_Event& e, ImguiHandler& imgui, bool& quit, Camera& camera, double deltaTime);
 
 const float toRadians = 3.1315265f / 180;
 
@@ -46,6 +43,13 @@ int main(int argc, char* argv[])
 	if (!mainWindow.initialize())
 	{
 		logError("Window init failed!");
+		return -1;
+	}
+
+	ImguiHandler imgui;
+	if (!imgui.Init(mainWindow.GetWindow(), mainWindow.GetContext()))
+	{
+		logError("Imgui init failed!");
 		return -1;
 	}
 
@@ -85,7 +89,7 @@ int main(int argc, char* argv[])
 		deltaTime = (double)SDL_GetPerformanceFrequency() / ((NOW - LAST) * 1000);
 
 		//Handle events on queue
-		handleEvents(e, quit, camera, deltaTime);
+		handleEvents(e, imgui, quit, camera, deltaTime);
 
 		renderer.Clear();
 
@@ -121,18 +125,24 @@ int main(int argc, char* argv[])
 		backpack.Update(deltaTime);
 		backpack.Draw(modelShader, renderer);
 
+		imgui.Render();
+
 		mainWindow.SwapBuffer();
 	}
+
+	imgui.Close();
 
 	mainWindow.Close();
 
 	return 0;
 }
 
-void handleEvents(SDL_Event& e, bool& quit, Camera& camera, double deltaTime)
+void handleEvents(SDL_Event& e, ImguiHandler& imgui, bool& quit, Camera& camera, double deltaTime)
 {
 	while (SDL_PollEvent(&e) != 0)
 	{
+		imgui.ProccessEvents(e);
+
 		//User requests quit
 		if (e.type == SDL_QUIT)
 		{

@@ -39,6 +39,7 @@ public:
 	void SwapBuffer() { SDL_GL_SwapWindow(m_mainWindow); }
 
 	SDL_Window* GetWindow() { return m_mainWindow; }
+	SDL_GLContext GetContext() { return m_glContext; }
 
 	~Window();
 private:
