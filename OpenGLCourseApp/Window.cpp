@@ -70,6 +70,15 @@ int Window::initialize()
 	return true;
 }
 
+void* Window::GetNativeWindow()
+{
+	SDL_SysWMinfo wmInfo;
+	SDL_VERSION(&wmInfo.version);
+	SDL_GetWindowWMInfo(m_mainWindow, &wmInfo);
+	HWND hwnd = wmInfo.info.win.window;
+	return hwnd;
+}
+
 Window::~Window() {
 	Close();
 }

@@ -27,27 +27,20 @@
 
 #include "imgui/ImguiHandler.h"
 
+#include "Core/Application.h"
+
 void handleKeys(unsigned char key, int x, int y);
 void handleEvents(SDL_Event& e, ImguiHandler& imgui, bool& quit, std::shared_ptr<ICamera> camera, double deltaTime);
 
-const float toRadians = 3.1315265f / 180;
-
-DirectionalLight mainLight;
-
-GLfloat deltaTime = 0.0f;
-GLfloat lastTime = 0.0f;
-
 int main(int argc, char* argv[])
 { 
-	Window mainWindow(800, 600);
-	if (!mainWindow.initialize())
-	{
-		logError("Window init failed!");
-		return -1;
-	}
+	Application::Get().Init();
+
+	std::shared_ptr<Window> mainWindow = Application::Get().GetWindow();
+	std::shared_ptr<Context> context = Application::Get().GetContext();
 
 	ImguiHandler imgui;
-	if (!imgui.Init(mainWindow.GetWindow(), mainWindow.GetContext()))
+	if (!imgui.Init(mainWindow->GetWindow(), mainWindow->GetContext()))
 	{
 		logError("Imgui init failed!");
 		return -1;
@@ -60,7 +53,7 @@ int main(int argc, char* argv[])
 
 	std::shared_ptr<ICamera> camera = std::make_shared<FlyCamera>(glm::vec3(0.0f, 0.0f, 0.0f), -90.0f, 0.0f, 1.0f, .5f);
 
-	glm::mat4 projection = glm::perspective(45.0f, (float)mainWindow.getWidth() / mainWindow.getHeight(), 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(45.0f, (float)mainWindow->getWidth() / mainWindow->getHeight(), 0.1f, 100.0f);
 
 	Model lightCube("D:\\program files\\downloads\\cube-companion\\source\\model\\model.dae");
 	lightCube.loadModel();
@@ -100,7 +93,7 @@ int main(int argc, char* argv[])
 		lightShader.SetMat4("projection", projection);
 		lightShader.SetMat4("view", camera->getView());
 
-		lightCube.GetTransformation()->SetPosition({ 10 * cos(angle * toRadians) ,0, 10 * sin(angle * toRadians) });
+		lightCube.GetTransformation()->SetPosition({ 10 * cos(angle * Constants::toRadians) ,0, 10 * sin(angle * Constants::toRadians) });
 		angle++;
 		lightCube.GetTransformation()->SetScale({ .25f, .25f, .25f });
 		lightCube.Update(deltaTime);
@@ -127,12 +120,12 @@ int main(int argc, char* argv[])
 
 		imgui.Render();
 
-		mainWindow.SwapBuffer();
+		mainWindow->SwapBuffer();
 	}
 
 	imgui.Close();
 
-	mainWindow.Close();
+	mainWindow->Close();
 
 	return 0;
 }

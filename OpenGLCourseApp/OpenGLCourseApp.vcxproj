@@ -96,6 +96,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Core\Context.cpp" />
+    <ClCompile Include="Core\Application.cpp" />
+    <ClCompile Include="Utils\IO\FileUtil.cpp" />
+    <ClCompile Include="GUI\Menu.cpp" />
     <ClCompile Include="imgui\ImguiHandler.cpp" />
     <ClCompile Include="IO\Input.cpp" />
     <ClCompile Include="IO\Keyboard.cpp" />
@@ -119,7 +123,6 @@
     <ClCompile Include="Renderer\Buffers\VertexBufferLayout.cpp" />
     <ClCompile Include="Utils\Math\LinearAlgebraUtil.cpp" />
     <ClCompile Include="Vendor\imgui\imgui.cpp" />
-    <ClCompile Include="Vendor\imgui\imgui_demo.cpp" />
     <ClCompile Include="Vendor\imgui\imgui_draw.cpp" />
     <ClCompile Include="Vendor\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Vendor\imgui\imgui_impl_sdl.cpp" />
@@ -128,7 +131,10 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\Context.h" />
+    <ClInclude Include="Core\Application.h" />
     <ClInclude Include="ApplicationConstants.h" />
+    <ClInclude Include="Utils\IO\FileUtil.h" />
     <ClInclude Include="imgui\ImguiHandler.h" />
     <ClInclude Include="IO\Input.h" />
     <ClInclude Include="IO\Keyboard.h" />
@@ -167,6 +173,7 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GUI\Menu.h" />
     <None Include="Resources\Shaders\LightShader.frag" />
     <None Include="Resources\Shaders\LightShader.vert" />
     <None Include="Resources\Shaders\shader.frag" />

@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 
+#include "SDL_syswm.h"
 #include <SDL.h>
 #include <GL/glew.h>
 #include <SDL_opengl.h>
@@ -40,6 +41,8 @@ public:
 
 	SDL_Window* GetWindow() { return m_mainWindow; }
 	SDL_GLContext GetContext() { return m_glContext; }
+
+	void* GetNativeWindow();
 
 	~Window();
 private:

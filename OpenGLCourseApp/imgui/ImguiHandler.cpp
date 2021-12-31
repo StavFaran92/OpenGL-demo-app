@@ -1,5 +1,7 @@
 #include "ImguiHandler.h"
 
+#include "GUI/Menu.h"
+
 bool ImguiHandler::Init(SDL_Window* window, const SDL_GLContext& context)
 {
 	const char* glsl_version = "#version 140";
@@ -8,7 +10,7 @@ bool ImguiHandler::Init(SDL_Window* window, const SDL_GLContext& context)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	ImGui::StyleColorsDark();
+	ImGui::StyleColorsLight();
 
 	if (!ImGui_ImplSDL2_InitForOpenGL(window, context))
 	{
@@ -28,6 +30,7 @@ bool ImguiHandler::Init(SDL_Window* window, const SDL_GLContext& context)
 
 void ImguiHandler::ProccessEvents(SDL_Event& e)
 {
+	ImGui_ImplSDL2_ProcessEvent(&e);
 }
 
 void ImguiHandler::Render()
@@ -40,7 +43,7 @@ void ImguiHandler::Render()
 	ImGui::NewFrame();
 
 
-	ImGui::ShowDemoWindow(&show_demo_window);
+	DisplayMenu();
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
