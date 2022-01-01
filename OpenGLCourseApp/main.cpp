@@ -28,9 +28,10 @@
 #include "imgui/ImguiHandler.h"
 
 #include "Core/Application.h"
+#include "Core/Context.h"
 
 void handleKeys(unsigned char key, int x, int y);
-void handleEvents(SDL_Event& e, ImguiHandler& imgui, bool& quit, std::shared_ptr<ICamera> camera, double deltaTime);
+void handleEvents(SDL_Event& e, std::shared_ptr<ImguiHandler> imgui, bool& quit, std::shared_ptr<ICamera> camera, double deltaTime);
 
 int main(int argc, char* argv[])
 { 
@@ -38,28 +39,16 @@ int main(int argc, char* argv[])
 
 	std::shared_ptr<Window> mainWindow = Application::Get().GetWindow();
 	std::shared_ptr<Context> context = Application::Get().GetContext();
+	std::shared_ptr<Renderer> renderer = Application::Get().GetRenderer();
+	std::shared_ptr<ImguiHandler> imgui = Application::Get().GetImguiHandler();
 
-	ImguiHandler imgui;
-	if (!imgui.Init(mainWindow->GetWindow(), mainWindow->GetContext()))
-	{
-		logError("Imgui init failed!");
-		return -1;
-	}
+	std::shared_ptr<Shader> lightShader = std::make_shared<Shader>("Resources\\Shaders\\LightShader.vert", "Resources\\Shaders\\LightShader.frag");
+	context->AddShader(lightShader);
 
-	Renderer renderer;
-
-	Shader modelShader("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
-	Shader lightShader("Resources\\Shaders\\LightShader.vert", "Resources\\Shaders\\LightShader.frag");
-
-	std::shared_ptr<ICamera> camera = std::make_shared<FlyCamera>(glm::vec3(0.0f, 0.0f, 0.0f), -90.0f, 0.0f, 1.0f, .5f);
-
-	glm::mat4 projection = glm::perspective(45.0f, (float)mainWindow->getWidth() / mainWindow->getHeight(), 0.1f, 100.0f);
-
-	Model lightCube("D:\\program files\\downloads\\cube-companion\\source\\model\\model.dae");
-	lightCube.loadModel();
-
-	Model backpack("D:\\program files\\downloads\\backpack\\backpack.obj");
-	backpack.loadModel();
+	std::shared_ptr<Model> lightCube = std::make_shared<Model>("D:\\program files\\downloads\\cube-companion\\source\\model\\model.dae");
+	lightCube->loadModel();
+	context->AddModel(lightCube);
+	lightCube->AttachShader(lightShader);
 
 	//Main loop flag
 	bool quit = false;
@@ -82,59 +71,36 @@ int main(int argc, char* argv[])
 		deltaTime = (double)SDL_GetPerformanceFrequency() / ((NOW - LAST) * 1000);
 
 		//Handle events on queue
-		handleEvents(e, imgui, quit, camera, deltaTime);
+		handleEvents(e, imgui, quit, renderer->GetCamera(), deltaTime);
 
-		renderer.Clear();
+		renderer->Clear();
 
-		camera->update(deltaTime);
+		renderer->GetCamera()->update(deltaTime);
 
-		lightShader.UseShader();
-
-		lightShader.SetMat4("projection", projection);
-		lightShader.SetMat4("view", camera->getView());
-
-		lightCube.GetTransformation()->SetPosition({ 10 * cos(angle * Constants::toRadians) ,0, 10 * sin(angle * Constants::toRadians) });
+		lightCube->GetTransformation()->SetPosition({ 10 * cos(angle * Constants::toRadians) ,0, 10 * sin(angle * Constants::toRadians) });
 		angle++;
-		lightCube.GetTransformation()->SetScale({ .25f, .25f, .25f });
-		lightCube.Update(deltaTime);
-		lightCube.Draw(lightShader, renderer);
+		lightCube->GetTransformation()->SetScale({ .25f, .25f, .25f });
 
-		modelShader.UseShader();
+		context->Update(deltaTime);
+		context->Draw(renderer);
 
-		modelShader.SetFloat("material.shininess", 32.0f);
-
-		modelShader.SetFloat("light.color", { 1.0f, 1.0f, 1.0f });
-		modelShader.SetFloat("light.position", lightCube.GetTransformation()->GetPosition());
-		modelShader.SetFloat("light.ambient", { 0.2f, 0.2f, 0.2f });
-		modelShader.SetFloat("light.diffuse", { 0.5f, 0.5f, 0.5f }); // darken diffuse light a bit
-		modelShader.SetFloat("light.specular", { 1.0f, 1.0f, 1.0f });
-
-		modelShader.SetFloat("viewPos", camera->getPosition());
-
-		modelShader.SetMat4("projection", projection);
-		modelShader.SetMat4("view", camera->getView());
-
-		backpack.GetTransformation()->SetPosition({ 0,0,0 });
-		backpack.Update(deltaTime);
-		backpack.Draw(modelShader, renderer);
-
-		imgui.Render();
+		imgui->Render();
 
 		mainWindow->SwapBuffer();
 	}
 
-	imgui.Close();
+	imgui->Close();
 
 	mainWindow->Close();
 
 	return 0;
 }
 
-void handleEvents(SDL_Event& e, ImguiHandler& imgui, bool& quit, std::shared_ptr<ICamera> camera, double deltaTime)
+void handleEvents(SDL_Event& e, std::shared_ptr<ImguiHandler> imgui, bool& quit, std::shared_ptr<ICamera> camera, double deltaTime)
 {
 	while (SDL_PollEvent(&e) != 0)
 	{
-		imgui.ProccessEvents(e);
+		imgui->ProccessEvents(e);
 
 		//User requests quit
 		if (e.type == SDL_QUIT)

@@ -14,7 +14,7 @@ public:
 		position(xPos, yPos, zPos), constant(constant), linear(linear), exponent(exponent)
 	{}
 
-	void useLight(Shader& shader);
+	void useLight(std::shared_ptr<Shader >shader);
 
 private:
 	glm::vec3 position;

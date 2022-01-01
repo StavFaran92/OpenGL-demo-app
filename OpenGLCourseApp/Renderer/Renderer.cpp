@@ -1,10 +1,31 @@
 #include "Renderer.h"
 
-void Renderer::Draw(const VertexArrayObjectWrapper& vao, const Shader& m_shader) const
+Renderer::Renderer()
 {
+	m_defaultShader = std::make_shared<Shader>("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
+	m_camera = std::make_shared<FlyCamera>(glm::vec3(0.0f, 0.0f, 0.0f), -90.0f, 0.0f, 1.0f, .5f);
+	m_projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
+}
+
+void Renderer::Draw(const VertexArrayObjectWrapper& vao, std::shared_ptr<Shader> shader) const
+{
+	shader->SetFloat("viewPos", m_camera->getPosition()); // TODO fix
+	shader->SetMat4("projection", m_projection);
+	shader->SetMat4("view", m_camera->getView());
+
 	vao.Bind();
 
 	glDrawElements(GL_TRIANGLES, vao.GetIndexCount(), GL_UNSIGNED_INT, 0);
+}
+
+std::shared_ptr<Shader> Renderer::GetDefaultShader() const
+{
+	return m_defaultShader;
+}
+
+std::shared_ptr<ICamera> Renderer::GetCamera()
+{
+	return m_camera;
 }
 
 void Renderer::Clear() const

@@ -22,8 +22,6 @@ class Shader
 public:
 	Shader(const std::string& vertexfilePath, const std::string& fragmentFilePath);
 
-	void Init(const std::string& vertexFilePath, const std::string& fragmentFilePath);
-
 	void UseShader() const;
 	void ClearShader();
 
@@ -42,6 +40,7 @@ public:
 	~Shader();
 
 private:
+	void Init(const std::string& vertexFilePath, const std::string& fragmentFilePath);
 	void BuildShaders(const std::string& vertexCode, const std::string& fragmentCode);
 	GLuint AddShader(const std::string& shaderCode, GLenum shaderType);
 

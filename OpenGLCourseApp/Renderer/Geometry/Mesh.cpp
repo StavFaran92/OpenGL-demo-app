@@ -3,7 +3,7 @@
 Mesh::Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices, std::vector<std::shared_ptr<Texture>> textures) :
 	m_vertices(vertices), m_indices(indices), m_textures(textures)
 {
-	logInfo( __FUNCTION__ );
+	logTrace( __FUNCTION__ );
 
 	m_vao = std::make_shared<VertexArrayObjectWrapper>();
 	m_ibo = std::make_shared<ElementBufferObjectWrapper>(&(m_indices->at(0)), indices->size());
@@ -17,7 +17,7 @@ Mesh::Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::v
 //
 //}
 
-void Mesh::RenderMesh(Shader& shader, const Renderer& renderer)
+void Mesh::RenderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < Renderer >renderer)
 {
 	unsigned int diffuseNr = 1;
 	unsigned int specularNr = 1;
@@ -32,11 +32,11 @@ void Mesh::RenderMesh(Shader& shader, const Renderer& renderer)
 		else if (name == Constants::g_textureSpecular)
 			number = std::to_string(specularNr++);
 
-		shader.SetInt(("material." + name + number).c_str(), i);
+		shader->SetInt(("material." + name + number).c_str(), i);
 		glBindTexture(GL_TEXTURE_2D, m_textures[i]->GetID());
 	}
 
-	renderer.Draw(*m_vao, shader);
+	renderer->Draw(*m_vao, shader);
 	glActiveTexture(GL_TEXTURE0);
 }
 void Mesh::ClearMesh()
@@ -48,6 +48,6 @@ void Mesh::ClearMesh()
 
 Mesh::~Mesh()
 {
-	logInfo( __FUNCTION__ );
+	logTrace( __FUNCTION__ );
 	ClearMesh();
 }

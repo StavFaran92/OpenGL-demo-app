@@ -1,7 +1,7 @@
 #include "Light.h"
 
 Light::Light()
-	:m_color(glm::vec3(1.0f, 1.0f, 1.0f)), m_ambientIntensity(1), m_diffuseIntensity(0.0f)
+	:m_color(glm::vec3(1.0f, 1.0f, 1.0f)), m_ambientIntensity(1.0f), m_diffuseIntensity(1.0f)
 {
 }
 
@@ -10,11 +10,13 @@ Light::Light(GLfloat red, GLfloat green, GLfloat blue, GLfloat aIntensity, GLflo
 {
 }
 
-void Light::useLight(Shader& shader)
+void Light::useLight(std::shared_ptr<Shader> shader)
 {
-	shader.SetFloat("directionalLight.color", m_color);
-	shader.SetFloat("directionalLight.ambientIntensity", m_ambientIntensity);
-	shader.SetFloat("directionalLight.diffuseIntensity", m_diffuseIntensity);
+	shader->SetFloat("light.color", m_color);
+	shader->SetFloat("light.position", m_position);
+	shader->SetFloat("light.ambient", Constants::VEC3_ONE * m_ambientIntensity);
+	shader->SetFloat("light.diffuse", Constants::VEC3_ONE * m_diffuseIntensity); // darken diffuse light a bit
+	shader->SetFloat("light.specular", Constants::VEC3_ONE);
 }
 
 Light::~Light()

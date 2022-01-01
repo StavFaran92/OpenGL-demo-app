@@ -5,18 +5,23 @@
 
 #include "../Shader/Shader.h"
 
+#include "Core/Application.h"
+#include "ApplicationConstants.h"
+
 class Light
 {
 public:
 	Light();
 	Light(GLfloat red, GLfloat green, GLfloat blue, GLfloat aIntensity, GLfloat dIntensity);
 
-	void useLight(Shader& shader);
+	virtual void useLight(std::shared_ptr<Shader> shader);
 
-	~Light();
+	virtual ~Light();
 
 protected:
 	glm::vec3 m_color;
 	GLfloat m_ambientIntensity;
 	GLfloat m_diffuseIntensity;
+
+	glm::vec3 m_position;
 };

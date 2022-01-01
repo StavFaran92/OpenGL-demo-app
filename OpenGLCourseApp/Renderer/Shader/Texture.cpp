@@ -4,7 +4,7 @@
 Texture::Texture(const std::string& fileLocation, std::string typeName, int slot)
 	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_fileLocation(fileLocation), m_slot(slot), m_type(typeName)
 {
-	logInfo( __FUNCTION__ );
+	logTrace( __FUNCTION__ );
 }
 
 void Texture::LoadTexture(bool isFlipped)
@@ -61,6 +61,6 @@ void Texture::ClearTexture()
 
 Texture::~Texture()
 {
-	logInfo( __FUNCTION__ );
+	logTrace( __FUNCTION__ );
 	ClearTexture();
 }

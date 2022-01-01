@@ -1,8 +1,8 @@
 #include "DirectionalLight.h"
 
-void DirectionalLight::useLight(Shader& shader)
+void DirectionalLight::useLight(std::shared_ptr<Shader> shader)
 {
 	Light::useLight(shader);
 
-	shader.SetFloat("directionalLight.direction", m_direction);
+	//shader->SetFloat("directionalLight.direction", m_direction);
 }

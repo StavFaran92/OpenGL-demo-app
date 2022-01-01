@@ -13,7 +13,7 @@ public:
 		: Light(red, green, blue, aIntensity, dIntensity), m_direction(xDir, yDir, zDir)
 	{}
 
-	void useLight(Shader& shader);
+	void useLight(std :: shared_ptr<Shader> shader) override;
 
 private:
 	glm::vec3 m_direction;

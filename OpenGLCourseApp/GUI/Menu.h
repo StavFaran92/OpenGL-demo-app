@@ -6,6 +6,8 @@
 #include "Utils/Logger/Logger.h"
 
 #include "Core/Application.h"
+#include "Core/Context.h"
+#include "Renderer/Geometry/Model.h"
 
 void DisplayMenu();
 void ShowMenuFile();

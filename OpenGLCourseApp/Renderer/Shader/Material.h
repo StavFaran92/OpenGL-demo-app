@@ -2,15 +2,15 @@
 
 #include <GL/glew.h>
 
-#include "../Shader/Shader.h"
+#include "Renderer/Shader/Shader.h"
 
 class Material
 {
 public:
 	Material();
-	Material(GLfloat sIntensity, GLfloat shine);
+	Material(GLfloat shine);
 
-	void UseMaterial(Shader& shader);
+	void UseMaterial(std::shared_ptr<Shader> shader);
 
 	~Material();
 

@@ -20,7 +20,7 @@ class Mesh
 public:
 	Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices, std::vector<std::shared_ptr<Texture>> textures);
 
-	void RenderMesh(Shader& shader, const Renderer& renderer);
+	void RenderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < Renderer >renderer);
 
 	~Mesh();
 private:

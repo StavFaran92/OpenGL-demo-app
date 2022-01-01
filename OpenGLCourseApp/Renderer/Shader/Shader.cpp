@@ -48,7 +48,7 @@ bool Shader::ValidateRenderer()
 {
 	if (!m_id)
 	{
-		fprintf(stderr, "Error creating program\n");
+		logError("Error creating program");
 		return false;
 	}
 	return true;
@@ -62,7 +62,7 @@ bool Shader::ValidateProgramLink()
 	{
 		GLchar eLog[1024] = { 0 };
 		glGetProgramInfoLog(m_id, sizeof(eLog), NULL, eLog);
-		fprintf(stderr, "Error linking program: '%s'\n", eLog);
+		logError("Error linking program: {}", eLog);
 		return false;
 	}
 
@@ -73,7 +73,7 @@ bool Shader::ValidateProgramLink()
 	{
 		GLchar eLog[1024] = { 0 };
 		glGetProgramInfoLog(m_id, sizeof(eLog), NULL, eLog);
-		fprintf(stderr, "Error validating program: '%s'\n", eLog);
+		logError("Error validating program: {}", eLog);
 		return false;
 	}
 	return true;
@@ -116,7 +116,7 @@ bool Shader::validateCompilation(const GLuint& shader, const GLenum& shaderType)
 	{
 		GLchar eLog[1024] = { 0 };
 		glGetShaderInfoLog(shader, 1024, NULL, eLog);
-		fprintf(stderr, "Error compiling the %d shader: '%s'\n", shaderType, eLog);
+		logError("Error compiling the {} shader: {}", shaderType, eLog);
 		return false;
 	}
 	return true;
@@ -130,7 +130,7 @@ int Shader::GetUniformLocation(const std::string& name)
 	int location = glGetUniformLocation(m_id, name.c_str());
 
 	if (location == -1) {
-		fprintf(stderr, "Warning: uniform %s doesn't exists!", name.c_str());
+		logError("Warning: uniform {} doesn't exists!", name.c_str());
 		return -1;
 	}
 

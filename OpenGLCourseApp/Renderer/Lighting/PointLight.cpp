@@ -1,6 +1,6 @@
 #include "PointLight.h"
 
-void PointLight::useLight(Shader& shader)
+void PointLight::useLight(std::shared_ptr<Shader >shader)
 {
 	Light::useLight(shader);
 

@@ -1,19 +1,62 @@
 #include "Model.h"
 
-void Model::Draw(Shader& shader, const Renderer& renderer)
+Model::Model(const std::string& path) : m_path(path)
 {
-	shader.SetMat4("model", transformation->GetTransformation());
+	logTrace(__FUNCTION__);
+	m_modelDir = m_path.substr(0, m_path.find_last_of('\\'));
+
+	transformation = std::make_shared<Transform>();
+
+	m_shader = Application::Get().GetRenderer()->GetDefaultShader();
+}
+
+void Model::Draw(std::shared_ptr<Renderer> renderer)
+{
+	m_shader->SetMat4("model", transformation->GetTransformation());
+
+	if (m_light)
+	{
+		m_light->useLight(m_shader);
+	}
+
+	if (m_material)
+	{
+		m_material->UseMaterial(m_shader);
+	}
 
 	for (unsigned int i = 0; i < m_meshes.size(); i++)
 	{
-		m_meshes[i]->RenderMesh(shader, renderer);
+		m_meshes[i]->RenderMesh(m_shader, renderer);
 	}
+}
+
+bool Model::AttachShader(std::shared_ptr<Shader> shader)
+{
+	m_shader = shader;
+
+	return true;
+}
+
+bool Model::DetachShader()
+{
+	m_shader = Application::Get().GetRenderer()->GetDefaultShader();
+
+	return true;
 }
 
 void Model::Update(float delta)
 {
 	transformation->Update(delta);
 }
+
+bool Model::UseShader()
+{
+	m_shader->UseShader();
+
+	return true;
+}
+
+
 
 void Model::loadModel()
 {
@@ -46,6 +89,25 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 	{
 		processNode(node->mChildren[i], scene);
 	}
+}
+
+std::shared_ptr<Shader> Model::GetShader()
+{
+	return m_shader;
+}
+
+bool Model::UseLight(std::shared_ptr<Light> light)
+{
+	m_light = light;
+
+	return true;
+}
+
+bool Model::UseMaterial(std::shared_ptr<Material> material)
+{
+	m_material = material;
+
+	return true;
 }
 
 std::shared_ptr<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)

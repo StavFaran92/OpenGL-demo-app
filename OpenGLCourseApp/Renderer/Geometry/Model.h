@@ -11,25 +11,31 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include "ApplicationConstants.h"
+#include "Core/Application.h"
+#include "Renderer/Lighting/DirectionalLight.h"
+#include "Renderer/Shader/Material.h"
 
 #include "Transform.h"
 
 class Model
 {
 public:
-	Model(const std::string& path)
-		:m_path(path)
-	{
-		logInfo( __FUNCTION__ );
-		m_modelDir = m_path.substr(0, m_path.find_last_of('\\'));
-
-		transformation = std::make_shared<Transform>();
-	}
+	Model(const std::string& path);
 	~Model() {
-		logInfo( __FUNCTION__ );
+		logTrace( __FUNCTION__ );
 	}
 	void loadModel();
-	void Draw(Shader& shader, const Renderer& renderer);
+	void Draw(std::shared_ptr<Renderer> renderer);
+
+	bool AttachShader(std::shared_ptr<Shader > shader);
+	bool DetachShader();
+
+	bool UseLight(std::shared_ptr<Light> light);
+	bool UseMaterial(std::shared_ptr<Material> material);
+
+	bool UseShader();
+
+	std::shared_ptr<Shader> GetShader();
 
 	void Update(float delta);
 	std::shared_ptr<Transform> GetTransformation() const { return transformation; }
@@ -45,4 +51,8 @@ private:
 	const std::string m_path = "";
 
 	std::shared_ptr<Transform> transformation;
+
+	std::shared_ptr<Shader> m_shader = nullptr;
+	std::shared_ptr<Light> m_light = nullptr;
+	std::shared_ptr<Material> m_material = nullptr;
 };

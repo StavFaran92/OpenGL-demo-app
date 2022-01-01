@@ -1,5 +1,10 @@
 #include "Application.h"
 
+#include "Context.h"
+#include "Renderer/Renderer.h"
+#include "Window.h"
+#include "imgui/ImguiHandler.h"
+
 // Singleton
 Application Application::instance;
 
@@ -13,6 +18,22 @@ bool Application::Init()
         logError("Window init failed!");
         return false;
     }
+
+    m_renderer = std::make_shared<Renderer>();
+
+    m_imguiHandler = std::make_shared<ImguiHandler>();
+    if (!m_imguiHandler->Init(m_window->GetWindow(), m_window->GetContext()))
+    {
+        logError("Imgui init failed!");
+        return -1;
+    }
+
+    return true;
+}
+
+std::shared_ptr<Context> Application::GetContext()
+{
+    return m_context;
 }
 
 void Application::Close()
