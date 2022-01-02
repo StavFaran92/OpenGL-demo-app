@@ -37,7 +37,7 @@ void FlyCamera::keyControl(double deltaTime)
 	}
 }
 
-void FlyCamera::mouseControl(GLfloat xChange, GLfloat yChange)
+void FlyCamera::OnMouseMotion(GLfloat xChange, GLfloat yChange)
 {
 	xChange *= m_turnSpeed;
 	yChange *= m_turnSpeed;
@@ -56,6 +56,14 @@ void FlyCamera::mouseControl(GLfloat xChange, GLfloat yChange)
 	}
 
 	calculateOrientation();
+}
+
+void FlyCamera::OnMousePressed(SDL_MouseButtonEvent& e)
+{
+}
+
+void FlyCamera::OnMouseReleased(SDL_MouseButtonEvent& e)
+{
 }
 
 void FlyCamera::calculateOrientation()

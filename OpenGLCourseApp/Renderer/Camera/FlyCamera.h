@@ -15,7 +15,9 @@ public:
 	FlyCamera(glm::vec3 startPosition, GLfloat startYaw, GLfloat startPitch, GLfloat startMoveSpeed, GLfloat startTurnSpeed);
 
 	void keyControl(double deltaTime) override;
-	void mouseControl(GLfloat xChange, GLfloat yChange) override;
+	void OnMouseMotion(GLfloat xChange, GLfloat yChange) override;
+	void OnMousePressed(SDL_MouseButtonEvent& e) override;
+	void OnMouseReleased(SDL_MouseButtonEvent& e) override;
 
 	inline glm::mat4 getView() override { return glm::lookAt(m_position, m_position + m_front, m_up); }
 	inline glm::vec3 getPosition() override { return m_position; }

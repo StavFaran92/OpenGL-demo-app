@@ -1,9 +1,10 @@
 #include "Renderer.h"
-
+#include "Renderer/Camera/FlyCamera.h"
 Renderer::Renderer()
 {
 	m_defaultShader = std::make_shared<Shader>("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
-	m_camera = std::make_shared<FlyCamera>(glm::vec3(0.0f, 0.0f, 0.0f), -90.0f, 0.0f, 1.0f, .5f);
+	//m_camera = std::make_shared<FlyCamera>(glm::vec3(0.0f, 0.0f, 0.0f), -90.0f, 0.0f, 1.0f, .5f);
+	m_camera = std::make_shared<EditorCamera>(glm::vec3(5.0f, 5.0f, 5.0f), 1.0f, .5f);
 	m_projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
 }
 

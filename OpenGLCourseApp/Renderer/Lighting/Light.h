@@ -8,6 +8,8 @@
 #include "Core/Application.h"
 #include "ApplicationConstants.h"
 
+#include "Renderer/Geometry/Transform.h"
+
 class Light
 {
 public:
@@ -16,6 +18,8 @@ public:
 
 	virtual void useLight(std::shared_ptr<Shader> shader);
 
+	inline std::shared_ptr<Transform > GetTransform() { return m_transform; }
+
 	virtual ~Light();
 
 protected:
@@ -23,5 +27,5 @@ protected:
 	GLfloat m_ambientIntensity;
 	GLfloat m_diffuseIntensity;
 
-	glm::vec3 m_position;
+	std::shared_ptr<Transform >m_transform;
 };

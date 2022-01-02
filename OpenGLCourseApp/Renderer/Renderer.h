@@ -2,7 +2,7 @@
 #include "Renderer/Buffers/VertexArrayObjectWrapper.h"
 #include "Renderer/Shader/Shader.h"
 #include "Renderer/Camera/ICamera.h"
-#include "Renderer/Camera/FlyCamera.h"
+#include "Renderer/Camera/EditorCamera.h"
 
 #include "glm/glm.hpp"
 

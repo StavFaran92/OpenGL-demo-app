@@ -13,7 +13,9 @@ public:
 	ICamera() = default;
 
 	virtual void keyControl(double deltaTime) = 0;
-	virtual void mouseControl(GLfloat xChange, GLfloat yChange) = 0;
+	virtual void OnMouseMotion(GLfloat xChange, GLfloat yChange) = 0;
+	virtual void OnMousePressed(SDL_MouseButtonEvent& e) = 0;
+	virtual void OnMouseReleased(SDL_MouseButtonEvent& e) = 0;
 
 	virtual glm::mat4 getView() = 0;
 	virtual glm::vec3 getPosition() = 0;

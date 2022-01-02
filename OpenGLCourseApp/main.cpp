@@ -110,7 +110,15 @@ void handleEvents(SDL_Event& e, std::shared_ptr<ImguiHandler> imgui, bool& quit,
 		//Handle keypress with current mouse position
 		else if (e.type == SDL_MOUSEMOTION)
 		{
-			camera->mouseControl(e.motion.xrel, e.motion.yrel);
+			camera->OnMouseMotion(e.motion.xrel, e.motion.yrel);
+		}
+		else if (e.type == SDL_MOUSEBUTTONDOWN)
+		{
+			camera->OnMousePressed(e.button);
+		}
+		else if (e.type == SDL_MOUSEBUTTONUP)
+		{
+			camera->OnMouseReleased(e.button);
 		}
 	}
 }
