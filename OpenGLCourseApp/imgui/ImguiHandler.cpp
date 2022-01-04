@@ -10,6 +10,8 @@ bool ImguiHandler::Init(SDL_Window* window, const SDL_GLContext& context)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	ImGui::StyleColorsLight();
 
 	if (!ImGui_ImplSDL2_InitForOpenGL(window, context))
@@ -42,10 +44,10 @@ void ImguiHandler::Render()
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-
 	DisplayMenu();
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 }
 
 bool ImguiHandler::Close()
