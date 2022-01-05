@@ -14,6 +14,9 @@ public:
 	void update(float deltaTime) override;
 	void OnMousePressed(SDL_MouseButtonEvent& e) override;
 	void OnMouseReleased(SDL_MouseButtonEvent& e) override;
+	void OnMouseScroll(Sint32& y) override;
+private:
+	void calculateOrientation();
 private:
 	bool m_isLocked = true;
 	std::shared_ptr<Keyboard> m_keyboard;
@@ -24,9 +27,9 @@ private:
 	glm::vec3 m_right;
 	glm::vec3 m_worldUp;
 
-	GLfloat m_movementSpeed;
-	GLfloat m_turnSpeed;
-	GLfloat distance;
+	GLfloat m_movementSpeed = 0;
+	GLfloat m_turnSpeed = 0;
+	GLfloat distance = 0;
 	GLfloat m_angleX = 0;
 	float m_angleY = 0;
 

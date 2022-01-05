@@ -9,16 +9,23 @@ bool ImguiHandler::Init(SDL_Window* window, const SDL_GLContext& context)
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	// Set ImGui flags
+	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+	// Set style
 	ImGui::StyleColorsLight();
 
+	// Init ImGui_SDL
 	if (!ImGui_ImplSDL2_InitForOpenGL(window, context))
 	{
 		logError("Init Imgui_SDL failed.");
 		return false;
 	}
+
+	// Init Imgui_OpenGL3
 	if(!ImGui_ImplOpenGL3_Init(glsl_version))
 	{
 		logError("Init Imgui_OpenGL failed.");

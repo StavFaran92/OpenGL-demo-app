@@ -4,16 +4,12 @@ EditorCamera::EditorCamera(glm::vec3 startPosition, GLfloat startMoveSpeed, GLfl
 	: m_position(startPosition),
 	m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
 	m_movementSpeed(startMoveSpeed),
-	m_turnSpeed(startTurnSpeed)
+	m_turnSpeed(startTurnSpeed),
+	distance(5)
 {
 	m_keyboard = std::make_shared<Keyboard>();
 
-	m_front = glm::normalize(-m_position);
-
-	m_right = glm::normalize(glm::cross(m_front, m_worldUp));
-	m_up = glm::normalize(glm::cross(m_right, m_front));
-
-	distance = glm::length(m_position);
+	calculateOrientation();
 }
 
 void EditorCamera::keyControl(double deltaTime)
@@ -40,17 +36,7 @@ void EditorCamera::OnMouseMotion(GLfloat xChange, GLfloat yChange)
 
 		m_angleY = std::clamp(m_angleY, -90.f, 90.f);
 
-		float t = distance * cos(m_angleY * Constants::toRadians);
-		float y = distance * sin(m_angleY * Constants::toRadians);
-		float x = t * cos(m_angleX * Constants::toRadians);
-		float z = t * sin(m_angleX * Constants::toRadians);
-
-		m_position = glm::vec3(x, y, z);
-
-		m_front = glm::normalize(-m_position);
-
-		m_right = glm::normalize(glm::cross(m_front, m_worldUp));
-		m_up = glm::normalize(glm::cross(m_right, m_front));
+		calculateOrientation();
 	}
 }
 
@@ -77,4 +63,26 @@ void EditorCamera::OnMouseReleased(SDL_MouseButtonEvent& e)
 	{
 		m_isLocked = true;
 	}
+}
+
+void EditorCamera::OnMouseScroll(Sint32& y)
+{
+	distance = std::clamp(distance-y, 1.f, 50.f);
+
+	calculateOrientation();
+}
+
+void EditorCamera::calculateOrientation()
+{
+	float t = distance * cos(m_angleY * Constants::toRadians);
+	float y = distance * sin(m_angleY * Constants::toRadians);
+	float x = t * cos(m_angleX * Constants::toRadians);
+	float z = t * sin(m_angleX * Constants::toRadians);
+
+	m_position = glm::vec3(x, y, z);
+
+	m_front = glm::normalize(-m_position);
+
+	m_right = glm::normalize(glm::cross(m_front, m_worldUp));
+	m_up = glm::normalize(glm::cross(m_right, m_front));
 }

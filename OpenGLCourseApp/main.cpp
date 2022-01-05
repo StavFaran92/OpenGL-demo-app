@@ -120,5 +120,9 @@ void handleEvents(SDL_Event& e, std::shared_ptr<ImguiHandler> imgui, bool& quit,
 		{
 			camera->OnMouseReleased(e.button);
 		}
+		else if (e.type == SDL_MOUSEWHEEL)
+		{
+			camera->OnMouseScroll(e.wheel.y);
+		}
 	}
 }

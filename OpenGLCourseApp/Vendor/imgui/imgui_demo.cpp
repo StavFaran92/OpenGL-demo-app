@@ -1476,7 +1476,7 @@ static void ShowDemoWindowWidgets()
                         if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) data->Buf[0] ^= 32;
                         data->BufDirty = true;
 
-                        // Increment a counter
+                        // Increment a counterb
                         int* p_int = (int*)data->UserData;
                         *p_int = *p_int + 1;
                     }
