@@ -1,20 +1,26 @@
 #pragma once
 #include "Light.h"
 
+struct Attenuation {
+	float constant = 1;
+	float linear = .35f;
+	float quadratic = .44;
+};
+
 class PointLight : public Light
 {
 public:
 	PointLight() :
-		Light(), constant(1), linear(1), quadratic(1)
+		Light(), m_attenuation()
 	{
 		m_name = "pointLights";
 	}
 
 	PointLight(glm::vec3 color, glm::vec3 pos, 
 		GLfloat aIntensity, GLfloat dIntensity,
-		GLfloat constant, GLfloat linear, GLfloat quadratic) :
+		Attenuation attenuation) :
 		Light(color, aIntensity, dIntensity),
-		constant(constant), linear(linear), quadratic(quadratic)
+		m_attenuation(attenuation)
 	{
 		m_name = "pointLights";
 
@@ -23,6 +29,11 @@ public:
 
 	void useLight(std::shared_ptr<Shader >shader, int index);
 
+	void SetAttenuation(Attenuation attenuation)
+	{
+		m_attenuation = attenuation;
+	}
+
 private:
-	GLfloat constant, linear, quadratic;
+	Attenuation m_attenuation;
 };

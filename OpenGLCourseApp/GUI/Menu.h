@@ -12,5 +12,6 @@
 void DisplayMenu();
 void ShowMenuFile();
 void ShowAppMainMenuBar();
-void OpenFile();
+void LoadModel();
 void SaveFile();
+void LightCreatorWindow();

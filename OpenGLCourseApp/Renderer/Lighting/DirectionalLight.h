@@ -12,7 +12,9 @@ public:
 
 	DirectionalLight(glm::vec3 color, glm::vec3 dir, GLfloat aIntensity, GLfloat dIntensity)
 		: Light(color, aIntensity, dIntensity), m_direction(dir)
-	{}
+	{
+		m_name = "dirLight";
+	}
 
 	void useLight(std :: shared_ptr<Shader> shader, int index) override;
 

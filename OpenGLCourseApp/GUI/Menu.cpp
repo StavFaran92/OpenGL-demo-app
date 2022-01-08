@@ -1,7 +1,10 @@
 #include "Menu.h"
 #include "Renderer/Lighting/PointLight.h"
+
 static void ShowExampleAppDockSpace();
 static void ShowExampleAppLog();
+
+static bool ShowLightCreatorWindow = false;
 
 // Helper to wire demo markers located in code to a interactive browser
 typedef void (*ImGuiDemoMarkerCallback)(const char* file, int line, const char* section, void* user_data);
@@ -13,8 +16,11 @@ void* GImGuiDemoMarkerCallbackUserData = NULL;
 
 void DisplayMenu()
 {
+    
+
 	IM_ASSERT(ImGui::GetCurrentContext() != NULL && "Missing dear imgui context. Refer to examples app!");
     ShowAppMainMenuBar();
+    LightCreatorWindow();
 
     //bool show_demo_window = true;
     //bool show_another_window = true;
@@ -76,15 +82,15 @@ void DisplayMenu()
 
 static void HelpMarker(const char* desc)
 {
-    ImGui::TextDisabled("(?)");
-    if (ImGui::IsItemHovered())
-    {
-        ImGui::BeginTooltip();
-        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-        ImGui::TextUnformatted(desc);
-        ImGui::PopTextWrapPos();
-        ImGui::EndTooltip();
-    }
+ImGui::TextDisabled("(?)");
+if (ImGui::IsItemHovered())
+{
+    ImGui::BeginTooltip();
+    ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+    ImGui::TextUnformatted(desc);
+    ImGui::PopTextWrapPos();
+    ImGui::EndTooltip();
+}
 }
 
 void ShowAppMainMenuBar()
@@ -103,26 +109,31 @@ void ShowAppMainMenuBar()
 void ShowMenuFile()
 {
     if (ImGui::MenuItem("New")) {}
-    if (ImGui::MenuItem("Open...", "Ctrl+O")) 
+    if (ImGui::MenuItem("Open...", "Ctrl+O"))
     {
-        OpenFile();
+        //OpenFile();
     }
-    if (ImGui::MenuItem("Save As..", "Ctrl+S")) 
+    if (ImGui::MenuItem("Save As..", "Ctrl+S"))
     {
         //SaveFile();
     }
     if (ImGui::MenuItem("Load Model"))
     {
-        OpenFile();
+        LoadModel();
     }
 
-    if (ImGui::MenuItem("Quit", "Alt+F4")) 
+    if (ImGui::MenuItem("Add Light"))
+    {
+        ShowLightCreatorWindow = true;
+    }
+
+    if (ImGui::MenuItem("Quit", "Alt+F4"))
     {
         Application::Get().Close();
     }
 }
 
-void OpenFile() 
+void LoadModel()
 {
     auto filePath = FileUtil::OpenFile("obj files (*.obj)\0*.obj\0");
     if (!filePath.empty())
@@ -131,9 +142,7 @@ void OpenFile()
 
         std::shared_ptr<Model> model = std::make_shared<Model>(filePath);
         model->loadModel();
-        std::shared_ptr<Light> light = std::make_shared<PointLight>();
         std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-        model->UseLight(light);
         model->UseMaterial(material);
 
         Application::Get().GetContext()->AddModel(model);
@@ -147,4 +156,74 @@ void SaveFile()
     {
         logDebug("Save file: " + filePath);
     }
+}
+
+enum class LightType {
+    DirectionalLight = 0,
+    PointLight = 1
+};
+
+void LightCreatorWindow()
+{
+    if(ShowLightCreatorWindow)
+    {
+        ImGui::SetNextWindowSize({400, 300}, ImGuiCond_Appearing);
+        ImGui::Begin("Light Creator");
+
+        static LightType lightType =  LightType::DirectionalLight ;
+        static float ambientIntensity = 0.2f;
+        static float diffuseIntensity = 0.5f;
+        static glm::vec3 color(1.f, 1.f, 1.f);
+        static glm::vec3 dir(0.f, 0.f, 0.f);
+        static glm::vec3 pos(0.f, 0.f, 0.f);
+        static Attenuation attenuation;
+
+        // Light Type
+        ImGui::RadioButton("Directional Light", (int*)&lightType, 0);
+        ImGui::RadioButton("Point Light", (int*)&lightType, 1);
+
+        ImGui::ColorEdit3("Color", (float*)&color); 
+        ImGui::SliderFloat("Ambient intensity", &ambientIntensity, 0.0f, 1.0f);
+        ImGui::SliderFloat("Diffuse intensity", &diffuseIntensity, 0.0f, 1.0f);
+
+        if (lightType == LightType::DirectionalLight)
+        {
+            ImGui::InputFloat3("Direction", (float*)&dir);
+        }
+        if (lightType == LightType::PointLight)
+        {
+            ImGui::InputFloat3("Position", (float*)&pos);
+            ImGui::LabelText("", "Attenuation");
+            ImGui::SliderFloat("constant", (float*)&attenuation.constant, 0.f, 1.f);
+            ImGui::SliderFloat("linear", (float*)&attenuation.linear, 0.f, 1.f);
+            ImGui::SliderFloat("quadratic", (float*)&attenuation.quadratic, 0.f, 1.f);
+        }
+
+        if(ImGui::Button("Ok"))
+        {
+            if (lightType == LightType::DirectionalLight) 
+            {
+                
+                std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>(color, dir, ambientIntensity, diffuseIntensity);
+                Application::Get().GetContext()->AddDirectionalLight(light);
+            }
+            else if (lightType == LightType::PointLight)
+            {
+                std::shared_ptr<PointLight> light = std::make_shared<PointLight>(color, pos, ambientIntensity, diffuseIntensity, attenuation);
+                Application::Get().GetContext()->AddPointLight(light);
+            }
+
+            ShowLightCreatorWindow = false;
+
+            logInfo("Added light successfully.");
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel"))
+        {
+            ShowLightCreatorWindow = false;
+        }
+
+        ImGui::End();
+    }
+
 }
