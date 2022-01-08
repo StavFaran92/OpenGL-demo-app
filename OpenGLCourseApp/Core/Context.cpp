@@ -65,14 +65,14 @@ void Context::Update(float deltaTime)
 	}
 }
 
-void Context::Draw(std::shared_ptr<Renderer> renderer)
+void Context::Draw()
 {
 	// Draw models
 	auto iter = m_models.begin();
 	while (iter != m_models.end())
 	{
 		iter->second->UseShader();
-		iter->second->Draw(renderer);
+		iter->second->Draw(m_renderer);
 		iter++;
 	}
 }

@@ -1,5 +1,7 @@
 #include "Model.h"
 
+#include "Renderer/Lighting/PointLight.h"
+
 Model::Model(const std::string& path) : m_path(path)
 {
 	logTrace(__FUNCTION__);
@@ -12,6 +14,7 @@ Model::Model(const std::string& path) : m_path(path)
 
 void Model::Draw(std::shared_ptr<Renderer> renderer)
 {
+	m_shader->SetInt("pointLightCount", PointLight::m_count);
 	m_shader->SetMat4("model", transformation->GetTransformation());
 
 	if (m_light)

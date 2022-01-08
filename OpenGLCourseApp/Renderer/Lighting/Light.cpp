@@ -6,18 +6,17 @@ Light::Light()
 	m_transform = std::make_shared<Transform>();
 }
 
-Light::Light(GLfloat red, GLfloat green, GLfloat blue, GLfloat aIntensity, GLfloat dIntensity) :
-	m_color(glm::vec3(red, green, blue)), m_ambientIntensity(aIntensity), m_diffuseIntensity(dIntensity)
+Light::Light(glm::vec3 color, GLfloat aIntensity, GLfloat dIntensity) :
+	m_color(color), m_ambientIntensity(aIntensity), m_diffuseIntensity(dIntensity)
 {
 }
 
 void Light::useLight(std::shared_ptr<Shader> shader)
 {
-	shader->SetFloat("light.color", m_color);
-	shader->SetFloat("light.position", m_transform->GetPosition());
-	shader->SetFloat("light.ambient", Constants::VEC3_ONE * m_ambientIntensity);
-	shader->SetFloat("light.diffuse", Constants::VEC3_ONE * m_diffuseIntensity); // darken diffuse light a bit
-	shader->SetFloat("light.specular", Constants::VEC3_ONE);
+	shader->SetFloat(m_name + ".color", m_color);
+	shader->SetFloat(m_name + ".ambient", VEC3_ONE * m_ambientIntensity);
+	shader->SetFloat(m_name + ".diffuse", VEC3_ONE * m_diffuseIntensity); // darken diffuse light a bit
+	shader->SetFloat(m_name + ".specular", VEC3_ONE);
 }
 
 Light::~Light()

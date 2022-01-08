@@ -5,19 +5,29 @@ class PointLight : public Light
 {
 public:
 	PointLight() :
-		Light(), position(0.0f, 0.0f, 0.0f), constant(1), linear(0), exponent(0)
-	{}
+		Light(), constant(1), linear(1), quadratic(1)
+	{
+		Init();
+	}
 
-	PointLight(GLfloat red, GLfloat green, GLfloat blue, GLfloat aIntensity, GLfloat dIntensity,
-		GLfloat xPos, GLfloat yPos, GLfloat zPos, GLfloat constant, GLfloat linear, GLfloat exponent) :
-		Light(red, green, blue, aIntensity, dIntensity),
-		position(xPos, yPos, zPos), constant(constant), linear(linear), exponent(exponent)
-	{}
+	PointLight(glm::vec3 color, glm::vec3 pos, 
+		GLfloat aIntensity, GLfloat dIntensity,
+		GLfloat constant, GLfloat linear, GLfloat quadratic) :
+		Light(color, aIntensity, dIntensity),
+		constant(constant), linear(linear), quadratic(quadratic)
+	{
+		Init();
+
+		m_transform->SetPosition(pos);
+	}
+
+	void Init();
 
 	void useLight(std::shared_ptr<Shader >shader);
 
 private:
-	glm::vec3 position;
+	GLfloat constant, linear, quadratic;
 
-	GLfloat constant, linear, exponent;
+public:
+	static uint32_t m_count;
 };

@@ -10,8 +10,6 @@ Application Application::instance;
 
 bool Application::Init()
 {
-    m_context = std::make_shared<Context>();
-
     m_window = std::make_shared<Window>(1024, 768);
     if (!m_window->initialize())
     {
@@ -19,17 +17,19 @@ bool Application::Init()
         return false;
     }
 
-    m_renderer = std::make_shared<Renderer>();
+    m_context = std::make_shared<Context>();
 
     m_imguiHandler = std::make_shared<ImguiHandler>();
     if (!m_imguiHandler->Init(m_window->GetWindow(), m_window->GetContext()))
     {
         logError("Imgui init failed!");
-        return -1;
+        return false;
     }
 
     return true;
 }
+
+std::shared_ptr<Renderer> Application::GetRenderer() { return m_context->GetRenderer(); }
 
 std::shared_ptr<Context> Application::GetContext()
 {

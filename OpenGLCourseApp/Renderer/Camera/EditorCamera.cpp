@@ -14,16 +14,6 @@ EditorCamera::EditorCamera(glm::vec3 startPosition, GLfloat startMoveSpeed, GLfl
 
 void EditorCamera::keyControl(double deltaTime)
 {
-	//if (m_keyboard->getKeyState(SDL_SCANCODE_W))
-	//{
-	//	logInfo("mouse button pressed!");
-	//	m_isLocked = false;
-	//}
-	//if (m_keyboard->getKeyState(SDL_SCANCODE_W))
-	//{
-	//	logInfo("mouse button released!");
-	//	m_isLocked = true;
-	//}
 }
 
 void EditorCamera::OnMouseMotion(GLfloat xChange, GLfloat yChange)

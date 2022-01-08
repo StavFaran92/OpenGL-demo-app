@@ -6,11 +6,12 @@ class DirectionalLight : public Light
 public:
 	DirectionalLight()
 		: Light(), m_direction(0.0f, -1.0f, 0.0f)
-	{}
+	{
+		m_name = "dirLight";
+	}
 
-	DirectionalLight(GLfloat red, GLfloat green, GLfloat blue, GLfloat aIntensity, GLfloat dIntensity,
-		GLfloat xDir, GLfloat yDir, GLfloat zDir)
-		: Light(red, green, blue, aIntensity, dIntensity), m_direction(xDir, yDir, zDir)
+	DirectionalLight(glm::vec3 color, glm::vec3 dir, GLfloat aIntensity, GLfloat dIntensity)
+		: Light(color, aIntensity, dIntensity), m_direction(dir)
 	{}
 
 	void useLight(std :: shared_ptr<Shader> shader) override;

@@ -13,7 +13,9 @@ class Context
 {
 public:
 	Context() : m_modelCounter(0) , m_shaderCounter(0)
-	{}
+	{
+		m_renderer = std::make_shared<Renderer>();
+	}
 
 	bool AddModel(std::shared_ptr<Model> model);
 	bool RemoveModel(const uint32_t uid);
@@ -21,11 +23,15 @@ public:
 	bool AddShader(std::shared_ptr<Shader> shader);
 	bool RemoveShader(const uint32_t uid);
 
+	std::shared_ptr<Renderer> GetRenderer() { return m_renderer; }
+
 	void Update(float deltaTime);
-	void Draw(std::shared_ptr<Renderer> renderer);
+	void Draw();
 private:
 	std::map<uint32_t, std::shared_ptr<Model>> m_models;
 	uint32_t m_modelCounter = 0;
+
+	std::shared_ptr<Renderer> m_renderer = nullptr;
 
 	std::map<uint32_t, std::shared_ptr<Shader>> m_shaders;
 	uint32_t m_shaderCounter = 0;

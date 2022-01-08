@@ -1,5 +1,5 @@
 #include "Renderer.h"
-#include "Renderer/Camera/FlyCamera.h"
+
 Renderer::Renderer()
 {
 	m_defaultShader = std::make_shared<Shader>("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");

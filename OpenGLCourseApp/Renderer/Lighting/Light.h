@@ -10,11 +10,13 @@
 
 #include "Renderer/Geometry/Transform.h"
 
+using namespace Constants;
+
 class Light
 {
 public:
 	Light();
-	Light(GLfloat red, GLfloat green, GLfloat blue, GLfloat aIntensity, GLfloat dIntensity);
+	Light(glm::vec3 color, GLfloat aIntensity, GLfloat dIntensity);
 
 	virtual void useLight(std::shared_ptr<Shader> shader);
 
@@ -28,4 +30,5 @@ protected:
 	GLfloat m_diffuseIntensity;
 
 	std::shared_ptr<Transform >m_transform;
+	std::string m_name = "";
 };

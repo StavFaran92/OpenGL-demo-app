@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
 		lightCube->GetTransformation()->SetScale({ .25f, .25f, .25f });
 
 		context->Update(deltaTime);
-		context->Draw(renderer);
+		context->Draw();
 
 		imgui->Render();
 

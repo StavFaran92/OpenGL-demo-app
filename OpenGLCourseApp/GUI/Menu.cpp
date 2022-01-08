@@ -1,4 +1,5 @@
 #include "Menu.h"
+#include "Renderer/Lighting/PointLight.h"
 static void ShowExampleAppDockSpace();
 static void ShowExampleAppLog();
 
@@ -130,7 +131,7 @@ void OpenFile()
 
         std::shared_ptr<Model> model = std::make_shared<Model>(filePath);
         model->loadModel();
-        std::shared_ptr<Light> light = std::make_shared<DirectionalLight>();
+        std::shared_ptr<Light> light = std::make_shared<PointLight>();
         std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
         model->UseLight(light);
         model->UseMaterial(material);
