@@ -5,6 +5,7 @@ static void ShowExampleAppDockSpace();
 static void ShowExampleAppLog();
 
 static bool ShowLightCreatorWindow = false;
+static bool showModelCreatorWindow = false;
 
 // Helper to wire demo markers located in code to a interactive browser
 typedef void (*ImGuiDemoMarkerCallback)(const char* file, int line, const char* section, void* user_data);
@@ -21,6 +22,7 @@ void DisplayMenu()
 	IM_ASSERT(ImGui::GetCurrentContext() != NULL && "Missing dear imgui context. Refer to examples app!");
     ShowAppMainMenuBar();
     LightCreatorWindow();
+    ShowModelCreatorWindow();
 
     //bool show_demo_window = true;
     //bool show_another_window = true;
@@ -119,7 +121,7 @@ void ShowMenuFile()
     }
     if (ImGui::MenuItem("Load Model"))
     {
-        LoadModel();
+        showModelCreatorWindow = true;
     }
 
     if (ImGui::MenuItem("Add Light"))
@@ -133,21 +135,22 @@ void ShowMenuFile()
     }
 }
 
-void LoadModel()
-{
-    auto filePath = FileUtil::OpenFile("obj files (*.obj)\0*.obj\0");
-    if (!filePath.empty())
-    {
-        logInfo("Open file: " + filePath);
-
-        std::shared_ptr<Model> model = std::make_shared<Model>(filePath);
-        model->loadModel();
-        std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-        model->UseMaterial(material);
-
-        Application::Get().GetContext()->AddModel(model);
-    }
-}
+//void LoadModel()
+//{
+//    auto filePath = FileUtil::OpenFile("All formats (*.obj *.blend *.fbx *.dae)\0*.obj;*.blend;*.fbx;*.dae\0obj files (*.obj)\0*.obj\0Blender 3D (*.blend)\0*.blend\0Autodesk 3D (*.fbx)\0*.fbx\0Collada (*dae)\0*.dae\0");
+//    if (!filePath.empty())
+//    {
+//        logInfo("Open file: " + filePath);
+//
+//        std::shared_ptr<Model> model = std::make_shared<Model>(filePath);
+//        model->FlipTexture(true);
+//        model->loadModel();
+//        std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
+//        model->UseMaterial(material);
+//
+//        Application::Get().GetContext()->AddModel(model);
+//    }
+//}
 
 void SaveFile()
 {
@@ -206,6 +209,7 @@ void LightCreatorWindow()
                 
                 std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>(color, dir, ambientIntensity, diffuseIntensity);
                 Application::Get().GetContext()->AddDirectionalLight(light);
+
             }
             else if (lightType == LightType::PointLight)
             {
@@ -226,4 +230,72 @@ void LightCreatorWindow()
         ImGui::End();
     }
 
+}
+
+void ShowModelCreatorWindow()
+{
+    if (showModelCreatorWindow)
+    {
+        ImGui::SetNextWindowSize({ 400, 300 }, ImGuiCond_Appearing);
+        ImGui::Begin("Model Creator");
+
+        static bool flipTexture = false;
+        static ImGuiTextBuffer modelPath;
+        static std::string path = "";
+        static glm::vec3 pos(0.f, 0.f, 0.f);
+        static glm::vec3 rotation(0.f, 0.f, 0.f);
+        static glm::vec3 scale(1.f, 1.f, 1.f);
+
+
+
+        ImGui::LabelText("", "Model path");
+        if (ImGui::Button("Browse"))
+        {
+            auto filePath = FileUtil::OpenFile(g_supportedFormats);
+            if (!filePath.empty())
+            {
+                modelPath.clear();
+                modelPath.append(filePath.c_str());
+                path = modelPath.c_str();
+            }
+        } 
+        ImGui::SameLine();
+        ImGui::TextUnformatted(modelPath.begin(), modelPath.end());
+        
+        ImGui::LabelText("", "Texture");
+        ImGui::Checkbox("Flip Texture", &flipTexture);
+
+        ImGui::LabelText("", "Transformation");
+        ImGui::InputFloat3("Position", (float*)&pos);
+        ImGui::InputFloat3("Rotation", (float*)&rotation);
+        ImGui::InputFloat3("Scale", (float*)&scale);
+
+        if (ImGui::Button("Ok"))
+        {
+            //todo validate input
+
+            logInfo("Open file: " + path);
+
+            std::shared_ptr<Model> model = std::make_shared<Model>(modelPath.c_str());
+            model->FlipTexture(flipTexture);
+            model->loadModel();
+            std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
+            model->UseMaterial(material);
+            model->GetTransformation()->SetPosition(pos);
+            model->GetTransformation()->SetScale(scale);
+
+            Application::Get().GetContext()->AddModel(model);
+
+            showModelCreatorWindow = false;
+
+            logInfo("Added Model successfully.");
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel"))
+        {
+            showModelCreatorWindow = false;
+        }
+
+        ImGui::End();
+    }
 }

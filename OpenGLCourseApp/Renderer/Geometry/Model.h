@@ -36,6 +36,7 @@ public:
 	bool UseShader();
 
 	std::shared_ptr<Shader> GetShader();
+	void FlipTexture(bool flip);
 
 	void Update(float delta);
 	std::shared_ptr<Transform> GetTransformation() const { return transformation; }
@@ -55,4 +56,5 @@ private:
 	std::shared_ptr<Shader> m_shader = nullptr;
 	std::shared_ptr<Light> m_light = nullptr;
 	std::shared_ptr<Material> m_material = nullptr;
+	bool m_flipTexture = false;
 };

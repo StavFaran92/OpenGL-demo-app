@@ -9,9 +9,14 @@
 #include "Core/Context.h"
 #include "Renderer/Geometry/Model.h"
 
+#include "ApplicationConstants.h"
+
+using namespace Constants;
+
 void DisplayMenu();
 void ShowMenuFile();
 void ShowAppMainMenuBar();
 void LoadModel();
 void SaveFile();
 void LightCreatorWindow();
+void ShowModelCreatorWindow();
