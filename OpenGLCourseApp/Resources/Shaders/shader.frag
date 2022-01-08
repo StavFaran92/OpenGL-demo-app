@@ -45,6 +45,7 @@ struct PointLight {
     vec3 specular;
 };  
 #define NR_POINT_LIGHTS 16  
+#define NR_DIR_LIGHT 16  
   
 // Uniforms
 //---------
@@ -52,10 +53,10 @@ struct PointLight {
 uniform Material material;
 
 // light
-uniform DirLight dirLight;
+uniform DirLight dirLight[NR_DIR_LIGHT];
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform int pointLightCount;
-//uniform Light light;
+uniform int dirLightCount;
 
 // camera
 uniform vec3 viewPos;
@@ -70,8 +71,10 @@ void main()
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
 
+    vec3 result;
     // Directional lighting
-    vec3 result;// = CalcDirLight(dirLight, norm, viewDir);
+    for(int i = 0; i < dirLightCount; i++)
+        result += CalcDirLight(dirLight[i], norm, viewDir);
 
     // Point lights
     for(int i = 0; i < pointLightCount; i++)

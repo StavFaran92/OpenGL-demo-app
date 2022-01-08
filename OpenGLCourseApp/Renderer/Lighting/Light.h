@@ -18,7 +18,7 @@ public:
 	Light();
 	Light(glm::vec3 color, GLfloat aIntensity, GLfloat dIntensity);
 
-	virtual void useLight(std::shared_ptr<Shader> shader);
+	virtual void useLight(std::shared_ptr<Shader> shader, int index);
 
 	inline std::shared_ptr<Transform > GetTransform() { return m_transform; }
 

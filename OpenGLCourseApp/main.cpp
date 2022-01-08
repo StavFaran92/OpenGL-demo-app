@@ -42,13 +42,13 @@ int main(int argc, char* argv[])
 	std::shared_ptr<Renderer> renderer = Application::Get().GetRenderer();
 	std::shared_ptr<ImguiHandler> imgui = Application::Get().GetImguiHandler();
 
-	std::shared_ptr<Shader> lightShader = std::make_shared<Shader>("Resources\\Shaders\\LightShader.vert", "Resources\\Shaders\\LightShader.frag");
-	context->AddShader(lightShader);
+	//std::shared_ptr<Shader> lightShader = std::make_shared<Shader>("Resources\\Shaders\\LightShader.vert", "Resources\\Shaders\\LightShader.frag");
+	//context->AddShader(lightShader);
 
-	std::shared_ptr<Model> lightCube = std::make_shared<Model>("D:\\program files\\downloads\\cube-companion\\source\\model\\model.dae");
-	lightCube->loadModel();
-	context->AddModel(lightCube);
-	lightCube->AttachShader(lightShader);
+	//std::shared_ptr<Model> lightCube = std::make_shared<Model>("D:\\program files\\downloads\\cube-companion\\source\\model\\model.dae");
+	//lightCube->loadModel();
+	//context->AddModel(lightCube);
+	//lightCube->AttachShader(lightShader);
 
 	//Main loop flag
 	bool quit = false;
@@ -77,9 +77,9 @@ int main(int argc, char* argv[])
 
 		renderer->GetCamera()->update(deltaTime);
 
-		lightCube->GetTransformation()->SetPosition({ 10 * cos(angle * Constants::toRadians) ,0, 10 * sin(angle * Constants::toRadians) });
-		angle++;
-		lightCube->GetTransformation()->SetScale({ .25f, .25f, .25f });
+		//lightCube->GetTransformation()->SetPosition({ 10 * cos(angle * Constants::toRadians) ,0, 10 * sin(angle * Constants::toRadians) });
+		//angle++;
+		//lightCube->GetTransformation()->SetScale({ .25f, .25f, .25f });
 
 		context->Update(deltaTime);
 		context->Draw();

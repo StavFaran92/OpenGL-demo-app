@@ -7,7 +7,7 @@ public:
 	PointLight() :
 		Light(), constant(1), linear(1), quadratic(1)
 	{
-		Init();
+		m_name = "pointLights";
 	}
 
 	PointLight(glm::vec3 color, glm::vec3 pos, 
@@ -16,18 +16,13 @@ public:
 		Light(color, aIntensity, dIntensity),
 		constant(constant), linear(linear), quadratic(quadratic)
 	{
-		Init();
+		m_name = "pointLights";
 
 		m_transform->SetPosition(pos);
 	}
 
-	void Init();
-
-	void useLight(std::shared_ptr<Shader >shader);
+	void useLight(std::shared_ptr<Shader >shader, int index);
 
 private:
 	GLfloat constant, linear, quadratic;
-
-public:
-	static uint32_t m_count;
 };
