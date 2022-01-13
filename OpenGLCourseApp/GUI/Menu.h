@@ -20,3 +20,4 @@ void LoadModel();
 void SaveFile();
 void LightCreatorWindow();
 void ShowModelCreatorWindow();
+void ShowModelInspectorWindow();

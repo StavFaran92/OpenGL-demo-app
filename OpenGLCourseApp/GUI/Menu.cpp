@@ -6,6 +6,7 @@ static void ShowExampleAppLog();
 
 static bool ShowLightCreatorWindow = false;
 static bool showModelCreatorWindow = false;
+static bool showModelInspectorWindow = false;
 
 // Helper to wire demo markers located in code to a interactive browser
 typedef void (*ImGuiDemoMarkerCallback)(const char* file, int line, const char* section, void* user_data);
@@ -23,6 +24,7 @@ void DisplayMenu()
     ShowAppMainMenuBar();
     LightCreatorWindow();
     ShowModelCreatorWindow();
+    ShowModelInspectorWindow();
 
     //bool show_demo_window = true;
     //bool show_another_window = true;
@@ -295,6 +297,35 @@ void ShowModelCreatorWindow()
         {
             showModelCreatorWindow = false;
         }
+
+        ImGui::End();
+    }
+}
+
+void ShowModelInspectorWindow()
+{
+    if (showModelInspectorWindow)
+    {
+        static uint32_t id = 0;
+        static glm::vec3 pos(0.f, 0.f, 0.f);
+        static glm::vec3 rotation(0.f, 0.f, 0.f);
+        static glm::vec3 scale(1.f, 1.f, 1.f);
+
+        ImGui::SetNextWindowSize({ 400, 300 }, ImGuiCond_Appearing);
+        ImGui::Begin("Model Inspector");
+
+        ImGui::LabelText("", "Info");
+        ImGui::LabelText("Model id: ", std::to_string(id).c_str());
+
+
+
+        ImGui::LabelText("", "Transformation");
+        if (ImGui::InputFloat3("Position", (float*)&pos))
+        {
+
+        }
+        ImGui::InputFloat3("Rotation", (float*)&rotation);
+        ImGui::InputFloat3("Scale", (float*)&scale);
 
         ImGui::End();
     }
