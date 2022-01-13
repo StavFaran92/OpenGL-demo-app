@@ -21,7 +21,7 @@ void Model::Draw(std::shared_ptr<Renderer> renderer)
 		m_material->UseMaterial(m_shader);
 	}
 
-	for (unsigned int i = 0; i < m_meshes.size(); i++)
+	for (auto i = 0; i < m_meshes.size(); i++)
 	{
 		m_meshes[i]->RenderMesh(m_shader, renderer);
 	}

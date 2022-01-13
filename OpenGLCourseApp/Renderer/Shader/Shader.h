@@ -12,11 +12,6 @@
 
 #include <GL/glew.h>
 
-struct ShaderProgramSource {
-	std::string vertexSource;
-	std::string fragmentSource;
-};
-
 class Shader
 {
 public:

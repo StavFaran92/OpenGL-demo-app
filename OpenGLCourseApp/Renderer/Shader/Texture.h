@@ -22,7 +22,7 @@ private:
 	void ClearTexture();
 
 private:
-	GLuint m_id;
+	uint32_t m_id;
 	int m_width, m_height, m_bitDepth;
 	int m_slot;
 	std::string m_type = "";

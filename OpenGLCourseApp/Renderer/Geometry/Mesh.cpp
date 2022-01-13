@@ -19,13 +19,15 @@ Mesh::Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::v
 
 void Mesh::RenderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < Renderer >renderer)
 {
-	unsigned int diffuseNr = 1;
-	unsigned int specularNr = 1;
-	for (unsigned int i = 0; i < m_textures.size(); i++)
+	uint32_t diffuseNr = 1;
+	uint32_t specularNr = 1;
+
+	// Iterate the mesh's textures
+	for (auto i = 0; i < m_textures.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
 		// retrieve texture number (the N in diffuse_textureN)
-		std::string number;
+		std::string number = "";
 		std::string name = m_textures[i]->GetType();
 		if (name == Constants::g_textureDiffuse)
 			number = std::to_string(diffuseNr++);

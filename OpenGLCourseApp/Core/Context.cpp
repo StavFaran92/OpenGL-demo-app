@@ -132,8 +132,8 @@ void Context::Draw()
 	// Draw models
 	for (auto model = m_models.begin(); model != m_models.end(); ++model)
 	{
-		model->second->UseShader();
 		auto shader = model->second->GetShader();
+		shader->UseShader();
 
 		// Use all directional lights
 		{
@@ -153,6 +153,7 @@ void Context::Draw()
 			shader->SetInt("pointLightCount", i);
 		}
 
+		// Draw model
 		model->second->Draw(m_renderer);
 	}
 }
