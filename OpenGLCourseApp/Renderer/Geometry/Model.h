@@ -40,11 +40,16 @@ public:
 
 	void Update(float delta);
 	std::shared_ptr<Transform> GetTransformation() const { return transformation; }
+
+	inline void SetID(uint32_t id) { m_id = id; }
+	inline uint32_t getID() { return m_id; }
 private:
 	void processNode(aiNode* node, const aiScene* scene);
 	std::shared_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene);
 	std::vector<std::shared_ptr<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName);
 private:
+	uint32_t m_id = 0;
+
 	// model data
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
 	std::string m_modelDir = "";

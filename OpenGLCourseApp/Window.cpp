@@ -4,7 +4,7 @@ Window::Window(GLint width, GLint height) :
 	m_width(width), m_height(height)
 {}
 
-int Window::initialize()
+int Window::Init()
 {
 	//Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)

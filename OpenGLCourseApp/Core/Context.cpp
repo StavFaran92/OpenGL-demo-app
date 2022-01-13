@@ -15,6 +15,7 @@ Context::Context() : m_modelCounter(0), m_shaderCounter(0)
 bool Context::AddModel(std::shared_ptr<Model> model)
 {
 	m_modelCounter += 1;
+	model->SetID(m_modelCounter);
 	m_models.emplace(m_modelCounter, model);
 
 	logInfo("Model {} Added successfully.", std::to_string(m_modelCounter));
@@ -155,6 +156,8 @@ void Context::Draw()
 				shader->SetInt("pointLightCount", i);
 			}
 		}
+
+		glStencilFunc(GL_ALWAYS, model->second->getID(), 0xff);
 
 		// Draw model
 		model->second->Draw(m_renderer);

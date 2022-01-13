@@ -1,5 +1,9 @@
 #include "EditorCamera.h"
 
+#include "Core/Application.h"
+#include "Core/Context.h"
+#include "Services/ObjectSelection.h"
+
 EditorCamera::EditorCamera(glm::vec3 startPosition, GLfloat startMoveSpeed, GLfloat startTurnSpeed)
 	: m_position(startPosition),
 	m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
@@ -14,6 +18,12 @@ EditorCamera::EditorCamera(glm::vec3 startPosition, GLfloat startMoveSpeed, GLfl
 
 void EditorCamera::keyControl(double deltaTime)
 {
+	if (m_keyboard->getKeyState(SDL_SCANCODE_DELETE))
+	{
+		auto objectSelection = Application::Get().GetObjectSelection();
+		auto selected = objectSelection->GetSelectedObject();
+		Application::Get().GetContext()->RemoveModel(selected);
+	}
 }
 
 void EditorCamera::OnMouseMotion(GLfloat xChange, GLfloat yChange)
@@ -37,19 +47,29 @@ glm::vec3 EditorCamera::getPosition()
 
 void EditorCamera::update(float deltaTime)
 {
+	keyControl(deltaTime);
 }
 
 void EditorCamera::OnMousePressed(SDL_MouseButtonEvent& e)
 {
-	if (e.button == SDL_BUTTON_LEFT)
+	if (e.button == SDL_BUTTON_RIGHT)
 	{
 		m_isLocked = false;
+	}
+	if (e.button == SDL_BUTTON_LEFT)
+	{
+
+		auto objectSelection = Application::Get().GetObjectSelection();
+		objectSelection->OnMousePressed(e);
+
+		logInfo("Mouse pressed on x: {}, y: {}", e.x, e.y);
+		
 	}
 }
 
 void EditorCamera::OnMouseReleased(SDL_MouseButtonEvent& e)
 {
-	if (e.button == SDL_BUTTON_LEFT)
+	if (e.button == SDL_BUTTON_RIGHT)
 	{
 		m_isLocked = true;
 	}

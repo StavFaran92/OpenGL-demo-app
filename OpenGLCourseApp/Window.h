@@ -18,7 +18,7 @@ public:
 
 	Window(GLint width = SCREEN_WIDTH, GLint height = SCREEN_HEIGHT);
 
-	int initialize();
+	int Init();
 
 	inline GLint getWidth() { return m_width; }
 	inline GLint getHeight() { return m_height; }

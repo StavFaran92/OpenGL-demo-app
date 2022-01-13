@@ -60,9 +60,7 @@ int main(int argc, char* argv[])
 	Uint64 LAST = 0;
 	double deltaTime = 0;
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_STENCIL_TEST);
-	glStencilMask(0x00);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
 	renderer->Clear();
 	float angle = 0;
 	// Loop until window closed
