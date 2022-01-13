@@ -25,7 +25,7 @@ public:
 		logTrace( __FUNCTION__ );
 	}
 	void loadModel();
-	void Draw(std::shared_ptr<Renderer> renderer);
+	void Draw(std::shared_ptr<Renderer> renderer, std::shared_ptr<Shader> shader = nullptr);
 
 	bool AttachShader(std::shared_ptr<Shader > shader);
 	bool DetachShader();

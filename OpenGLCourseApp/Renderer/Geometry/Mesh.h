@@ -22,6 +22,8 @@ public:
 
 	void RenderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < Renderer >renderer);
 
+	void SetTexturesInShader(std::shared_ptr<Shader>& shader);
+
 	~Mesh();
 private:
 	void ClearMesh();

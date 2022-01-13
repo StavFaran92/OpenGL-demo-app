@@ -5,9 +5,9 @@ void Transform::Update(float deltaTime)
 	if (m_change)
 	{
 		m_transformation = glm::mat4(1.0f);
-		m_transformation = glm::scale(m_transformation, m_scale);
 		m_transformation = glm::rotate(m_transformation, glm::radians(m_rotationAngle), m_rotationAxis);
 		m_transformation = glm::translate(m_transformation, m_translation);
+		m_transformation = glm::scale(m_transformation, m_scale);
 
 		m_change = false;
 	}

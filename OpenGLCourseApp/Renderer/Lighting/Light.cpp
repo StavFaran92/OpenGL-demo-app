@@ -14,6 +14,12 @@ Light::Light(glm::vec3 color, GLfloat aIntensity, GLfloat dIntensity) :
 
 void Light::useLight(std::shared_ptr<Shader> shader, int index)
 {
+	if (!shader->IsLightsEnabled())
+	{
+		logError("Shader does not support light");
+		return;
+	}
+
 	shader->SetFloat(m_name + "[" +std::to_string(index) + "]" + ".color", m_color);
 	shader->SetFloat(m_name + "[" +std::to_string(index) + "]" + ".ambient", VEC3_ONE * m_ambientIntensity);
 	shader->SetFloat(m_name + "[" +std::to_string(index) + "]" + ".diffuse", VEC3_ONE * m_diffuseIntensity); // darken diffuse light a bit

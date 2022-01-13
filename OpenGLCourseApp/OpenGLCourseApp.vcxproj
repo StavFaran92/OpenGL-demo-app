@@ -178,6 +178,7 @@
     <None Include="GUI\Menu.h" />
     <None Include="Resources\Shaders\LightShader.frag" />
     <None Include="Resources\Shaders\LightShader.vert" />
+    <None Include="Resources\Shaders\OutlineShader.frag" />
     <None Include="Resources\Shaders\shader.frag" />
     <None Include="Resources\Shaders\shader.vert" />
   </ItemGroup>

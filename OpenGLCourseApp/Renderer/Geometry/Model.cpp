@@ -12,18 +12,23 @@ Model::Model(const std::string& path) : m_path(path)
 	m_shader = Application::Get().GetRenderer()->GetDefaultShader();
 }
 
-void Model::Draw(std::shared_ptr<Renderer> renderer)
+void Model::Draw(std::shared_ptr<Renderer> renderer, std::shared_ptr<Shader> shader /* = nullptr*/)
 {
-	m_shader->SetMat4("model", transformation->GetTransformation());
+	auto currShader = m_shader;
+
+	if (shader)
+		currShader = shader;
+
+	currShader->SetMat4("model", transformation->GetTransformation());
 
 	if (m_material)
 	{
-		m_material->UseMaterial(m_shader);
+		m_material->UseMaterial(currShader);
 	}
 
 	for (auto i = 0; i < m_meshes.size(); i++)
 	{
-		m_meshes[i]->RenderMesh(m_shader, renderer);
+		m_meshes[i]->RenderMesh(currShader, renderer);
 	}
 }
 

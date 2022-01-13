@@ -12,6 +12,12 @@ Material::Material(GLfloat shine)
 
 void Material::UseMaterial(std::shared_ptr<Shader> shader)
 {
+	if (!shader->IsMaterialsEnabled())
+	{
+		logError("Shader does not support material");
+		return;
+	}
+
 	shader->SetFloat("material.shininess", m_shininess);
 }
 

@@ -249,6 +249,7 @@
     <None Include="Resources\Shaders\shader.frag" />
     <None Include="Resources\Shaders\shader.vert" />
     <None Include="GUI\Menu.h" />
+    <None Include="Resources\Shaders\OutlineShader.frag" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Vendor\imgui\imgui.natvis" />

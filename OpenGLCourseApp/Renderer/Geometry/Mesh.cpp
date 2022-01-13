@@ -19,6 +19,18 @@ Mesh::Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::v
 
 void Mesh::RenderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < Renderer >renderer)
 {
+	if (shader->IsTexturesEnabled())
+	{
+		SetTexturesInShader(shader);
+	}
+
+	renderer->Draw(*m_vao, shader);
+	glActiveTexture(GL_TEXTURE0);
+}
+
+void Mesh::SetTexturesInShader(std::shared_ptr<Shader>& shader)
+{
+	// TODO extract this logic into texture class
 	uint32_t diffuseNr = 1;
 	uint32_t specularNr = 1;
 
@@ -26,7 +38,7 @@ void Mesh::RenderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < Renderer
 	for (auto i = 0; i < m_textures.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
-		// retrieve texture number (the N in diffuse_textureN)
+										  // retrieve texture number (the N in diffuse_textureN)
 		std::string number = "";
 		std::string name = m_textures[i]->GetType();
 		if (name == Constants::g_textureDiffuse)
@@ -37,9 +49,6 @@ void Mesh::RenderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < Renderer
 		shader->SetInt(("material." + name + number).c_str(), i);
 		glBindTexture(GL_TEXTURE_2D, m_textures[i]->GetID());
 	}
-
-	renderer->Draw(*m_vao, shader);
-	glActiveTexture(GL_TEXTURE0);
 }
 void Mesh::ClearMesh()
 {

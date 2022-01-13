@@ -135,22 +135,25 @@ void Context::Draw()
 		auto shader = model->second->GetShader();
 		shader->UseShader();
 
-		// Use all directional lights
+		if (shader->IsLightsEnabled())
 		{
-			int i = 0;
-			for (auto it = m_directionalLights.begin(); it != m_directionalLights.end(); ++it, ++i) {
-				it->second->useLight(shader, i);
+			// Use all directional lights
+			{
+				int i = 0;
+				for (auto it = m_directionalLights.begin(); it != m_directionalLights.end(); ++it, ++i) {
+					it->second->useLight(shader, i);
+				}
+				shader->SetInt("dirLightCount", i);
 			}
-			shader->SetInt("dirLightCount", i);
-		}
 
-		// Use all point lights
-		{
-			int i = 0;
-			for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++i, ++it) {
-				it->second->useLight(shader, i);
+			// Use all point lights
+			{
+				int i = 0;
+				for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++i, ++it) {
+					it->second->useLight(shader, i);
+				}
+				shader->SetInt("pointLightCount", i);
 			}
-			shader->SetInt("pointLightCount", i);
 		}
 
 		// Draw model
