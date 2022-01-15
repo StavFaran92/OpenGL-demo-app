@@ -18,6 +18,10 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/Shader/Material.h"
 
+#include "Renderer/Buffers/FrameBufferObject.h"
+#include "Renderer/Buffers/RenderBufferObject.h"
+
+
 #include "main.h"
 
 #include "Renderer/Geometry/Model.h"
@@ -29,6 +33,17 @@
 
 #include "Core/Application.h"
 #include "Core/Context.h"
+
+float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+		// positions   // texCoords
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		-1.0f, -1.0f,  0.0f, 0.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+		 1.0f,  1.0f,  1.0f, 1.0f
+};
 
 void handleKeys(unsigned char key, int x, int y);
 void handleEvents(SDL_Event& e, std::shared_ptr<ImguiHandler> imgui, bool& quit, std::shared_ptr<ICamera> camera, double deltaTime);
@@ -54,6 +69,41 @@ int main(int argc, char* argv[])
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
+
+
+
+	// screen quad VAO
+	unsigned int quadVAO, quadVBO;
+	glGenVertexArrays(1, &quadVAO);
+	glGenBuffers(1, &quadVBO);
+	glBindVertexArray(quadVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+
+	FrameBufferObject frameBuffer;
+	frameBuffer.Bind();
+
+	auto texture = Texture::CreateEmptyTexture();
+	frameBuffer.AttachTexture(texture->GetID());
+
+	RenderBufferObject rbo;
+
+	frameBuffer.AttachRenderBuffer(rbo.GetID(), FrameBufferObject::AttachmentType::Depth_Stencil);
+
+	if (!frameBuffer.IsComplete())
+	{
+		logError("Framebuffer is not complete!");
+		return -1;
+	}
+	frameBuffer.Unbind();
+
+	Shader screenShader("Resources\\Shaders\\SimpleShader.vert", "Resources\\Shaders\\SimpleShader.frag");
+
 	renderer->Clear();
 	float angle = 0;
 	// Loop until window closed
@@ -76,7 +126,26 @@ int main(int argc, char* argv[])
 		//lightCube->GetTransformation()->SetScale({ .25f, .25f, .25f });
 
 		context->Update(deltaTime);
+
+
+		frameBuffer.Bind();
+
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
+
 		context->Draw();
+
+		frameBuffer.Unbind();
+
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		screenShader.UseShader();
+		glBindVertexArray(quadVAO);
+		glDisable(GL_DEPTH_TEST);
+		glBindTexture(GL_TEXTURE_2D, texture->GetID());
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		imgui->Render();
 

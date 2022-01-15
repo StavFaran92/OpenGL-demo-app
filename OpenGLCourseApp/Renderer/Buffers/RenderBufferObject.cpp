@@ -3,6 +3,9 @@
 RenderBufferObject::RenderBufferObject()
 {
 	glGenRenderbuffers(1, &m_id);
+	Bind();
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1024, 768);
+	Unbind();
 }
 
 void RenderBufferObject::Bind()

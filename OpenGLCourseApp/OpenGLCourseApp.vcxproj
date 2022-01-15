@@ -187,6 +187,8 @@
     <None Include="Resources\Shaders\OutlineShader.frag" />
     <None Include="Resources\Shaders\shader.frag" />
     <None Include="Resources\Shaders\shader.vert" />
+    <None Include="Resources\Shaders\SimpleShader.frag" />
+    <None Include="Resources\Shaders\SimpleShader.vert" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Vendor\imgui\imgui.natvis" />

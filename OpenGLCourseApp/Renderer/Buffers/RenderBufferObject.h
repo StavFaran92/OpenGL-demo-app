@@ -6,6 +6,8 @@ class RenderBufferObject
 public:
 	RenderBufferObject();
 
+	uint32_t GetID() { return m_id; }
+
 	void Bind();
 	void Unbind();
 private:
