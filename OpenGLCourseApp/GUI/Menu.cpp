@@ -146,7 +146,7 @@ void ShowMenuFile()
 //
 //        std::shared_ptr<Model> model = std::make_shared<Model>(filePath);
 //        model->FlipTexture(true);
-//        model->loadModel();
+//        model->LoadModelFromFile();
 //        std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
 //        model->UseMaterial(material);
 //
@@ -278,9 +278,8 @@ void ShowModelCreatorWindow()
 
             logInfo("Open file: " + path);
 
-            std::shared_ptr<Model> model = std::make_shared<Model>(modelPath.c_str());
+            auto model = Model::LoadModelFromFile(modelPath.c_str());
             model->FlipTexture(flipTexture);
-            model->loadModel();
             std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
             model->UseMaterial(material);
             model->GetTransformation()->SetPosition(pos);

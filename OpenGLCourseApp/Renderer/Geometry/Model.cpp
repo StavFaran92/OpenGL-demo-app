@@ -2,15 +2,66 @@
 
 #include "Renderer/Lighting/PointLight.h"
 
-Model::Model(const std::string& path) : m_path(path)
+#include "Resources/Primitives/quad.h"
+
+Model::Model()
 {
 	logTrace(__FUNCTION__);
-	m_modelDir = m_path.substr(0, m_path.find_last_of('\\'));
 
 	transformation = std::make_shared<Transform>();
 
 	m_shader = Application::Get().GetRenderer()->GetDefaultShader();
 }
+
+std::shared_ptr<Model> Model::LoadModelFromFile(const std::string& path)
+{
+	auto model = std::make_shared<Model>();
+
+	model->m_path = path;
+	model->m_modelDir = model->m_path.substr(0, model->m_path.find_last_of('\\'));
+
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(model->m_path,
+		aiProcess_Triangulate |
+		aiProcess_GenSmoothNormals |
+		aiProcess_FlipUVs |
+		aiProcess_CalcTangentSpace);
+
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	{
+		logError("ERROR::ASSIMP::{}", importer.GetErrorString());
+		return nullptr;
+	}
+
+	model->processNode(scene->mRootNode, scene);
+
+	return model;
+}
+
+std::shared_ptr<Model> Model::CreatePrimitiveModel(PrimitiveType ptype)
+{
+	auto model = std::make_shared<Model>();
+
+	auto mesh = std::make_shared<Mesh>(Primtives::Quad::vertices, sizeof(Primtives::Quad::vertices) / sizeof(float)
+		, Primtives::Quad::indices, sizeof(Primtives::Quad::indices) / sizeof(int));
+
+	model->m_meshes.push_back(mesh);
+
+	//// screen quad VAO
+	//unsigned int quadVAO, quadVBO;
+	//glGenVertexArrays(1, &quadVAO);
+	//glGenBuffers(1, &quadVBO);
+	//glBindVertexArray(quadVAO);
+	//glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	//glEnableVertexAttribArray(0);
+	//glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	//glEnableVertexAttribArray(1);
+	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	return model;
+}
+
 
 void Model::Draw(std::shared_ptr<Renderer> renderer, std::shared_ptr<Shader> shader /* = nullptr*/)
 {
@@ -60,23 +111,7 @@ bool Model::UseShader()
 
 
 
-void Model::loadModel()
-{
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(m_path,
-		aiProcess_Triangulate |
-		aiProcess_GenSmoothNormals |
-		aiProcess_FlipUVs |
-		aiProcess_CalcTangentSpace);
 
-	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-	{
-		logError( "ERROR::ASSIMP::{}" , importer.GetErrorString() );
-		return;
-	}
-
-	processNode(scene->mRootNode, scene);
-}
 
 void Model::processNode(aiNode* node, const aiScene* scene)
 {
@@ -173,7 +208,10 @@ std::shared_ptr<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 	}
 
-	return std::make_shared<Mesh>(vertices, indices, textures);
+	std::shared_ptr<Mesh> generatedMesh = std::make_shared<Mesh>(vertices, indices);
+	generatedMesh->AddTextures(textures);
+
+	return generatedMesh;
 }
 
 std::vector<std::shared_ptr<Texture>> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName)

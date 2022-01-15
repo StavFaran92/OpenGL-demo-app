@@ -100,6 +100,7 @@
     <ClCompile Include="Core\Application.cpp" />
     <ClCompile Include="Renderer\Buffers\RenderBufferObject.cpp" />
     <ClCompile Include="Renderer\Buffers\FrameBufferObject.cpp" />
+    <ClCompile Include="Resources\Primitives\quad.h" />
     <ClCompile Include="Services\ObjectSelection.cpp" />
     <ClCompile Include="Renderer\Camera\EditorCamera.cpp" />
     <ClCompile Include="Utils\IO\FileUtil.cpp" />

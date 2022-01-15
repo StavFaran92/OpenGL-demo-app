@@ -1,13 +1,24 @@
 #include "Mesh.h"
 
-Mesh::Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices, std::vector<std::shared_ptr<Texture>> textures) :
-	m_vertices(vertices), m_indices(indices), m_textures(textures)
+Mesh::Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices) :
+	m_vertices(vertices), m_indices(indices)
 {
 	logTrace( __FUNCTION__ );
 
 	m_vao = std::make_shared<VertexArrayObject>();
 	m_ibo = std::make_shared<ElementBufferObject>(&(m_indices->at(0)), indices->size());
 	m_vbo = std::make_shared<VertexBufferObject>(&(vertices->at(0)), vertices->size());
+
+	m_vao->AttachBuffer(*m_vbo, *m_ibo);
+}
+
+Mesh::Mesh(float* vertices, size_t verticesSize, unsigned int* indices, size_t indicesSize)
+{
+	logTrace(__FUNCTION__);
+
+	m_vao = std::make_shared<VertexArrayObject>();
+	m_ibo = std::make_shared<ElementBufferObject>(indices, indicesSize);
+	m_vbo = std::make_shared<VertexBufferObject>(vertices, verticesSize);
 
 	m_vao->AttachBuffer(*m_vbo, *m_ibo);
 }
@@ -26,6 +37,16 @@ void Mesh::RenderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < Renderer
 
 	renderer->Draw(*m_vao, shader);
 	glActiveTexture(GL_TEXTURE0);
+}
+
+void Mesh::AddTexture(std::shared_ptr<Texture> texture)
+{
+	m_textures.push_back(texture);
+}
+
+void Mesh::AddTextures(std::vector<std::shared_ptr<Texture>> textures)
+{
+	m_textures.insert(m_textures.end(), textures.begin(), textures.end());
 }
 
 void Mesh::SetTexturesInShader(std::shared_ptr<Shader>& shader)

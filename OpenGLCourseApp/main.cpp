@@ -34,17 +34,6 @@
 #include "Core/Application.h"
 #include "Core/Context.h"
 
-float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
-		// positions   // texCoords
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		-1.0f, -1.0f,  0.0f, 0.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-		 1.0f,  1.0f,  1.0f, 1.0f
-};
-
 void handleKeys(unsigned char key, int x, int y);
 void handleEvents(SDL_Event& e, std::shared_ptr<ImguiHandler> imgui, bool& quit, std::shared_ptr<ICamera> camera, double deltaTime);
 
@@ -70,7 +59,18 @@ int main(int argc, char* argv[])
 	glEnable(GL_CULL_FACE);
 
 
+	//auto quad = Model::CreatePrimitiveModel(Model::PrimitiveType::Quad);
 
+	float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+		// positions   // texCoords
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		-1.0f, -1.0f,  0.0f, 0.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+		 1.0f,  1.0f,  1.0f, 1.0f
+	};
 
 	// screen quad VAO
 	unsigned int quadVAO, quadVBO;
@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
 	}
 	frameBuffer.Unbind();
 
-	Shader screenShader("Resources\\Shaders\\SimpleShader.vert", "Resources\\Shaders\\SimpleShader.frag");
+	auto screenShader = std::make_shared<Shader>("Resources\\Shaders\\SimpleShader.vert", "Resources\\Shaders\\SimpleShader.frag");
 
 	renderer->Clear();
 	float angle = 0;
@@ -141,11 +141,12 @@ int main(int argc, char* argv[])
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		screenShader.UseShader();
+		screenShader->UseShader();
 		glBindVertexArray(quadVAO);
 		glDisable(GL_DEPTH_TEST);
 		glBindTexture(GL_TEXTURE_2D, texture->GetID());
 		glDrawArrays(GL_TRIANGLES, 0, 6);
+		//quad->Draw(renderer, screenShader);
 
 		imgui->Render();
 

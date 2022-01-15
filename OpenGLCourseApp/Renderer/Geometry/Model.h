@@ -20,11 +20,19 @@
 class Model
 {
 public:
-	Model(const std::string& path);
+	enum class PrimitiveType 
+	{
+		Box,
+		Quad
+	};
+public:
+	Model();
 	~Model() {
 		logTrace( __FUNCTION__ );
 	}
-	void loadModel();
+	static std::shared_ptr<Model> LoadModelFromFile(const std::string& path);
+	static std::shared_ptr<Model> CreatePrimitiveModel(PrimitiveType ptype);
+
 	void Draw(std::shared_ptr<Renderer> renderer, std::shared_ptr<Shader> shader = nullptr);
 
 	bool AttachShader(std::shared_ptr<Shader > shader);
@@ -54,7 +62,7 @@ private:
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
 	std::string m_modelDir = "";
 	std::vector<std::shared_ptr<Texture>> m_texturesCache;
-	const std::string m_path = "";
+	std::string m_path = "";
 
 	std::shared_ptr<Transform> transformation;
 

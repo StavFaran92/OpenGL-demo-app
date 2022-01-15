@@ -18,9 +18,13 @@
 class Mesh
 {
 public:
-	Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices, std::vector<std::shared_ptr<Texture>> textures);
+	Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices);
+	Mesh(float* vertices, size_t verticesSize, unsigned int* indices, size_t indicesSize);
 
 	void RenderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < Renderer >renderer);
+
+	void AddTexture(std::shared_ptr<Texture> texture);
+	void AddTextures(std::vector<std::shared_ptr<Texture>> textures);
 
 	void SetTexturesInShader(std::shared_ptr<Shader>& shader);
 

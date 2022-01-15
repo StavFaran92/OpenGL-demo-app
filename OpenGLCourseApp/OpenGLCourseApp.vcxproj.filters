@@ -126,6 +126,9 @@
     <ClCompile Include="Renderer\Buffers\RenderBufferObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Resources\Primitives\quad.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer\Geometry\Mesh.h">
