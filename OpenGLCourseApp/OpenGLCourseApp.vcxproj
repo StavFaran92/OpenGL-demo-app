@@ -98,6 +98,8 @@
   <ItemGroup>
     <ClCompile Include="Core\Context.cpp" />
     <ClCompile Include="Core\Application.cpp" />
+    <ClCompile Include="Renderer\Buffers\RenderBufferObject.cpp" />
+    <ClCompile Include="Renderer\Buffers\FrameBufferObject.cpp" />
     <ClCompile Include="Services\ObjectSelection.cpp" />
     <ClCompile Include="Renderer\Camera\EditorCamera.cpp" />
     <ClCompile Include="Utils\IO\FileUtil.cpp" />
@@ -136,6 +138,8 @@
     <ClInclude Include="Core\Context.h" />
     <ClInclude Include="Core\Application.h" />
     <ClInclude Include="ApplicationConstants.h" />
+    <ClInclude Include="Renderer\Buffers\RenderBufferObject.h" />
+    <ClInclude Include="Renderer\Buffers\FrameBufferObject.h" />
     <ClInclude Include="Services\ObjectSelection.h" />
     <ClInclude Include="Renderer\Camera\EditorCamera.h" />
     <ClInclude Include="Utils\IO\FileUtil.h" />

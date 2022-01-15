@@ -9,11 +9,15 @@
 class Texture
 {
 public:
-	Texture() = delete;
-	Texture(const std::string& fileLocation, std::string typeName = "", int slot = 0);
+	// This should not be used.
+	Texture();
 
-	void LoadTexture(bool isFlipped = false);
+	static std::shared_ptr<Texture> CreateEmptyTexture();
+	static std::shared_ptr<Texture> LoadTextureFromFile(const std::string& fileLocation, bool isFlipped = false);
+
 	void Bind();
+
+	inline void SetType(const std::string type) { m_type = type; }
 	inline const GLuint GetID() const { return m_id; }
 	inline const std::string GetType() const { return m_type; }
 	inline const std::string GetPath() const { return m_fileLocation; }

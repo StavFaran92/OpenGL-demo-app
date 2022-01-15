@@ -195,8 +195,8 @@ std::vector<std::shared_ptr<Texture>> Model::loadMaterialTextures(aiMaterial* ma
 		}
 		if (!skip)
 		{
-			std::shared_ptr<Texture> texture = std::make_shared<Texture>(m_modelDir + "\\" + str.C_Str(), typeName);
-			texture->LoadTexture(m_flipTexture);
+			auto texture = Texture::LoadTextureFromFile(m_modelDir + "\\" + str.C_Str(), m_flipTexture);
+			texture->SetType(typeName);
 			textures.push_back(texture);
 			m_texturesCache.push_back(texture);
 		}
