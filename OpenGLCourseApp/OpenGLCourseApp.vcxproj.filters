@@ -36,13 +36,13 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Buffers\VertexBufferObjectWrapper.cpp">
+    <ClCompile Include="Renderer\Buffers\VertexBufferObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Buffers\ElementBufferObjectWrapper.cpp">
+    <ClCompile Include="Renderer\Buffers\ElementBufferObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Buffers\VertexArrayObjectWrapper.cpp">
+    <ClCompile Include="Renderer\Buffers\VertexArrayObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\Buffers\VertexBufferLayout.cpp">
@@ -140,13 +140,13 @@
     <ClInclude Include="Renderer\Lighting\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Buffers\VertexBufferObjectWrapper.h">
+    <ClInclude Include="Renderer\Buffers\VertexBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Buffers\ElementBufferObjectWrapper.h">
+    <ClInclude Include="Renderer\Buffers\ElementBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Buffers\VertexArrayObjectWrapper.h">
+    <ClInclude Include="Renderer\Buffers\VertexArrayObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\Buffers\VertexBufferLayout.h">

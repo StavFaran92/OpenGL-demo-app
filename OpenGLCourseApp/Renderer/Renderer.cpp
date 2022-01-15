@@ -11,7 +11,7 @@ Renderer::Renderer()
 	m_projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
 }
 
-void Renderer::Draw(const VertexArrayObjectWrapper& vao, std::shared_ptr<Shader> shader) const
+void Renderer::Draw(const VertexArrayObject& vao, std::shared_ptr<Shader> shader) const
 {
 	shader->SetFloat("viewPos", m_camera->getPosition()); // TODO fix
 	shader->SetMat4("projection", m_projection);

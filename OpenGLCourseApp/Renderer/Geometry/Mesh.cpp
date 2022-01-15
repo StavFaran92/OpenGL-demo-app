@@ -5,9 +5,9 @@ Mesh::Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::v
 {
 	logTrace( __FUNCTION__ );
 
-	m_vao = std::make_shared<VertexArrayObjectWrapper>();
-	m_ibo = std::make_shared<ElementBufferObjectWrapper>(&(m_indices->at(0)), indices->size());
-	m_vbo = std::make_shared<VertexBufferObjectWrapper>(&(vertices->at(0)), vertices->size());
+	m_vao = std::make_shared<VertexArrayObject>();
+	m_ibo = std::make_shared<ElementBufferObject>(&(m_indices->at(0)), indices->size());
+	m_vbo = std::make_shared<VertexBufferObject>(&(vertices->at(0)), vertices->size());
 
 	m_vao->AttachBuffer(*m_vbo, *m_ibo);
 }

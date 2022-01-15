@@ -12,11 +12,11 @@ struct Vertex {
 	glm::vec2 TexCoords;
 };
 
-class VertexBufferObjectWrapper
+class VertexBufferObject
 {
 public:
-	VertexBufferObjectWrapper(const void* data, unsigned int size);
-	~VertexBufferObjectWrapper();
+	VertexBufferObject(const void* data, unsigned int size);
+	~VertexBufferObject();
 
 	void Bind() const;
 	void Unbind() const;

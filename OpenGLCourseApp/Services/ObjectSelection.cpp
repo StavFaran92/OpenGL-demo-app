@@ -16,6 +16,7 @@ void ObjectSelection::Init()
 void ObjectSelection::OnMousePressed(SDL_MouseButtonEvent& e)
 {
 	GLuint index = 0;
+	// TODO fix
 	glReadPixels(e.x, 768 - e.y - 1, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
 
 	SelectObject(index);

@@ -1,5 +1,5 @@
 #pragma once
-#include "Renderer/Buffers/VertexArrayObjectWrapper.h"
+#include "Renderer/Buffers/VertexArrayObject.h"
 #include "Renderer/Shader/Shader.h"
 #include "Renderer/Camera/ICamera.h"
 #include "Renderer/Camera/EditorCamera.h"
@@ -10,7 +10,7 @@ class Renderer
 {
 public:
 	Renderer();
-	void Draw(const VertexArrayObjectWrapper& vao, std::shared_ptr<Shader> shader) const;
+	void Draw(const VertexArrayObject& vao, std::shared_ptr<Shader> shader) const;
 	std::shared_ptr<Shader> GetDefaultShader() const;
 	std::shared_ptr<ICamera> GetCamera();
  	void Clear() const;

@@ -1,18 +1,18 @@
-#include "VertexArrayObjectWrapper.h"
+#include "VertexArrayObject.h"
 
-VertexArrayObjectWrapper::VertexArrayObjectWrapper()
+VertexArrayObject::VertexArrayObject()
 {
 	glGenVertexArrays(1, &m_id);
 	glBindVertexArray(m_id);
 }
 
-VertexArrayObjectWrapper::~VertexArrayObjectWrapper()
+VertexArrayObject::~VertexArrayObject()
 {
 	logInfo( __FUNCTION__ );
 	glDeleteVertexArrays(1, &m_id);
 }
 
-void VertexArrayObjectWrapper::AttachBuffer(const VertexBufferObjectWrapper& vbo, const ElementBufferObjectWrapper& ebo)
+void VertexArrayObject::AttachBuffer(const VertexBufferObject& vbo, const ElementBufferObject& ebo)
 {
 	// Bind this VAO
 	Bind();
@@ -35,12 +35,12 @@ void VertexArrayObjectWrapper::AttachBuffer(const VertexBufferObjectWrapper& vbo
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
 }
 
-void VertexArrayObjectWrapper::Bind() const
+void VertexArrayObject::Bind() const
 {
 	glBindVertexArray(m_id);
 }
 
-void VertexArrayObjectWrapper::Unbind() const
+void VertexArrayObject::Unbind() const
 {
 	glBindVertexArray(0);
 }

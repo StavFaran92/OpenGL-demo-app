@@ -8,10 +8,10 @@
 #include "Renderer/Shader/Shader.h"
 #include "Renderer/Shader/Texture.h"
 
-#include "Renderer/Buffers/VertexBufferObjectWrapper.h"
-#include "Renderer/Buffers/ElementBufferObjectWrapper.h"
+#include "Renderer/Buffers/VertexBufferObject.h"
+#include "Renderer/Buffers/ElementBufferObject.h"
 #include "Renderer/Buffers/VertexBufferLayout.h"
-#include "Renderer/Buffers/VertexArrayObjectWrapper.h"
+#include "Renderer/Buffers/VertexArrayObject.h"
 
 #include "ApplicationConstants.h"
 
@@ -34,9 +34,9 @@ private:
 	std::vector<std::shared_ptr<Texture>>      m_textures;
 
 	// render data
-	std::shared_ptr<ElementBufferObjectWrapper>  m_ibo;
-	std::shared_ptr < VertexBufferObjectWrapper> m_vbo;
-	std::shared_ptr < VertexArrayObjectWrapper>  m_vao;
+	std::shared_ptr<ElementBufferObject>  m_ibo;
+	std::shared_ptr < VertexBufferObject> m_vbo;
+	std::shared_ptr < VertexArrayObject>  m_vao;
 
 	GLsizei m_indexCount = 0;
 };

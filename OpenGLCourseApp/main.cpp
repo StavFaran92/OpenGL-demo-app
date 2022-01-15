@@ -42,14 +42,6 @@ int main(int argc, char* argv[])
 	std::shared_ptr<Renderer> renderer = Application::Get().GetRenderer();
 	std::shared_ptr<ImguiHandler> imgui = Application::Get().GetImguiHandler();
 
-	//std::shared_ptr<Shader> lightShader = std::make_shared<Shader>("Resources\\Shaders\\LightShader.vert", "Resources\\Shaders\\LightShader.frag");
-	//context->AddShader(lightShader);
-
-	//std::shared_ptr<Model> lightCube = std::make_shared<Model>("D:\\program files\\downloads\\cube-companion\\source\\model\\model.dae");
-	//lightCube->loadModel();
-	//context->AddModel(lightCube);
-	//lightCube->AttachShader(lightShader);
-
 	//Main loop flag
 	bool quit = false;
 
@@ -60,6 +52,7 @@ int main(int argc, char* argv[])
 	Uint64 LAST = 0;
 	double deltaTime = 0;
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
 	renderer->Clear();
 	float angle = 0;

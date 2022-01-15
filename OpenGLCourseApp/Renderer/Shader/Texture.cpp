@@ -17,7 +17,7 @@ void Texture::LoadTexture(bool isFlipped)
 
 	// load validation
 	if (!data) {
-		fprintf(stderr, "Failed to find: %s\n", m_fileLocation.c_str());
+		logError("Failed to find: {}", m_fileLocation.c_str());
 		return;
 	}
 

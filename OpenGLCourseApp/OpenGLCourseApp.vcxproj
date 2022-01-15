@@ -109,7 +109,7 @@
     <ClCompile Include="Renderer\Geometry\Model.cpp" />
     <ClCompile Include="Renderer\Camera\FlyCamera.cpp" />
     <ClCompile Include="Renderer\Lighting\DirectionalLight.cpp" />
-    <ClCompile Include="Renderer\Buffers\ElementBufferObjectWrapper.cpp" />
+    <ClCompile Include="Renderer\Buffers\ElementBufferObject.cpp" />
     <ClCompile Include="Renderer\Lighting\Light.cpp" />
     <ClCompile Include="Renderer\Shader\Material.cpp" />
     <ClCompile Include="Renderer\Lighting\PointLight.cpp" />
@@ -120,8 +120,8 @@
     <ClCompile Include="Renderer\Shader\Texture.cpp" />
     <ClCompile Include="Renderer\Geometry\Transform.cpp" />
     <ClCompile Include="Utils\IO\Utils.cpp" />
-    <ClCompile Include="Renderer\Buffers\VertexArrayObjectWrapper.cpp" />
-    <ClCompile Include="Renderer\Buffers\VertexBufferObjectWrapper.cpp" />
+    <ClCompile Include="Renderer\Buffers\VertexArrayObject.cpp" />
+    <ClCompile Include="Renderer\Buffers\VertexBufferObject.cpp" />
     <ClCompile Include="Renderer\Buffers\VertexBufferLayout.cpp" />
     <ClCompile Include="Utils\Math\LinearAlgebraUtil.cpp" />
     <ClCompile Include="Vendor\imgui\imgui.cpp" />
@@ -149,7 +149,7 @@
     <ClInclude Include="Renderer\Buffers\VertexBufferElement.h" />
     <ClInclude Include="Renderer\Camera\FlyCamera.h" />
     <ClInclude Include="Renderer\Lighting\DirectionalLight.h" />
-    <ClInclude Include="Renderer\Buffers\ElementBufferObjectWrapper.h" />
+    <ClInclude Include="Renderer\Buffers\ElementBufferObject.h" />
     <ClInclude Include="Renderer\Lighting\Light.h" />
     <ClInclude Include="Renderer\Shader\Material.h" />
     <ClInclude Include="Renderer\Lighting\PointLight.h" />
@@ -160,8 +160,8 @@
     <ClInclude Include="Resources\Primitives\cube_vertices.h" />
     <ClInclude Include="Renderer\Geometry\Transform.h" />
     <ClInclude Include="Utils\IO\Utils.h" />
-    <ClInclude Include="Renderer\Buffers\VertexArrayObjectWrapper.h" />
-    <ClInclude Include="Renderer\Buffers\VertexBufferObjectWrapper.h" />
+    <ClInclude Include="Renderer\Buffers\VertexArrayObject.h" />
+    <ClInclude Include="Renderer\Buffers\VertexBufferObject.h" />
     <ClInclude Include="Renderer\Buffers\VertexBufferLayout.h" />
     <ClInclude Include="Utils\Logger\Logger.h" />
     <ClInclude Include="Utils\Math\LinearAlgebraUtil.h" />

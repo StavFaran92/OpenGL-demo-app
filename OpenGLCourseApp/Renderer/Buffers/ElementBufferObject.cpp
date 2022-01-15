@@ -1,8 +1,8 @@
-#include "ElementBufferObjectWrapper.h"
+#include "ElementBufferObject.h"
 
 #include <GL/glew.h>
 
-ElementBufferObjectWrapper::ElementBufferObjectWrapper(unsigned int* data, unsigned int length)
+ElementBufferObject::ElementBufferObject(unsigned int* data, unsigned int length)
 	:m_length(length)
 {
 	glGenBuffers(1, &m_id);
@@ -10,23 +10,23 @@ ElementBufferObjectWrapper::ElementBufferObjectWrapper(unsigned int* data, unsig
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, length * sizeof(unsigned int), data, GL_STATIC_DRAW);
 }
 
-ElementBufferObjectWrapper::~ElementBufferObjectWrapper()
+ElementBufferObject::~ElementBufferObject()
 {
 	logInfo( __FUNCTION__ );
 	glDeleteBuffers(1, &m_id);
 }
 
-void ElementBufferObjectWrapper::Bind() const
+void ElementBufferObject::Bind() const
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
 }
 
-void ElementBufferObjectWrapper::Unbind() const
+void ElementBufferObject::Unbind() const
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-unsigned int ElementBufferObjectWrapper::getLength() const
+unsigned int ElementBufferObject::getLength() const
 {
 	return m_length;
 }

@@ -4,11 +4,11 @@
 
 #include "Utils/Logger/Logger.h"
 
-class ElementBufferObjectWrapper
+class ElementBufferObject
 {
 public:
-	ElementBufferObjectWrapper(unsigned int* data, unsigned int length);
-	~ElementBufferObjectWrapper();
+	ElementBufferObject(unsigned int* data, unsigned int length);
+	~ElementBufferObject();
 
 	void Bind() const;
 	void Unbind() const;
