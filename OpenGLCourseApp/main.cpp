@@ -56,51 +56,41 @@ int main(int argc, char* argv[])
 	Uint64 LAST = 0;
 	double deltaTime = 0;
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 
-	//auto quad = Model::CreatePrimitiveModel(Model::PrimitiveType::Quad);
+	auto quad = Model::CreatePrimitiveModel(Model::PrimitiveType::Quad);
+	context->AddModel(quad);
 
-	float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
-		// positions   // texCoords
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		-1.0f, -1.0f,  0.0f, 0.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-		 1.0f,  1.0f,  1.0f, 1.0f
-	};
-
-	// screen quad VAO
-	unsigned int quadVAO, quadVBO;
-	glGenVertexArrays(1, &quadVAO);
-	glGenBuffers(1, &quadVBO);
-	glBindVertexArray(quadVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	//// screen quad VAO
+	//unsigned int quadVAO, quadVBO;
+	//glGenVertexArrays(1, &quadVAO);
+	//glGenBuffers(1, &quadVBO);
+	//glBindVertexArray(quadVAO);
+	//glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	//glEnableVertexAttribArray(0);
+	//glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	//glEnableVertexAttribArray(1);
+	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
 
-	FrameBufferObject frameBuffer;
-	frameBuffer.Bind();
+	//FrameBufferObject frameBuffer;
+	//frameBuffer.Bind();
 
-	auto texture = Texture::CreateEmptyTexture();
-	frameBuffer.AttachTexture(texture->GetID());
+	//auto texture = Texture::CreateEmptyTexture();
+	//frameBuffer.AttachTexture(texture->GetID());
 
-	RenderBufferObject rbo;
+	//RenderBufferObject rbo;
 
-	frameBuffer.AttachRenderBuffer(rbo.GetID(), FrameBufferObject::AttachmentType::Depth_Stencil);
+	//frameBuffer.AttachRenderBuffer(rbo.GetID(), FrameBufferObject::AttachmentType::Depth_Stencil);
 
-	if (!frameBuffer.IsComplete())
-	{
-		logError("Framebuffer is not complete!");
-		return -1;
-	}
-	frameBuffer.Unbind();
+	//if (!frameBuffer.IsComplete())
+	//{
+	//	logError("Framebuffer is not complete!");
+	//	return -1;
+	//}
+	//frameBuffer.Unbind();
 
 	auto screenShader = std::make_shared<Shader>("Resources\\Shaders\\SimpleShader.vert", "Resources\\Shaders\\SimpleShader.frag");
 
@@ -128,24 +118,24 @@ int main(int argc, char* argv[])
 		context->Update(deltaTime);
 
 
-		frameBuffer.Bind();
+		//frameBuffer.Bind();
 
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-		glEnable(GL_DEPTH_TEST);
+		//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		//glEnable(GL_DEPTH_TEST);
 
 		context->Draw();
 
-		frameBuffer.Unbind();
+		//frameBuffer.Unbind();
 
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		//glClear(GL_COLOR_BUFFER_BIT);
 
-		screenShader->UseShader();
-		glBindVertexArray(quadVAO);
-		glDisable(GL_DEPTH_TEST);
-		glBindTexture(GL_TEXTURE_2D, texture->GetID());
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		//screenShader->UseShader();
+		//glBindVertexArray(quadVAO);
+		//glDisable(GL_DEPTH_TEST);
+		//glBindTexture(GL_TEXTURE_2D, texture->GetID());
+		//glDrawArrays(GL_TRIANGLES, 0, 6);
 		//quad->Draw(renderer, screenShader);
 
 		imgui->Render();

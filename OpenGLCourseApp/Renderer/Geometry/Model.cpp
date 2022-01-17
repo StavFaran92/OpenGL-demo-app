@@ -3,6 +3,7 @@
 #include "Renderer/Lighting/PointLight.h"
 
 #include "Resources/Primitives/quad.h"
+#include "Resources/Primitives/cube_vertices.h"
 
 Model::Model()
 {
@@ -42,22 +43,24 @@ std::shared_ptr<Model> Model::CreatePrimitiveModel(PrimitiveType ptype)
 {
 	auto model = std::make_shared<Model>();
 
-	auto mesh = std::make_shared<Mesh>(Primtives::Quad::vertices, sizeof(Primtives::Quad::vertices) / sizeof(float)
-		, Primtives::Quad::indices, sizeof(Primtives::Quad::indices) / sizeof(int));
+
+
+	auto mesh = std::make_shared<Mesh>((float*)Primtives::Cube::vertices, sizeof(Primtives::Cube::vertices) / sizeof(float)
+		, (unsigned int*)Primtives::Cube::indices, sizeof(Primtives::Cube::indices) / sizeof(unsigned int));
+
+	auto texturediff = Texture::LoadTextureFromFile("Resources\\Textures\\template.png");
+	texturediff->SetType(Constants::g_textureDiffuse);
+
+	auto textureSpec = Texture::LoadTextureFromFile("Resources\\Textures\\template.png");
+	textureSpec->SetType(Constants::g_textureSpecular);
+
+	mesh->AddTexture(texturediff);
+	mesh->AddTexture(textureSpec);
+
+	std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
+	model->UseMaterial(material);
 
 	model->m_meshes.push_back(mesh);
-
-	//// screen quad VAO
-	//unsigned int quadVAO, quadVBO;
-	//glGenVertexArrays(1, &quadVAO);
-	//glGenBuffers(1, &quadVBO);
-	//glBindVertexArray(quadVAO);
-	//glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-	//glEnableVertexAttribArray(0);
-	//glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-	//glEnableVertexAttribArray(1);
-	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
 	return model;
 }
