@@ -7,7 +7,7 @@
 
 #include "Core/Application.h"
 #include "Core/Context.h"
-#include "Renderer/Geometry/Model.h"
+#include "Graphics/Geometry/Model.h"
 
 #include "ApplicationConstants.h"
 

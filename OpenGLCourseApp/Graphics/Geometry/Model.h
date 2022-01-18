@@ -4,16 +4,16 @@
 #include <string>
 #include <map>
 
-#include "Renderer/Shader/Shader.h"
-#include "Renderer/Geometry/Mesh.h"
+#include "Graphics/Shader/Shader.h"
+#include "Graphics/Geometry/Mesh.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include "ApplicationConstants.h"
 #include "Core/Application.h"
-#include "Renderer/Lighting/DirectionalLight.h"
-#include "Renderer/Shader/Material.h"
+#include "Graphics/Lighting/DirectionalLight.h"
+#include "Graphics/Shader/Material.h"
 
 #include "Transform.h"
 
@@ -34,7 +34,7 @@ public:
 	static std::shared_ptr<Model> LoadModelFromFile(const std::string& path);
 	static std::shared_ptr<Model> CreatePrimitiveModel(PrimitiveType ptype);
 
-	void Draw(std::shared_ptr<Renderer> renderer, std::shared_ptr<Shader> shader = nullptr);
+	void Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> shader = nullptr);
 
 	bool AttachShader(std::shared_ptr<Shader > shader);
 	bool DetachShader();

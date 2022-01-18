@@ -10,21 +10,22 @@
 
 #include "Window.h"
 
-#include "Renderer/Geometry/Mesh.h"
-#include "Renderer/Shader/Shader.h"
-#include "Renderer/Camera/FlyCamera.h"
-#include "Renderer/Shader/Texture.h"
-#include "Renderer/Lighting/DirectionalLight.h"
-#include "Renderer/Renderer.h"
-#include "Renderer/Shader/Material.h"
+#include "Graphics/Geometry/Mesh.h"
+#include "Graphics/Shader/Shader.h"
+#include "Graphics/Camera/FlyCamera.h"
+#include "Graphics/Shader/Texture.h"
+#include "Graphics/Lighting/DirectionalLight.h"
+#include "Graphics/Renderer/Renderer.h"
+#include "Graphics/Shader/Material.h"
 
-#include "Renderer/Buffers/FrameBufferObject.h"
-#include "Renderer/Buffers/RenderBufferObject.h"
+#include "Graphics/Buffers/FrameBufferObject.h"
+#include "Graphics/Buffers/RenderBufferObject.h"
 
+#include "Graphics/Services/ScreenBufferProjector.h"
 
 #include "main.h"
 
-#include "Renderer/Geometry/Model.h"
+#include "Graphics/Geometry/Model.h"
 
 #include "Utils/Logger/Logger.h"
 #include "spdlog/spdlog.h"
@@ -45,6 +46,7 @@ int main(int argc, char* argv[])
 	std::shared_ptr<Context> context = Application::Get().GetContext();
 	std::shared_ptr<Renderer> renderer = Application::Get().GetRenderer();
 	std::shared_ptr<ImguiHandler> imgui = Application::Get().GetImguiHandler();
+	std::shared_ptr<ScreenBufferProjector> screenProjector = Application::Get().GetScreenBufferProjector();
 
 	//Main loop flag
 	bool quit = false;
@@ -57,42 +59,6 @@ int main(int argc, char* argv[])
 	double deltaTime = 0;
 	glEnable(GL_DEPTH_TEST);
 	//glEnable(GL_CULL_FACE);
-
-
-	auto quad = Model::CreatePrimitiveModel(Model::PrimitiveType::Quad);
-	//context->AddModel(quad);
-
-	//// screen quad VAO
-	//unsigned int quadVAO, quadVBO;
-	//glGenVertexArrays(1, &quadVAO);
-	//glGenBuffers(1, &quadVBO);
-	//glBindVertexArray(quadVAO);
-	//glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-	//glEnableVertexAttribArray(0);
-	//glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-	//glEnableVertexAttribArray(1);
-	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-
-
-	FrameBufferObject frameBuffer;
-	frameBuffer.Bind();
-
-	auto texture = Texture::CreateEmptyTexture();
-	frameBuffer.AttachTexture(texture->GetID());
-
-	RenderBufferObject rbo;
-
-	frameBuffer.AttachRenderBuffer(rbo.GetID(), FrameBufferObject::AttachmentType::Depth_Stencil);
-
-	if (!frameBuffer.IsComplete())
-	{
-		logError("Framebuffer is not complete!");
-		return -1;
-	}
-	frameBuffer.Unbind();
-
-	auto screenShader = std::make_shared<Shader>("Resources\\Shaders\\SimpleShader.vert", "Resources\\Shaders\\SimpleShader.frag");
 
 	renderer->Clear();
 	float angle = 0;
@@ -117,26 +83,11 @@ int main(int argc, char* argv[])
 
 		context->Update(deltaTime);
 
-
-		frameBuffer.Bind();
-
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-		glEnable(GL_DEPTH_TEST);
+		screenProjector->RedirectToFrameBuffer();
 
 		context->Draw();
 
-		frameBuffer.Unbind();
-
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		screenShader->UseShader();
-		//glBindVertexArray(quadVAO);
-		glDisable(GL_DEPTH_TEST);
-		glBindTexture(GL_TEXTURE_2D, texture->GetID());
-		//glDrawArrays(GL_TRIANGLES, 0, 6);
-		quad->Draw(renderer, screenShader);
+		screenProjector->RedirectToDefault();
 
 		imgui->Render();
 

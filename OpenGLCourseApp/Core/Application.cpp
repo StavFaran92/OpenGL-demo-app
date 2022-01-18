@@ -1,10 +1,11 @@
 #include "Application.h"
 
 #include "Context.h"
-#include "Renderer/Renderer.h"
+#include "Graphics/Renderer/Renderer.h"
 #include "Window.h"
 #include "imgui/ImguiHandler.h"
 #include "Services/ObjectSelection.h"
+#include "Graphics/Services/ScreenBufferProjector.h"
 
 // Singleton
 Application Application::instance;
@@ -30,6 +31,13 @@ bool Application::Init()
     m_objectSelection = std::make_shared<ObjectSelection>();
     m_objectSelection->Init();
 
+    m_screenBufferProjector = std::make_shared<ScreenBufferProjector>();
+    if(!m_screenBufferProjector->Init())
+    {
+        logError("Screen buffer projector failed to init!");
+        return false;
+    }
+
     return true;
 }
 
@@ -43,6 +51,11 @@ std::shared_ptr<Context> Application::GetContext()
 std::shared_ptr<ObjectSelection> Application::GetObjectSelection()
 {
     return m_objectSelection; 
+}
+
+std::shared_ptr<ScreenBufferProjector> Application::GetScreenBufferProjector()
+{
+    return m_screenBufferProjector;
 }
 
 void Application::Close()

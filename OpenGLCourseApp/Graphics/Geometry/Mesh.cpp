@@ -49,7 +49,7 @@ Mesh::Mesh(float* vertices, size_t verticesSize)
 //
 //}
 
-void Mesh::RenderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < Renderer >renderer)
+void Mesh::RenderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < IRenderer >renderer)
 {
 	if (shader->IsTexturesEnabled())
 	{

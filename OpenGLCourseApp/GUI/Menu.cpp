@@ -1,5 +1,5 @@
 #include "Menu.h"
-#include "Renderer/Lighting/PointLight.h"
+#include "Graphics/Lighting/PointLight.h"
 
 static void ShowExampleAppDockSpace();
 static void ShowExampleAppLog();

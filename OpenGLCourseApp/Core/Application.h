@@ -7,6 +7,7 @@ class Renderer;
 class Window;
 class ImguiHandler;
 class ObjectSelection;
+class ScreenBufferProjector;
 
 class Application
 {
@@ -26,6 +27,7 @@ public:
 
     std::shared_ptr<ImguiHandler> GetImguiHandler() { return m_imguiHandler; }
     std::shared_ptr<ObjectSelection> GetObjectSelection();
+    std::shared_ptr<ScreenBufferProjector> GetScreenBufferProjector();
 
     void Close();
 
@@ -41,6 +43,7 @@ private:
     
     std::shared_ptr<ImguiHandler> m_imguiHandler = nullptr;
     std::shared_ptr<ObjectSelection> m_objectSelection = nullptr;
+    std::shared_ptr<ScreenBufferProjector> m_screenBufferProjector = nullptr;
 
 
 };

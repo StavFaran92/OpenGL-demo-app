@@ -1,5 +1,12 @@
 #include "Renderer.h"
 
+#include "Graphics/Buffers/VertexArrayObject.h"
+#include "Graphics/Shader/Shader.h"
+#include "Graphics/Camera/ICamera.h"
+#include "Graphics/Camera/EditorCamera.h"
+
+#include "glm/glm.hpp"
+
 Renderer::Renderer()
 {
 	m_defaultShader = std::make_shared<Shader>("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");

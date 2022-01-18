@@ -1,6 +1,6 @@
 #include "Model.h"
 
-#include "Renderer/Lighting/PointLight.h"
+#include "Graphics/Lighting/PointLight.h"
 
 #include "Resources/Primitives/quad.h"
 #include "Resources/Primitives/cube.h"
@@ -74,7 +74,7 @@ std::shared_ptr<Model> Model::CreatePrimitiveModel(PrimitiveType ptype)
 }
 
 
-void Model::Draw(std::shared_ptr<Renderer> renderer, std::shared_ptr<Shader> shader /* = nullptr*/)
+void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> shader /* = nullptr*/)
 {
 	auto currShader = m_shader;
 

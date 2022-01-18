@@ -15,52 +15,52 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Renderer\Geometry\Mesh.cpp">
+    <ClCompile Include="Graphics\Geometry\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Shader\Shader.cpp">
+    <ClCompile Include="Graphics\Shader\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Camera\FlyCamera.cpp">
+    <ClCompile Include="Graphics\Camera\FlyCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Shader\Texture.cpp">
+    <ClCompile Include="Graphics\Shader\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Lighting\Light.cpp">
+    <ClCompile Include="Graphics\Lighting\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Buffers\VertexBufferObject.cpp">
+    <ClCompile Include="Graphics\Buffers\VertexBufferObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Buffers\ElementBufferObject.cpp">
+    <ClCompile Include="Graphics\Buffers\ElementBufferObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Buffers\VertexArrayObject.cpp">
+    <ClCompile Include="Graphics\Buffers\VertexArrayObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Buffers\VertexBufferLayout.cpp">
+    <ClCompile Include="Graphics\Buffers\VertexBufferLayout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Utils\IO\Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Renderer.cpp">
+    <ClCompile Include="Graphics\Renderer\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Shader\Material.cpp">
+    <ClCompile Include="Graphics\Shader\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Lighting\DirectionalLight.cpp">
+    <ClCompile Include="Graphics\Lighting\DirectionalLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Lighting\PointLight.cpp">
+    <ClCompile Include="Graphics\Lighting\PointLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Utils\Math\LinearAlgebraUtil.cpp">
@@ -75,10 +75,10 @@
     <ClCompile Include="IO\Mouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Geometry\Model.cpp">
+    <ClCompile Include="Graphics\Geometry\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Geometry\Transform.cpp">
+    <ClCompile Include="Graphics\Geometry\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Vendor\imgui\imgui.cpp">
@@ -114,16 +114,16 @@
     <ClCompile Include="Core\Context.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Camera\EditorCamera.cpp">
+    <ClCompile Include="Graphics\Camera\EditorCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Services\ObjectSelection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Buffers\FrameBufferObject.cpp">
+    <ClCompile Include="Graphics\Buffers\FrameBufferObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Buffers\RenderBufferObject.cpp">
+    <ClCompile Include="Graphics\Buffers\RenderBufferObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Resources\Primitives\quad.h">
@@ -132,51 +132,57 @@
     <ClCompile Include="Resources\Primitives\quad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Renderer\Renderer2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Services\ScreenBufferProjector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Renderer\Geometry\Mesh.h">
+    <ClInclude Include="Graphics\Geometry\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Shader\Shader.h">
+    <ClInclude Include="Graphics\Shader\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Camera\FlyCamera.h">
+    <ClInclude Include="Graphics\Camera\FlyCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Shader\Texture.h">
+    <ClInclude Include="Graphics\Shader\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Lighting\Light.h">
+    <ClInclude Include="Graphics\Lighting\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Buffers\VertexBufferObject.h">
+    <ClInclude Include="Graphics\Buffers\VertexBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Buffers\ElementBufferObject.h">
+    <ClInclude Include="Graphics\Buffers\ElementBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Buffers\VertexArrayObject.h">
+    <ClInclude Include="Graphics\Buffers\VertexArrayObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Buffers\VertexBufferLayout.h">
+    <ClInclude Include="Graphics\Buffers\VertexBufferLayout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utils\IO\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Renderer.h">
+    <ClInclude Include="Graphics\Renderer\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Shader\Material.h">
+    <ClInclude Include="Graphics\Shader\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Lighting\DirectionalLight.h">
+    <ClInclude Include="Graphics\Lighting\DirectionalLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Lighting\PointLight.h">
+    <ClInclude Include="Graphics\Lighting\PointLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utils\Math\LinearAlgebraUtil.h">
@@ -194,16 +200,16 @@
     <ClInclude Include="main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Buffers\VertexBufferElement.h">
+    <ClInclude Include="Graphics\Buffers\VertexBufferElement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Resources\Primitives\cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Geometry\Model.h">
+    <ClInclude Include="Graphics\Geometry\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Geometry\Transform.h">
+    <ClInclude Include="Graphics\Geometry\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ApplicationConstants.h">
@@ -242,7 +248,7 @@
     <ClInclude Include="imgui\ImguiHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Camera\ICamera.h">
+    <ClInclude Include="Graphics\Camera\ICamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utils\IO\FileUtil.h">
@@ -254,16 +260,25 @@
     <ClInclude Include="Core\Context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Camera\EditorCamera.h">
+    <ClInclude Include="Graphics\Camera\EditorCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Services\ObjectSelection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Buffers\FrameBufferObject.h">
+    <ClInclude Include="Graphics\Buffers\FrameBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Buffers\RenderBufferObject.h">
+    <ClInclude Include="Graphics\Buffers\RenderBufferObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Renderer\IRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Renderer\Renderer2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Services\ScreenBufferProjector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

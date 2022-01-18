@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 
-#include "Renderer/Shader/Shader.h"
+#include "Graphics/Shader/Shader.h"
 
 class Material
 {

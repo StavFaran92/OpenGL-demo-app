@@ -4,14 +4,14 @@
 
 #include <GL\glew.h>
 
-#include "Renderer/Renderer.h"
-#include "Renderer/Shader/Shader.h"
-#include "Renderer/Shader/Texture.h"
+#include "Graphics/Renderer/Renderer.h"
+#include "Graphics/Shader/Shader.h"
+#include "Graphics/Shader/Texture.h"
 
-#include "Renderer/Buffers/VertexBufferObject.h"
-#include "Renderer/Buffers/ElementBufferObject.h"
-#include "Renderer/Buffers/VertexBufferLayout.h"
-#include "Renderer/Buffers/VertexArrayObject.h"
+#include "Graphics/Buffers/VertexBufferObject.h"
+#include "Graphics/Buffers/ElementBufferObject.h"
+#include "Graphics/Buffers/VertexBufferLayout.h"
+#include "Graphics/Buffers/VertexArrayObject.h"
 
 #include "ApplicationConstants.h"
 
@@ -23,7 +23,7 @@ public:
 	Mesh(std::shared_ptr<std::vector<Vertex>> vertices);
 	Mesh(float* vertices, size_t verticesSize);
 
-	void RenderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < Renderer >renderer);
+	void RenderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < IRenderer >renderer);
 
 	void AddTexture(std::shared_ptr<Texture> texture);
 	void AddTextures(std::vector<std::shared_ptr<Texture>> textures);

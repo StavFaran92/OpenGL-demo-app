@@ -1,8 +1,8 @@
 #include "Context.h"
 
-#include "Renderer/Geometry/Model.h"
-#include "Renderer/Lighting/DirectionalLight.h"
-#include "Renderer/Lighting/PointLight.h"
+#include "Graphics/Geometry/Model.h"
+#include "Graphics/Lighting/DirectionalLight.h"
+#include "Graphics/Lighting/PointLight.h"
 
 Context::Context() : m_modelCounter(0), m_shaderCounter(0)
 {
