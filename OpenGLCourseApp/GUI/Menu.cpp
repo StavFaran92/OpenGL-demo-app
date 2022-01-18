@@ -7,6 +7,7 @@ static void ShowExampleAppLog();
 static bool ShowLightCreatorWindow = false;
 static bool showModelCreatorWindow = false;
 static bool showModelInspectorWindow = false;
+static bool showPrimitiveCreatorWindow = false;
 
 // Helper to wire demo markers located in code to a interactive browser
 typedef void (*ImGuiDemoMarkerCallback)(const char* file, int line, const char* section, void* user_data);
@@ -25,6 +26,7 @@ void DisplayMenu()
     LightCreatorWindow();
     ShowModelCreatorWindow();
     ShowModelInspectorWindow();
+    ShowPrimitiveCreatorWindow();
 
     //bool show_demo_window = true;
     //bool show_another_window = true;
@@ -129,6 +131,11 @@ void ShowMenuFile()
     if (ImGui::MenuItem("Add Light"))
     {
         ShowLightCreatorWindow = true;
+    }
+
+    if (ImGui::MenuItem("Add Primitive"))
+    {
+        showPrimitiveCreatorWindow = true;
     }
 
     if (ImGui::MenuItem("Quit", "Alt+F4"))
@@ -325,6 +332,85 @@ void ShowModelInspectorWindow()
         }
         ImGui::InputFloat3("Rotation", (float*)&rotation);
         ImGui::InputFloat3("Scale", (float*)&scale);
+
+        ImGui::End();
+    }
+}
+
+enum class Shape {
+    Quad = 0,
+    Cube = 1
+};
+
+void ShowPrimitiveCreatorWindow()
+{
+    if (showPrimitiveCreatorWindow)
+    {
+        ImGui::SetNextWindowSize({ 400, 300 }, ImGuiCond_Appearing);
+        ImGui::Begin("Primitve Creator");
+
+        static bool flipTexture = false;
+        static ImGuiTextBuffer texturePath;
+        static std::string path = "";
+        static glm::vec3 pos(0.f, 0.f, 0.f);
+        static glm::vec3 rotation(0.f, 0.f, 0.f);
+        static glm::vec3 scale(1.f, 1.f, 1.f);
+        static Model::PrimitiveType shape = Model::PrimitiveType::Quad;
+
+
+        ImGui::LabelText("", "Shape");
+        ImGui::RadioButton("Quad", (int*)&shape, 0);
+        ImGui::RadioButton("Cube", (int*)&shape, 1);
+
+        ImGui::LabelText("", "Texture");
+        if (ImGui::Button("Browse"))
+        {
+            auto filePath = FileUtil::OpenFile(g_supportedFormats);
+            if (!filePath.empty())
+            {
+                texturePath.clear();
+                texturePath.append(filePath.c_str());
+                path = texturePath.c_str();
+            }
+        }
+        ImGui::SameLine();
+        ImGui::TextUnformatted(texturePath.begin(), texturePath.end());
+
+        ImGui::Checkbox("Flip Texture", &flipTexture);
+
+        ImGui::LabelText("", "Transformation");
+        ImGui::InputFloat3("Position", (float*)&pos);
+        ImGui::InputFloat3("Rotation", (float*)&rotation);
+        ImGui::InputFloat3("Scale", (float*)&scale);
+
+        if (ImGui::Button("Ok"))
+        {
+            //todo validate input
+
+            logInfo("Open file: " + path);
+
+            //auto texture = Texture::LoadTextureFromFile(texturePath.c_str(), flipTexture);
+
+            std::shared_ptr<Model> model = nullptr;
+
+            model = Model::CreatePrimitiveModel(shape);
+            model->FlipTexture(flipTexture);
+            std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
+            model->UseMaterial(material);
+            model->GetTransformation()->SetPosition(pos);
+            model->GetTransformation()->SetScale(scale);
+
+            Application::Get().GetContext()->AddModel(model);
+
+            showPrimitiveCreatorWindow = false;
+
+            logInfo("Added Model successfully.");
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel"))
+        {
+            showModelCreatorWindow = false;
+        }
 
         ImGui::End();
     }

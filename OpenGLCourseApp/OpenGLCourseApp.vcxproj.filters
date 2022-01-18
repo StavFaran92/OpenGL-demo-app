@@ -197,7 +197,7 @@
     <ClInclude Include="Renderer\Buffers\VertexBufferElement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Resources\Primitives\cube_vertices.h">
+    <ClInclude Include="Resources\Primitives\cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\Geometry\Model.h">

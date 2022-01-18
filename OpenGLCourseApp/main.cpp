@@ -59,8 +59,8 @@ int main(int argc, char* argv[])
 	//glEnable(GL_CULL_FACE);
 
 
-	auto quad = Model::CreatePrimitiveModel(Model::PrimitiveType::Quad);
-	context->AddModel(quad);
+	//auto quad = Model::CreatePrimitiveModel(Model::PrimitiveType::Quad);
+	//context->AddModel(quad);
 
 	//// screen quad VAO
 	//unsigned int quadVAO, quadVBO;

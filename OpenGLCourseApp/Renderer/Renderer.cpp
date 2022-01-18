@@ -19,7 +19,15 @@ void Renderer::Draw(const VertexArrayObject& vao, std::shared_ptr<Shader> shader
 
 	vao.Bind();
 
-	glDrawElements(GL_TRIANGLES, vao.GetIndexCount(), GL_UNSIGNED_INT, 0);
+	if (vao.GetIndexCount() == 0)
+	{
+		glDrawArrays(GL_TRIANGLES, 0, vao.GetVerticesCount());
+	}
+	else 
+	{
+		glDrawElements(GL_TRIANGLES, vao.GetIndexCount(), GL_UNSIGNED_INT, 0);
+	}
+
 }
 
 std::shared_ptr<Shader> Renderer::GetDefaultShader() const

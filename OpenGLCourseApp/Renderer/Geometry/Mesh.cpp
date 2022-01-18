@@ -7,7 +7,7 @@ Mesh::Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::v
 
 	m_vao = std::make_shared<VertexArrayObject>();
 	m_ibo = std::make_shared<ElementBufferObject>(&(m_indices->at(0)), indices->size());
-	m_vbo = std::make_shared<VertexBufferObject>(&(vertices->at(0)), vertices->size());
+	m_vbo = std::make_shared<VertexBufferObject>(&(vertices->at(0)), vertices->size() / sizeof(Vertex));
 
 	m_vao->AttachBuffer(*m_vbo, *m_ibo);
 }
@@ -18,9 +18,30 @@ Mesh::Mesh(float* vertices, size_t verticesSize, unsigned int* indices, size_t i
 
 	m_vao = std::make_shared<VertexArrayObject>();
 	m_ibo = std::make_shared<ElementBufferObject>(indices, indicesSize);
-	m_vbo = std::make_shared<VertexBufferObject>(vertices, verticesSize);
+	m_vbo = std::make_shared<VertexBufferObject>(vertices, verticesSize / sizeof(Vertex));
 
 	m_vao->AttachBuffer(*m_vbo, *m_ibo);
+}
+
+Mesh::Mesh(std::shared_ptr<std::vector<Vertex>> vertices) :
+	m_vertices(vertices), m_indices(nullptr)
+{
+	logTrace(__FUNCTION__);
+
+	m_vao = std::make_shared<VertexArrayObject>();
+	m_vbo = std::make_shared<VertexBufferObject>(&(vertices->at(0)), vertices->size() / sizeof(Vertex));
+
+	m_vao->AttachBuffer(*m_vbo);
+}
+
+Mesh::Mesh(float* vertices, size_t verticesSize)
+{
+	logTrace(__FUNCTION__);
+
+	m_vao = std::make_shared<VertexArrayObject>();
+	m_vbo = std::make_shared<VertexBufferObject>(vertices, verticesSize / sizeof(Vertex));
+
+	m_vao->AttachBuffer(*m_vbo);
 }
 
 //void Mesh::CreateMesh()

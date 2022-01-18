@@ -22,8 +22,9 @@ class Model
 public:
 	enum class PrimitiveType 
 	{
-		Box,
-		Quad
+		Quad,
+		Cube
+
 	};
 public:
 	Model();

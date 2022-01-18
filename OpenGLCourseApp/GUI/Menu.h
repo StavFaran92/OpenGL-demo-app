@@ -21,3 +21,4 @@ void SaveFile();
 void LightCreatorWindow();
 void ShowModelCreatorWindow();
 void ShowModelInspectorWindow();
+void ShowPrimitiveCreatorWindow();

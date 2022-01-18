@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 
 VertexBufferObject::VertexBufferObject(const void* data, unsigned int size)
+	: m_length(size)
 {
 	glGenBuffers(1, &m_id);
 	glBindBuffer(GL_ARRAY_BUFFER, m_id);
@@ -23,4 +24,9 @@ void VertexBufferObject::Bind() const
 void VertexBufferObject::Unbind() const
 {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+unsigned int VertexBufferObject::getLength() const
+{
+	return m_length;
 }

@@ -19,11 +19,17 @@ void VertexArrayObject::AttachBuffer(const VertexBufferObject& vbo, const Elemen
 
 	// Bind VBO to associate with this VAO
 	vbo.Bind();
+	m_verticesCount = vbo.getLength();
 
 	// Bind IBO to associate with this VAO
 	ebo.Bind();
 	m_indexCount = ebo.getLength();
 
+	FillVertexAttrib();
+}
+
+void VertexArrayObject::FillVertexAttrib()
+{
 	// vertex positions
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
@@ -33,6 +39,18 @@ void VertexArrayObject::AttachBuffer(const VertexBufferObject& vbo, const Elemen
 	// vertex texture coords
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+}
+
+void VertexArrayObject::AttachBuffer(const VertexBufferObject& vbo)
+{
+	// Bind this VAO
+	Bind();
+
+	// Bind VBO to associate with this VAO
+	vbo.Bind();
+	m_verticesCount = vbo.getLength();
+
+	FillVertexAttrib();
 }
 
 void VertexArrayObject::Bind() const
