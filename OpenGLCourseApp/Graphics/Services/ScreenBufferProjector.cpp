@@ -4,6 +4,7 @@
 #include "Graphics/Buffers/FrameBufferObject.h"
 #include "Graphics/Buffers/RenderBufferObject.h"
 #include "Graphics/Renderer/Renderer2D.h"
+#include "Graphics/Models/ScreenQuad.h"
 
 bool ScreenBufferProjector::Init()
 {
@@ -24,7 +25,7 @@ bool ScreenBufferProjector::Init()
 	}
 	m_frameBuffer->Unbind();
 
-	m_quad = Model::CreatePrimitiveModel(Model::PrimitiveType::Quad);
+	m_quad = ScreenQuad::GenerateScreenQuad();
 	m_screenShader = std::make_shared<Shader>("Resources\\Shaders\\SimpleShader.vert", "Resources\\Shaders\\SimpleShader.frag");
 	m_renderer = std::make_shared<Renderer2D>();
 }

@@ -105,6 +105,7 @@
     <ClCompile Include="Resources\Primitives\quad.cpp" />
     <ClCompile Include="Resources\Primitives\quad.h" />
     <ClCompile Include="Graphics\Services\ScreenBufferProjector.cpp" />
+    <ClCompile Include="Graphics\Models\ScreenQuad.cpp" />
     <ClCompile Include="Services\ObjectSelection.cpp" />
     <ClCompile Include="Graphics\Camera\EditorCamera.cpp" />
     <ClCompile Include="Utils\IO\FileUtil.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="Graphics\Renderer\Renderer2D.h" />
     <ClInclude Include="Graphics\Services\ScreenBufferProjector.h" />
     <ClInclude Include="Graphics\Models\Grid.h" />
+    <ClInclude Include="Graphics\Models\ScreenQuad.h" />
     <ClInclude Include="Services\ObjectSelection.h" />
     <ClInclude Include="Graphics\Camera\EditorCamera.h" />
     <ClInclude Include="Utils\IO\FileUtil.h" />

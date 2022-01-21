@@ -44,11 +44,11 @@ int main(int argc, char* argv[])
 { 
 	Application::Get().Init();
 
-	std::shared_ptr<Window> mainWindow = Application::Get().GetWindow();
-	std::shared_ptr<Context> context = Application::Get().GetContext();
-	std::shared_ptr<Renderer> renderer = Application::Get().GetRenderer();
-	std::shared_ptr<ImguiHandler> imgui = Application::Get().GetImguiHandler();
-	std::shared_ptr<ScreenBufferProjector> screenProjector = Application::Get().GetScreenBufferProjector();
+	auto mainWindow = Application::Get().GetWindow();
+	auto context = Application::Get().GetContext();
+	auto renderer = Application::Get().GetRenderer();
+	auto imgui = Application::Get().GetImguiHandler();
+	auto screenProjector = Application::Get().GetScreenBufferProjector();
 
 	//Main loop flag
 	bool quit = false;
