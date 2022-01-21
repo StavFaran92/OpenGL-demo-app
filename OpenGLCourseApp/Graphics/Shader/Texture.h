@@ -12,7 +12,7 @@ public:
 	// This should not be used.
 	Texture();
 
-	static std::shared_ptr<Texture> CreateEmptyTexture();
+	static std::shared_ptr<Texture> CreateEmptyTexture(int width, int height);
 	static std::shared_ptr<Texture> LoadTextureFromFile(const std::string& fileLocation, bool isFlipped = false);
 
 	void Bind();
