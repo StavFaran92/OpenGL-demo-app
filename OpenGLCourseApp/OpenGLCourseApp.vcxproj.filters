@@ -138,6 +138,9 @@
     <ClCompile Include="Graphics\Services\ScreenBufferProjector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Models\Grid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\Geometry\Mesh.h">
@@ -279,6 +282,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Services\ScreenBufferProjector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Models\Grid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

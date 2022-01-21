@@ -34,7 +34,7 @@ public:
 	static std::shared_ptr<Model> LoadModelFromFile(const std::string& path);
 	static std::shared_ptr<Model> CreatePrimitiveModel(PrimitiveType ptype);
 
-	void Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> shader = nullptr);
+	virtual void Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> shader = nullptr);
 
 	bool AttachShader(std::shared_ptr<Shader > shader);
 	bool DetachShader();
@@ -56,7 +56,7 @@ private:
 	void processNode(aiNode* node, const aiScene* scene);
 	std::shared_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene);
 	std::vector<std::shared_ptr<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName);
-private:
+protected:
 	uint32_t m_id = 0;
 
 	// model data

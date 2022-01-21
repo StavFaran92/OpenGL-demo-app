@@ -9,6 +9,8 @@
 // forward declerations
 class ICamera;
 
+
+
 class Renderer : public IRenderer
 {
 public:

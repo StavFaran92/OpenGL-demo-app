@@ -88,6 +88,8 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 		m_material->UseMaterial(currShader);
 	}
 
+	renderer->SetDrawType(Renderer::DrawType::Triangles);
+
 	for (auto i = 0; i < m_meshes.size(); i++)
 	{
 		m_meshes[i]->RenderMesh(currShader, renderer);

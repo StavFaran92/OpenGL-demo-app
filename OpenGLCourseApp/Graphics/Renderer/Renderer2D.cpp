@@ -6,11 +6,11 @@ void Renderer2D::Draw(const VertexArrayObject& vao, std::shared_ptr<Shader> shad
 
 	if (vao.GetIndexCount() == 0)
 	{
-		glDrawArrays(GL_TRIANGLES, 0, vao.GetVerticesCount());
+		glDrawArrays(m_drawType, 0, vao.GetVerticesCount());
 	}
 	else
 	{
-		glDrawElements(GL_TRIANGLES, vao.GetIndexCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(m_drawType, vao.GetIndexCount(), GL_UNSIGNED_INT, 0);
 	}
 }
 

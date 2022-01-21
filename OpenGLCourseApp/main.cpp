@@ -35,6 +35,8 @@
 #include "Core/Application.h"
 #include "Core/Context.h"
 
+#include "Graphics/Models/Grid.h"
+
 void handleKeys(unsigned char key, int x, int y);
 void handleEvents(SDL_Event& e, std::shared_ptr<ImguiHandler> imgui, bool& quit, std::shared_ptr<ICamera> camera, double deltaTime);
 
@@ -59,6 +61,9 @@ int main(int argc, char* argv[])
 	double deltaTime = 0;
 	glEnable(GL_DEPTH_TEST);
 	//glEnable(GL_CULL_FACE);
+
+	//auto grid = Grid::GenerateGrid(10);
+	//context->AddModel(grid);
 
 	renderer->Clear();
 	float angle = 0;
