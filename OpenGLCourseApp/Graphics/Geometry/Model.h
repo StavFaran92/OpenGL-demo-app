@@ -52,6 +52,7 @@ public:
 
 	inline void SetID(uint32_t id) { m_id = id; }
 	inline uint32_t getID() { return m_id; }
+	std::vector<std::shared_ptr<Texture>> GetTextures();
 private:
 	void processNode(aiNode* node, const aiScene* scene);
 	std::shared_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene);

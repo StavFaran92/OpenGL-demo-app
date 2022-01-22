@@ -28,6 +28,8 @@ public:
 	void AddTexture(std::shared_ptr<Texture> texture);
 	void AddTextures(std::vector<std::shared_ptr<Texture>> textures);
 
+	inline std::vector<std::shared_ptr<Texture>> GetTextures() { return m_textures; };
+
 	void SetTexturesInShader(std::shared_ptr<Shader>& shader);
 
 	~Mesh();

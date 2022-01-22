@@ -415,3 +415,71 @@ void ShowPrimitiveCreatorWindow()
         ImGui::End();
     }
 }
+
+//void ShowSkyboxCreatorWindow()
+//{
+//    if (showSkyboxCreatorWindow)
+//    {
+//        ImGui::SetNextWindowSize({ 400, 300 }, ImGuiCond_Appearing);
+//        ImGui::Begin("Skybox Creator");
+//
+//        static ImGuiTextBuffer texturePath;
+//        static std::string path = "";
+//
+//        ImGui::LabelText("", "Shape");
+//        ImGui::RadioButton("Quad", (int*)&shape, 0);
+//        ImGui::RadioButton("Cube", (int*)&shape, 1);
+//
+//        ImGui::LabelText("", "Texture");
+//        if (ImGui::Button("Browse"))
+//        {
+//            auto filePath = FileUtil::OpenFile(g_supportedFormats);
+//            if (!filePath.empty())
+//            {
+//                texturePath.clear();
+//                texturePath.append(filePath.c_str());
+//                path = texturePath.c_str();
+//            }
+//        }
+//        ImGui::SameLine();
+//        ImGui::TextUnformatted(texturePath.begin(), texturePath.end());
+//
+//        ImGui::Checkbox("Flip Texture", &flipTexture);
+//
+//        ImGui::LabelText("", "Transformation");
+//        ImGui::InputFloat3("Position", (float*)&pos);
+//        ImGui::InputFloat3("Rotation", (float*)&rotation);
+//        ImGui::InputFloat3("Scale", (float*)&scale);
+//
+//        if (ImGui::Button("Ok"))
+//        {
+//            //todo validate input
+//
+//            logInfo("Open file: " + path);
+//
+//            //auto texture = Texture::LoadTextureFromFile(texturePath.c_str(), flipTexture);
+//
+//            std::shared_ptr<Model> model = nullptr;
+//
+//            model = Model::CreatePrimitiveModel(shape);
+//            model->FlipTexture(flipTexture);
+//            std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
+//            model->UseMaterial(material);
+//            model->GetTransformation()->SetPosition(pos);
+//            model->GetTransformation()->SetScale(scale);
+//
+//            Application::Get().GetContext()->AddModel(model);
+//
+//            showPrimitiveCreatorWindow = false;
+//
+//            logInfo("Added Model successfully.");
+//        }
+//        ImGui::SameLine();
+//        if (ImGui::Button("Cancel"))
+//        {
+//            showModelCreatorWindow = false;
+//        }
+//
+//        ImGui::End();
+//    }
+//}

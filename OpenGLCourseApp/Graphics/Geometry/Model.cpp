@@ -126,6 +126,18 @@ bool Model::UseShader()
 
 
 
+std::vector<std::shared_ptr<Texture>> Model::GetTextures()
+{
+	std::vector<std::shared_ptr<Texture>> result;
+	
+	for (const auto &mesh : m_meshes)
+	{
+		result.insert(result.end(), mesh->GetTextures().begin(), mesh->GetTextures().end());
+	}
+
+	return result;
+}
+
 void Model::processNode(aiNode* node, const aiScene* scene)
 {
 	// process all the node's meshes (if any)

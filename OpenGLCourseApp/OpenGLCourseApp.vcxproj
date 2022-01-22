@@ -200,6 +200,8 @@
     <None Include="Resources\Shaders\LightShader.frag" />
     <None Include="Resources\Shaders\LightShader.vert" />
     <None Include="Resources\Shaders\OutlineShader.frag" />
+    <None Include="Resources\Shaders\ReflectionShader.frag" />
+    <None Include="Resources\Shaders\ReflectionShader.vert" />
     <None Include="Resources\Shaders\shader.frag" />
     <None Include="Resources\Shaders\shader.vert" />
     <None Include="Resources\Shaders\SimpleShader.frag" />

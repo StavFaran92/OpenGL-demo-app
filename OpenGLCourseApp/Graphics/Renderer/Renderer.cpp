@@ -18,11 +18,11 @@ Renderer::Renderer()
 	m_projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
 }
 
-Renderer::Renderer(std::shared_ptr<Renderer> other)
+Renderer::Renderer(const Renderer& other)
 {
-	m_defaultShader = other->GetDefaultShader();
-	m_camera = other->GetCamera();
-	m_projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
+	m_defaultShader = other.m_defaultShader;
+	m_camera = other.m_camera;
+	m_projection = other.m_projection;
 }
 
 void Renderer::Draw(const VertexArrayObject& vao, std::shared_ptr<Shader> shader) const

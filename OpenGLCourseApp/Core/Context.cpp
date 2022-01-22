@@ -9,7 +9,7 @@
 Context::Context() : m_modelCounter(0), m_shaderCounter(0)
 {
 	m_renderer = std::make_shared<Renderer>();
-	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(m_renderer);
+	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
 
 	std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
 	AddDirectionalLight(light);

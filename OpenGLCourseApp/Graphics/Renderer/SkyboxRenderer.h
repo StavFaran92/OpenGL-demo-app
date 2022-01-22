@@ -5,7 +5,7 @@
 class SkyboxRenderer : public Renderer
 {
 public:
-	SkyboxRenderer(std::shared_ptr<Renderer> other) : Renderer(other) {};
+	SkyboxRenderer(const Renderer& other) : Renderer(other) {};
 
 	void SetMVP(std::shared_ptr<Shader>& shader) const override;
 };

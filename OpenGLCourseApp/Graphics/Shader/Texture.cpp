@@ -10,15 +10,17 @@ Texture::Texture()
 std::shared_ptr<Texture> Texture::CreateEmptyTexture(int width, int height)
 {
 	std::shared_ptr<Texture> texture = std::make_shared<Texture>();
+
+	texture->SetCategory(GL_TEXTURE_2D);
 	// generate texture
 	glGenTextures(1, &texture->m_id);
-	glBindTexture(GL_TEXTURE_2D, texture->m_id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glBindTexture(texture->GetCategory(), texture->m_id);
+	glTexImage2D(texture->GetCategory(), 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(texture->GetCategory(), GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(texture->GetCategory(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(texture->GetCategory(), 0);
 
 	return texture;
 }
@@ -26,6 +28,8 @@ std::shared_ptr<Texture> Texture::CreateEmptyTexture(int width, int height)
 std::shared_ptr<Texture> Texture::LoadTextureFromFile(const std::string& fileLocation, bool isFlipped)
 {
 	std::shared_ptr<Texture> texture = std::make_shared<Texture>();
+
+	texture->SetCategory(GL_TEXTURE_2D);
 
 	// Cache file location
 	texture->m_fileLocation = fileLocation;
@@ -44,7 +48,7 @@ std::shared_ptr<Texture> Texture::LoadTextureFromFile(const std::string& fileLoc
 
 	// generate texture and bind it
 	glGenTextures(1, &texture->m_id);
-	glBindTexture(GL_TEXTURE_2D, texture->m_id);
+	glBindTexture(texture->GetCategory(), texture->m_id);
 
 	GLenum format = GL_RGB;
 	if (texture->m_bitDepth == 1)
@@ -55,17 +59,17 @@ std::shared_ptr<Texture> Texture::LoadTextureFromFile(const std::string& fileLoc
 		format = GL_RGBA;
 
 	// sets the texture parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(texture->GetCategory(), GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(texture->GetCategory(), GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(texture->GetCategory(), GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(texture->GetCategory(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// generate texture and mipmaps
-	glTexImage2D(GL_TEXTURE_2D, 0, format, texture->m_width, texture->m_height, 0, format, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
+	glTexImage2D(texture->GetCategory(), 0, format, texture->m_width, texture->m_height, 0, format, GL_UNSIGNED_BYTE, data);
+	glGenerateMipmap(texture->GetCategory());
 
 	// unbind texture and release the image.
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(texture->GetCategory(), 0);
 	stbi_image_free(data);
 
 	return texture;
@@ -75,7 +79,10 @@ std::shared_ptr<Texture> Texture::LoadCubemap(std::vector<std::string> faces)
 {
 	auto texture = std::make_shared<Texture>();
 	glGenTextures(1, &texture->m_id);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, texture->m_id);
+
+	texture->SetCategory(GL_TEXTURE_CUBE_MAP);
+
+	glBindTexture(texture->GetCategory(), texture->m_id);
 
 	int width, height, nrChannels;
 	for (unsigned int i = 0; i < faces.size(); i++)
@@ -94,11 +101,11 @@ std::shared_ptr<Texture> Texture::LoadCubemap(std::vector<std::string> faces)
 			stbi_image_free(data);
 		}
 	}
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(texture->GetCategory(), GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(texture->GetCategory(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(texture->GetCategory(), GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(texture->GetCategory(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(texture->GetCategory(), GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	return texture;
 }
@@ -106,7 +113,7 @@ std::shared_ptr<Texture> Texture::LoadCubemap(std::vector<std::string> faces)
 void Texture::Bind()
 {
 	glActiveTexture(GL_TEXTURE0 + m_slot);
-	glBindTexture(GL_TEXTURE_2D, m_id);
+	glBindTexture(GetCategory(), m_id);
 }
 
 void Texture::ClearTexture()

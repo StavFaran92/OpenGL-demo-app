@@ -14,8 +14,11 @@ class ICamera;
 class Renderer : public IRenderer
 {
 public:
+	// Constructor
 	Renderer();
-	Renderer(std::shared_ptr<Renderer> other);
+
+	// Copy Constructor
+	Renderer(const Renderer& other);
 
 	//Overrides
 	void Draw(const VertexArrayObject& vao, std::shared_ptr<Shader> shader) const override;
