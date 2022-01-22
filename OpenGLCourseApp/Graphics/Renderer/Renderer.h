@@ -15,6 +15,7 @@ class Renderer : public IRenderer
 {
 public:
 	Renderer();
+	Renderer(std::shared_ptr<Renderer> other);
 
 	//Overrides
 	void Draw(const VertexArrayObject& vao, std::shared_ptr<Shader> shader) const override;

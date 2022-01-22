@@ -18,6 +18,13 @@ Renderer::Renderer()
 	m_projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
 }
 
+Renderer::Renderer(std::shared_ptr<Renderer> other)
+{
+	m_defaultShader = other->GetDefaultShader();
+	m_camera = other->GetCamera();
+	m_projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
+}
+
 void Renderer::Draw(const VertexArrayObject& vao, std::shared_ptr<Shader> shader) const
 {
 	SetMVP(shader);
@@ -39,7 +46,7 @@ void Renderer::SetMVP(std::shared_ptr<Shader>& shader) const
 {
 	shader->SetFloat("viewPos", m_camera->getPosition()); // TODO fix
 	shader->SetMat4("projection", m_projection);
-	shader->SetMat4("view", glm::mat4(glm::mat3(m_camera->getView())));
+	shader->SetMat4("view", m_camera->getView());
 }
 
 std::shared_ptr<Shader> Renderer::GetDefaultShader() const
