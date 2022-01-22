@@ -10,6 +10,7 @@ class Shader;
 class Renderer;
 class PointLight;
 class DirectionalLight;
+class Skybox;
 
 class Context
 {
@@ -28,12 +29,16 @@ public:
 	bool AddDirectionalLight(std::shared_ptr<DirectionalLight> light);
 	bool RemoveDirectionalLight(const uint32_t uid);
 
+	bool AddSkybox(std::shared_ptr<Skybox> skybox);
+	bool RemoveSkybox(const uint32_t uid);
+
 	std::shared_ptr<Renderer> GetRenderer() { return m_renderer; }
 
 	void Update(float deltaTime);
 	void Draw();
 private:
 	std::shared_ptr<Renderer> m_renderer = nullptr;
+	std::shared_ptr<Renderer> m_skyboxRenderer = nullptr;
 
 	std::map<uint32_t, std::shared_ptr<Model>> m_models;
 	uint32_t m_modelCounter = 0;
@@ -46,5 +51,7 @@ private:
 
 	std::map<uint32_t, std::shared_ptr<DirectionalLight>> m_directionalLights;
 	uint32_t m_directionalLightCounter = 0;
+
+	std::shared_ptr<Skybox> m_skybox;
 };
 

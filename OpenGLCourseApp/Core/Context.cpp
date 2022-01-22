@@ -3,10 +3,13 @@
 #include "Graphics/Geometry/Model.h"
 #include "Graphics/Lighting/DirectionalLight.h"
 #include "Graphics/Lighting/PointLight.h"
+#include "Graphics/Models/Skybox.h"
+#include "Graphics/Renderer/SkyboxRenderer.h"
 
 Context::Context() : m_modelCounter(0), m_shaderCounter(0)
 {
 	m_renderer = std::make_shared<Renderer>();
+	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(m_renderer);
 
 	std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
 	AddDirectionalLight(light);
@@ -117,6 +120,13 @@ bool Context::RemoveDirectionalLight(const uint32_t uid)
 	return true;
 }
 
+bool Context::AddSkybox(std::shared_ptr<Skybox> skybox)
+{
+	m_skybox = skybox;
+
+	return true;
+}
+
 void Context::Update(float deltaTime)
 {
 	// Update models
@@ -126,6 +136,9 @@ void Context::Update(float deltaTime)
 		iter->second->Update(deltaTime);
 		iter++;
 	}
+
+	if (m_skybox)
+		m_skybox->Update(deltaTime);
 }
 
 void Context::Draw()
@@ -161,5 +174,11 @@ void Context::Draw()
 
 		// Draw model
 		model->second->Draw(m_renderer);
+	}
+
+	if (m_skybox)
+	{
+		m_skybox->UseShader();
+		m_skybox->Draw(m_skyboxRenderer);
 	}
 }

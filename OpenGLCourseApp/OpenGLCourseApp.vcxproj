@@ -108,6 +108,8 @@
     <ClCompile Include="Graphics\Models\ScreenQuad.cpp" />
     <ClCompile Include="Services\ObjectSelection.cpp" />
     <ClCompile Include="Graphics\Camera\EditorCamera.cpp" />
+    <ClCompile Include="Graphics\Models\Skybox.cpp" />
+    <ClCompile Include="Graphics\Renderer\SkyboxRenderer.cpp" />
     <ClCompile Include="Utils\IO\FileUtil.cpp" />
     <ClCompile Include="GUI\Menu.cpp" />
     <ClCompile Include="imgui\ImguiHandler.cpp" />
@@ -153,6 +155,8 @@
     <ClInclude Include="Graphics\Models\ScreenQuad.h" />
     <ClInclude Include="Services\ObjectSelection.h" />
     <ClInclude Include="Graphics\Camera\EditorCamera.h" />
+    <ClInclude Include="Graphics\Models\Skybox.h" />
+    <ClInclude Include="Graphics\Renderer\SkyboxRenderer.h" />
     <ClInclude Include="Utils\IO\FileUtil.h" />
     <ClInclude Include="imgui\ImguiHandler.h" />
     <ClInclude Include="IO\Input.h" />
@@ -200,6 +204,8 @@
     <None Include="Resources\Shaders\shader.vert" />
     <None Include="Resources\Shaders\SimpleShader.frag" />
     <None Include="Resources\Shaders\SimpleShader.vert" />
+    <None Include="Resources\Shaders\SkyboxShader.frag" />
+    <None Include="Resources\Shaders\SkyboxShader.vert" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Vendor\imgui\imgui.natvis" />

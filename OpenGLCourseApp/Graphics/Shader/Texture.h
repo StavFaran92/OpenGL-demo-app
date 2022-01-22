@@ -14,6 +14,7 @@ public:
 
 	static std::shared_ptr<Texture> CreateEmptyTexture(int width, int height);
 	static std::shared_ptr<Texture> LoadTextureFromFile(const std::string& fileLocation, bool isFlipped = false);
+	static std::shared_ptr<Texture> LoadCubemap(std::vector<std::string> faces);
 
 	void Bind();
 

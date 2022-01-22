@@ -36,6 +36,7 @@
 #include "Core/Context.h"
 
 #include "Graphics/Models/Grid.h"
+#include "Graphics/Models/Skybox.h"
 
 void handleKeys(unsigned char key, int x, int y);
 void handleEvents(SDL_Event& e, std::shared_ptr<ImguiHandler> imgui, bool& quit, std::shared_ptr<ICamera> camera, double deltaTime);
@@ -64,6 +65,9 @@ int main(int argc, char* argv[])
 
 	//auto grid = Grid::GenerateGrid(10);
 	//context->AddModel(grid);
+
+	auto skybox = Skybox::CreateSkybox();
+	context->AddSkybox(skybox);
 
 	renderer->Clear();
 	float angle = 0;

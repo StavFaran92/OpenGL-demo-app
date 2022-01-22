@@ -20,9 +20,7 @@ Renderer::Renderer()
 
 void Renderer::Draw(const VertexArrayObject& vao, std::shared_ptr<Shader> shader) const
 {
-	shader->SetFloat("viewPos", m_camera->getPosition()); // TODO fix
-	shader->SetMat4("projection", m_projection);
-	shader->SetMat4("view", m_camera->getView());
+	SetMVP(shader);
 
 	vao.Bind();
 
@@ -37,12 +35,19 @@ void Renderer::Draw(const VertexArrayObject& vao, std::shared_ptr<Shader> shader
 
 }
 
+void Renderer::SetMVP(std::shared_ptr<Shader>& shader) const
+{
+	shader->SetFloat("viewPos", m_camera->getPosition()); // TODO fix
+	shader->SetMat4("projection", m_projection);
+	shader->SetMat4("view", glm::mat4(glm::mat3(m_camera->getView())));
+}
+
 std::shared_ptr<Shader> Renderer::GetDefaultShader() const
 {
 	return m_defaultShader;
 }
 
-std::shared_ptr<ICamera> Renderer::GetCamera()
+std::shared_ptr<ICamera> Renderer::GetCamera() const
 {
 	return m_camera;
 }

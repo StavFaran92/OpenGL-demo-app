@@ -144,6 +144,12 @@
     <ClCompile Include="Graphics\Models\ScreenQuad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Models\Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Renderer\SkyboxRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\Geometry\Mesh.h">
@@ -293,6 +299,12 @@
     <ClInclude Include="Graphics\Models\ScreenQuad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Models\Skybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Renderer\SkyboxRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\LightShader.frag" />
@@ -303,6 +315,8 @@
     <None Include="Resources\Shaders\OutlineShader.frag" />
     <None Include="Resources\Shaders\SimpleShader.vert" />
     <None Include="Resources\Shaders\SimpleShader.frag" />
+    <None Include="Resources\Shaders\SkyboxShader.vert" />
+    <None Include="Resources\Shaders\SkyboxShader.frag" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Vendor\imgui\imgui.natvis" />
