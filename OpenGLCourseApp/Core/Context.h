@@ -32,6 +32,10 @@ public:
 	bool AddSkybox(std::shared_ptr<Skybox> skybox);
 	bool RemoveSkybox(const uint32_t uid);
 
+	std::shared_ptr<Shader> GetReflectionShader();
+	std::shared_ptr<Shader> GetRefractiveShader();
+	std::shared_ptr<Model> GetSkyBox();
+
 	std::shared_ptr<Renderer> GetRenderer() { return m_renderer; }
 
 	void Update(float deltaTime);
@@ -53,5 +57,8 @@ private:
 	uint32_t m_directionalLightCounter = 0;
 
 	std::shared_ptr<Skybox> m_skybox;
+
+	std::shared_ptr<Shader> m_reflectionShader = nullptr;
+	std::shared_ptr<Shader> m_refractiveShader = nullptr;
 };
 

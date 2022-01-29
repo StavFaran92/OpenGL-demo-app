@@ -319,6 +319,8 @@
     <None Include="Resources\Shaders\SkyboxShader.frag" />
     <None Include="Resources\Shaders\ReflectionShader.vert" />
     <None Include="Resources\Shaders\ReflectionShader.frag" />
+    <None Include="Resources\Shaders\RefractionShader.vert" />
+    <None Include="Resources\Shaders\RefractionShader.frag" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Vendor\imgui\imgui.natvis" />

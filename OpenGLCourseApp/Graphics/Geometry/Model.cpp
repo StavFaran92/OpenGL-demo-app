@@ -5,6 +5,8 @@
 #include "Resources/Primitives/quad.h"
 #include "Resources/Primitives/cube.h"
 
+#include "Core/Context.h"
+
 Model::Model()
 {
 	logTrace(__FUNCTION__);
@@ -42,6 +44,8 @@ std::shared_ptr<Model> Model::LoadModelFromFile(const std::string& path)
 std::shared_ptr<Model> Model::CreatePrimitiveModel(PrimitiveType ptype)
 {
 	auto model = std::make_shared<Model>();
+
+	model->SetRefraction(true);
 
 	std::shared_ptr<Mesh> mesh = nullptr;
 
@@ -81,9 +85,40 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 	if (shader)
 		currShader = shader;
 
+	if (m_isReflective)
+	{
+		auto context = Application::Get().GetContext();
+		currShader = context->GetReflectionShader();
+		currShader->UseShader();
+		currShader->SetInt("skybox", 0);
+		auto textures = context->GetSkyBox()->GetTextures();
+		if (textures.size() <= 0)
+		{
+			logError("Skybox does not contain cubemap texture.");
+			return;
+		}
+		textures[0]->Bind();
+	}
+
+	if (m_isRefractive)
+	{
+		auto context = Application::Get().GetContext();
+		currShader = context->GetRefractiveShader();
+		currShader->UseShader();
+		currShader->SetInt("skybox", 0);
+		currShader->SetFloat("refractiveRatio", 1 / 1.52f);
+		auto textures = context->GetSkyBox()->GetTextures();
+		if (textures.size() <= 0)
+		{
+			logError("Skybox does not contain cubemap texture.");
+			return;
+		}
+		textures[0]->Bind();
+	}
+
 	currShader->SetMat4("model", transformation->GetTransformation());
 
-	if (m_material)
+	if (currShader->IsMaterialsEnabled() && m_material)
 	{
 		m_material->UseMaterial(currShader);
 	}
@@ -132,7 +167,8 @@ std::vector<std::shared_ptr<Texture>> Model::GetTextures()
 	
 	for (const auto &mesh : m_meshes)
 	{
-		result.insert(result.end(), mesh->GetTextures().begin(), mesh->GetTextures().end());
+		auto textures = mesh->GetTextures();
+		result.insert(result.end(), textures.begin(), textures.end());
 	}
 
 	return result;

@@ -53,6 +53,9 @@ public:
 	inline void SetID(uint32_t id) { m_id = id; }
 	inline uint32_t getID() { return m_id; }
 	std::vector<std::shared_ptr<Texture>> GetTextures();
+
+	inline void SetReflection(bool val) { m_isReflective = val; }
+	inline void SetRefraction(bool val) { m_isRefractive = val; }
 private:
 	void processNode(aiNode* node, const aiScene* scene);
 	std::shared_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene);
@@ -72,4 +75,7 @@ protected:
 	std::shared_ptr<Light> m_light = nullptr;
 	std::shared_ptr<Material> m_material = nullptr;
 	bool m_flipTexture = false;
+
+	bool m_isReflective = false;
+	bool m_isRefractive = false;
 };

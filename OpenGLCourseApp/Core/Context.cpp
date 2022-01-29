@@ -11,6 +11,16 @@ Context::Context() : m_modelCounter(0), m_shaderCounter(0)
 	m_renderer = std::make_shared<Renderer>();
 	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
 
+	m_reflectionShader = std::make_shared<Shader>("Resources\\Shaders\\ReflectionShader.vert", "Resources\\Shaders\\ReflectionShader.frag");
+	m_reflectionShader->SetEnableLights(false);
+	m_reflectionShader->SetEnableMaterials(false);
+	m_reflectionShader->SetEnableTextures(false);
+
+	m_refractiveShader = std::make_shared<Shader>("Resources\\Shaders\\RefractionShader.vert", "Resources\\Shaders\\RefractionShader.frag");
+	m_refractiveShader->SetEnableLights(false);
+	m_refractiveShader->SetEnableMaterials(false);
+	m_refractiveShader->SetEnableTextures(false);
+
 	std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
 	AddDirectionalLight(light);
 }
@@ -125,6 +135,21 @@ bool Context::AddSkybox(std::shared_ptr<Skybox> skybox)
 	m_skybox = skybox;
 
 	return true;
+}
+
+std::shared_ptr<Shader> Context::GetReflectionShader()
+{
+	return m_reflectionShader;
+}
+
+std::shared_ptr<Shader> Context::GetRefractiveShader()
+{
+	return m_refractiveShader;
+}
+
+std::shared_ptr<Model> Context::GetSkyBox()
+{
+	return m_skybox;
 }
 
 void Context::Update(float deltaTime)
