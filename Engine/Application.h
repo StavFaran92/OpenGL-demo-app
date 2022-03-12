@@ -1,6 +1,8 @@
 #pragma once
 
-class Application
+#include "Core.h"
+
+class EngineAPI Application
 {
 public:
 	virtual void start()=0;
@@ -8,4 +10,7 @@ public:
 
 	Application() {};
 	virtual ~Application() { };
+
 };
+
+Application* CreateApplication();

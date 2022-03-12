@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-
+#include "Core.h"
 
 
 class Context;
@@ -13,7 +13,7 @@ class ScreenBufferProjector;
 class Application;
 union SDL_Event;
 
-class Engine
+class EngineAPI Engine
 {
 public:
     

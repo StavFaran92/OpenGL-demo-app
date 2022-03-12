@@ -10,7 +10,6 @@
     <ClCompile Include="Vendor\imgui\imgui_impl_sdl.cpp" />
     <ClCompile Include="Vendor\imgui\imgui_tables.cpp" />
     <ClCompile Include="Vendor\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Application.cpp" />
     <ClCompile Include="src\DirectionalLight.cpp" />
     <ClCompile Include="src\EditorCamera.cpp" />
     <ClCompile Include="src\ElementBufferObject.cpp" />
@@ -103,9 +102,10 @@
     <ClInclude Include="src\VertexBufferObject.h" />
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\Window.h" />
-    <ClInclude Include="ApplicationConstants.h" />
+    <ClInclude Include="src\ApplicationConstants.h" />
     <ClInclude Include="EntryPoint.h" />
     <ClInclude Include="GraphicsEngine.h" />
+    <ClInclude Include="Core.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\LightShader.frag" />

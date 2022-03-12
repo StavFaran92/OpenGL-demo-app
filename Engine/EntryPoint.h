@@ -1,15 +1,14 @@
 #pragma once
 #include "Engine.h"
-#include "Application.h"
 
-Application* createApplication();
+Application* CreateApplication();
 
 int main(int argc, char* argv[])
 { 
 	auto engine = Engine::Get();
 	engine->Init();
 
-	auto app = createApplication();
+	auto app = CreateApplication();
 	app->start();
 
 	//auto context = engine->GetContext();
