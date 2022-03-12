@@ -9,16 +9,14 @@ class ImguiHandler;
 class ObjectSelection;
 class ScreenBufferProjector;
 
-class Application
+class Engine
 {
 public:
-    static Application& Get()
-    {
-        return instance;
-    }
+    
+    // -------------------- Methods -------------------- //
+    static Engine* Get();
 
     bool Init();
-
     std::shared_ptr<Window> GetWindow() { return m_window; }
     void SetWindow(std::shared_ptr<Window> window) { m_window = std::shared_ptr<Window>(window); }
     std::shared_ptr<Renderer> GetRenderer();
@@ -31,13 +29,17 @@ public:
 
     void Close();
 
-    Application(Application const&) = delete;
-    void operator=(Application const&) = delete;
+    Engine(const Engine&) = delete;
+    void operator=(const Engine&) = delete;
 
 private:
-    Application() { }
 
-    static Application instance;
+    Engine();
+
+    // -------------------- Attributes -------------------- //
+    static Engine* instance;
+
+    bool m_isInit = false;
     std::shared_ptr<Window> m_window = nullptr;
     std::shared_ptr<Context> m_context = nullptr;
     

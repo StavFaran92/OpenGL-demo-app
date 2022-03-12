@@ -1,6 +1,6 @@
 #include "EditorCamera.h"
 
-#include "Core/Application.h"
+#include "Core/Engine.h"
 #include "Core/Context.h"
 #include "Services/ObjectSelection.h"
 
@@ -20,9 +20,9 @@ void EditorCamera::keyControl(double deltaTime)
 {
 	if (m_keyboard->getKeyState(SDL_SCANCODE_DELETE))
 	{
-		auto objectSelection = Application::Get().GetObjectSelection();
+		auto objectSelection = Engine::Get()->GetObjectSelection();
 		auto selected = objectSelection->GetSelectedObject();
-		Application::Get().GetContext()->RemoveModel(selected);
+		Engine::Get()->GetContext()->RemoveModel(selected);
 	}
 }
 
@@ -59,7 +59,7 @@ void EditorCamera::OnMousePressed(SDL_MouseButtonEvent& e)
 	if (e.button == SDL_BUTTON_LEFT)
 	{
 
-		auto objectSelection = Application::Get().GetObjectSelection();
+		auto objectSelection = Engine::Get()->GetObjectSelection();
 		objectSelection->OnMousePressed(e);
 
 		logInfo("Mouse pressed on x: {}, y: {}", e.x, e.y);

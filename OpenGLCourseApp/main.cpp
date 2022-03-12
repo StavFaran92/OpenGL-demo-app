@@ -32,7 +32,7 @@
 
 #include "imgui/ImguiHandler.h"
 
-#include "Core/Application.h"
+#include "Core/Engine.h"
 #include "Core/Context.h"
 
 #include "Graphics/Models/Grid.h"
@@ -43,13 +43,14 @@ void handleEvents(SDL_Event& e, std::shared_ptr<ImguiHandler> imgui, bool& quit,
 
 int main(int argc, char* argv[])
 { 
-	Application::Get().Init();
+	auto engine = Engine::Get();
+	engine->Init();
 
-	auto mainWindow = Application::Get().GetWindow();
-	auto context = Application::Get().GetContext();
-	auto renderer = Application::Get().GetRenderer();
-	auto imgui = Application::Get().GetImguiHandler();
-	auto screenProjector = Application::Get().GetScreenBufferProjector();
+	auto mainWindow = engine->GetWindow();
+	auto context = engine->GetContext();
+	auto renderer = engine->GetRenderer();
+	auto imgui = engine->GetImguiHandler();
+	auto screenProjector = engine->GetScreenBufferProjector();
 
 	//Main loop flag
 	bool quit = false;

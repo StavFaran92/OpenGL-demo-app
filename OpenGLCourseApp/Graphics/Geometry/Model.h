@@ -11,7 +11,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include "ApplicationConstants.h"
-#include "Core/Application.h"
+#include "Core/Engine.h"
 #include "Graphics/Lighting/DirectionalLight.h"
 #include "Graphics/Shader/Material.h"
 
@@ -48,7 +48,7 @@ public:
 	void FlipTexture(bool flip);
 
 	void Update(float delta);
-	std::shared_ptr<Transform> GetTransformation() const { return transformation; }
+	std::shared_ptr<Transform> GetTransformation() const { return m_transformation; }
 
 	inline void SetID(uint32_t id) { m_id = id; }
 	inline uint32_t getID() { return m_id; }
@@ -69,7 +69,7 @@ protected:
 	std::vector<std::shared_ptr<Texture>> m_texturesCache;
 	std::string m_path = "";
 
-	std::shared_ptr<Transform> transformation;
+	std::shared_ptr<Transform> m_transformation;
 
 	std::shared_ptr<Shader> m_shader = nullptr;
 	std::shared_ptr<Light> m_light = nullptr;

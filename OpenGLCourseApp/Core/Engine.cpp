@@ -1,4 +1,4 @@
-#include "Application.h"
+#include "Engine.h"
 
 #include "Context.h"
 #include "Graphics/Renderer/Renderer.h"
@@ -8,10 +8,16 @@
 #include "Graphics/Services/ScreenBufferProjector.h"
 
 // Singleton
-Application Application::instance;
+Engine* Engine::instance = nullptr;
 
-bool Application::Init()
+bool Engine::Init()
 {
+    if (m_isInit)
+    {
+        logError("Engine already started!");
+        return false;
+    }
+
     m_window = std::make_shared<Window>(1024, 768);
     if (!m_window->Init())
     {
@@ -38,29 +44,48 @@ bool Application::Init()
         return false;
     }
 
+    m_isInit = true;
+
     return true;
 }
 
-std::shared_ptr<Renderer> Application::GetRenderer() { return m_context->GetRenderer(); }
+Engine::Engine()
+{}
 
-std::shared_ptr<Context> Application::GetContext()
+Engine* Engine::Get()
+{
+    if (instance == nullptr)
+    {
+        instance = new Engine();
+    }
+    return instance;
+}
+
+std::shared_ptr<Renderer> Engine::GetRenderer() { return m_context->GetRenderer(); }
+
+std::shared_ptr<Context> Engine::GetContext()
 {
     return m_context;
 }
 
-std::shared_ptr<ObjectSelection> Application::GetObjectSelection()
+std::shared_ptr<ObjectSelection> Engine::GetObjectSelection()
 {
     return m_objectSelection; 
 }
 
-std::shared_ptr<ScreenBufferProjector> Application::GetScreenBufferProjector()
+std::shared_ptr<ScreenBufferProjector> Engine::GetScreenBufferProjector()
 {
     return m_screenBufferProjector;
 }
 
-void Application::Close()
+void Engine::Close()
 {
 	SDL_Event e;
 	e.type = SDL_QUIT;
 	SDL_PushEvent(&e);
+
+    m_isInit = false;
+
+    delete instance;
+    instance = nullptr;
 }

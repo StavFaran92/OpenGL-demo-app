@@ -5,7 +5,7 @@
 #include "Graphics/Buffers/RenderBufferObject.h"
 #include "Graphics/Renderer/Renderer2D.h"
 #include "Graphics/Models/ScreenQuad.h"
-#include "Core/Application.h"
+#include "Core/Engine.h"
 #include "Window.h"
 
 bool ScreenBufferProjector::Init()
@@ -13,7 +13,7 @@ bool ScreenBufferProjector::Init()
 	m_frameBuffer = std::make_shared<FrameBufferObject>();
 	m_frameBuffer->Bind();
 
-	m_texture = Texture::CreateEmptyTexture(Application::Get().GetWindow()->getWidth(), Application::Get().GetWindow()->getHeight());
+	m_texture = Texture::CreateEmptyTexture(Engine::Get()->GetWindow()->getWidth(), Engine::Get()->GetWindow()->getHeight());
 	m_frameBuffer->AttachTexture(m_texture->GetID());
 
 	m_renderBuffer = std::make_shared<RenderBufferObject>();

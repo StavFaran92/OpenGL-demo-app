@@ -97,7 +97,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Core\Context.cpp" />
-    <ClCompile Include="Core\Application.cpp" />
+    <ClCompile Include="Core\Engine.cpp" />
+    <ClCompile Include="Core\Scene.cpp" />
     <ClCompile Include="Graphics\Buffers\RenderBufferObject.cpp" />
     <ClCompile Include="Graphics\Buffers\FrameBufferObject.cpp" />
     <ClCompile Include="Graphics\Renderer\Renderer2D.cpp" />
@@ -144,8 +145,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Context.h" />
-    <ClInclude Include="Core\Application.h" />
+    <ClInclude Include="Core\Engine.h" />
     <ClInclude Include="ApplicationConstants.h" />
+    <ClInclude Include="Core\Scene.h" />
     <ClInclude Include="Graphics\Buffers\RenderBufferObject.h" />
     <ClInclude Include="Graphics\Buffers\FrameBufferObject.h" />
     <ClInclude Include="Graphics\Renderer\IRenderer.h" />

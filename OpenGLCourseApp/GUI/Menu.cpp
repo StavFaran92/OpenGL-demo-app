@@ -48,7 +48,7 @@ void DisplayMenu()
     //    ImGui::SameLine();
     //    ImGui::Text("counter = %d", counter);
 
-    //    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    //    ImGui::Text("Engine average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
     //    ImGui::End();
     //}
 
@@ -140,7 +140,7 @@ void ShowMenuFile()
 
     if (ImGui::MenuItem("Quit", "Alt+F4"))
     {
-        Application::Get().Close();
+        Engine::Get()->Close();
     }
 }
 
@@ -157,7 +157,7 @@ void ShowMenuFile()
 //        std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
 //        model->UseMaterial(material);
 //
-//        Application::Get().GetContext()->AddModel(model);
+//        Engine::Get()->GetContext()->AddModel(model);
 //    }
 //}
 
@@ -217,13 +217,13 @@ void LightCreatorWindow()
             {
                 
                 std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>(color, dir, ambientIntensity, diffuseIntensity);
-                Application::Get().GetContext()->AddDirectionalLight(light);
+                Engine::Get()->GetContext()->AddDirectionalLight(light);
 
             }
             else if (lightType == LightType::PointLight)
             {
                 std::shared_ptr<PointLight> light = std::make_shared<PointLight>(color, pos, ambientIntensity, diffuseIntensity, attenuation);
-                Application::Get().GetContext()->AddPointLight(light);
+                Engine::Get()->GetContext()->AddPointLight(light);
             }
 
             ShowLightCreatorWindow = false;
@@ -291,7 +291,7 @@ void ShowModelCreatorWindow()
             model->GetTransformation()->SetPosition(pos);
             model->GetTransformation()->SetScale(scale);
 
-            Application::Get().GetContext()->AddModel(model);
+            Engine::Get()->GetContext()->AddModel(model);
 
             showModelCreatorWindow = false;
 
@@ -403,7 +403,7 @@ void ShowPrimitiveCreatorWindow()
             model->GetTransformation()->SetPosition(pos);
             model->GetTransformation()->SetScale(scale);
 
-            Application::Get().GetContext()->AddModel(model);
+            Engine::Get()->GetContext()->AddModel(model);
 
             showPrimitiveCreatorWindow = false;
 
@@ -471,7 +471,7 @@ void ShowPrimitiveCreatorWindow()
 //            model->GetTransformation()->SetPosition(pos);
 //            model->GetTransformation()->SetScale(scale);
 //
-//            Application::Get().GetContext()->AddModel(model);
+//            Engine::Get()->GetContext()->AddModel(model);
 //
 //            showPrimitiveCreatorWindow = false;
 //

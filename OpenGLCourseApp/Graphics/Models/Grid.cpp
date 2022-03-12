@@ -57,7 +57,7 @@ void Grid::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sha
     if (shader)
         currShader = shader;
 
-    currShader->SetMat4("model", transformation->GetTransformation());
+    currShader->SetMat4("model", m_transformation->GetTransformation());
 
     if (m_material)
     {

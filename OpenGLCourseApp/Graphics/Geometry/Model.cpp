@@ -11,9 +11,9 @@ Model::Model()
 {
 	logTrace(__FUNCTION__);
 
-	transformation = std::make_shared<Transform>();
+	m_transformation = std::make_shared<Transform>();
 
-	m_shader = Application::Get().GetRenderer()->GetDefaultShader();
+	m_shader = Engine::Get()->GetRenderer()->GetDefaultShader();
 }
 
 std::shared_ptr<Model> Model::LoadModelFromFile(const std::string& path, bool flipTexture /*= false*/)
@@ -89,7 +89,7 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 
 	if (m_isReflective)
 	{
-		auto context = Application::Get().GetContext();
+		auto context = Engine::Get()->GetContext();
 		currShader = context->GetReflectionShader();
 		currShader->UseShader();
 		currShader->SetInt("skybox", 0);
@@ -104,7 +104,7 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 
 	if (m_isRefractive)
 	{
-		auto context = Application::Get().GetContext();
+		auto context = Engine::Get()->GetContext();
 		currShader = context->GetRefractiveShader();
 		currShader->UseShader();
 		currShader->SetInt("skybox", 0);
@@ -118,7 +118,7 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 		textures[0]->Bind();
 	}
 
-	currShader->SetMat4("model", transformation->GetTransformation());
+	currShader->SetMat4("model", m_transformation->GetTransformation());
 
 	if (currShader->IsMaterialsEnabled() && m_material)
 	{
@@ -142,14 +142,14 @@ bool Model::AttachShader(std::shared_ptr<Shader> shader)
 
 bool Model::DetachShader()
 {
-	m_shader = Application::Get().GetRenderer()->GetDefaultShader();
+	m_shader = Engine::Get()->GetRenderer()->GetDefaultShader();
 
 	return true;
 }
 
 void Model::Update(float delta)
 {
-	transformation->Update(delta);
+	m_transformation->Update(delta);
 }
 
 bool Model::UseShader()
