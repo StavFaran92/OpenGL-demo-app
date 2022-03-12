@@ -31,7 +31,7 @@ public:
 	~Model() {
 		logTrace( __FUNCTION__ );
 	}
-	static std::shared_ptr<Model> LoadModelFromFile(const std::string& path);
+	static std::shared_ptr<Model> LoadModelFromFile(const std::string& path, bool flipTexture=false);
 	static std::shared_ptr<Model> CreatePrimitiveModel(PrimitiveType ptype);
 
 	virtual void Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> shader = nullptr);

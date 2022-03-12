@@ -285,8 +285,7 @@ void ShowModelCreatorWindow()
 
             logInfo("Open file: " + path);
 
-            auto model = Model::LoadModelFromFile(modelPath.c_str());
-            model->FlipTexture(flipTexture);
+            auto model = Model::LoadModelFromFile(modelPath.c_str(), flipTexture);
             std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
             model->UseMaterial(material);
             model->GetTransformation()->SetPosition(pos);
@@ -356,12 +355,16 @@ void ShowPrimitiveCreatorWindow()
         static glm::vec3 rotation(0.f, 0.f, 0.f);
         static glm::vec3 scale(1.f, 1.f, 1.f);
         static Model::PrimitiveType shape = Model::PrimitiveType::Quad;
+        //static Model:: type = Model::PrimitiveType::Quad;
 
 
         ImGui::LabelText("", "Shape");
         ImGui::RadioButton("Quad", (int*)&shape, 0);
         ImGui::RadioButton("Cube", (int*)&shape, 1);
 
+        //ImGui::RadioButton("Texture", (int*)&type, 0);
+        //ImGui::RadioButton("Reflection", (int*)&type, 1);
+        //ImGui::RadioButton("Refractive", (int*)&type, 2);
         ImGui::LabelText("", "Texture");
         if (ImGui::Button("Browse"))
         {

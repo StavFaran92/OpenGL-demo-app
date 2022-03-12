@@ -16,9 +16,11 @@ Model::Model()
 	m_shader = Application::Get().GetRenderer()->GetDefaultShader();
 }
 
-std::shared_ptr<Model> Model::LoadModelFromFile(const std::string& path)
+std::shared_ptr<Model> Model::LoadModelFromFile(const std::string& path, bool flipTexture /*= false*/)
 {
 	auto model = std::make_shared<Model>();
+
+	model->FlipTexture(flipTexture);
 
 	model->m_path = path;
 	model->m_modelDir = model->m_path.substr(0, model->m_path.find_last_of('\\'));

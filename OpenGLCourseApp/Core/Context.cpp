@@ -198,7 +198,7 @@ void Context::Draw()
 		glStencilFunc(GL_ALWAYS, model->second->getID(), 0xff);
 
 		// Draw model
-		model->second->Draw(m_renderer);
+		model->second->Draw(m_renderer, shader);
 	}
 
 	if (m_skybox)
