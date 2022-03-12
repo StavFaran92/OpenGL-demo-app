@@ -1,0 +1,24 @@
+#pragma once
+
+#include "imgui.h"
+
+#include "FileUtil.h"
+#include "Logger.h"
+
+#include "Engine.h"
+#include "Context.h"
+#include "Model.h"
+
+#include "ApplicationConstants.h"
+
+using namespace Constants;
+
+void DisplayMenu();
+void ShowMenuFile();
+void ShowAppMainMenuBar();
+void LoadModel();
+void SaveFile();
+void LightCreatorWindow();
+void ShowModelCreatorWindow();
+void ShowModelInspectorWindow();
+void ShowPrimitiveCreatorWindow();
