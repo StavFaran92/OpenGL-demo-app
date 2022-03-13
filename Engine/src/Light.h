@@ -12,7 +12,7 @@
 
 using namespace Constants;
 
-class Light
+class Light : public Object3D
 {
 public:
 	Light();
@@ -29,8 +29,6 @@ public:
 	inline void SetColor(glm::vec3 color) {
 		m_color = color;
 	}
-
-	inline std::shared_ptr<Transform > GetTransform() { return m_transform; }
 
 	virtual ~Light();
 

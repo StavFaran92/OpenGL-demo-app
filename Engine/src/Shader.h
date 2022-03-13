@@ -42,6 +42,8 @@ public:
 	~Shader();
 
 private:
+	friend class Context;
+	inline void SetID(uint32_t id) { m_id = id; }
 	void Init(const std::string& vertexFilePath, const std::string& fragmentFilePath);
 	void BuildShaders(const std::string& vertexCode, const std::string& fragmentCode);
 	GLuint AddShader(const std::string& shaderCode, GLenum shaderType);

@@ -17,7 +17,9 @@
 
 #include "Transform.h"
 
-class Model
+#include "Object3D.h"
+
+class Model : public Object3D
 {
 public:
 	enum class PrimitiveType 
@@ -39,7 +41,6 @@ public:
 	bool AttachShader(std::shared_ptr<Shader > shader);
 	bool DetachShader();
 
-	bool UseLight(std::shared_ptr<Light> light);
 	bool UseMaterial(std::shared_ptr<Material> material);
 
 	bool UseShader();
@@ -48,10 +49,10 @@ public:
 	void FlipTexture(bool flip);
 
 	void Update(float delta);
-	std::shared_ptr<Transform> GetTransformation() const { return m_transformation; }
+	
 
-	inline void SetID(uint32_t id) { m_id = id; }
-	inline uint32_t getID() { return m_id; }
+	
+	
 	std::vector<std::shared_ptr<Texture>> GetTextures();
 
 	inline void SetReflection(bool val) { m_isReflective = val; }
@@ -61,18 +62,15 @@ private:
 	std::shared_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene);
 	std::vector<std::shared_ptr<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName);
 protected:
-	uint32_t m_id = 0;
-
 	// model data
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
 	std::string m_modelDir = "";
 	std::vector<std::shared_ptr<Texture>> m_texturesCache;
 	std::string m_path = "";
 
-	std::shared_ptr<Transform> m_transformation;
+	
 
 	std::shared_ptr<Shader> m_shader = nullptr;
-	std::shared_ptr<Light> m_light = nullptr;
 	std::shared_ptr<Material> m_material = nullptr;
 	bool m_flipTexture = false;
 

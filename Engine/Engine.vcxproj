@@ -96,6 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Object3D.cpp" />
     <ClCompile Include="src\Context.cpp" />
     <ClCompile Include="src\DirectionalLight.cpp" />
     <ClCompile Include="src\EditorCamera.cpp" />
@@ -142,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h" />
+    <ClInclude Include="Object3D.h" />
     <ClInclude Include="src\ApplicationConstants.h" />
     <ClInclude Include="EntryPoint.h" />
     <ClInclude Include="GraphicsEngine.h" />

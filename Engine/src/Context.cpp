@@ -7,7 +7,9 @@
 #include "SkyboxRenderer.h"
 #include "ICamera.h"
 
-Context::Context() : m_modelCounter(0), m_shaderCounter(0)
+#include "Object3D.h"
+
+Context::Context() : m_objCounter(0), m_shaderCounter(0)
 {
 	m_renderer = std::make_shared<Renderer>();
 	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
@@ -22,40 +24,69 @@ Context::Context() : m_modelCounter(0), m_shaderCounter(0)
 	m_refractiveShader->SetEnableMaterials(false);
 	m_refractiveShader->SetEnableTextures(false);
 
-	std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
-	AddDirectionalLight(light);
+	//std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
+	//AddDirectionalLight(light);
 }
 
-bool Context::AddModel(std::shared_ptr<Model> model)
+bool Context::addObject(std::shared_ptr<Object3D> object)
 {
-	m_modelCounter += 1;
-	model->SetID(m_modelCounter);
-	m_models.emplace(m_modelCounter, model);
+	m_objCounter += 1;
+	object->SetID(m_objCounter);
+	m_objects.emplace(m_objCounter, object);
 
-	logInfo("Model {} Added successfully.", std::to_string(m_modelCounter));
+	logInfo("Object {} Added successfully.", std::to_string(m_objCounter));
 
 	return true;
 }
 
-bool Context::RemoveModel(const uint32_t id)
+bool Context::removeObject(std::shared_ptr<Object3D> object)
 {
-	auto iter = m_models.find(id);
-	if (iter == m_models.end())
+	uint32_t id = object->getID();
+	auto iter = m_objects.find(id);
+	if (iter == m_objects.end())
 	{
-		logError("Could not locate model {}", id);
+		logError("Could not locate Object {}", id);
 		return false;
 	}
+	m_objects.erase(iter);
 
-	m_models.erase(iter);
-
-	logInfo("Model {} Erased successfully.", std::to_string(id));
+	logInfo("Object {} Erased successfully.", std::to_string(id));
 
 	return true;
 }
 
+//bool Context::AddModel(std::shared_ptr<Model> model)
+//{
+//	m_modelCounter += 1;
+//	model->SetID(m_modelCounter);
+//	m_models.emplace(m_modelCounter, model);
+//
+//	logInfo("Model {} Added successfully.", std::to_string(m_modelCounter));
+//
+//	return true;
+//}
+//
+//bool Context::RemoveModel(std::shared_ptr<Model> model)
+//{
+//	uint32_t id = model->getID();
+//	auto iter = m_models.find(id);
+//	if (iter == m_models.end())
+//	{
+//		logError("Could not locate model {}", id);
+//		return false;
+//	}
+//
+//	m_models.erase(iter);
+//
+//	logInfo("Model {} Erased successfully.", std::to_string(id));
+//
+//	return true;
+//}
+//
 bool Context::AddShader(std::shared_ptr<Shader> shader)
 {
 	m_shaderCounter += 1;
+	shader->SetID(m_shaderCounter);
 	m_shaders.emplace(m_shaderCounter, shader);
 
 	logInfo("Shader {} Added successfully.", std::to_string(m_shaderCounter));
@@ -63,8 +94,9 @@ bool Context::AddShader(std::shared_ptr<Shader> shader)
 	return true;
 }
 
-bool Context::RemoveShader(const uint32_t uid)
+bool Context::RemoveShader(std::shared_ptr<Shader> shader)
 {
+	uint32_t uid = shader->getID();
 	auto iter = m_shaders.find(uid);
 	if (iter == m_shaders.end())
 	{
@@ -78,65 +110,73 @@ bool Context::RemoveShader(const uint32_t uid)
 
 	return true;
 }
-
-bool Context::AddPointLight(std::shared_ptr<PointLight> light)
-{
-	m_pointLightCounter += 1;
-	m_pointLights.emplace(m_pointLightCounter, light);
-
-	logInfo("Point Light {} Added successfully.", std::to_string(m_pointLightCounter));
-
-	return true;
-}
-
-bool Context::RemovePointLight(const uint32_t uid)
-{
-	auto iter = m_pointLights.find(uid);
-	if (iter == m_pointLights.end())
-	{
-		logError("Could not locate point light {}", uid);
-		return false;
-	}
-
-	m_pointLights.erase(iter);
-
-	logInfo("Point Light {} Erased successfully.", std::to_string(uid));
-
-	return true;
-}
-
-bool Context::AddDirectionalLight(std::shared_ptr<DirectionalLight> light)
-{
-	m_directionalLightCounter += 1;
-	m_directionalLights.emplace(m_directionalLightCounter, light);
-
-	logInfo("Directional Light {} Added successfully.", std::to_string(m_directionalLightCounter));
-
-	return true;
-}
-
-bool Context::RemoveDirectionalLight(const uint32_t uid)
-{
-	auto iter = m_directionalLights.find(uid);
-	if (iter == m_directionalLights.end())
-	{
-		logError("Could not locate directional light {}", uid);
-		return false;
-	}
-
-	m_directionalLights.erase(iter);
-
-	logInfo("directional Light {} Erased successfully.", std::to_string(uid));
-
-	return true;
-}
-
-bool Context::AddSkybox(std::shared_ptr<Skybox> skybox)
-{
-	m_skybox = skybox;
-
-	return true;
-}
+//
+//bool Context::AddPointLight(std::shared_ptr<PointLight> light)
+//{
+//	m_pointLightCounter += 1;
+//	light->SetID(m_pointLightCounter);
+//	m_pointLights.emplace(m_pointLightCounter, light);
+//
+//	logInfo("Point Light {} Added successfully.", std::to_string(m_pointLightCounter));
+//
+//	return true;
+//}
+//
+//bool Context::RemovePointLight(std::shared_ptr<PointLight> light)
+//{
+//	uint32_t uid = light->getID();
+//	auto iter = m_pointLights.find(uid);
+//	if (iter == m_pointLights.end())
+//	{
+//		logError("Could not locate point light {}", uid);
+//		return false;
+//	}
+//
+//	m_pointLights.erase(iter);
+//
+//	logInfo("Point Light {} Erased successfully.", std::to_string(uid));
+//
+//	return true;
+//}
+//
+//bool Context::AddDirectionalLight(std::shared_ptr<DirectionalLight> light)
+//{
+//	m_directionalLightCounter += 1;
+//	light->SetID(m_directionalLightCounter);
+//	m_directionalLights.emplace(m_directionalLightCounter, light);
+//
+//	logInfo("Directional Light {} Added successfully.", std::to_string(m_directionalLightCounter));
+//
+//	return true;
+//}
+//
+//bool Context::RemoveDirectionalLight(std::shared_ptr<DirectionalLight> light)
+//{
+//	uint32_t uid = light->getID();
+//	auto iter = m_directionalLights.find(uid);
+//	if (iter == m_directionalLights.end())
+//	{
+//		logError("Could not locate directional light {}", uid);
+//		return false;
+//	}
+//
+//	m_directionalLights.erase(iter);
+//
+//	logInfo("directional Light {} Erased successfully.", std::to_string(uid));
+//
+//	return true;
+//}
+//
+//bool Context::AddSkybox(std::shared_ptr<Skybox> skybox)
+//{
+//	m_skyboxCounter += 1;
+//	skybox->SetID(m_skyboxCounter);
+//	m_directionalLights.emplace(m_skyboxCounter, skybox);
+//
+//	logInfo("Skybox {} Added successfully.", std::to_string(m_skyboxCounter));
+//
+//	return true;
+//}
 
 std::shared_ptr<Shader> Context::GetReflectionShader()
 {
@@ -148,67 +188,9 @@ std::shared_ptr<Shader> Context::GetRefractiveShader()
 	return m_refractiveShader;
 }
 
-std::shared_ptr<Model> Context::GetSkyBox()
-{
-	return m_skybox;
-}
+//std::shared_ptr<Model> Context::GetSkyBox()
+//{
+//	return m_skybox;
+//}
 
-void Context::Update(float deltaTime)
-{
-	m_renderer->Clear();
 
-	m_renderer->GetCamera()->update(deltaTime);
-
-	// Update models
-	auto iter = m_models.begin();
-	while (iter != m_models.end())
-	{
-		iter->second->Update(deltaTime);
-		iter++;
-	}
-
-	if (m_skybox)
-		m_skybox->Update(deltaTime);
-}
-
-void Context::Draw()
-{
-	// Draw models
-	for (auto model = m_models.begin(); model != m_models.end(); ++model)
-	{
-		auto shader = model->second->GetShader();
-		shader->UseShader();
-
-		if (shader->IsLightsEnabled())
-		{
-			// Use all directional lights
-			{
-				int i = 0;
-				for (auto it = m_directionalLights.begin(); it != m_directionalLights.end(); ++it, ++i) {
-					it->second->useLight(shader, i);
-				}
-				shader->SetInt("dirLightCount", i);
-			}
-
-			// Use all point lights
-			{
-				int i = 0;
-				for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++i, ++it) {
-					it->second->useLight(shader, i);
-				}
-				shader->SetInt("pointLightCount", i);
-			}
-		}
-
-		glStencilFunc(GL_ALWAYS, model->second->getID(), 0xff);
-
-		// Draw model
-		model->second->Draw(m_renderer, shader);
-	}
-
-	if (m_skybox)
-	{
-		m_skybox->UseShader();
-		m_skybox->Draw(m_skyboxRenderer);
-	}
-}

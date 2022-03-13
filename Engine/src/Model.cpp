@@ -196,13 +196,6 @@ std::shared_ptr<Shader> Model::GetShader()
 	return m_shader;
 }
 
-bool Model::UseLight(std::shared_ptr<Light> light)
-{
-	m_light = light;
-
-	return true;
-}
-
 bool Model::UseMaterial(std::shared_ptr<Material> material)
 {
 	m_material = material;

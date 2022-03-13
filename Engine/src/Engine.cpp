@@ -138,7 +138,7 @@ void Engine::Run(Application* app)
 
 void Engine::Stop()
 {
-    logInfo(__FUNCTION__);
+    logTrace(__FUNCTION__);
 
     SDL_Event e;
     e.type = SDL_QUIT;
@@ -147,7 +147,7 @@ void Engine::Stop()
 
 void Engine::Close()
 {
-    logInfo(__FUNCTION__);
+    logTrace(__FUNCTION__);
 
     m_imguiHandler->Close();
 
