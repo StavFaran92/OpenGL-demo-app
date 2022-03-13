@@ -11,18 +11,9 @@ int main(int argc, char* argv[])
 	auto app = CreateApplication();
 	app->start();
 
-	//auto context = engine->GetContext();
-
-	//glEnable(GL_CULL_FACE);
-
-	//auto grid = Grid::GenerateGrid(10);
-	//context->AddModel(grid);
-
-	//auto skybox = Skybox::CreateSkybox();
-	//context->AddSkybox(skybox);
-
 	engine->Run(app);
 
+	app->close();
 	engine->Close();
 
 	return 0;

@@ -140,7 +140,7 @@ void ShowMenuFile()
 
     if (ImGui::MenuItem("Quit", "Alt+F4"))
     {
-        Engine::Get()->Close();
+        Engine::Get()->Stop();
     }
 }
 

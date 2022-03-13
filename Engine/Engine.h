@@ -36,6 +36,7 @@ public:
 
     void Run(Application* app);
 
+    void Stop();
     void Close();
 
     Engine(const Engine&) = delete;

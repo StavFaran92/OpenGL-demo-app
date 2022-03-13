@@ -52,6 +52,8 @@ bool Engine::Init()
 
     m_isInit = true;
 
+    logInfo("SGE Initialized Successfully!");
+
     return true;
 }
 
@@ -125,17 +127,27 @@ void Engine::Run(Application* app)
         //Handle events on queue
         handleEvents(e, quit, deltaTime);
 
+        if (quit)
+            return;
+
         app->update();
         Update(deltaTime);
 
     }
 }
 
+void Engine::Stop()
+{
+    logInfo(__FUNCTION__);
+
+    SDL_Event e;
+    e.type = SDL_QUIT;
+    SDL_PushEvent(&e);
+}
+
 void Engine::Close()
 {
-    SDL_Event e;
-	e.type = SDL_QUIT;
-	SDL_PushEvent(&e);
+    logInfo(__FUNCTION__);
 
     m_imguiHandler->Close();
 
