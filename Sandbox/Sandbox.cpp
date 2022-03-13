@@ -3,14 +3,6 @@
 class Sandbox : public Application
 {
 public:
-	Sandbox() {}
-
-	~Sandbox() {}
-
-
-
-
-	// Inherited via Application
 	virtual void start() override
 	{
 	}
