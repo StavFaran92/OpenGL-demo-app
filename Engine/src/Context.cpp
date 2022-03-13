@@ -8,6 +8,7 @@
 #include "ICamera.h"
 
 #include "Object3D.h"
+#include "Scene.h"
 
 Context::Context() : m_objCounter(0), m_shaderCounter(0)
 {
@@ -55,34 +56,22 @@ bool Context::removeObject(std::shared_ptr<Object3D> object)
 	return true;
 }
 
-//bool Context::AddModel(std::shared_ptr<Model> model)
-//{
-//	m_modelCounter += 1;
-//	model->SetID(m_modelCounter);
-//	m_models.emplace(m_modelCounter, model);
-//
-//	logInfo("Model {} Added successfully.", std::to_string(m_modelCounter));
-//
-//	return true;
-//}
-//
-//bool Context::RemoveModel(std::shared_ptr<Model> model)
-//{
-//	uint32_t id = model->getID();
-//	auto iter = m_models.find(id);
-//	if (iter == m_models.end())
-//	{
-//		logError("Could not locate model {}", id);
-//		return false;
-//	}
-//
-//	m_models.erase(iter);
-//
-//	logInfo("Model {} Erased successfully.", std::to_string(id));
-//
-//	return true;
-//}
-//
+bool Context::addScene(std::shared_ptr<Scene> scene)
+{
+	m_scenesCounter += 1;
+	scene->SetID(m_scenesCounter);
+	m_objects.emplace(m_scenesCounter, scene);
+
+	logInfo("Scene {} Added successfully.", std::to_string(m_scenesCounter));
+
+	return true;
+}
+
+bool Context::removeScene(std::shared_ptr<Scene> scene)
+{
+	return false;
+}
+
 bool Context::AddShader(std::shared_ptr<Shader> shader)
 {
 	m_shaderCounter += 1;
@@ -110,73 +99,6 @@ bool Context::RemoveShader(std::shared_ptr<Shader> shader)
 
 	return true;
 }
-//
-//bool Context::AddPointLight(std::shared_ptr<PointLight> light)
-//{
-//	m_pointLightCounter += 1;
-//	light->SetID(m_pointLightCounter);
-//	m_pointLights.emplace(m_pointLightCounter, light);
-//
-//	logInfo("Point Light {} Added successfully.", std::to_string(m_pointLightCounter));
-//
-//	return true;
-//}
-//
-//bool Context::RemovePointLight(std::shared_ptr<PointLight> light)
-//{
-//	uint32_t uid = light->getID();
-//	auto iter = m_pointLights.find(uid);
-//	if (iter == m_pointLights.end())
-//	{
-//		logError("Could not locate point light {}", uid);
-//		return false;
-//	}
-//
-//	m_pointLights.erase(iter);
-//
-//	logInfo("Point Light {} Erased successfully.", std::to_string(uid));
-//
-//	return true;
-//}
-//
-//bool Context::AddDirectionalLight(std::shared_ptr<DirectionalLight> light)
-//{
-//	m_directionalLightCounter += 1;
-//	light->SetID(m_directionalLightCounter);
-//	m_directionalLights.emplace(m_directionalLightCounter, light);
-//
-//	logInfo("Directional Light {} Added successfully.", std::to_string(m_directionalLightCounter));
-//
-//	return true;
-//}
-//
-//bool Context::RemoveDirectionalLight(std::shared_ptr<DirectionalLight> light)
-//{
-//	uint32_t uid = light->getID();
-//	auto iter = m_directionalLights.find(uid);
-//	if (iter == m_directionalLights.end())
-//	{
-//		logError("Could not locate directional light {}", uid);
-//		return false;
-//	}
-//
-//	m_directionalLights.erase(iter);
-//
-//	logInfo("directional Light {} Erased successfully.", std::to_string(uid));
-//
-//	return true;
-//}
-//
-//bool Context::AddSkybox(std::shared_ptr<Skybox> skybox)
-//{
-//	m_skyboxCounter += 1;
-//	skybox->SetID(m_skyboxCounter);
-//	m_directionalLights.emplace(m_skyboxCounter, skybox);
-//
-//	logInfo("Skybox {} Added successfully.", std::to_string(m_skyboxCounter));
-//
-//	return true;
-//}
 
 std::shared_ptr<Shader> Context::GetReflectionShader()
 {
@@ -188,9 +110,18 @@ std::shared_ptr<Shader> Context::GetRefractiveShader()
 	return m_refractiveShader;
 }
 
-//std::shared_ptr<Model> Context::GetSkyBox()
-//{
-//	return m_skybox;
-//}
+void Context::update(float deltaTime)
+{
+	if (m_activeScene == -1)
+		return;
 
+	m_scenes[m_activeScene]->update(deltaTime);
+}
 
+void Context::draw()
+{
+	if (m_activeScene == -1)
+		return;
+
+	m_scenes[m_activeScene]->draw();
+}

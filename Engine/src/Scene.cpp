@@ -1,5 +1,7 @@
 #include "Scene.h"
 
+#include "Skybox.h"
+
 void Scene::update(float deltaTime)
 {
 	m_renderer->Clear();
@@ -58,6 +60,19 @@ void Scene::draw()
 		m_skybox->UseShader();
 		m_skybox->Draw(m_skyboxRenderer);
 	}
+}
+
+void Scene::addObject(std::shared_ptr<Object3D> object)
+{
+}
+
+void Scene::removeObject(std::shared_ptr<Object3D> object)
+{
+}
+
+void Scene::addSkybox(std::shared_ptr<Skybox> skybox)
+{
+	m_skybox = skybox;
 }
 
 std::shared_ptr<Skybox> Scene::getSkybox()
