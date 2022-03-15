@@ -9,6 +9,7 @@
 #include "ApplicationConstants.h"
 
 #include "Transform.h"
+#include "Object3D.h"
 
 using namespace Constants;
 

@@ -4,8 +4,12 @@
 #include "Shader.h"
 #include "ICamera.h"
 #include "EditorCamera.h"
+#include "SkyboxRenderer.h"
 
 #include "glm/glm.hpp"
+
+//const Renderer Renderer::defaultRenderer;
+//const SkyboxRenderer Renderer::skyboxRenderer(defaultRenderer);
 
 Renderer::Renderer()
 {

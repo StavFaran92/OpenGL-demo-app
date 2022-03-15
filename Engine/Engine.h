@@ -6,6 +6,7 @@
 
 class Context;
 class Renderer;
+class SkyboxRenderer;
 class Window;
 class ImguiHandler;
 class ObjectSelection;
@@ -30,6 +31,9 @@ public:
     std::shared_ptr<ImguiHandler> GetImguiHandler() { return m_imguiHandler; }
     std::shared_ptr<ObjectSelection> GetObjectSelection();
     std::shared_ptr<ScreenBufferProjector> GetScreenBufferProjector();
+
+    static Renderer* defaultRenderer;
+    static Renderer* skyboxRenderer;
 
     void handleEvents(SDL_Event& e, bool& quit, double deltaTime);
     void Update(float deltaTime);

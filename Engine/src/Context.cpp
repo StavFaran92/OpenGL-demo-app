@@ -10,11 +10,8 @@
 #include "Object3D.h"
 #include "Scene.h"
 
-Context::Context() : m_objCounter(0), m_shaderCounter(0)
+Context::Context() : m_shaderCounter(0)
 {
-	m_renderer = std::make_shared<Renderer>();
-	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
-
 	m_reflectionShader = std::make_shared<Shader>("Resources\\Shaders\\ReflectionShader.vert", "Resources\\Shaders\\ReflectionShader.frag");
 	m_reflectionShader->SetEnableLights(false);
 	m_reflectionShader->SetEnableMaterials(false);
@@ -29,38 +26,38 @@ Context::Context() : m_objCounter(0), m_shaderCounter(0)
 	//AddDirectionalLight(light);
 }
 
-bool Context::addObject(std::shared_ptr<Object3D> object)
-{
-	m_objCounter += 1;
-	object->SetID(m_objCounter);
-	m_objects.emplace(m_objCounter, object);
-
-	logInfo("Object {} Added successfully.", std::to_string(m_objCounter));
-
-	return true;
-}
-
-bool Context::removeObject(std::shared_ptr<Object3D> object)
-{
-	uint32_t id = object->getID();
-	auto iter = m_objects.find(id);
-	if (iter == m_objects.end())
-	{
-		logError("Could not locate Object {}", id);
-		return false;
-	}
-	m_objects.erase(iter);
-
-	logInfo("Object {} Erased successfully.", std::to_string(id));
-
-	return true;
-}
+//bool Context::addObject(std::shared_ptr<Object3D> object)
+//{
+//	m_objCounter += 1;
+//	object->SetID(m_objCounter);
+//	m_objects.emplace(m_objCounter, object);
+//
+//	logInfo("Object {} Added successfully.", std::to_string(m_objCounter));
+//
+//	return true;
+//}
+//
+//bool Context::removeObject(std::shared_ptr<Object3D> object)
+//{
+//	uint32_t id = object->getID();
+//	auto iter = m_objects.find(id);
+//	if (iter == m_objects.end())
+//	{
+//		logError("Could not locate Object {}", id);
+//		return false;
+//	}
+//	m_objects.erase(iter);
+//
+//	logInfo("Object {} Erased successfully.", std::to_string(id));
+//
+//	return true;
+//}
 
 bool Context::addScene(std::shared_ptr<Scene> scene)
 {
 	m_scenesCounter += 1;
 	scene->SetID(m_scenesCounter);
-	m_objects.emplace(m_scenesCounter, scene);
+	m_scenes.emplace(m_scenesCounter, scene);
 
 	logInfo("Scene {} Added successfully.", std::to_string(m_scenesCounter));
 

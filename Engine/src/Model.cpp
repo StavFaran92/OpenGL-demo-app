@@ -6,6 +6,8 @@
 #include "Resources/Primitives/cube.h"
 
 #include "Context.h"
+#include "Scene.h"
+#include "Skybox.h"
 
 Model::Model()
 {
@@ -93,7 +95,7 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 		currShader = context->GetReflectionShader();
 		currShader->UseShader();
 		currShader->SetInt("skybox", 0);
-		auto textures = context->GetSkyBox()->GetTextures();
+		auto textures = context->getActiveScene()->getSkybox()->GetTextures();
 		if (textures.size() <= 0)
 		{
 			logError("Skybox does not contain cubemap texture.");
@@ -109,7 +111,7 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 		currShader->UseShader();
 		currShader->SetInt("skybox", 0);
 		currShader->SetFloat("refractiveRatio", 1 / 1.52f);
-		auto textures = context->GetSkyBox()->GetTextures();
+		auto textures = context->getActiveScene()->getSkybox()->GetTextures();
 		if (textures.size() <= 0)
 		{
 			logError("Skybox does not contain cubemap texture.");

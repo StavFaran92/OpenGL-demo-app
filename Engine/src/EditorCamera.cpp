@@ -3,6 +3,7 @@
 #include "Engine.h"
 #include "Context.h"
 #include "ObjectSelection.h"
+#include "Scene.h"
 
 EditorCamera::EditorCamera(glm::vec3 startPosition, GLfloat startMoveSpeed, GLfloat startTurnSpeed)
 	: m_position(startPosition),
@@ -22,7 +23,7 @@ void EditorCamera::keyControl(double deltaTime)
 	{
 		auto objectSelection = Engine::Get()->GetObjectSelection();
 		auto selected = objectSelection->GetSelectedObject();
-		Engine::Get()->GetContext()->RemoveModel(selected);
+		Engine::Get()->GetContext()->getActiveScene()->removeModel(selected);
 	}
 }
 

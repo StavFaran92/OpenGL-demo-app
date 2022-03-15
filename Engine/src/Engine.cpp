@@ -2,17 +2,22 @@
 
 #include "Context.h"
 #include "Renderer.h"
+#include "SkyboxRenderer.h"
 #include "Window.h"
 #include "ImguiHandler.h"
 #include "ObjectSelection.h"
 #include "ScreenBufferProjector.h"
 #include "ICamera.h"
+#include "Scene.h"
 
 #include "Application.h"
 #include "SDL.h"
 
 // Singleton
 Engine* Engine::instance = nullptr;
+
+Renderer* Engine::defaultRenderer = nullptr;
+Renderer* Engine::skyboxRenderer = nullptr;
 
 bool Engine::Init()
 {
@@ -50,6 +55,9 @@ bool Engine::Init()
         return false;
     }
 
+    defaultRenderer = new Renderer();
+    skyboxRenderer = new SkyboxRenderer(*defaultRenderer);
+
     m_isInit = true;
 
     logInfo("SGE Initialized Successfully!");
@@ -69,7 +77,7 @@ Engine* Engine::Get()
     return instance;
 }
 
-std::shared_ptr<Renderer> Engine::GetRenderer() { return m_context->GetRenderer(); }
+std::shared_ptr<Renderer> Engine::GetRenderer() { return m_context->getActiveScene()->getRenderer(); }
 
 std::shared_ptr<Context> Engine::GetContext()
 {
@@ -92,11 +100,11 @@ void Engine::Update(float deltaTime)
     //angle++;
     //lightCube->GetTransformation()->SetScale({ .25f, .25f, .25f });
 
-    m_context->Update(deltaTime);
+    m_context->update(deltaTime);
 
     m_screenBufferProjector->RedirectToFrameBuffer();
 
-    m_context->Draw();
+    m_context->draw();
 
     m_screenBufferProjector->RedirectToDefault();
 
@@ -153,6 +161,9 @@ void Engine::Close()
 
     m_window->Close();
 
+    delete defaultRenderer;
+    delete skyboxRenderer;
+
     m_isInit = false;
 
     delete instance;
@@ -173,19 +184,19 @@ void Engine::handleEvents(SDL_Event& e, bool& quit, double deltaTime)
         //Handle keypress with current mouse position
         else if (e.type == SDL_MOUSEMOTION)
         {
-            m_context->GetRenderer()->GetCamera()->OnMouseMotion(e.motion.xrel, e.motion.yrel);
+            m_context->getActiveScene()->getRenderer()->GetCamera()->OnMouseMotion(e.motion.xrel, e.motion.yrel);
         }
         else if (e.type == SDL_MOUSEBUTTONDOWN)
         {
-            m_context->GetRenderer()->GetCamera()->OnMousePressed(e.button);
+            m_context->getActiveScene()->getRenderer()->GetCamera()->OnMousePressed(e.button);
         }
         else if (e.type == SDL_MOUSEBUTTONUP)
         {
-            m_context->GetRenderer()->GetCamera()->OnMouseReleased(e.button);
+            m_context->getActiveScene()->getRenderer()->GetCamera()->OnMouseReleased(e.button);
         }
         else if (e.type == SDL_MOUSEWHEEL)
         {
-            m_context->GetRenderer()->GetCamera()->OnMouseScroll(e.wheel.y);
+            m_context->getActiveScene()->getRenderer()->GetCamera()->OnMouseScroll(e.wheel.y);
         }
     }
 }

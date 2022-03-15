@@ -6,13 +6,21 @@
 #include "PointLight.h"
 #include "Engine.h"
 #include "ICamera.h"
+#include "Model.h"
+#include "SkyboxRenderer.h"
+
+void Scene::init()
+{
+	m_renderer = std::make_shared<Renderer>(*Engine::defaultRenderer);
+	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*Engine::skyboxRenderer);
+}
 
 void Scene::update(float deltaTime)
 {
 	
-	Engine::Get()->GetRenderer()->Clear();
+	m_renderer->Clear();
 
-	Engine::Get()->GetRenderer()->GetCamera()->update(deltaTime);
+	m_renderer->GetCamera()->update(deltaTime);
 
 	// Update models
 	for (auto model = m_models.begin(); model != m_models.end(); ++model)
@@ -66,9 +74,7 @@ void Scene::draw()
 	}
 }
 
-void Scene::init()
-{
-}
+
 
 void Scene::clear()
 {
@@ -77,13 +83,90 @@ void Scene::clear()
 	m_directionalLights.clear();
 }
 
-void Scene::addObject(std::shared_ptr<Object3D> object)
+bool Scene::addModel(std::shared_ptr<Model> model)
 {
+	m_modelCounter++;
+	model->setID(m_modelCounter);
+	m_models.emplace(m_modelCounter, model);
+
+	logInfo("Model {} Added successfully.", std::to_string(m_modelCounter));
+	return true;
 }
 
-void Scene::removeObject(std::shared_ptr<Object3D> object)
+bool Scene::addPointLight(std::shared_ptr<PointLight> pLight)
 {
+	m_pointLightCounter++;
+	pLight->setID(m_pointLightCounter);
+	m_pointLights.emplace(m_pointLightCounter, std::shared_ptr<PointLight>(pLight));
+
+	logInfo("PointLight {} Added successfully.", std::to_string(m_pointLightCounter));
+	return true;
 }
+
+bool Scene::addDirectionalLight(std::shared_ptr<DirectionalLight> dLight)
+{
+	m_directionalLightCounter++;
+	dLight->setID(m_directionalLightCounter);
+	m_directionalLights.emplace(m_directionalLightCounter, std::shared_ptr<DirectionalLight>(dLight));
+
+	logInfo("DirectionalLight {} Added successfully.", std::to_string(m_directionalLightCounter));
+	return true;
+}
+
+bool Scene::removeModel(uint32_t id)
+{
+	auto iter = m_models.find(id);
+	if (iter == m_models.end())
+	{
+		logError("Could not locate Model {}", id);
+		return false;
+	}
+	m_models.erase(iter);
+
+	logInfo("Model {} Erased successfully.", std::to_string(id));
+
+	return true;
+}
+
+bool Scene::removeModel(std::shared_ptr<Model> model)
+{
+		uint32_t id = model->getID();
+		
+		return removeModel(id);
+}
+
+bool Scene::removePointLight(std::shared_ptr<PointLight> pLight)
+{
+	uint32_t id = pLight->getID();
+	auto iter = m_pointLights.find(id);
+	if (iter == m_pointLights.end())
+	{
+		logError("Could not locate PointLight {}", id);
+		return false;
+	}
+	m_pointLights.erase(iter);
+
+	logInfo("PointLight {} Erased successfully.", std::to_string(id));
+
+	return true;
+}
+
+bool Scene::removeDirectionalLight(std::shared_ptr<DirectionalLight> dLight)
+{
+	uint32_t id = dLight->getID();
+	auto iter = m_directionalLights.find(id);
+	if (iter == m_directionalLights.end())
+	{
+		logError("Could not locate DirectionalLight {}", id);
+		return false;
+	}
+	m_directionalLights.erase(iter);
+
+	logInfo("DirectionalLight {} Erased successfully.", std::to_string(id));
+
+	return true;
+}
+
 
 void Scene::setSkybox(std::shared_ptr<Skybox> skybox)
 {
@@ -93,6 +176,16 @@ void Scene::setSkybox(std::shared_ptr<Skybox> skybox)
 void Scene::removeSkybox()
 {
 	m_skybox = nullptr;
+}
+
+std::shared_ptr<Renderer> Scene::getRenderer() const
+{
+	return m_renderer;
+}
+
+std::shared_ptr<Renderer> Scene::getSkyboxRenderer()
+{
+	return m_skyboxRenderer;
 }
 
 void Scene::close()

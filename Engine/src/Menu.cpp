@@ -1,5 +1,6 @@
 #include "Menu.h"
 #include "PointLight.h"
+#include "Scene.h"
 
 static void ShowExampleAppDockSpace();
 static void ShowExampleAppLog();
@@ -217,13 +218,13 @@ void LightCreatorWindow()
             {
                 
                 std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>(color, dir, ambientIntensity, diffuseIntensity);
-                Engine::Get()->GetContext()->AddDirectionalLight(light);
+                Engine::Get()->GetContext()->getActiveScene()->addDirectionalLight(light);
 
             }
             else if (lightType == LightType::PointLight)
             {
                 std::shared_ptr<PointLight> light = std::make_shared<PointLight>(color, pos, ambientIntensity, diffuseIntensity, attenuation);
-                Engine::Get()->GetContext()->AddPointLight(light);
+                Engine::Get()->GetContext()->getActiveScene()->addPointLight(light);
             }
 
             ShowLightCreatorWindow = false;
@@ -291,7 +292,7 @@ void ShowModelCreatorWindow()
             model->GetTransformation()->SetPosition(pos);
             model->GetTransformation()->SetScale(scale);
 
-            Engine::Get()->GetContext()->AddModel(model);
+            Engine::Get()->GetContext()->getActiveScene()->addModel(model);
 
             showModelCreatorWindow = false;
 
@@ -403,7 +404,7 @@ void ShowPrimitiveCreatorWindow()
             model->GetTransformation()->SetPosition(pos);
             model->GetTransformation()->SetScale(scale);
 
-            Engine::Get()->GetContext()->AddModel(model);
+            Engine::Get()->GetContext()->getActiveScene()->addModel(model);
 
             showPrimitiveCreatorWindow = false;
 

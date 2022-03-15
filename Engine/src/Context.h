@@ -20,8 +20,8 @@ class Context
 public:
 	Context();
 
-	bool addObject(std::shared_ptr<Object3D> object);
-	bool removeObject(std::shared_ptr <Object3D> object);
+	//bool addObject(std::shared_ptr<Object3D> object);
+	//bool removeObject(std::shared_ptr <Object3D> object);
 
 	bool addScene(std::shared_ptr<Scene> scene);
 	bool removeScene(std::shared_ptr<Scene> scene);
@@ -31,8 +31,6 @@ public:
 
 	std::shared_ptr<Shader> GetReflectionShader();
 	std::shared_ptr<Shader> GetRefractiveShader();
-
-	std::shared_ptr<Renderer> GetRenderer() { return m_renderer; }
 
 	std::shared_ptr<Scene> getActiveScene() const
 	{
@@ -63,11 +61,8 @@ private:
 	uint32_t m_scenesCounter = 0;
 	std::map<uint32_t, std::shared_ptr<Scene>> m_scenes;
 
-	std::shared_ptr<Renderer> m_renderer = nullptr;
-	std::shared_ptr<Renderer> m_skyboxRenderer = nullptr;
-
-	std::map<uint32_t, std::shared_ptr<Object3D>> m_objects;
-	uint32_t m_objCounter = 0;
+	//std::map<uint32_t, std::shared_ptr<Object3D>> m_objects;
+	//uint32_t m_objCounter = 0;
 
 	std::map<uint32_t, std::shared_ptr<Shader>> m_shaders;
 	uint32_t m_shaderCounter = 0;

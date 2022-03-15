@@ -1,14 +1,9 @@
 #pragma once
-//#include "Graphics/Buffers/VertexArrayObject.h"
-//#include "Graphics/Shader/Shader.h"
-//#include "Graphics/Camera/ICamera.h"
-//#include "Graphics/Camera/EditorCamera.h"
-
 #include "IRenderer.h"
 
 // forward declerations
 class ICamera;
-
+class SkyboxRenderer;
 
 
 class Renderer : public IRenderer
@@ -24,6 +19,9 @@ public:
 	void Draw(const VertexArrayObject& vao, std::shared_ptr<Shader> shader) const override;
 	virtual void SetMVP(std::shared_ptr<Shader>& shader) const;
  	void Clear() const override;
+
+	//static const Renderer defaultRenderer;
+	//static const SkyboxRenderer skyboxRenderer;
 
 	//Methods
 	std::shared_ptr<Shader> GetDefaultShader() const;
