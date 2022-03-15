@@ -1,19 +1,23 @@
 #include "Scene.h"
 
 #include "Skybox.h"
+#include "Object3D.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
+#include "Engine.h"
+#include "ICamera.h"
 
 void Scene::update(float deltaTime)
 {
-	m_renderer->Clear();
+	
+	Engine::Get()->GetRenderer()->Clear();
 
-	m_renderer->GetCamera()->update(deltaTime);
+	Engine::Get()->GetRenderer()->GetCamera()->update(deltaTime);
 
 	// Update models
-	auto iter = m_models.begin();
-	while (iter != m_models.end())
+	for (auto model = m_models.begin(); model != m_models.end(); ++model)
 	{
-		iter->second->Update(deltaTime);
-		iter++;
+		model->second->Update(deltaTime);
 	}
 
 	if (m_skybox)
@@ -36,7 +40,7 @@ void Scene::draw()
 				for (auto it = m_directionalLights.begin(); it != m_directionalLights.end(); ++it, ++i) {
 					it->second->useLight(shader, i);
 				}
-				shader->SetInt("dirLightCount", i);
+				shader->SetInt("dirLightCount", m_directionalLights.size());
 			}
 
 			// Use all point lights
@@ -45,7 +49,7 @@ void Scene::draw()
 				for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++i, ++it) {
 					it->second->useLight(shader, i);
 				}
-				shader->SetInt("pointLightCount", i);
+				shader->SetInt("pointLightCount", m_pointLights.size());
 			}
 		}
 
@@ -62,6 +66,17 @@ void Scene::draw()
 	}
 }
 
+void Scene::init()
+{
+}
+
+void Scene::clear()
+{
+	m_models.clear();
+	m_pointLights.clear();
+	m_directionalLights.clear();
+}
+
 void Scene::addObject(std::shared_ptr<Object3D> object)
 {
 }
@@ -70,9 +85,19 @@ void Scene::removeObject(std::shared_ptr<Object3D> object)
 {
 }
 
-void Scene::addSkybox(std::shared_ptr<Skybox> skybox)
+void Scene::setSkybox(std::shared_ptr<Skybox> skybox)
 {
 	m_skybox = skybox;
+}
+
+void Scene::removeSkybox()
+{
+	m_skybox = nullptr;
+}
+
+void Scene::close()
+{
+	clear();
 }
 
 std::shared_ptr<Skybox> Scene::getSkybox()
