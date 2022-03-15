@@ -18,7 +18,11 @@ class Scene
 
 public:
 	// -------------------- Methods -------------------- //
-	
+	Scene() 
+	{
+		init();
+	}
+
 	bool addModel(std::shared_ptr<Model> model);
 	bool removeModel(uint32_t id);
 	bool removeModel(std::shared_ptr<Model> model);
@@ -39,6 +43,8 @@ public:
 	std::shared_ptr<Renderer> getSkyboxRenderer();
 
 	std::shared_ptr<Skybox> getSkybox();
+
+	uint32_t getID() const { return m_id; }
 
 private:
 	// -------------------- Methods -------------------- //

@@ -89,35 +89,37 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 	if (shader)
 		currShader = shader;
 
-	if (m_isReflective)
+	auto context = Engine::Get()->GetContext();
+	if (context->getActiveScene()->getSkybox())
 	{
-		auto context = Engine::Get()->GetContext();
-		currShader = context->GetReflectionShader();
-		currShader->UseShader();
-		currShader->SetInt("skybox", 0);
-		auto textures = context->getActiveScene()->getSkybox()->GetTextures();
-		if (textures.size() <= 0)
+		if (m_isReflective)
 		{
-			logError("Skybox does not contain cubemap texture.");
-			return;
+			currShader = context->GetReflectionShader();
+			currShader->UseShader();
+			currShader->SetInt("skybox", 0);
+			auto textures = context->getActiveScene()->getSkybox()->GetTextures();
+			if (textures.size() <= 0)
+			{
+				logError("Skybox does not contain cubemap texture.");
+				return;
+			}
+			textures[0]->Bind();
 		}
-		textures[0]->Bind();
-	}
 
-	if (m_isRefractive)
-	{
-		auto context = Engine::Get()->GetContext();
-		currShader = context->GetRefractiveShader();
-		currShader->UseShader();
-		currShader->SetInt("skybox", 0);
-		currShader->SetFloat("refractiveRatio", 1 / 1.52f);
-		auto textures = context->getActiveScene()->getSkybox()->GetTextures();
-		if (textures.size() <= 0)
+		if (m_isRefractive)
 		{
-			logError("Skybox does not contain cubemap texture.");
-			return;
+			currShader = context->GetRefractiveShader();
+			currShader->UseShader();
+			currShader->SetInt("skybox", 0);
+			currShader->SetFloat("refractiveRatio", 1 / 1.52f);
+			auto textures = context->getActiveScene()->getSkybox()->GetTextures();
+			if (textures.size() <= 0)
+			{
+				logError("Skybox does not contain cubemap texture.");
+				return;
+			}
+			textures[0]->Bind();
 		}
-		textures[0]->Bind();
 	}
 
 	currShader->SetMat4("model", m_transformation->GetTransformation());

@@ -36,7 +36,14 @@ bool Engine::Init()
         return false;
     }
 
+    defaultRenderer = new Renderer();
+    skyboxRenderer = new SkyboxRenderer(*defaultRenderer);
+
     m_context = std::make_shared<Context>();
+
+    auto defaultScene = std::make_shared<Scene>();
+    m_context->addScene(defaultScene);
+    m_context->setActiveScene(defaultScene->getID());
 
     m_imguiHandler = std::make_shared<ImguiHandler>();
     if (!m_imguiHandler->Init(m_window->GetWindow(), m_window->GetContext()))
@@ -55,8 +62,7 @@ bool Engine::Init()
         return false;
     }
 
-    defaultRenderer = new Renderer();
-    skyboxRenderer = new SkyboxRenderer(*defaultRenderer);
+
 
     m_isInit = true;
 

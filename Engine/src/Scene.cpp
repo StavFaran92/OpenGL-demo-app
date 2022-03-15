@@ -13,6 +13,9 @@ void Scene::init()
 {
 	m_renderer = std::make_shared<Renderer>(*Engine::defaultRenderer);
 	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*Engine::skyboxRenderer);
+
+	std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
+	addDirectionalLight(light);
 }
 
 void Scene::update(float deltaTime)
