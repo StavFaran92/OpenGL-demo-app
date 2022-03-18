@@ -40,6 +40,10 @@ bool Engine::Init()
     m_context->addScene(defaultScene);
     m_context->setActiveScene(defaultScene->getID());
 
+    auto secondScene = std::make_shared<Scene>();
+    secondScene->setPostProcess(true);
+    m_context->addScene(secondScene);
+
     m_imguiHandler = std::make_shared<ImguiHandler>();
     if (!m_imguiHandler->Init(m_window->GetWindow(), m_window->GetContext()))
     {
@@ -85,11 +89,7 @@ void Engine::Update(float deltaTime)
 
     m_context->update(deltaTime);
 
-    //m_screenBufferProjector->RedirectToFrameBuffer();
-
     m_context->draw();
-
-    //m_screenBufferProjector->RedirectToDefault();
 
     m_imguiHandler->Render();
 

@@ -226,6 +226,11 @@ void Scene::setPostProcess(bool value)
 	m_isPostProcessEnabled = value;
 }
 
+bool Scene::setPostProcessShader(std::shared_ptr<Shader> shader)
+{
+	return false;
+}
+
 std::shared_ptr<Skybox> Scene::getSkybox()
 {
 	return m_skybox;

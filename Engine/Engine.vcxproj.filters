@@ -12,7 +12,6 @@
     <ClCompile Include="Vendor\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\ImguiHandler.cpp" />
     <ClCompile Include="src\Menu.cpp" />
-    <ClCompile Include="src\RenderBufferObject.cpp" />
     <ClCompile Include="src\ScreenBufferProjector.cpp" />
     <ClCompile Include="src\ScreenQuad.cpp" />
     <ClCompile Include="src\Texture.cpp" />
@@ -106,6 +105,9 @@
     <ClCompile Include="Object3D.cpp">
       <Filter>Graphics\Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="src\RenderBufferObject.cpp">
+      <Filter>Graphics\Buffers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h" />
@@ -120,7 +122,6 @@
     <ClInclude Include="Vendor\imgui\imstb_truetype.h" />
     <ClInclude Include="src\ImguiHandler.h" />
     <ClInclude Include="src\Menu.h" />
-    <ClInclude Include="src\RenderBufferObject.h" />
     <ClInclude Include="src\ScreenBufferProjector.h" />
     <ClInclude Include="src\ScreenQuad.h" />
     <ClInclude Include="src\Texture.h" />
@@ -241,6 +242,9 @@
     </ClInclude>
     <ClInclude Include="Object3D.h">
       <Filter>Graphics\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderBufferObject.h">
+      <Filter>Graphics\Buffers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,7 @@ class DirectionalLight;
 class Renderer;
 class ObjectSelection;
 class ScreenBufferProjector;
+class Shader;
 
 class Scene
 {
@@ -42,6 +43,7 @@ public:
 	void removeSkybox();
 
 	void setPostProcess(bool value);
+	bool setPostProcessShader(std::shared_ptr<Shader> shader);
 
 	std::shared_ptr<Renderer> getRenderer() const;
 	std::shared_ptr<Renderer> getSkyboxRenderer();
@@ -55,10 +57,10 @@ public:
 		return m_objectSelection;
 	}
 
-	std::shared_ptr<ScreenBufferProjector> GetScreenBufferProjector() const;
 
 private:
 	// -------------------- Methods -------------------- //
+	std::shared_ptr<ScreenBufferProjector> GetScreenBufferProjector() const;
 	friend class Context;
 	void update(float deltaTime);
 	inline void SetID(uint32_t id) { m_id = id; }
