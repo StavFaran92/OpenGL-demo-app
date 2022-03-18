@@ -52,15 +52,11 @@ public:
 
 	uint32_t getID() const { return m_id; }
 
-	std::shared_ptr<ObjectSelection> GetObjectSelection()
-	{
-		return m_objectSelection;
-	}
+	std::shared_ptr<ObjectSelection> GetObjectSelection() const;
 
 
 private:
 	// -------------------- Methods -------------------- //
-	std::shared_ptr<ScreenBufferProjector> GetScreenBufferProjector() const;
 	friend class Context;
 	void update(float deltaTime);
 	inline void SetID(uint32_t id) { m_id = id; }

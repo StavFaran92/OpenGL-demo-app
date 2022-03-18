@@ -98,12 +98,6 @@ void Scene::draw()
 	}
 }
 
-std::shared_ptr<ScreenBufferProjector> Scene::GetScreenBufferProjector() const
-{
-	return m_screenBufferProjector;
-}
-
-
 void Scene::clear()
 {
 	m_models.clear();
@@ -226,9 +220,15 @@ void Scene::setPostProcess(bool value)
 	m_isPostProcessEnabled = value;
 }
 
+std::shared_ptr<ObjectSelection> Scene::GetObjectSelection() const
+{
+	return m_objectSelection;
+}
+
 bool Scene::setPostProcessShader(std::shared_ptr<Shader> shader)
 {
-	return false;
+	if (m_screenBufferProjector)
+		m_screenBufferProjector->setPostProcessShader(shader);
 }
 
 std::shared_ptr<Skybox> Scene::getSkybox()

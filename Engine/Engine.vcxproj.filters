@@ -1,19 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Natvis Include="Vendor\imgui\imgui.natvis" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Vendor\imgui\imgui.cpp" />
-    <ClCompile Include="Vendor\imgui\imgui_draw.cpp" />
-    <ClCompile Include="Vendor\imgui\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="Vendor\imgui\imgui_impl_sdl.cpp" />
-    <ClCompile Include="Vendor\imgui\imgui_tables.cpp" />
-    <ClCompile Include="Vendor\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\ImguiHandler.cpp" />
     <ClCompile Include="src\Menu.cpp" />
     <ClCompile Include="src\ScreenBufferProjector.cpp" />
-    <ClCompile Include="src\ScreenQuad.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\Utils.cpp" />
@@ -102,29 +92,42 @@
     <ClCompile Include="src\Scene.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Object3D.cpp">
-      <Filter>Graphics\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="src\RenderBufferObject.cpp">
       <Filter>Graphics\Buffers</Filter>
     </ClCompile>
-    <ClCompile Include="src\Object3D.cpp" />
+    <ClCompile Include="Vendor\imgui\imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Vendor\imgui\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Vendor\imgui\imgui_impl_opengl3.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Vendor\imgui\imgui_impl_sdl.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Vendor\imgui\imgui_tables.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Vendor\imgui\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ScreenQuad.cpp">
+      <Filter>Graphics\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object3D.cpp">
+      <Filter>Graphics\Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Resources\Primitives\cube.h" />
     <ClInclude Include="Vendor\imgui\imconfig.h" />
-    <ClInclude Include="Vendor\imgui\imgui.h" />
-    <ClInclude Include="Vendor\imgui\imgui_impl_opengl3.h" />
-    <ClInclude Include="Vendor\imgui\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="Vendor\imgui\imgui_impl_sdl.h" />
-    <ClInclude Include="Vendor\imgui\imgui_internal.h" />
     <ClInclude Include="Vendor\imgui\imstb_rectpack.h" />
     <ClInclude Include="Vendor\imgui\imstb_textedit.h" />
     <ClInclude Include="Vendor\imgui\imstb_truetype.h" />
     <ClInclude Include="src\ImguiHandler.h" />
     <ClInclude Include="src\Menu.h" />
     <ClInclude Include="src\ScreenBufferProjector.h" />
-    <ClInclude Include="src\ScreenQuad.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\Utils.h" />
@@ -241,28 +244,33 @@
     <ClInclude Include="src\Scene.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Object3D.h">
-      <Filter>Graphics\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="src\RenderBufferObject.h">
       <Filter>Graphics\Buffers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Object3D.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Shaders\LightShader.frag" />
-    <None Include="Resources\Shaders\LightShader.vert" />
-    <None Include="Resources\Shaders\OutlineShader.frag" />
-    <None Include="Resources\Shaders\ReflectionShader.frag" />
-    <None Include="Resources\Shaders\ReflectionShader.vert" />
-    <None Include="Resources\Shaders\RefractionShader.frag" />
-    <None Include="Resources\Shaders\RefractionShader.vert" />
-    <None Include="Resources\Shaders\shader.frag" />
-    <None Include="Resources\Shaders\shader.vert" />
-    <None Include="Resources\Shaders\SimpleShader.frag" />
-    <None Include="Resources\Shaders\SimpleShader.vert" />
-    <None Include="Resources\Shaders\SkyboxShader.frag" />
-    <None Include="Resources\Shaders\SkyboxShader.vert" />
+    <ClInclude Include="Vendor\imgui\imgui.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Vendor\imgui\imgui_impl_opengl3.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Vendor\imgui\imgui_impl_opengl3_loader.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Vendor\imgui\imgui_impl_sdl.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Vendor\imgui\imgui_internal.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScreenQuad.h">
+      <Filter>Graphics\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Primitives\cube.h">
+      <Filter>Resource Files\primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Object3D.h">
+      <Filter>Graphics\Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -310,5 +318,22 @@
     <Filter Include="Utils\Math">
       <UniqueIdentifier>{cc76c92a-a75e-4d6a-9455-2374de9dc102}</UniqueIdentifier>
     </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{a4aa2129-8dd6-4d99-b09d-c66ab08864d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{8b24f31b-8cfb-496f-817e-c065d616cb88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{4c66b7b5-de4d-4ba9-bc74-db95538ef4b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\primitives">
+      <UniqueIdentifier>{7f516e39-8bc4-4755-8d49-bbe4f9ba0edd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Vendor\imgui\imgui.natvis">
+      <Filter>imgui</Filter>
+    </Natvis>
   </ItemGroup>
 </Project>

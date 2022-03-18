@@ -28,7 +28,7 @@ bool ScreenBufferProjector::Init()
 	m_frameBuffer->Unbind();
 
 	m_quad = ScreenQuad::GenerateScreenQuad();
-	m_screenShader = std::make_shared<Shader>("Resources\\Shaders\\SimpleShader.vert", "Resources\\Shaders\\SimpleShader.frag");
+	m_screenShader = std::make_shared<Shader>("Resources\\Shaders\\PostProcess\\PostProcessShader_default.vert", "Resources\\Shaders\\PostProcess\\PostProcessShader_default.frag");
 	m_renderer = std::make_shared<Renderer2D>();
 }
 
@@ -55,4 +55,9 @@ void ScreenBufferProjector::RedirectToDefault()
 	glBindTexture(GL_TEXTURE_2D, m_texture->GetID());
 	//glDrawArrays(GL_TRIANGLES, 0, 6);
 	m_quad->Draw(m_renderer, m_screenShader);
+}
+
+void ScreenBufferProjector::setPostProcessShader(std::shared_ptr<Shader> shader)
+{
+	m_screenShader = shader;
 }

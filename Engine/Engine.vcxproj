@@ -202,21 +202,6 @@
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\LightShader.frag" />
-    <None Include="Resources\Shaders\LightShader.vert" />
-    <None Include="Resources\Shaders\OutlineShader.frag" />
-    <None Include="Resources\Shaders\ReflectionShader.frag" />
-    <None Include="Resources\Shaders\ReflectionShader.vert" />
-    <None Include="Resources\Shaders\RefractionShader.frag" />
-    <None Include="Resources\Shaders\RefractionShader.vert" />
-    <None Include="Resources\Shaders\shader.frag" />
-    <None Include="Resources\Shaders\shader.vert" />
-    <None Include="Resources\Shaders\SimpleShader.frag" />
-    <None Include="Resources\Shaders\SimpleShader.vert" />
-    <None Include="Resources\Shaders\SkyboxShader.frag" />
-    <None Include="Resources\Shaders\SkyboxShader.vert" />
-  </ItemGroup>
-  <ItemGroup>
     <Natvis Include="Vendor\imgui\imgui.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
