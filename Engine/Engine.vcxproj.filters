@@ -1,13 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\ImguiHandler.cpp" />
-    <ClCompile Include="src\Menu.cpp" />
-    <ClCompile Include="src\ScreenBufferProjector.cpp" />
-    <ClCompile Include="src\Texture.cpp" />
-    <ClCompile Include="src\Transform.cpp" />
-    <ClCompile Include="src\Utils.cpp" />
-    <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\Context.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -119,20 +112,29 @@
     <ClCompile Include="src\Object3D.cpp">
       <Filter>Graphics\Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="src\Menu.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImguiHandler.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Texture.cpp">
+      <Filter>Graphics\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>Graphics\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Window.cpp">
+      <Filter>Graphics\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ScreenBufferProjector.cpp">
+      <Filter>Graphics\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils.cpp">
+      <Filter>Utils\IO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Vendor\imgui\imconfig.h" />
-    <ClInclude Include="Vendor\imgui\imstb_rectpack.h" />
-    <ClInclude Include="Vendor\imgui\imstb_textedit.h" />
-    <ClInclude Include="Vendor\imgui\imstb_truetype.h" />
-    <ClInclude Include="src\ImguiHandler.h" />
-    <ClInclude Include="src\Menu.h" />
-    <ClInclude Include="src\ScreenBufferProjector.h" />
-    <ClInclude Include="src\Texture.h" />
-    <ClInclude Include="src\Transform.h" />
-    <ClInclude Include="src\Utils.h" />
-    <ClInclude Include="src\main.h" />
-    <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\Context.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -271,6 +273,39 @@
     <ClInclude Include="src\Object3D.h">
       <Filter>Graphics\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Vendor\imgui\imconfig.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Vendor\imgui\imstb_rectpack.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Vendor\imgui\imstb_textedit.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Vendor\imgui\imstb_truetype.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Menu.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ImguiHandler.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Texture.h">
+      <Filter>Graphics\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Transform.h">
+      <Filter>Graphics\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Window.h">
+      <Filter>Graphics\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScreenBufferProjector.h">
+      <Filter>Graphics\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils.h">
+      <Filter>Utils\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -329,6 +364,9 @@
     </Filter>
     <Filter Include="Resource Files\primitives">
       <UniqueIdentifier>{7f516e39-8bc4-4755-8d49-bbe4f9ba0edd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{46b01195-5cea-4818-afb4-5434bcddae9b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
