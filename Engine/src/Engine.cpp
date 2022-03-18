@@ -36,6 +36,7 @@ bool Engine::Init()
     m_context = std::make_shared<Context>();
 
     auto defaultScene = std::make_shared<Scene>();
+    defaultScene->setPostProcess(true);
     m_context->addScene(defaultScene);
     m_context->setActiveScene(defaultScene->getID());
 
@@ -45,17 +46,6 @@ bool Engine::Init()
         logError("Imgui init failed!");
         return false;
     }
-
-
-
-    m_screenBufferProjector = std::make_shared<ScreenBufferProjector>();
-    if(!m_screenBufferProjector->Init())
-    {
-        logError("Screen buffer projector failed to init!");
-        return false;
-    }
-
-
 
     m_isInit = true;
 
@@ -83,15 +73,9 @@ std::shared_ptr<Context> Engine::GetContext()
     return m_context;
 }
 
-std::shared_ptr<ObjectSelection> Engine::GetObjectSelection()
-{
-    return m_objectSelection; 
-}
 
-std::shared_ptr<ScreenBufferProjector> Engine::GetScreenBufferProjector()
-{
-    return m_screenBufferProjector;
-}
+
+
 
 void Engine::Update(float deltaTime)
 {
@@ -101,11 +85,11 @@ void Engine::Update(float deltaTime)
 
     m_context->update(deltaTime);
 
-    m_screenBufferProjector->RedirectToFrameBuffer();
+    //m_screenBufferProjector->RedirectToFrameBuffer();
 
     m_context->draw();
 
-    m_screenBufferProjector->RedirectToDefault();
+    //m_screenBufferProjector->RedirectToDefault();
 
     m_imguiHandler->Render();
 

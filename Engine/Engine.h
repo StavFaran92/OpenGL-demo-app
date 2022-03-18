@@ -29,8 +29,6 @@ public:
     void SetConext(std::shared_ptr<Context> context) {m_context = std::shared_ptr<Context>(context); }
 
     std::shared_ptr<ImguiHandler> GetImguiHandler() { return m_imguiHandler; }
-    std::shared_ptr<ObjectSelection> GetObjectSelection();
-    std::shared_ptr<ScreenBufferProjector> GetScreenBufferProjector();
 
     void handleEvents(SDL_Event& e, bool& quit, double deltaTime);
     void Update(float deltaTime);
@@ -55,7 +53,7 @@ private:
     std::shared_ptr<Context> m_context = nullptr;
     
     std::shared_ptr<ImguiHandler> m_imguiHandler = nullptr;
-    std::shared_ptr<ScreenBufferProjector> m_screenBufferProjector = nullptr;
+    
 
 
 };

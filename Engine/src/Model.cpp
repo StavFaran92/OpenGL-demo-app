@@ -15,7 +15,8 @@ Model::Model()
 
 	m_transformation = std::make_shared<Transform>();
 
-	m_shader = Engine::Get()->GetRenderer()->GetDefaultShader();
+	//m_shader = Engine::Get()->GetRenderer()->GetDefaultShader();
+	m_shader = std::shared_ptr<Shader>(Shader::PhongShader());
 }
 
 std::shared_ptr<Model> Model::LoadModelFromFile(const std::string& path, bool flipTexture /*= false*/)

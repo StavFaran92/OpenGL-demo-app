@@ -9,14 +9,21 @@
 #include "Model.h"
 #include "ObjectSelection.h"
 #include "SkyboxRenderer.h"
+#include "ScreenBufferProjector.h"
 
 void Scene::init()
 {
 	m_renderer = std::make_shared<Renderer>();
-	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(m_renderer);
+	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
 
 	m_objectSelection = std::make_shared<ObjectSelection>();
 	m_objectSelection->Init();
+
+	m_screenBufferProjector = std::make_shared<ScreenBufferProjector>();
+	if (!m_screenBufferProjector->Init())
+	{
+		logError("Screen buffer projector failed to init!");
+	}
 
 	std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
 	addDirectionalLight(light);
@@ -41,6 +48,11 @@ void Scene::update(float deltaTime)
 
 void Scene::draw()
 {
+	if (m_isPostProcessEnabled && m_screenBufferProjector)
+	{
+		m_screenBufferProjector->RedirectToFrameBuffer();
+	}
+
 	// Draw models
 	for (auto model = m_models.begin(); model != m_models.end(); ++model)
 	{
@@ -79,8 +91,17 @@ void Scene::draw()
 		m_skybox->UseShader();
 		m_skybox->Draw(m_skyboxRenderer);
 	}
+
+	if (m_isPostProcessEnabled && m_screenBufferProjector)
+	{
+		m_screenBufferProjector->RedirectToDefault();
+	}
 }
 
+std::shared_ptr<ScreenBufferProjector> Scene::GetScreenBufferProjector() const
+{
+	return m_screenBufferProjector;
+}
 
 
 void Scene::clear()
@@ -198,6 +219,11 @@ std::shared_ptr<Renderer> Scene::getSkyboxRenderer()
 void Scene::close()
 {
 	clear();
+}
+
+void Scene::setPostProcess(bool value)
+{
+	m_isPostProcessEnabled = value;
 }
 
 std::shared_ptr<Skybox> Scene::getSkybox()
