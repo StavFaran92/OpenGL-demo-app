@@ -15,6 +15,7 @@
 class Shader
 {
 public:
+	Shader();
 	Shader(const std::string& vertexfilePath, const std::string& fragmentFilePath);
 
 	void UseShader() const;
@@ -38,6 +39,9 @@ public:
 	inline void SetEnableTextures(bool value) { m_enableTexture = value; }
 	inline bool IsMaterialsEnabled() { return m_enableMaterial; }
 	inline void SetEnableMaterials(bool value) { m_enableMaterial = value; }
+
+	static Shader* PhongShader();
+	static Shader* SolidColorShader();
 
 	~Shader();
 

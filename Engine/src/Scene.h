@@ -12,6 +12,7 @@ class Object3D;
 class PointLight;
 class DirectionalLight;
 class Renderer;
+class ObjectSelection;
 
 class Scene
 {
@@ -73,5 +74,7 @@ private:
 
 
 	std::shared_ptr<Skybox> m_skybox = nullptr;
+	std::shared_ptr<ObjectSelection> m_objectSelection = nullptr;
+
 
 };

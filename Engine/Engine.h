@@ -32,9 +32,6 @@ public:
     std::shared_ptr<ObjectSelection> GetObjectSelection();
     std::shared_ptr<ScreenBufferProjector> GetScreenBufferProjector();
 
-    static Renderer* defaultRenderer;
-    static Renderer* skyboxRenderer;
-
     void handleEvents(SDL_Event& e, bool& quit, double deltaTime);
     void Update(float deltaTime);
 
@@ -58,7 +55,6 @@ private:
     std::shared_ptr<Context> m_context = nullptr;
     
     std::shared_ptr<ImguiHandler> m_imguiHandler = nullptr;
-    std::shared_ptr<ObjectSelection> m_objectSelection = nullptr;
     std::shared_ptr<ScreenBufferProjector> m_screenBufferProjector = nullptr;
 
 

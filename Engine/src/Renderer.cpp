@@ -8,15 +8,9 @@
 
 #include "glm/glm.hpp"
 
-//const Renderer Renderer::defaultRenderer;
-//const SkyboxRenderer Renderer::skyboxRenderer(defaultRenderer);
-
 Renderer::Renderer()
 {
-	m_defaultShader = std::make_shared<Shader>("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
-	m_defaultShader->SetEnableLights(true);
-	m_defaultShader->SetEnableMaterials(true);
-	m_defaultShader->SetEnableTextures(true);
+	m_phongShader = std::shared_ptr<Shader>(Shader::PhongShader());
 	//m_camera = std::make_shared<FlyCamera>(glm::vec3(0.0f, 0.0f, 0.0f), -90.0f, 0.0f, 1.0f, .5f);
 	m_camera = std::make_shared<EditorCamera>(glm::vec3(5.0f, 5.0f, 5.0f), 1.0f, .5f);
 	m_projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
@@ -24,7 +18,7 @@ Renderer::Renderer()
 
 Renderer::Renderer(const Renderer& other)
 {
-	m_defaultShader = other.m_defaultShader;
+	m_phongShader = other.m_phongShader;
 	m_camera = other.m_camera;
 	m_projection = other.m_projection;
 }
@@ -55,7 +49,7 @@ void Renderer::SetMVP(std::shared_ptr<Shader>& shader) const
 
 std::shared_ptr<Shader> Renderer::GetDefaultShader() const
 {
-	return m_defaultShader;
+	return m_phongShader;
 }
 
 std::shared_ptr<ICamera> Renderer::GetCamera() const

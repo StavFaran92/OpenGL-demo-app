@@ -7,12 +7,16 @@
 #include "Engine.h"
 #include "ICamera.h"
 #include "Model.h"
+#include "ObjectSelection.h"
 #include "SkyboxRenderer.h"
 
 void Scene::init()
 {
-	m_renderer = std::make_shared<Renderer>(*Engine::defaultRenderer);
-	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*Engine::skyboxRenderer);
+	m_renderer = std::make_shared<Renderer>();
+	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(m_renderer);
+
+	m_objectSelection = std::make_shared<ObjectSelection>();
+	m_objectSelection->Init();
 
 	std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
 	addDirectionalLight(light);

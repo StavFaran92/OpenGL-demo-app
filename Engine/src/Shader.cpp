@@ -1,5 +1,12 @@
 #include "Shader.h"
 
+Shader PhongShader;
+Shader SolidColorShader;
+
+Shader::Shader()
+{
+}
+
 Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath) :
 	m_id(0)
 {
@@ -172,6 +179,26 @@ void Shader::SetMat3(const std::string& name, const glm::mat3& v)
 void Shader::SetMat4(const std::string& name, const glm::mat4& v)
 {
 	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(v));
+}
+
+Shader* Shader::PhongShader()
+{
+	Shader* shader = new Shader("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
+	shader->SetEnableLights(true);
+	shader->SetEnableMaterials(true);
+	shader->SetEnableTextures(true);
+
+	return shader;
+}
+
+Shader* Shader::SolidColorShader()
+{
+	Shader* shader = new Shader("Resources\\Shaders\\LightShader.vert", "Resources\\Shaders\\LightShader.frag");
+	shader->SetEnableLights(true);
+	shader->SetEnableMaterials(true);
+	shader->SetEnableTextures(true);
+
+	return shader;
 }
 
 Shader::~Shader() {

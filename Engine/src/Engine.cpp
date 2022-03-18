@@ -16,9 +16,6 @@
 // Singleton
 Engine* Engine::instance = nullptr;
 
-Renderer* Engine::defaultRenderer = nullptr;
-Renderer* Engine::skyboxRenderer = nullptr;
-
 bool Engine::Init()
 {
     if (m_isInit)
@@ -36,9 +33,6 @@ bool Engine::Init()
         return false;
     }
 
-    defaultRenderer = new Renderer();
-    skyboxRenderer = new SkyboxRenderer(*defaultRenderer);
-
     m_context = std::make_shared<Context>();
 
     auto defaultScene = std::make_shared<Scene>();
@@ -52,8 +46,7 @@ bool Engine::Init()
         return false;
     }
 
-    m_objectSelection = std::make_shared<ObjectSelection>();
-    m_objectSelection->Init();
+
 
     m_screenBufferProjector = std::make_shared<ScreenBufferProjector>();
     if(!m_screenBufferProjector->Init())
@@ -166,9 +159,6 @@ void Engine::Close()
     m_imguiHandler->Close();
 
     m_window->Close();
-
-    delete defaultRenderer;
-    delete skyboxRenderer;
 
     m_isInit = false;
 
