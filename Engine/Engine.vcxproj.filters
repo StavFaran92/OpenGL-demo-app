@@ -108,6 +108,7 @@
     <ClCompile Include="src\RenderBufferObject.cpp">
       <Filter>Graphics\Buffers</Filter>
     </ClCompile>
+    <ClCompile Include="src\Object3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h" />
@@ -246,6 +247,7 @@
     <ClInclude Include="src\RenderBufferObject.h">
       <Filter>Graphics\Buffers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Object3D.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\LightShader.frag" />

@@ -96,7 +96,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Object3D.cpp" />
     <ClCompile Include="src\Context.cpp" />
     <ClCompile Include="src\DirectionalLight.cpp" />
     <ClCompile Include="src\EditorCamera.cpp" />
@@ -116,6 +115,7 @@
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Mouse.cpp" />
+    <ClCompile Include="src\Object3D.cpp" />
     <ClCompile Include="src\ObjectSelection.cpp" />
     <ClCompile Include="src\PointLight.cpp" />
     <ClCompile Include="src\RenderBufferObject.cpp" />
@@ -143,7 +143,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h" />
-    <ClInclude Include="Object3D.h" />
     <ClInclude Include="src\ApplicationConstants.h" />
     <ClInclude Include="EntryPoint.h" />
     <ClInclude Include="GraphicsEngine.h" />
@@ -170,6 +169,7 @@
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\Mouse.h" />
+    <ClInclude Include="src\Object3D.h" />
     <ClInclude Include="src\ObjectSelection.h" />
     <ClInclude Include="src\PointLight.h" />
     <ClInclude Include="src\RenderBufferObject.h" />

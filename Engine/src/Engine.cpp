@@ -9,6 +9,7 @@
 #include "ScreenBufferProjector.h"
 #include "ICamera.h"
 #include "Scene.h"
+#include "Skybox.h"
 
 #include "Application.h"
 #include "SDL.h"
@@ -37,6 +38,10 @@ bool Engine::Init()
 
     auto defaultScene = std::make_shared<Scene>();
     defaultScene->setPostProcess(true);
+
+    auto skybox = Skybox::CreateSkybox();
+    defaultScene->setSkybox(skybox);
+
     m_context->addScene(defaultScene);
     m_context->setActiveScene(defaultScene->getID());
 
