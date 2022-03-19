@@ -2,360 +2,318 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\Context.cpp">
-      <Filter>Core</Filter>
+      <Filter>src\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\DirectionalLight.cpp">
-      <Filter>Graphics\Lights</Filter>
+      <Filter>src\Graphics\Lights</Filter>
     </ClCompile>
     <ClCompile Include="src\EditorCamera.cpp">
-      <Filter>Graphics\Cameras</Filter>
+      <Filter>src\Graphics\Cameras</Filter>
     </ClCompile>
     <ClCompile Include="src\ElementBufferObject.cpp">
-      <Filter>Graphics\Buffers</Filter>
+      <Filter>src\Graphics\Buffers</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine.cpp">
-      <Filter>Core</Filter>
+      <Filter>src\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\FlyCamera.cpp">
-      <Filter>Graphics\Cameras</Filter>
+      <Filter>src\Graphics\Cameras</Filter>
     </ClCompile>
     <ClCompile Include="src\FrameBufferObject.cpp">
-      <Filter>Graphics\Buffers</Filter>
+      <Filter>src\Graphics\Buffers</Filter>
     </ClCompile>
     <ClCompile Include="src\FileUtil.cpp">
-      <Filter>Utils\IO</Filter>
+      <Filter>src\Utils\IO</Filter>
     </ClCompile>
     <ClCompile Include="src\Grid.cpp">
-      <Filter>Graphics\Models</Filter>
+      <Filter>src\Graphics\Models</Filter>
     </ClCompile>
     <ClCompile Include="src\Input.cpp">
-      <Filter>IO</Filter>
+      <Filter>src\IO</Filter>
     </ClCompile>
     <ClCompile Include="src\Keyboard.cpp">
-      <Filter>IO</Filter>
+      <Filter>src\IO</Filter>
     </ClCompile>
     <ClCompile Include="src\Light.cpp">
-      <Filter>Graphics\Lights</Filter>
+      <Filter>src\Graphics\Lights</Filter>
     </ClCompile>
     <ClCompile Include="src\LinearAlgebraUtil.cpp">
-      <Filter>Utils\Math</Filter>
+      <Filter>src\Utils\Math</Filter>
     </ClCompile>
     <ClCompile Include="src\Material.cpp">
-      <Filter>Graphics\Shaders</Filter>
+      <Filter>src\Graphics\Shaders</Filter>
     </ClCompile>
     <ClCompile Include="src\Mesh.cpp">
-      <Filter>Graphics\Geometry</Filter>
+      <Filter>src\Graphics\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="src\Model.cpp">
-      <Filter>Graphics\Models</Filter>
+      <Filter>src\Graphics\Models</Filter>
     </ClCompile>
     <ClCompile Include="src\Mouse.cpp">
-      <Filter>IO</Filter>
+      <Filter>src\IO</Filter>
     </ClCompile>
     <ClCompile Include="src\ObjectSelection.cpp">
-      <Filter>Graphics\Services</Filter>
+      <Filter>src\Graphics\Services</Filter>
     </ClCompile>
     <ClCompile Include="src\PointLight.cpp">
-      <Filter>Graphics\Lights</Filter>
+      <Filter>src\Graphics\Lights</Filter>
     </ClCompile>
     <ClCompile Include="src\Shader.cpp">
-      <Filter>Graphics\Shaders</Filter>
+      <Filter>src\Graphics\Shaders</Filter>
     </ClCompile>
     <ClCompile Include="src\VertexArrayObject.cpp">
-      <Filter>Graphics\Buffers</Filter>
+      <Filter>src\Graphics\Buffers</Filter>
     </ClCompile>
     <ClCompile Include="src\VertexBufferLayout.cpp">
-      <Filter>Graphics\Buffers</Filter>
+      <Filter>src\Graphics\Buffers</Filter>
     </ClCompile>
     <ClCompile Include="src\VertexBufferObject.cpp">
-      <Filter>Graphics\Buffers</Filter>
+      <Filter>src\Graphics\Buffers</Filter>
     </ClCompile>
     <ClCompile Include="src\Skybox.cpp">
-      <Filter>Graphics\Models</Filter>
+      <Filter>src\Graphics\Models</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer.cpp">
-      <Filter>Graphics\Renderers</Filter>
+      <Filter>src\Graphics\Renderers</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer2D.cpp">
-      <Filter>Graphics\Renderers</Filter>
+      <Filter>src\Graphics\Renderers</Filter>
     </ClCompile>
     <ClCompile Include="src\SkyboxRenderer.cpp">
-      <Filter>Graphics\Renderers</Filter>
+      <Filter>src\Graphics\Renderers</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene.cpp">
-      <Filter>Core</Filter>
+      <Filter>src\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\RenderBufferObject.cpp">
-      <Filter>Graphics\Buffers</Filter>
+      <Filter>src\Graphics\Buffers</Filter>
     </ClCompile>
     <ClCompile Include="Vendor\imgui\imgui.cpp">
-      <Filter>imgui</Filter>
+      <Filter>src\imgui</Filter>
     </ClCompile>
     <ClCompile Include="Vendor\imgui\imgui_draw.cpp">
-      <Filter>imgui</Filter>
+      <Filter>src\imgui</Filter>
     </ClCompile>
     <ClCompile Include="Vendor\imgui\imgui_impl_opengl3.cpp">
-      <Filter>imgui</Filter>
+      <Filter>src\imgui</Filter>
     </ClCompile>
     <ClCompile Include="Vendor\imgui\imgui_impl_sdl.cpp">
-      <Filter>imgui</Filter>
+      <Filter>src\imgui</Filter>
     </ClCompile>
     <ClCompile Include="Vendor\imgui\imgui_tables.cpp">
-      <Filter>imgui</Filter>
+      <Filter>src\imgui</Filter>
     </ClCompile>
     <ClCompile Include="Vendor\imgui\imgui_widgets.cpp">
-      <Filter>imgui</Filter>
+      <Filter>src\imgui</Filter>
     </ClCompile>
     <ClCompile Include="src\ScreenQuad.cpp">
-      <Filter>Graphics\Models</Filter>
+      <Filter>src\Graphics\Models</Filter>
     </ClCompile>
     <ClCompile Include="src\Object3D.cpp">
-      <Filter>Graphics\Geometry</Filter>
+      <Filter>src\Graphics\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="src\Menu.cpp">
-      <Filter>UI</Filter>
+      <Filter>src\UI</Filter>
     </ClCompile>
     <ClCompile Include="src\ImguiHandler.cpp">
-      <Filter>UI</Filter>
+      <Filter>src\UI</Filter>
     </ClCompile>
     <ClCompile Include="src\Texture.cpp">
-      <Filter>Graphics\Models</Filter>
+      <Filter>src\Graphics\Models</Filter>
     </ClCompile>
     <ClCompile Include="src\Transform.cpp">
-      <Filter>Graphics\Models</Filter>
+      <Filter>src\Graphics\Models</Filter>
     </ClCompile>
     <ClCompile Include="src\Window.cpp">
-      <Filter>Graphics\Services</Filter>
+      <Filter>src\Graphics\Services</Filter>
     </ClCompile>
     <ClCompile Include="src\ScreenBufferProjector.cpp">
-      <Filter>Graphics\Services</Filter>
+      <Filter>src\Graphics\Services</Filter>
     </ClCompile>
     <ClCompile Include="src\Utils.cpp">
-      <Filter>Utils\IO</Filter>
+      <Filter>src\Utils\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Application.cpp">
+      <Filter>src\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Context.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Core.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ApplicationConstants.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Application.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DirectionalLight.h">
-      <Filter>Graphics\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="src\EditorCamera.h">
-      <Filter>Graphics\Cameras</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ElementBufferObject.h">
-      <Filter>Graphics\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="EntryPoint.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FlyCamera.h">
-      <Filter>Graphics\Cameras</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FrameBufferObject.h">
-      <Filter>Graphics\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicsEngine.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ICamera.h">
-      <Filter>Graphics\Cameras</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FileUtil.h">
-      <Filter>Utils\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Grid.h">
-      <Filter>Graphics\Models</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Input.h">
-      <Filter>IO</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Keyboard.h">
-      <Filter>IO</Filter>
-    </ClInclude>
-    <ClInclude Include="src\IRenderer.h">
-      <Filter>Graphics\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Light.h">
-      <Filter>Graphics\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="src\LinearAlgebraUtil.h">
-      <Filter>Utils\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Logger.h">
-      <Filter>Utils\Logger</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Material.h">
-      <Filter>Graphics\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mesh.h">
-      <Filter>Graphics\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Model.h">
-      <Filter>Graphics\Models</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mouse.h">
-      <Filter>IO</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ObjectSelection.h">
-      <Filter>Graphics\Services</Filter>
-    </ClInclude>
-    <ClInclude Include="src\PointLight.h">
-      <Filter>Graphics\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Shader.h">
-      <Filter>Graphics\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\VertexArrayObject.h">
-      <Filter>Graphics\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\VertexBufferElement.h">
-      <Filter>Graphics\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\VertexBufferLayout.h">
-      <Filter>Graphics\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\VertexBufferObject.h">
-      <Filter>Graphics\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Skybox.h">
-      <Filter>Graphics\Models</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Renderer.h">
-      <Filter>Graphics\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Renderer2D.h">
-      <Filter>Graphics\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SkyboxRenderer.h">
-      <Filter>Graphics\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Scene.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RenderBufferObject.h">
-      <Filter>Graphics\Buffers</Filter>
-    </ClInclude>
     <ClInclude Include="Vendor\imgui\imgui.h">
-      <Filter>imgui</Filter>
+      <Filter>src\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Vendor\imgui\imgui_impl_opengl3.h">
-      <Filter>imgui</Filter>
+      <Filter>src\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Vendor\imgui\imgui_impl_opengl3_loader.h">
-      <Filter>imgui</Filter>
+      <Filter>src\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Vendor\imgui\imgui_impl_sdl.h">
-      <Filter>imgui</Filter>
+      <Filter>src\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Vendor\imgui\imgui_internal.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ScreenQuad.h">
-      <Filter>Graphics\Models</Filter>
+      <Filter>src\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Resources\Primitives\cube.h">
       <Filter>Resource Files\primitives</Filter>
     </ClInclude>
-    <ClInclude Include="src\Object3D.h">
-      <Filter>Graphics\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="Vendor\imgui\imconfig.h">
-      <Filter>imgui</Filter>
+      <Filter>src\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Vendor\imgui\imstb_rectpack.h">
-      <Filter>imgui</Filter>
+      <Filter>src\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Vendor\imgui\imstb_textedit.h">
-      <Filter>imgui</Filter>
+      <Filter>src\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Vendor\imgui\imstb_truetype.h">
-      <Filter>imgui</Filter>
+      <Filter>src\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Menu.h">
-      <Filter>UI</Filter>
+    <ClInclude Include="include\Application.h">
+      <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\ImguiHandler.h">
-      <Filter>UI</Filter>
+    <ClInclude Include="include\sge\ApplicationConstants.h">
+      <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Texture.h">
-      <Filter>Graphics\Models</Filter>
+    <ClInclude Include="include\sge\Context.h">
+      <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Transform.h">
-      <Filter>Graphics\Models</Filter>
+    <ClInclude Include="include\Core.h">
+      <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Window.h">
-      <Filter>Graphics\Services</Filter>
+    <ClInclude Include="include\sge\DirectionalLight.h">
+      <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\ScreenBufferProjector.h">
-      <Filter>Graphics\Services</Filter>
+    <ClInclude Include="include\sge\EditorCamera.h">
+      <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Utils.h">
-      <Filter>Utils\IO</Filter>
+    <ClInclude Include="include\sge\ElementBufferObject.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EntryPoint.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\FileUtil.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\FlyCamera.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\FrameBufferObject.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GraphicsEngine.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Grid.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\ICamera.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\ImguiHandler.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Input.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\IRenderer.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Keyboard.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Light.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\LinearAlgebraUtil.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Logger.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Material.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Menu.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Mesh.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Model.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Mouse.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Object3D.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\ObjectSelection.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\PointLight.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\RenderBufferObject.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Renderer.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Renderer2D.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Scene.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\ScreenBufferProjector.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\ScreenQuad.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Shader.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Skybox.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\SkyboxRenderer.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Texture.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Transform.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Utils.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Vertex.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\VertexArrayObject.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\VertexBufferElement.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\VertexBufferLayout.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\VertexBufferObject.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Window.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\Engine.h">
+      <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Core">
-      <UniqueIdentifier>{1f716301-0a4f-42f5-be7c-076dda336753}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Graphics">
-      <UniqueIdentifier>{e78bc239-ab8d-497f-bdb3-d79d6179e4e9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Graphics\Buffers">
-      <UniqueIdentifier>{479d1431-06fb-4147-987f-3b1415452e84}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils">
-      <UniqueIdentifier>{249f9b41-8168-48ca-bcf1-0a34052ae70c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Graphics\Geometry">
-      <UniqueIdentifier>{abef710d-2129-45e3-a701-3030e2f27e2e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Graphics\Models">
-      <UniqueIdentifier>{d2e47ffa-9f1c-4a7d-ae11-b81cd7dd84d1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Graphics\Services">
-      <UniqueIdentifier>{aeb3d1cf-2094-4fc2-acb5-3ad7bc0f80b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Graphics\Shaders">
-      <UniqueIdentifier>{0f4ac400-c7dd-4ff7-90eb-2e917102a91e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Graphics\Renderers">
-      <UniqueIdentifier>{7a520713-4d89-4550-918d-1014a50cd5c1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Graphics\Lights">
-      <UniqueIdentifier>{dd638be7-b867-45b3-9c31-015d7e853e7c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Graphics\Cameras">
-      <UniqueIdentifier>{2fe808b3-987f-46ca-b1c9-e33211dae93f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="IO">
-      <UniqueIdentifier>{7ba11584-8824-41c9-8e21-81bd02f6b11f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\IO">
-      <UniqueIdentifier>{05d54742-b4f6-46a1-9e59-8400588c97d5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\Logger">
-      <UniqueIdentifier>{d7d19794-aec0-4bf7-90f3-1e4b56651eb2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\Math">
-      <UniqueIdentifier>{cc76c92a-a75e-4d6a-9455-2374de9dc102}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="imgui">
-      <UniqueIdentifier>{a4aa2129-8dd6-4d99-b09d-c66ab08864d2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{8b24f31b-8cfb-496f-817e-c065d616cb88}</UniqueIdentifier>
     </Filter>
@@ -365,13 +323,67 @@
     <Filter Include="Resource Files\primitives">
       <UniqueIdentifier>{7f516e39-8bc4-4755-8d49-bbe4f9ba0edd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI">
+    <Filter Include="headers">
+      <UniqueIdentifier>{35be24fb-5de3-4dd8-a3f1-ccbb93bda07e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{29bd9587-cf0a-4b6f-ab2f-1d00afe360b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Core">
+      <UniqueIdentifier>{1f716301-0a4f-42f5-be7c-076dda336753}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Graphics">
+      <UniqueIdentifier>{e78bc239-ab8d-497f-bdb3-d79d6179e4e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Graphics\Buffers">
+      <UniqueIdentifier>{479d1431-06fb-4147-987f-3b1415452e84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Graphics\Geometry">
+      <UniqueIdentifier>{abef710d-2129-45e3-a701-3030e2f27e2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Graphics\Models">
+      <UniqueIdentifier>{d2e47ffa-9f1c-4a7d-ae11-b81cd7dd84d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Graphics\Services">
+      <UniqueIdentifier>{aeb3d1cf-2094-4fc2-acb5-3ad7bc0f80b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Graphics\Shaders">
+      <UniqueIdentifier>{0f4ac400-c7dd-4ff7-90eb-2e917102a91e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Graphics\Renderers">
+      <UniqueIdentifier>{7a520713-4d89-4550-918d-1014a50cd5c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Graphics\Lights">
+      <UniqueIdentifier>{dd638be7-b867-45b3-9c31-015d7e853e7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Graphics\Cameras">
+      <UniqueIdentifier>{2fe808b3-987f-46ca-b1c9-e33211dae93f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\imgui">
+      <UniqueIdentifier>{a4aa2129-8dd6-4d99-b09d-c66ab08864d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\IO">
+      <UniqueIdentifier>{7ba11584-8824-41c9-8e21-81bd02f6b11f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\UI">
       <UniqueIdentifier>{46b01195-5cea-4818-afb4-5434bcddae9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Utils">
+      <UniqueIdentifier>{249f9b41-8168-48ca-bcf1-0a34052ae70c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Utils\IO">
+      <UniqueIdentifier>{05d54742-b4f6-46a1-9e59-8400588c97d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Utils\Logger">
+      <UniqueIdentifier>{d7d19794-aec0-4bf7-90f3-1e4b56651eb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Utils\Math">
+      <UniqueIdentifier>{cc76c92a-a75e-4d6a-9455-2374de9dc102}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Vendor\imgui\imgui.natvis">
-      <Filter>imgui</Filter>
+      <Filter>src\imgui</Filter>
     </Natvis>
   </ItemGroup>
 </Project>

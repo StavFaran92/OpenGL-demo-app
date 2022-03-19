@@ -3,9 +3,9 @@
 #include "EditorCamera.h"
 #include "Resources/Primitives/cube.h"
 
-std::shared_ptr<Skybox> Skybox::CreateSkybox()
+Skybox* Skybox::CreateSkybox()
 {
-	auto model = std::make_shared<Skybox>();
+	auto model = new Skybox();
 
 	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>((float*)Primtives::Cube::vertices, sizeof(Primtives::Cube::vertices));
 

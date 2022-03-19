@@ -1,5 +1,9 @@
 #include "Model.h"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 #include "PointLight.h"
 
 #include "Resources/Primitives/quad.h"
@@ -8,6 +12,10 @@
 #include "Context.h"
 #include "Scene.h"
 #include "Skybox.h"
+#include "Mesh.h"
+#include "Shader.h"
+#include "Material.h"
+#include "Vertex.h"
 
 Model::Model()
 {
@@ -17,6 +25,11 @@ Model::Model()
 
 	//m_shader = Engine::Get()->GetRenderer()->GetDefaultShader();
 	m_shader = std::shared_ptr<Shader>(Shader::PhongShader());
+}
+
+Model::~Model()
+{
+	logTrace(__FUNCTION__);
 }
 
 std::shared_ptr<Model> Model::LoadModelFromFile(const std::string& path, bool flipTexture /*= false*/)
@@ -90,7 +103,7 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 	if (shader)
 		currShader = shader;
 
-	auto context = Engine::Get()->GetContext();
+	auto context = Engine::get()->getContext();
 	if (context->getActiveScene()->getSkybox())
 	{
 		if (m_isReflective)
@@ -147,14 +160,14 @@ bool Model::AttachShader(std::shared_ptr<Shader> shader)
 
 bool Model::DetachShader()
 {
-	m_shader = Engine::Get()->GetRenderer()->GetDefaultShader();
+	m_shader = Engine::get()->getRenderer()->GetDefaultShader();
 
 	return true;
 }
 
-void Model::Update(float delta)
+void Model::update(float delta)
 {
-	m_transformation->Update(delta);
+	m_transformation->update(delta);
 }
 
 bool Model::UseShader()

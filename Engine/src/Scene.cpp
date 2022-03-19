@@ -17,10 +17,10 @@ void Scene::init()
 	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
 
 	m_objectSelection = std::make_shared<ObjectSelection>();
-	m_objectSelection->Init();
+	m_objectSelection->init();
 
 	m_screenBufferProjector = std::make_shared<ScreenBufferProjector>();
-	if (!m_screenBufferProjector->Init())
+	if (!m_screenBufferProjector->init())
 	{
 		logError("Screen buffer projector failed to init!");
 	}
@@ -39,11 +39,11 @@ void Scene::update(float deltaTime)
 	// Update models
 	for (auto model = m_models.begin(); model != m_models.end(); ++model)
 	{
-		model->second->Update(deltaTime);
+		model->second->update(deltaTime);
 	}
 
 	if (m_skybox)
-		m_skybox->Update(deltaTime);
+		m_skybox->update(deltaTime);
 }
 
 void Scene::draw()

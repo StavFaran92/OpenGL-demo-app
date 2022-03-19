@@ -5,7 +5,7 @@ ObjectSelection::ObjectSelection() :
 {
 }
 
-void ObjectSelection::Init()
+void ObjectSelection::init()
 {
 	glEnable(GL_STENCIL_TEST);
 	glStencilMask(0xff);

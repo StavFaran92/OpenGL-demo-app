@@ -21,18 +21,18 @@ void EditorCamera::keyControl(double deltaTime)
 {
 	if (m_keyboard->getKeyState(SDL_SCANCODE_DELETE))
 	{
-		auto objectSelection = Engine::Get()->GetContext()->getActiveScene()->GetObjectSelection();
+		auto objectSelection = Engine::get()->getContext()->getActiveScene()->GetObjectSelection();
 		auto selected = objectSelection->GetSelectedObject();
-		Engine::Get()->GetContext()->getActiveScene()->removeModel(selected);
+		Engine::get()->getContext()->getActiveScene()->removeModel(selected);
 	}
 	if (m_keyboard->getKeyState(SDL_SCANCODE_2))
 	{
-		Engine::Get()->GetContext()->setActiveScene(2);
+		Engine::get()->getContext()->setActiveScene(2);
 
 	}
 	if (m_keyboard->getKeyState(SDL_SCANCODE_1))
 	{
-		Engine::Get()->GetContext()->setActiveScene(1);
+		Engine::get()->getContext()->setActiveScene(1);
 
 	}
 }
@@ -70,7 +70,7 @@ void EditorCamera::OnMousePressed(SDL_MouseButtonEvent& e)
 	if (e.button == SDL_BUTTON_LEFT)
 	{
 
-		auto objectSelection = Engine::Get()->GetContext()->getActiveScene()->GetObjectSelection();
+		auto objectSelection = Engine::get()->getContext()->getActiveScene()->GetObjectSelection();
 		objectSelection->OnMousePressed(e);
 
 		logInfo("Mouse pressed on x: {}, y: {}", e.x, e.y);

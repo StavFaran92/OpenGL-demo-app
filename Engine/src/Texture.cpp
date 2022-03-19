@@ -1,5 +1,5 @@
 #include "Texture.h"
-#include "Vendor/stb_image/stb_image.h"
+#include "stb_image.h"
 
 Texture::Texture()
 	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_slot(0)

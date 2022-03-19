@@ -3,12 +3,23 @@
 class Sandbox : public Application
 {
 public:
-	virtual void start() override
+
+	Window* window;
+	Model* box;
+
+	void start() override
 	{
+		//window = Window::createWindow(600, 360);
+
+
+		//box = Primitives::createBox();
+		//box->translate(100, 0, 0);
+		//box->rotateX(30);
 	}
 
-	virtual void update() override
+	void draw() override
 	{
+		//draw(box);
 	}
 
 };

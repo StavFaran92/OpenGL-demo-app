@@ -10,10 +10,10 @@ Shader::Shader()
 Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath) :
 	m_id(0)
 {
-	Init(vertexFilePath, fragmentFilePath);
+	init(vertexFilePath, fragmentFilePath);
 }
 
-void Shader::Init(const std::string& vertexFilePath, const std::string& fragmentFilePath)
+void Shader::init(const std::string& vertexFilePath, const std::string& fragmentFilePath)
 {
 	// Parse shaders
 	std::string vertexCode = Utils::ReadFile(vertexFilePath);

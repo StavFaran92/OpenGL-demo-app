@@ -4,7 +4,7 @@ Window::Window(GLint width, GLint height) :
 	m_width(width), m_height(height)
 {}
 
-int Window::Init()
+int Window::init()
 {
 	//Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -70,6 +70,21 @@ int Window::Init()
 	return true;
 }
 
+void Window::close()
+{
+
+	// Delete context
+	SDL_GL_DeleteContext(m_glContext);
+
+	//Destroy window
+	SDL_DestroyWindow(m_mainWindow);
+
+	//Quit SDL subsystems
+	SDL_Quit();
+
+	m_mainWindow = NULL;
+}
+
 void* Window::GetNativeWindow()
 {
 	SDL_SysWMinfo wmInfo;
@@ -80,5 +95,5 @@ void* Window::GetNativeWindow()
 }
 
 Window::~Window() {
-	Close();
+	close();
 }

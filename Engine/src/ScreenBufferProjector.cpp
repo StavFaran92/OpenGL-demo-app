@@ -8,12 +8,12 @@
 #include "Engine.h"
 #include "Window.h"
 
-bool ScreenBufferProjector::Init()
+bool ScreenBufferProjector::init()
 {
 	m_frameBuffer = std::make_shared<FrameBufferObject>();
 	m_frameBuffer->Bind();
 
-	m_texture = Texture::CreateEmptyTexture(Engine::Get()->GetWindow()->getWidth(), Engine::Get()->GetWindow()->getHeight());
+	m_texture = Texture::CreateEmptyTexture(Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
 	m_frameBuffer->AttachTexture(m_texture->GetID());
 
 	m_renderBuffer = std::make_shared<RenderBufferObject>();

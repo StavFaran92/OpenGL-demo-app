@@ -2,7 +2,7 @@
 
 #include "Menu.h"
 
-bool ImguiHandler::Init(SDL_Window* window, const SDL_GLContext& context)
+bool ImguiHandler::init(SDL_Window* window, const SDL_GLContext& context)
 {
 	const char* glsl_version = "#version 140";
 
@@ -57,7 +57,7 @@ void ImguiHandler::Render()
 
 }
 
-bool ImguiHandler::Close()
+bool ImguiHandler::close()
 {
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();

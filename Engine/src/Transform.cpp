@@ -1,6 +1,6 @@
 #include "Transform.h"
 
-void Transform::Update(float deltaTime)
+void Transform::update(float deltaTime)
 {
 	if (m_change)
 	{

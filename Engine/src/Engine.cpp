@@ -17,7 +17,7 @@
 // Singleton
 Engine* Engine::instance = nullptr;
 
-bool Engine::Init()
+bool Engine::init()
 {
     if (m_isInit)
     {
@@ -28,7 +28,7 @@ bool Engine::Init()
     glEnable(GL_DEPTH_TEST);
 
     m_window = std::make_shared<Window>(1024, 768);
-    if (!m_window->Init())
+    if (!m_window->init())
     {
         logError("Window init failed!");
         return false;
@@ -39,7 +39,7 @@ bool Engine::Init()
     auto defaultScene = std::make_shared<Scene>();
     defaultScene->setPostProcess(true);
 
-    auto skybox = Skybox::CreateSkybox();
+    auto skybox = std::shared_ptr<Skybox>(Skybox::CreateSkybox());
     defaultScene->setSkybox(skybox);
 
     m_context->addScene(defaultScene);
@@ -50,7 +50,7 @@ bool Engine::Init()
     m_context->addScene(secondScene);
 
     m_imguiHandler = std::make_shared<ImguiHandler>();
-    if (!m_imguiHandler->Init(m_window->GetWindow(), m_window->GetContext()))
+    if (!m_imguiHandler->init(m_window->GetWindow(), m_window->GetContext()))
     {
         logError("Imgui init failed!");
         return false;
@@ -63,10 +63,15 @@ bool Engine::Init()
     return true;
 }
 
+Window* Engine::getWindow() const
+{
+    return m_window.get();
+}
+
 Engine::Engine()
 {}
 
-Engine* Engine::Get()
+Engine* Engine::get()
 {
     if (instance == nullptr)
     {
@@ -75,24 +80,30 @@ Engine* Engine::Get()
     return instance;
 }
 
-std::shared_ptr<Renderer> Engine::GetRenderer() { return m_context->getActiveScene()->getRenderer(); }
-
-std::shared_ptr<Context> Engine::GetContext()
+void Engine::SetWindow(std::shared_ptr<Window> window)
 {
-    return m_context;
+    m_window = window;
+}
+
+Renderer* Engine::getRenderer() const
+{ 
+    return m_context->getActiveScene()->getRenderer().get(); 
+}
+
+void Engine::SetContext(std::shared_ptr<Context> context)
+{
+    m_context = context; 
+}
+
+Context* Engine::getContext() const
+{
+    return m_context.get();
 }
 
 
-
-
-
-void Engine::Update(float deltaTime)
+void Engine::draw()
 {
-    //lightCube->GetTransformation()->SetPosition({ 10 * cos(angle * Constants::toRadians) ,0, 10 * sin(angle * Constants::toRadians) });
-    //angle++;
-    //lightCube->GetTransformation()->SetScale({ .25f, .25f, .25f });
 
-    m_context->update(deltaTime);
 
     m_context->draw();
 
@@ -101,7 +112,17 @@ void Engine::Update(float deltaTime)
     m_window->SwapBuffer();
 }
 
-void Engine::Run(Application* app)
+
+void Engine::update(float deltaTime)
+{
+    //lightCube->GetTransformation()->SetPosition({ 10 * cos(angle * Constants::toRadians) ,0, 10 * sin(angle * Constants::toRadians) });
+    //angle++;
+    //lightCube->GetTransformation()->SetScale({ .25f, .25f, .25f });
+
+    m_context->update(deltaTime);
+}
+
+void Engine::run(Application* app)
 {
     //Main loop flag
     bool quit = false;
@@ -126,13 +147,14 @@ void Engine::Run(Application* app)
         if (quit)
             return;
 
-        app->update();
-        Update(deltaTime);
+        update(deltaTime);
+        app->draw();
+        draw();
 
     }
 }
 
-void Engine::Stop()
+void Engine::stop()
 {
     logTrace(__FUNCTION__);
 
@@ -141,18 +163,27 @@ void Engine::Stop()
     SDL_PushEvent(&e);
 }
 
-void Engine::Close()
+void Engine::close()
 {
     logTrace(__FUNCTION__);
 
-    m_imguiHandler->Close();
+    m_imguiHandler->close();
 
-    m_window->Close();
+    m_window->close();
 
     m_isInit = false;
 
     delete instance;
     instance = nullptr;
+}
+
+ImguiHandler* Engine::getImguiHandler() const
+{
+    return m_imguiHandler.get(); 
+}
+
+void Engine::pause()
+{
 }
 
 void Engine::handleEvents(SDL_Event& e, bool& quit, double deltaTime)
@@ -184,4 +215,8 @@ void Engine::handleEvents(SDL_Event& e, bool& quit, double deltaTime)
             m_context->getActiveScene()->getRenderer()->GetCamera()->OnMouseScroll(e.wheel.y);
         }
     }
+}
+
+void Engine::resume()
+{
 }
