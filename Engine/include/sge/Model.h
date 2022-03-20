@@ -6,15 +6,10 @@
 #include <map>
 
 // sge
-#include "ApplicationConstants.h"
-#include "Engine.h"
 #include "Object3D.h"
-#include "Vertex.h"
 #include "Shader.h"
 #include "Transform.h"
 #include "Material.h"
-#include "IRenderer.h"
-#include "Mesh.h"
 #include "Texture.h"
 
 // Forward declerations
@@ -23,6 +18,11 @@ struct aiScene;
 struct aiMesh;
 struct aiMaterial;
 enum aiTextureType;
+
+struct Vertex;
+class IRenderer;
+class Mesh;
+
 
 class Model : public Object3D
 {

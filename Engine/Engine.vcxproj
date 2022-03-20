@@ -147,7 +147,7 @@
     <ClInclude Include="include\Core.h" />
     <ClInclude Include="include\sge\ApplicationConstants.h" />
     <ClInclude Include="include\EntryPoint.h" />
-    <ClInclude Include="include\GraphicsEngine.h" />
+    <ClInclude Include="include\sge.h" />
     <ClInclude Include="include\Application.h" />
     <ClInclude Include="include\sge\Context.h" />
     <ClInclude Include="include\sge\DirectionalLight.h" />

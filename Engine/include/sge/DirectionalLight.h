@@ -10,7 +10,7 @@ public:
 		m_name = "dirLight";
 	}
 
-	DirectionalLight(glm::vec3 color, glm::vec3 dir, GLfloat aIntensity, GLfloat dIntensity)
+	DirectionalLight(glm::vec3 color, glm::vec3 dir, float aIntensity, float dIntensity)
 		: Light(color, aIntensity, dIntensity), m_direction(dir)
 	{
 		m_name = "dirLight";

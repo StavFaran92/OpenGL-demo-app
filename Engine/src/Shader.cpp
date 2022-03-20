@@ -2,6 +2,9 @@
 
 #include "glm/glm.hpp"
 #include <glm/gtc/type_ptr.hpp>
+#include <GL/glew.h>
+
+#include "Utils.h"
 
 Shader PhongShader;
 Shader SolidColorShader;
@@ -102,7 +105,7 @@ void Shader::ClearShader()
 	}
 }
 
-GLuint Shader::AddShader(const std::string& shaderCode, GLenum shaderType)
+uint32_t Shader::AddShader(const std::string& shaderCode, unsigned int shaderType)
 {
 	GLuint shader = glCreateShader(shaderType);
 
@@ -118,7 +121,7 @@ GLuint Shader::AddShader(const std::string& shaderCode, GLenum shaderType)
 	return shader;
 }
 
-bool Shader::validateCompilation(const GLuint& shader, const GLenum& shaderType)
+bool Shader::validateCompilation(const unsigned int& shader, const unsigned int& shaderType)
 {
 	GLint result = 0;
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &result);

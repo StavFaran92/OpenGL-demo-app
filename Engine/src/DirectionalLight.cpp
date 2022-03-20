@@ -1,5 +1,8 @@
 #include "DirectionalLight.h"
 
+#include "Shader.h"
+#include "Logger.h"
+
 void DirectionalLight::useLight(std::shared_ptr<Shader> shader, int index)
 {
 	if (!shader->IsLightsEnabled())

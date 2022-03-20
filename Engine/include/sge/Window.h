@@ -3,9 +3,7 @@
 #include <stdio.h>
 
 #include "SDL_syswm.h"
-#include <SDL.h>
-#include <GL/glew.h>
-#include <SDL_opengl.h>
+
 
 #include "Logger.h"
 
@@ -16,12 +14,12 @@ class Window
 {
 public:
 
-	Window(GLint width = SCREEN_WIDTH, GLint height = SCREEN_HEIGHT);
+	Window(int width = SCREEN_WIDTH, int height = SCREEN_HEIGHT);
 
 	int init();
 
-	inline GLint getWidth() { return m_width; }
-	inline GLint getHeight() { return m_height; }
+	inline int getWidth() { return m_width; }
+	inline int getHeight() { return m_height; }
 
 	void close();
 
@@ -37,8 +35,8 @@ private:
 	SDL_Window* m_mainWindow = nullptr;
 	SDL_GLContext m_glContext = nullptr;
 
-	GLint m_width = 0;
-	GLint m_height = 0;
+	int m_width = 0;
+	int m_height = 0;
 
 	int m_mousePreviousX = 0;
 	int m_mousePreviousY = 0;

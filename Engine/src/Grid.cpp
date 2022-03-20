@@ -1,5 +1,9 @@
 #include "Grid.h"
 
+#include "Vertex.h"
+#include "Renderer.h"
+#include "Mesh.h"
+
 std::shared_ptr<Grid> Grid::GenerateGrid(int slices)
 {
     auto grid = std::make_shared<Grid>();

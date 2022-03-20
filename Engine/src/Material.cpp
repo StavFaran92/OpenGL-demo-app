@@ -1,11 +1,14 @@
 #include "Material.h"
 
+#include "Shader.h"
+#include "Logger.h"
+
 Material::Material()
 	:m_shininess(0)
 {
 }
 
-Material::Material(GLfloat shine)
+Material::Material(float shine)
 : m_shininess(shine)
 {
 }

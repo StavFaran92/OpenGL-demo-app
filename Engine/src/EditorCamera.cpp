@@ -1,5 +1,8 @@
 #include "EditorCamera.h"
 
+#include <gl/glew.h>
+
+#include "ApplicationConstants.h"
 #include "Engine.h"
 #include "Context.h"
 #include "ObjectSelection.h"

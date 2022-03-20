@@ -7,10 +7,6 @@
 
 #include "glm/glm.hpp"
 
-#include "Utils.h"
-
-#include <GL/glew.h>
-
 class Shader
 {
 public:
@@ -20,7 +16,7 @@ public:
 	void UseShader() const;
 	void ClearShader();
 
-	inline GLuint getID() const { return m_id; }
+	inline unsigned int getID() const { return m_id; }
 
 	void SetFloat(const std::string& name, float v);
 	void SetFloat(const std::string& name, glm::vec2 v);
@@ -49,13 +45,13 @@ private:
 	inline void SetID(uint32_t id) { m_id = id; }
 	void init(const std::string& vertexFilePath, const std::string& fragmentFilePath);
 	void BuildShaders(const std::string& vertexCode, const std::string& fragmentCode);
-	GLuint AddShader(const std::string& shaderCode, GLenum shaderType);
+	uint32_t AddShader(const std::string& shaderCode, unsigned int shaderType);
 
 	bool ValidateRenderer();
 	bool ValidateProgramLink();
-	bool validateCompilation(const GLuint& theShader, const GLenum& shaderType);
+	bool validateCompilation(const unsigned int& theShader, const unsigned int& shaderType);
 private:
-	GLuint m_id;
+	unsigned int m_id;
 	std::unordered_map<std::string, int> m_uniformLocationCache;
 	bool m_enableLight = false;
 	bool m_enableMaterial = false;

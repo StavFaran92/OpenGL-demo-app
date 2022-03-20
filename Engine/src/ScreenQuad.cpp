@@ -1,5 +1,9 @@
 #include "ScreenQuad.h"
 
+#include "Vertex.h"
+#include "Renderer.h"
+#include "Mesh.h"
+
 #include "Resources/Primitives/quad.h"
 
 std::shared_ptr<ScreenQuad> ScreenQuad::GenerateScreenQuad()

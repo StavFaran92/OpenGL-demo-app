@@ -1,5 +1,17 @@
 #include "PointLight.h"
 
+#include "Shader.h"
+#include "Logger.h"
+#include "Transform.h"
+
+PointLight::PointLight(glm::vec3 color, glm::vec3 pos, float aIntensity, float dIntensity, Attenuation attenuation)
+	: Light(color, aIntensity, dIntensity), m_attenuation(attenuation)
+{
+	m_name = "pointLights";
+
+	m_transform->SetPosition(pos);
+}
+
 void PointLight::useLight(std::shared_ptr<Shader >shader, int index)
 {
 	if (!shader->IsLightsEnabled())

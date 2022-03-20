@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iostream>
-#include <GL/glew.h>
 #include <string>
 
 #include "Logger.h"
@@ -19,7 +18,7 @@ public:
 	void Bind();
 
 	inline void SetType(const std::string type) { m_type = type; }
-	inline const GLuint GetID() const { return m_id; }
+	inline const unsigned int GetID() const { return m_id; }
 	inline const std::string GetType() const { return m_type; }
 	inline const std::string GetPath() const { return m_fileLocation; }
 	inline const uint32_t GetCategory() const { return m_textureCategory; }

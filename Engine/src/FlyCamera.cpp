@@ -1,5 +1,7 @@
 #include "FlyCamera.h"
 
+#include <gl/glew.h>
+
 FlyCamera::FlyCamera(glm::vec3 startPosition, float startYaw, float startPitch, float startMoveSpeed, float startTurnSpeed)
 	:m_position(startPosition),
 	m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),

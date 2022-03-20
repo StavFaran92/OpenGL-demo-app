@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ICamera.h"
-#include "ApplicationConstants.h"
 
 class EditorCamera : public ICamera
 {

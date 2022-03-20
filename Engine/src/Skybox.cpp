@@ -1,5 +1,9 @@
 #include "Skybox.h"
 
+#include "Vertex.h"
+#include "Renderer.h"
+#include "Mesh.h"
+
 #include "EditorCamera.h"
 #include "Resources/Primitives/cube.h"
 

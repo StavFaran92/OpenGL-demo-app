@@ -1,4 +1,6 @@
 #include "Texture.h"
+
+#include <GL/glew.h>
 #include "stb_image.h"
 
 Texture::Texture()

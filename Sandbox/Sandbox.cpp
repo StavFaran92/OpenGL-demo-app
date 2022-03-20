@@ -1,4 +1,4 @@
-#include "GraphicsEngine.h"
+#include "sge.h"
 
 class Sandbox : public Application
 {

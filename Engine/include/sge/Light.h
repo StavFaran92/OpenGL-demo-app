@@ -1,30 +1,24 @@
 #pragma once
-
 #include <glm/glm.hpp>
-#include <GL/glew.h>
 
-#include "Shader.h"
+#include <string>
 
-#include "Engine.h"
-#include "ApplicationConstants.h"
-
-#include "Transform.h"
 #include "Object3D.h"
 
-using namespace Constants;
+class Shader;
 
 class Light : public Object3D
 {
 public:
 	Light();
-	Light(glm::vec3 color, GLfloat aIntensity, GLfloat dIntensity);
+	Light(glm::vec3 color, float aIntensity, float dIntensity);
 
 	virtual void useLight(std::shared_ptr<Shader> shader, int index);
 
-	inline void SetAmbientIntensity(GLfloat intensity) {
+	inline void SetAmbientIntensity(float intensity) {
 		m_ambientIntensity = intensity;
 	}
-	inline void SetDiffuseIntensity(GLfloat intensity) {
+	inline void SetDiffuseIntensity(float intensity) {
 		m_diffuseIntensity = intensity;
 	}
 	inline void SetColor(glm::vec3 color) {
@@ -35,8 +29,8 @@ public:
 
 protected:
 	glm::vec3 m_color;
-	GLfloat m_ambientIntensity;
-	GLfloat m_diffuseIntensity;
+	float m_ambientIntensity;
+	float m_diffuseIntensity;
 
 	std::shared_ptr<Transform >m_transform;
 	std::string m_name = "";

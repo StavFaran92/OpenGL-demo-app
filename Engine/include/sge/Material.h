@@ -1,20 +1,20 @@
 #pragma once
 
-#include <GL/glew.h>
+#include <memory>
 
-#include "Shader.h"
+class Shader;
 
 class Material
 {
 public:
 	Material();
-	Material(GLfloat shine);
+	Material(float shine);
 
 	void UseMaterial(std::shared_ptr<Shader> shader);
 
 	~Material();
 
 private:
-	GLfloat m_specularIntensity;
-	GLfloat m_shininess;
+	float m_specularIntensity;
+	float m_shininess;
 };

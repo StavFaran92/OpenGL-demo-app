@@ -175,7 +175,7 @@
     <ClInclude Include="include\sge\FrameBufferObject.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\GraphicsEngine.h">
+    <ClInclude Include="include\sge.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="include\sge\Grid.h">

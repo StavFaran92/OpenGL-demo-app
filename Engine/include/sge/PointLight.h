@@ -16,16 +16,7 @@ public:
 		m_name = "pointLights";
 	}
 
-	PointLight(glm::vec3 color, glm::vec3 pos, 
-		GLfloat aIntensity, GLfloat dIntensity,
-		Attenuation attenuation) :
-		Light(color, aIntensity, dIntensity),
-		m_attenuation(attenuation)
-	{
-		m_name = "pointLights";
-
-		m_transform->SetPosition(pos);
-	}
+	PointLight(glm::vec3 color, glm::vec3 pos, float aIntensity, float dIntensity, Attenuation attenuation);
 
 	void useLight(std::shared_ptr<Shader >shader, int index);
 

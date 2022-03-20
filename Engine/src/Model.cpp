@@ -1,5 +1,7 @@
 #include "Model.h"
 
+#include "ApplicationConstants.h"
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -16,6 +18,10 @@
 #include "Shader.h"
 #include "Material.h"
 #include "Vertex.h"
+#include "IRenderer.h"
+#include "Mesh.h"
+#include "Vertex.h"
+#include "Engine.h"
 
 Model::Model()
 {
