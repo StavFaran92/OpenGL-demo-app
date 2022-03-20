@@ -88,24 +88,6 @@
     <ClCompile Include="src\RenderBufferObject.cpp">
       <Filter>src\Graphics\Buffers</Filter>
     </ClCompile>
-    <ClCompile Include="Vendor\imgui\imgui.cpp">
-      <Filter>src\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Vendor\imgui\imgui_draw.cpp">
-      <Filter>src\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Vendor\imgui\imgui_impl_opengl3.cpp">
-      <Filter>src\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Vendor\imgui\imgui_impl_sdl.cpp">
-      <Filter>src\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Vendor\imgui\imgui_tables.cpp">
-      <Filter>src\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Vendor\imgui\imgui_widgets.cpp">
-      <Filter>src\imgui</Filter>
-    </ClCompile>
     <ClCompile Include="src\ScreenQuad.cpp">
       <Filter>src\Graphics\Models</Filter>
     </ClCompile>
@@ -136,37 +118,29 @@
     <ClCompile Include="src\Application.cpp">
       <Filter>src\Core</Filter>
     </ClCompile>
+    <ClCompile Include="extern\imgui\imgui.cpp">
+      <Filter>src\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="extern\imgui\imgui_draw.cpp">
+      <Filter>src\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="extern\imgui\imgui_impl_opengl3.cpp">
+      <Filter>src\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="extern\imgui\imgui_impl_sdl.cpp">
+      <Filter>src\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="extern\imgui\imgui_tables.cpp">
+      <Filter>src\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="extern\imgui\imgui_widgets.cpp">
+      <Filter>src\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="include\sge\IRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Vendor\imgui\imgui.h">
-      <Filter>src\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Vendor\imgui\imgui_impl_opengl3.h">
-      <Filter>src\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Vendor\imgui\imgui_impl_opengl3_loader.h">
-      <Filter>src\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Vendor\imgui\imgui_impl_sdl.h">
-      <Filter>src\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Vendor\imgui\imgui_internal.h">
-      <Filter>src\imgui</Filter>
-    </ClInclude>
     <ClInclude Include="Resources\Primitives\cube.h">
       <Filter>Resource Files\primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="Vendor\imgui\imconfig.h">
-      <Filter>src\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Vendor\imgui\imstb_rectpack.h">
-      <Filter>src\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Vendor\imgui\imstb_textedit.h">
-      <Filter>src\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Vendor\imgui\imstb_truetype.h">
-      <Filter>src\imgui</Filter>
     </ClInclude>
     <ClInclude Include="include\Application.h">
       <Filter>headers</Filter>
@@ -312,6 +286,33 @@
     <ClInclude Include="include\sge\Engine.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="extern\imgui\imconfig.h">
+      <Filter>src\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\imgui\imgui.h">
+      <Filter>src\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\imgui\imgui_impl_opengl3.h">
+      <Filter>src\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\imgui\imgui_impl_opengl3_loader.h">
+      <Filter>src\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\imgui\imgui_impl_sdl.h">
+      <Filter>src\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\imgui\imgui_internal.h">
+      <Filter>src\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\imgui\imstb_rectpack.h">
+      <Filter>src\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\imgui\imstb_textedit.h">
+      <Filter>src\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\imgui\imstb_truetype.h">
+      <Filter>src\imgui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -382,7 +383,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="Vendor\imgui\imgui.natvis">
+    <Natvis Include="extern\imgui\imgui.natvis">
       <Filter>src\imgui</Filter>
     </Natvis>
   </ItemGroup>

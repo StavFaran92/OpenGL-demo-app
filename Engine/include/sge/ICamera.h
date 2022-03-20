@@ -13,7 +13,7 @@ public:
 	ICamera() = default;
 
 	virtual void keyControl(double deltaTime) = 0;
-	virtual void OnMouseMotion(GLfloat xChange, GLfloat yChange) = 0;
+	virtual void OnMouseMotion(float xChange, float yChange) = 0;
 	virtual void OnMousePressed(SDL_MouseButtonEvent& e) = 0;
 	virtual void OnMouseReleased(SDL_MouseButtonEvent& e) = 0;
 	virtual void OnMouseScroll(Sint32& y) {};

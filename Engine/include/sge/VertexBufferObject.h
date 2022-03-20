@@ -4,7 +4,7 @@
 
 #include "Logger.h"
 
-#include "glm/glm.hpp"
+
 
 #include "Vertex.h"
 

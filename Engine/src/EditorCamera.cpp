@@ -5,7 +5,7 @@
 #include "ObjectSelection.h"
 #include "Scene.h"
 
-EditorCamera::EditorCamera(glm::vec3 startPosition, GLfloat startMoveSpeed, GLfloat startTurnSpeed)
+EditorCamera::EditorCamera(glm::vec3 startPosition, float startMoveSpeed, float startTurnSpeed)
 	: m_position(startPosition),
 	m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
 	m_movementSpeed(startMoveSpeed),
@@ -37,7 +37,7 @@ void EditorCamera::keyControl(double deltaTime)
 	}
 }
 
-void EditorCamera::OnMouseMotion(GLfloat xChange, GLfloat yChange)
+void EditorCamera::OnMouseMotion(float xChange, float yChange)
 {
 
 	if (!m_isLocked)

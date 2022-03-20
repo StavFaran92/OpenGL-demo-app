@@ -1,5 +1,8 @@
 #include "Shader.h"
 
+#include "glm/glm.hpp"
+#include <glm/gtc/type_ptr.hpp>
+
 Shader PhongShader;
 Shader SolidColorShader;
 

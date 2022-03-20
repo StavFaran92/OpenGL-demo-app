@@ -12,10 +12,10 @@
 class FlyCamera : public ICamera
 {
 public:
-	FlyCamera(glm::vec3 startPosition, GLfloat startYaw, GLfloat startPitch, GLfloat startMoveSpeed, GLfloat startTurnSpeed);
+	FlyCamera(glm::vec3 startPosition, float startYaw, float startPitch, float startMoveSpeed, float startTurnSpeed);
 
 	void keyControl(double deltaTime) override;
-	void OnMouseMotion(GLfloat xChange, GLfloat yChange) override;
+	void OnMouseMotion(float xChange, float yChange) override;
 	void OnMousePressed(SDL_MouseButtonEvent& e) override;
 	void OnMouseReleased(SDL_MouseButtonEvent& e) override;
 
@@ -34,11 +34,11 @@ private:
 	glm::vec3 m_right;
 	glm::vec3 m_worldUp;
 
-	GLfloat m_yaw;
-	GLfloat m_pitch;
+	float m_yaw;
+	float m_pitch;
 
-	GLfloat m_movementSpeed;
-	GLfloat m_turnSpeed;
+	float m_movementSpeed;
+	float m_turnSpeed;
 
 	std::shared_ptr<Keyboard> keyboard;
 };

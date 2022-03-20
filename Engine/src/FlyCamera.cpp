@@ -1,6 +1,6 @@
 #include "FlyCamera.h"
 
-FlyCamera::FlyCamera(glm::vec3 startPosition, GLfloat startYaw, GLfloat startPitch, GLfloat startMoveSpeed, GLfloat startTurnSpeed)
+FlyCamera::FlyCamera(glm::vec3 startPosition, float startYaw, float startPitch, float startMoveSpeed, float startTurnSpeed)
 	:m_position(startPosition),
 	m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
 	m_yaw(startYaw),
@@ -14,7 +14,7 @@ FlyCamera::FlyCamera(glm::vec3 startPosition, GLfloat startYaw, GLfloat startPit
 
 void FlyCamera::keyControl(double deltaTime)
 {
-	GLfloat velocity = m_movementSpeed * deltaTime;
+	float velocity = m_movementSpeed * deltaTime;
 
 	if (keyboard->getKeyState(SDL_SCANCODE_W))
 	{
@@ -37,7 +37,7 @@ void FlyCamera::keyControl(double deltaTime)
 	}
 }
 
-void FlyCamera::OnMouseMotion(GLfloat xChange, GLfloat yChange)
+void FlyCamera::OnMouseMotion(float xChange, float yChange)
 {
 	xChange *= m_turnSpeed;
 	yChange *= m_turnSpeed;
