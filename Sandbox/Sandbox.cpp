@@ -14,7 +14,6 @@ public:
 		context->getActiveScene()->setSkybox(Skybox::CreateSkybox());
 
 		box = createBox();
-		context->getActiveScene()->addModel(box);
 
 	}
 
@@ -22,6 +21,7 @@ public:
 	{
 		box->translate(.001, 0, 0);
 		box->rotateX(30);
+		draw2(box);
 	}
 
 };

@@ -4,6 +4,7 @@
 #include <memory>
 #include <unordered_set>
 #include <unordered_map>
+#include <deque>
 
 #include "Core.h"
 
@@ -57,6 +58,8 @@ public:
 
 	std::shared_ptr<ObjectSelection> GetObjectSelection() const;
 
+	void draw(Model* model);
+
 
 private:
 	// -------------------- Methods -------------------- //
@@ -87,6 +90,8 @@ private:
 	std::shared_ptr<Skybox> m_skybox = nullptr;
 	std::shared_ptr<ObjectSelection> m_objectSelection = nullptr;
 	std::shared_ptr<ScreenBufferProjector> m_screenBufferProjector = nullptr;
+
+	std::deque<Model*> m_drawQueue;
 
 	bool m_isPostProcessEnabled = false;
 

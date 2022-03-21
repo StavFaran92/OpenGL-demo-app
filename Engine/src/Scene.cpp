@@ -37,9 +37,14 @@ void Scene::update(float deltaTime)
 	m_renderer->GetCamera()->update(deltaTime);
 
 	// Update models
-	for (auto model = m_models.begin(); model != m_models.end(); ++model)
+	//for (auto model = m_models.begin(); model != m_models.end(); ++model)
+	//{
+	//	model->second->update(deltaTime);
+	//}
+
+	for(auto model : m_drawQueue)
 	{
-		model->second->update(deltaTime);
+		model->update(deltaTime);
 	}
 
 	if (m_skybox)
@@ -53,10 +58,46 @@ void Scene::draw()
 		m_screenBufferProjector->RedirectToFrameBuffer();
 	}
 
+	//// Draw models
+	//for (auto model = m_models.begin(); model != m_models.end(); ++model)
+	//{
+	//	auto shader = model->second->GetShader();
+	//	shader->UseShader();
+
+	//	if (shader->IsLightsEnabled())
+	//	{
+	//		// Use all directional lights
+	//		{
+	//			int i = 0;
+	//			for (auto it = m_directionalLights.begin(); it != m_directionalLights.end(); ++it, ++i) {
+	//				it->second->useLight(shader, i);
+	//			}
+	//			shader->SetInt("dirLightCount", m_directionalLights.size());
+	//		}
+
+	//		// Use all point lights
+	//		{
+	//			int i = 0;
+	//			for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++i, ++it) {
+	//				it->second->useLight(shader, i);
+	//			}
+	//			shader->SetInt("pointLightCount", m_pointLights.size());
+	//		}
+	//	}
+
+	//	glStencilFunc(GL_ALWAYS, model->second->getID(), 0xff);
+
+	//	// Draw model
+	//	model->second->Draw(m_renderer, shader);
+	//}
+
 	// Draw models
-	for (auto model = m_models.begin(); model != m_models.end(); ++model)
+	while(!m_drawQueue.empty())
 	{
-		auto shader = model->second->GetShader();
+		auto model = m_drawQueue.front();
+		m_drawQueue.pop_front();
+
+		auto shader = model->GetShader();
 		shader->UseShader();
 
 		if (shader->IsLightsEnabled())
@@ -80,10 +121,10 @@ void Scene::draw()
 			}
 		}
 
-		glStencilFunc(GL_ALWAYS, model->second->getID(), 0xff);
+		glStencilFunc(GL_ALWAYS, model->getID(), 0xff);
 
 		// Draw model
-		model->second->Draw(m_renderer, shader);
+		model->Draw(m_renderer, shader);
 	}
 
 	if (m_skybox)
@@ -223,6 +264,11 @@ void Scene::setPostProcess(bool value)
 std::shared_ptr<ObjectSelection> Scene::GetObjectSelection() const
 {
 	return m_objectSelection;
+}
+
+void Scene::draw(Model* model)
+{
+	m_drawQueue.push_back(model);
 }
 
 bool Scene::setPostProcessShader(Shader* shader)
