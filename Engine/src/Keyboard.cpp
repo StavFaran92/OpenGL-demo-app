@@ -1,5 +1,7 @@
 #include "Keyboard.h"
 
+#include "Logger.h"
+
 Keyboard::Keyboard() {
 	m_keyboardState = SDL_GetKeyboardState(&m_length);
 }

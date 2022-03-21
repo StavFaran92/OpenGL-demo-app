@@ -3,6 +3,8 @@
 #include <GL/glew.h>
 #include "stb_image.h"
 
+#include "Logger.h"
+
 Texture::Texture()
 	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_slot(0)
 {

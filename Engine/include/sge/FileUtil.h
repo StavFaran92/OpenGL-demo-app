@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Engine.h"
+//STL
+#include <string>
 
+#include "Engine.h"
 #include "Window.h"
 #include "commdlg.h"
 

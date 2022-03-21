@@ -3,6 +3,9 @@
 #include <GL/glew.h>
 #include <SDL.h>
 
+
+#include "Logger.h"
+
 Window::Window(int width, int height) :
 	m_width(width), m_height(height)
 {}

@@ -2,8 +2,7 @@
 
 #include <iostream>
 #include <string>
-
-#include "Logger.h"
+#include <vector>
 
 class Texture
 {
