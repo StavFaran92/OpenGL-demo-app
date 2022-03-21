@@ -14,6 +14,7 @@ class Object3D;
 class Scene;
 class Engine;
 
+
 class EngineAPI Context
 {
 public:
@@ -40,7 +41,7 @@ public:
 	}
 
 	void setActiveScene(uint32_t index);
-	
+
 
 
 private:
@@ -61,4 +62,5 @@ private:
 	std::shared_ptr<Shader> m_reflectionShader = nullptr;
 	std::shared_ptr<Shader> m_refractiveShader = nullptr;
 };
+
 

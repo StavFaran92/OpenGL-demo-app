@@ -2,9 +2,17 @@
 
 #include "Model.h"
 #include "Logger.h"
+#include "Engine.h"
 
-void Application::draw(Model* model)
+
+
+void Application::draw2(Model* model)
 {
 
-	logInfo("Draw Model: " + model->getID());
+
+}
+
+Model* Application::createBox()
+{
+	return Model::CreatePrimitiveModel(Model::PrimitiveType::Cube);
 }

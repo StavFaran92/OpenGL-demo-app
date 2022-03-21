@@ -17,7 +17,7 @@ union SDL_Event;
 class EngineAPI Engine
 {
 public:
-    
+
     // -------------------- Methods -------------------- //
     static Engine* get();
 
@@ -29,7 +29,7 @@ public:
     void pause();
     void resume();
     void stop();
-    
+
 
     Engine(const Engine&) = delete;
     void operator=(const Engine&) = delete;
@@ -37,7 +37,7 @@ public:
 private:
     // -------------------- Methods -------------------- //
     friend int main();
-    
+
     bool init();
     void update(float deltaTime);
     void draw();
@@ -58,7 +58,8 @@ private:
     std::shared_ptr<Window> m_window = nullptr;
     std::shared_ptr<Context> m_context = nullptr;
     std::shared_ptr<ImguiHandler> m_imguiHandler = nullptr;
-    
+
 
 
 };
+

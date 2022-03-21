@@ -27,6 +27,11 @@ public:
 	float GetRotationAngle() const { return m_rotationAngle; }
 	glm::vec3 GetRotationAxis() const { return m_rotationAxis; }
 	glm::vec3 GetScale() const { return m_scale; }
+
+	void translate(float x, float y, float z);
+	void rotate(float angle, glm::vec3 axis);
+
+
 private:
 	glm::vec3 m_translation;
 

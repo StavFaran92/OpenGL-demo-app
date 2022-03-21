@@ -86,13 +86,13 @@ void Engine::SetWindow(std::shared_ptr<Window> window)
 }
 
 Renderer* Engine::getRenderer() const
-{ 
-    return m_context->getActiveScene()->getRenderer().get(); 
+{
+    return m_context->getActiveScene()->getRenderer().get();
 }
 
 void Engine::SetContext(std::shared_ptr<Context> context)
 {
-    m_context = context; 
+    m_context = context;
 }
 
 Context* Engine::getContext() const
@@ -179,7 +179,7 @@ void Engine::close()
 
 ImguiHandler* Engine::getImguiHandler() const
 {
-    return m_imguiHandler.get(); 
+    return m_imguiHandler.get();
 }
 
 void Engine::pause()

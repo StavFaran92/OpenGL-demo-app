@@ -25,7 +25,7 @@ void Scene::init()
 		logError("Screen buffer projector failed to init!");
 	}
 
-	std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
+	auto light = new DirectionalLight();
 	addDirectionalLight(light);
 }
 
@@ -105,17 +105,17 @@ void Scene::clear()
 	m_directionalLights.clear();
 }
 
-bool Scene::addModel(std::shared_ptr<Model> model)
+bool Scene::addModel(Model* model)
 {
 	m_modelCounter++;
 	model->setID(m_modelCounter);
-	m_models.emplace(m_modelCounter, model);
+	m_models.emplace(m_modelCounter, std::shared_ptr<Model>( model));
 
 	logInfo("Model {} Added successfully.", std::to_string(m_modelCounter));
 	return true;
 }
 
-bool Scene::addPointLight(std::shared_ptr<PointLight> pLight)
+bool Scene::addPointLight(PointLight* pLight)
 {
 	m_pointLightCounter++;
 	pLight->setID(m_pointLightCounter);
@@ -125,7 +125,7 @@ bool Scene::addPointLight(std::shared_ptr<PointLight> pLight)
 	return true;
 }
 
-bool Scene::addDirectionalLight(std::shared_ptr<DirectionalLight> dLight)
+bool Scene::addDirectionalLight(DirectionalLight* dLight)
 {
 	m_directionalLightCounter++;
 	dLight->setID(m_directionalLightCounter);
@@ -150,14 +150,14 @@ bool Scene::removeModel(uint32_t id)
 	return true;
 }
 
-bool Scene::removeModel(std::shared_ptr<Model> model)
+bool Scene::removeModel(Model* model)
 {
 		uint32_t id = model->getID();
 		
 		return removeModel(id);
 }
 
-bool Scene::removePointLight(std::shared_ptr<PointLight> pLight)
+bool Scene::removePointLight(PointLight* pLight)
 {
 	uint32_t id = pLight->getID();
 	auto iter = m_pointLights.find(id);
@@ -173,7 +173,7 @@ bool Scene::removePointLight(std::shared_ptr<PointLight> pLight)
 	return true;
 }
 
-bool Scene::removeDirectionalLight(std::shared_ptr<DirectionalLight> dLight)
+bool Scene::removeDirectionalLight(DirectionalLight* dLight)
 {
 	uint32_t id = dLight->getID();
 	auto iter = m_directionalLights.find(id);
@@ -190,9 +190,9 @@ bool Scene::removeDirectionalLight(std::shared_ptr<DirectionalLight> dLight)
 }
 
 
-void Scene::setSkybox(std::shared_ptr<Skybox> skybox)
+void Scene::setSkybox(Skybox* skybox)
 {
-	m_skybox = skybox;
+	m_skybox = std::shared_ptr<Skybox>(skybox);
 }
 
 void Scene::removeSkybox()
@@ -225,11 +225,11 @@ std::shared_ptr<ObjectSelection> Scene::GetObjectSelection() const
 	return m_objectSelection;
 }
 
-bool Scene::setPostProcessShader(std::shared_ptr<Shader> shader)
+bool Scene::setPostProcessShader(Shader* shader)
 {
 	if (m_screenBufferProjector)
 	{
-		m_screenBufferProjector->setPostProcessShader(shader);
+		m_screenBufferProjector->setPostProcessShader(std::shared_ptr<Shader>(shader));
 		return true;
 	}
 	return false;

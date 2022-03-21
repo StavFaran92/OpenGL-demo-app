@@ -218,13 +218,13 @@ void LightCreatorWindow()
             if (lightType == LightType::DirectionalLight) 
             {
                 
-                std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>(color, dir, ambientIntensity, diffuseIntensity);
+                auto light = new DirectionalLight(color, dir, ambientIntensity, diffuseIntensity);
                 Engine::get()->getContext()->getActiveScene()->addDirectionalLight(light);
 
             }
             else if (lightType == LightType::PointLight)
             {
-                std::shared_ptr<PointLight> light = std::make_shared<PointLight>(color, pos, ambientIntensity, diffuseIntensity, attenuation);
+                auto light = new PointLight(color, pos, ambientIntensity, diffuseIntensity, attenuation);
                 Engine::get()->getContext()->getActiveScene()->addPointLight(light);
             }
 
@@ -396,9 +396,7 @@ void ShowPrimitiveCreatorWindow()
 
             //auto texture = Texture::LoadTextureFromFile(texturePath.c_str(), flipTexture);
 
-            std::shared_ptr<Model> model = nullptr;
-
-            model = Model::CreatePrimitiveModel(shape);
+            auto model = Model::CreatePrimitiveModel(shape);
             model->FlipTexture(flipTexture);
             std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
             model->UseMaterial(material);

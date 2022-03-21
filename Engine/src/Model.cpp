@@ -38,9 +38,9 @@ Model::~Model()
 	logTrace(__FUNCTION__);
 }
 
-std::shared_ptr<Model> Model::LoadModelFromFile(const std::string& path, bool flipTexture /*= false*/)
+Model* Model::LoadModelFromFile(const std::string& path, bool flipTexture /*= false*/)
 {
-	auto model = std::make_shared<Model>();
+	auto model = new Model();
 
 	model->FlipTexture(flipTexture);
 
@@ -65,9 +65,9 @@ std::shared_ptr<Model> Model::LoadModelFromFile(const std::string& path, bool fl
 	return model;
 }
 
-std::shared_ptr<Model> Model::CreatePrimitiveModel(PrimitiveType ptype)
+Model* Model::CreatePrimitiveModel(PrimitiveType ptype)
 {
-	auto model = std::make_shared<Model>();
+	auto model = new Model();
 
 	model->SetRefraction(true);
 

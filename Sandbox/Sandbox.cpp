@@ -11,16 +11,17 @@ public:
 	{
 		auto context = Engine::get()->getContext();
 
-		context->getActiveScene()->setSkybox(std::shared_ptr<Skybox>(Skybox::CreateSkybox()));
+		context->getActiveScene()->setSkybox(Skybox::CreateSkybox());
 
-		//box = Primitives::createBox();
-		//box->GetTransformation()->Translate(100, 0, 0);
-		//box->GetTransformation()->rotateX(30);
+		box = createBox();
+		context->getActiveScene()->addModel(box);
+
 	}
 
 	void draw() override
 	{
-		//draw(box);
+		box->translate(.001, 0, 0);
+		box->rotateX(30);
 	}
 
 };

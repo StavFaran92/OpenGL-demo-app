@@ -14,6 +14,12 @@ public:
 
 	std::shared_ptr<Transform> GetTransformation() const;
 	uint32_t getID() const;
+
+	void translate(float x, float y, float z);
+	void rotate(float x, float y, float z);
+	void rotateX(float x);
+	void rotateY(float y);
+	void rotateZ(float z);
 private:
 	friend class Scene;
 	inline void setID(uint32_t id) { m_id = id; }

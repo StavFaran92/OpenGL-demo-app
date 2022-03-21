@@ -31,3 +31,21 @@ void Transform::SetScale(glm::vec3 scale)
 
 	m_change = true;
 }
+
+void Transform::translate(float x, float y, float z)
+{
+	m_translation.x += x;
+	m_translation.y += y;
+	m_translation.z += z;
+
+	m_change = true;
+}
+
+void Transform::rotate(float angle, glm::vec3 axis)
+{
+	//TODO fix
+	m_rotationAxis = axis;
+	m_rotationAngle += angle;
+
+	m_change = true;
+}

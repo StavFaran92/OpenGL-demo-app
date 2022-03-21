@@ -29,24 +29,24 @@ public:
 		init();
 	}
 
-	bool addModel(std::shared_ptr<Model> model);
+	bool addModel(Model* model);
 	bool removeModel(uint32_t id);
-	bool removeModel(std::shared_ptr<Model> model);
+	bool removeModel(Model* model);
 
-	bool addPointLight(std::shared_ptr<PointLight> pLight);
-	bool removePointLight(std::shared_ptr<PointLight> pLight);
+	bool addPointLight(PointLight* pLight);
+	bool removePointLight(PointLight* pLight);
 
-	bool addDirectionalLight(std::shared_ptr<DirectionalLight> dLight);
-	bool removeDirectionalLight(std::shared_ptr<DirectionalLight> dLight);
+	bool addDirectionalLight(DirectionalLight* dLight);
+	bool removeDirectionalLight(DirectionalLight* dLight);
 
 	bool addObject(Object3D* object);
-	void removeObject(std::shared_ptr<Object3D> object);
+	void removeObject(Object3D* object);
 
-	void setSkybox(std::shared_ptr<Skybox> skybox);
+	void setSkybox(Skybox* skybox);
 	void removeSkybox();
 
 	void setPostProcess(bool value);
-	bool setPostProcessShader(std::shared_ptr<Shader> shader);
+	bool setPostProcessShader(Shader* shader);
 
 	std::shared_ptr<Renderer> getRenderer() const;
 	std::shared_ptr<Renderer> getSkyboxRenderer();
