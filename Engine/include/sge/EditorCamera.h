@@ -1,8 +1,10 @@
 #pragma once
 
 #include "ICamera.h"
+#include "Core.h"
 
-class EditorCamera : public ICamera
+
+class EngineAPI EditorCamera : public ICamera
 {
 public:
 	EditorCamera(glm::vec3 startPosition, float startMoveSpeed, float startTurnSpeed);

@@ -1,7 +1,9 @@
 #pragma once
 #include "Light.h"
+#include "Core.h"
 
-class DirectionalLight : public Light
+
+class EngineAPI DirectionalLight : public Light
 {
 public:
 	DirectionalLight()

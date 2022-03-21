@@ -2,8 +2,7 @@
 
 #include <map>
 #include <memory>
-
-#include "Logger.h"
+#include "Core.h"
 
 class Model;
 class Shader;
@@ -15,7 +14,7 @@ class Object3D;
 class Scene;
 class Engine;
 
-class Context
+class EngineAPI Context
 {
 public:
 	Context();
@@ -40,16 +39,8 @@ public:
 		return m_scenes.at(m_activeScene);
 	}
 
-	void setActiveScene(uint32_t index)
-	{
-		if (index > m_scenesCounter)
-		{
-			logError("Illegal index specified: " + index);
-			return;
-		}
-
-		m_activeScene = index;
-	}
+	void setActiveScene(uint32_t index);
+	
 
 
 private:

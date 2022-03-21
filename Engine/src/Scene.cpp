@@ -228,7 +228,11 @@ std::shared_ptr<ObjectSelection> Scene::GetObjectSelection() const
 bool Scene::setPostProcessShader(std::shared_ptr<Shader> shader)
 {
 	if (m_screenBufferProjector)
+	{
 		m_screenBufferProjector->setPostProcessShader(shader);
+		return true;
+	}
+	return false;
 }
 
 std::shared_ptr<Skybox> Scene::getSkybox()

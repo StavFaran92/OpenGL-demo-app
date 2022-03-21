@@ -3,9 +3,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "Core.h"
+
 #include "Keyboard.h"
 
-class ICamera
+class EngineAPI ICamera
 {
 public:
 	ICamera() = default;

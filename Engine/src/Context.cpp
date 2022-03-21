@@ -10,6 +10,8 @@
 #include "Object3D.h"
 #include "Scene.h"
 
+#include "Logger.h"
+
 Context::Context() : m_shaderCounter(0)
 {
 	m_reflectionShader = std::make_shared<Shader>("Resources\\Shaders\\ReflectionShader.vert", "Resources\\Shaders\\ReflectionShader.frag");
@@ -105,6 +107,17 @@ std::shared_ptr<Shader> Context::GetReflectionShader()
 std::shared_ptr<Shader> Context::GetRefractiveShader()
 {
 	return m_refractiveShader;
+}
+
+void Context::setActiveScene(uint32_t index)
+{
+	if (index > m_scenesCounter)
+	{
+		logError("Illegal index specified: " + index);
+		return;
+	}
+
+	m_activeScene = index;
 }
 
 void Context::update(float deltaTime)

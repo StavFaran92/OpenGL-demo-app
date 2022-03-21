@@ -1,13 +1,15 @@
 #pragma once
 #include "Light.h"
+#include "Core.h"
 
-struct Attenuation {
+
+struct EngineAPI Attenuation {
 	float constant = 1;
 	float linear = .35f;
 	float quadratic = .44;
 };
 
-class PointLight : public Light
+class EngineAPI PointLight : public Light
 {
 public:
 	PointLight() :

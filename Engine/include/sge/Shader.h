@@ -5,9 +5,11 @@
 #include <stdexcept>
 #include <unordered_map>
 
+#include "Core.h"
+
 #include "glm/glm.hpp"
 
-class Shader
+class EngineAPI Shader
 {
 public:
 	Shader();

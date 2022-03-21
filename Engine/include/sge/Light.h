@@ -2,12 +2,13 @@
 #include <glm/glm.hpp>
 
 #include <string>
+#include "Core.h"
 
 #include "Object3D.h"
 
 class Shader;
 
-class Light : public Object3D
+class EngineAPI Light : public Object3D
 {
 public:
 	Light();

@@ -4,7 +4,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-class Transform
+#include "Core.h"
+
+class EngineAPI Transform
 {
 public:
 	Transform() :

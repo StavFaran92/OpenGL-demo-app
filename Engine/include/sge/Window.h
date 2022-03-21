@@ -3,13 +3,14 @@
 #include <stdio.h>
 
 #include "SDL_syswm.h"
+#include "Core.h"
 
 
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
 
-class Window
+class EngineAPI Window
 {
 public:
 

@@ -9,12 +9,13 @@ public:
 
 	void start() override
 	{
-		//window = Window::createWindow(600, 360);
+		auto context = Engine::get()->getContext();
 
+		context->getActiveScene()->setSkybox(std::shared_ptr<Skybox>(Skybox::CreateSkybox()));
 
 		//box = Primitives::createBox();
-		//box->translate(100, 0, 0);
-		//box->rotateX(30);
+		//box->GetTransformation()->Translate(100, 0, 0);
+		//box->GetTransformation()->rotateX(30);
 	}
 
 	void draw() override

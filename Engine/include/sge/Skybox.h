@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Model.h"
+#include "Core.h"
 
-class Skybox : public Model
+
+class EngineAPI Skybox : public Model
 {
 public:
     static Skybox* CreateSkybox();

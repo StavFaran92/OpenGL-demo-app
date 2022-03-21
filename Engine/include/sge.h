@@ -5,6 +5,7 @@
 #include "EntryPoint.h"
 
 //sge
+#include "sge\Context.h"
 #include "sge\Window.h"
 #include "sge\Model.h"
 #include "sge\Object3D.h"

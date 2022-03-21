@@ -4,7 +4,10 @@
 #include <string>
 #include <vector>
 
-class Texture
+#include "Core.h"
+
+
+class EngineAPI Texture
 {
 public:
 	// This should not be used.

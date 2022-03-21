@@ -6,6 +6,7 @@
 #include <map>
 
 // sge
+#include "Core.h"
 #include "Object3D.h"
 #include "Shader.h"
 #include "Transform.h"
@@ -24,7 +25,7 @@ class IRenderer;
 class Mesh;
 
 
-class Model : public Object3D
+class EngineAPI Model : public Object3D
 {
 public:
 	enum class PrimitiveType 

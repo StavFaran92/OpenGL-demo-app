@@ -1,11 +1,12 @@
 #pragma once
 
 #include <memory>
+#include "Core.h"
 
 class Transform;
 class Scene;
 
-class Object3D
+class EngineAPI Object3D
 {
 public:
 	Object3D() = default;

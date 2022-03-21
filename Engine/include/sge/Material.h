@@ -1,10 +1,11 @@
 #pragma once
 
 #include <memory>
+#include "Core.h"
 
 class Shader;
 
-class Material
+class EngineAPI Material
 {
 public:
 	Material();

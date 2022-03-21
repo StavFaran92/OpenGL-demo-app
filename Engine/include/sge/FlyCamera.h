@@ -1,9 +1,11 @@
 #pragma once
 #include "ICamera.h"
 
+#include "Core.h"
+
 #include "Keyboard.h"
 
-class FlyCamera : public ICamera
+class EngineAPI FlyCamera : public ICamera
 {
 public:
 	FlyCamera(glm::vec3 startPosition, float startYaw, float startPitch, float startMoveSpeed, float startTurnSpeed);

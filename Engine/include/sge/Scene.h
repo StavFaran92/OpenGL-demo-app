@@ -5,6 +5,9 @@
 #include <unordered_set>
 #include <unordered_map>
 
+#include "Core.h"
+
+
 class Model;
 class Skybox;
 class Context;
@@ -16,7 +19,7 @@ class ObjectSelection;
 class ScreenBufferProjector;
 class Shader;
 
-class Scene
+class EngineAPI Scene
 {
 
 public:
