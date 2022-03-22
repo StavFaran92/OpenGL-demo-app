@@ -21,3 +21,4 @@
 #include "sge\EditorCamera.h"
 #include "sge\Scene.h"
 #include "sge\Skybox.h"
+#include "sge\PostProcess.h"

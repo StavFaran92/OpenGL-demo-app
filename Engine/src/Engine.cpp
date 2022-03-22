@@ -101,11 +101,11 @@ Context* Engine::getContext() const
 }
 
 
-void Engine::draw()
+void Engine::draw(float deltaTime)
 {
 
 
-    m_context->draw();
+    m_context->draw(deltaTime);
 
     m_imguiHandler->Render();
 
@@ -149,7 +149,7 @@ void Engine::run(Application* app)
 
         update(deltaTime);
         app->draw();
-        draw();
+        draw(deltaTime);
 
     }
 }

@@ -40,7 +40,7 @@ private:
 
     bool init();
     void update(float deltaTime);
-    void draw();
+    void draw(float deltaTime);
     void run(Application* app);
     void close();
 

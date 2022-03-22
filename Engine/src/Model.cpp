@@ -69,8 +69,6 @@ Model* Model::CreatePrimitiveModel(PrimitiveType ptype)
 {
 	auto model = new Model();
 
-	model->SetRefraction(true);
-
 	std::shared_ptr<Mesh> mesh = nullptr;
 
 	switch (ptype)

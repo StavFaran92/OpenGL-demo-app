@@ -42,16 +42,11 @@ void Scene::update(float deltaTime)
 	//	model->second->update(deltaTime);
 	//}
 
-	for(auto model : m_drawQueue)
-	{
-		model->update(deltaTime);
-	}
-
 	if (m_skybox)
 		m_skybox->update(deltaTime);
 }
 
-void Scene::draw()
+void Scene::draw(float deltaTime)
 {
 	if (m_isPostProcessEnabled && m_screenBufferProjector)
 	{
@@ -96,6 +91,8 @@ void Scene::draw()
 	{
 		auto model = m_drawQueue.front();
 		m_drawQueue.pop_front();
+
+		model->update(deltaTime);
 
 		auto shader = model->GetShader();
 		shader->UseShader();

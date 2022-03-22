@@ -2,7 +2,8 @@
 #include "Core.h"
 
 class Model;
-
+class Shader;
+class Skybox;
 
 class EngineAPI Application
 {
@@ -13,8 +14,13 @@ public:
 
 protected:
 	/** API */
-	void draw2(Model* model);
+
+
+	void draw(Model* model);
 	Model* createBox();
+	Model* createQuad();
+	void postProcess(Shader*);
+	void skybox(Skybox*);
 
 	Application() = default;
 	~Application() = default;

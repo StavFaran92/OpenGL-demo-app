@@ -97,6 +97,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="include\sge\IRenderer.cpp" />
+    <ClCompile Include="src\PostProcess.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Context.cpp" />
     <ClCompile Include="src\DirectionalLight.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="include\sge\VertexBufferElement.h" />
     <ClInclude Include="include\sge\VertexBufferLayout.h" />
     <ClInclude Include="include\sge\VertexBufferObject.h" />
+    <ClInclude Include="include\sge\PostProcess.h" />
     <ClInclude Include="Resources\Primitives\cube.h" />
     <ClInclude Include="extern\imgui\imconfig.h" />
     <ClInclude Include="extern\imgui\imgui.h" />

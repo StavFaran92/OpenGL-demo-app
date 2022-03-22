@@ -47,7 +47,7 @@ public:
 private:
 	friend class Engine;
 	void update(float deltaTime);
-	void draw();
+	void draw(float deltaTime);
 
 	uint32_t m_activeScene = -1;
 	uint32_t m_scenesCounter = 0;

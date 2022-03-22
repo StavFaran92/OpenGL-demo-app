@@ -42,5 +42,10 @@ private:
 
 	glm::mat4 m_transformation;
 
+	float m_rotationX = 0;
+	float m_rotationY = 0;
+	float m_rotationZ = 0;
+
+
 	bool m_change = false;
 };

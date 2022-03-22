@@ -128,10 +128,10 @@ void Context::update(float deltaTime)
 	m_scenes[m_activeScene]->update(deltaTime);
 }
 
-void Context::draw()
+void Context::draw(float deltaTime)
 {
 	if (m_activeScene == -1)
 		return;
 
-	m_scenes[m_activeScene]->draw();
+	m_scenes[m_activeScene]->draw(deltaTime);
 }

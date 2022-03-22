@@ -139,6 +139,9 @@
     <ClCompile Include="include\sge\IRenderer.cpp">
       <Filter>src\Graphics\Renderers</Filter>
     </ClCompile>
+    <ClCompile Include="src\PostProcess.cpp">
+      <Filter>src\Graphics\PostProcess</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -315,6 +318,9 @@
     <ClInclude Include="extern\imgui\imstb_truetype.h">
       <Filter>src\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="include\sge\PostProcess.h">
+      <Filter>headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -382,6 +388,9 @@
     </Filter>
     <Filter Include="src\Utils\Math">
       <UniqueIdentifier>{cc76c92a-a75e-4d6a-9455-2374de9dc102}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Graphics\PostProcess">
+      <UniqueIdentifier>{c580e68a-6bb8-45d8-af6d-61d58075224a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

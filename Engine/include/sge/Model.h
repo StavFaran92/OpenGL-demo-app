@@ -23,6 +23,7 @@ enum aiTextureType;
 struct Vertex;
 class IRenderer;
 class Mesh;
+class Scene;
 
 
 class EngineAPI Model : public Object3D
@@ -40,7 +41,7 @@ public:
 	static Model* LoadModelFromFile(const std::string& path, bool flipTexture=false);
 	static Model* CreatePrimitiveModel(PrimitiveType ptype);
 
-	virtual void Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> shader = nullptr);
+	
 
 	bool AttachShader(std::shared_ptr<Shader > shader);
 	bool DetachShader();
@@ -50,22 +51,22 @@ public:
 	bool UseShader();
 
 	std::shared_ptr<Shader> GetShader();
-	void FlipTexture(bool flip);
-
-	void update(float delta);
-	
 
 	
-	
+
 	std::vector<std::shared_ptr<Texture>> GetTextures();
 
+	void FlipTexture(bool flip);
 	inline void SetReflection(bool val) { m_isReflective = val; }
 	inline void SetRefraction(bool val) { m_isRefractive = val; }
 private:
+	friend class Scene;
+	void update(float deltaTime);
 	void processNode(aiNode* node, const aiScene* scene);
 	std::shared_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene);
 	std::vector<std::shared_ptr<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName);
 protected:
+	virtual void Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> shader = nullptr);
 	// model data
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
 	std::string m_modelDir = "";

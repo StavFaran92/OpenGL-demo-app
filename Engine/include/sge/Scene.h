@@ -66,7 +66,7 @@ private:
 	friend class Context;
 	void update(float deltaTime);
 	inline void SetID(uint32_t id) { m_id = id; }
-	void draw();
+	void draw(float deltaTime);
 
 	void init();
 	void clear();
