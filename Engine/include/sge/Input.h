@@ -1,10 +1,21 @@
 #pragma once
 
+#include "Core.h"
 #include "Keyboard.h"
 #include "Mouse.h"
 
-namespace Input
+class EngineAPI Input 
 {
-	Keyboard keyboard;
-	Mouse mouse;
+public:
+	Input();
+	void init();
+	const Keyboard* getKeyboard() const;
+	Mouse* getMouse() const;
+
+private:
+	std::shared_ptr<Keyboard> m_keyboard;
+	std::shared_ptr<Mouse> m_mouse;
+
 };
+
+

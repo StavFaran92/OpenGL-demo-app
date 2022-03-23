@@ -6,6 +6,9 @@
 #include "Context.h"
 #include "Scene.h"
 #include "Skybox.h"
+#include "Input.h"
+#include "Mouse.h"
+#include "Keyboard.h"
 
 void Application::skybox(Skybox*)
 {
@@ -34,3 +37,22 @@ Model* Application::createQuad()
 {
 	return Model::CreatePrimitiveModel(Model::PrimitiveType::Quad);
 }
+
+bool Application::mouse_leftButtonPressed()
+{
+	return Engine::get()->getInput()->getMouse()->getButtonPressed(Mouse::MouseButtons::LeftMousebutton);
+}
+bool Application::mouse_rightButtonPressed()
+{
+	return Engine::get()->getInput()->getMouse()->getButtonPressed(Mouse::MouseButtons::RightMousebutton);
+}
+bool Application::mouse_middleButtonPressed()
+{
+	return Engine::get()->getInput()->getMouse()->getButtonPressed(Mouse::MouseButtons::MiddleMousebutton);
+}
+
+int Application::keyboard_getKeyState(SDL_Scancode code)
+{
+	return Engine::get()->getInput()->getKeyboard()->getKeyState(code);
+}
+

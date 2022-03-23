@@ -35,6 +35,4 @@ private:
 
 	float m_movementSpeed;
 	float m_turnSpeed;
-
-	std::shared_ptr<Keyboard> keyboard;
 };

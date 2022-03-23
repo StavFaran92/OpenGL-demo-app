@@ -1,5 +1,6 @@
 #pragma once
 #include "Core.h"
+#include "SDL_scancode.h"
 
 class Model;
 class Shader;
@@ -21,6 +22,12 @@ protected:
 	Model* createQuad();
 	void postProcess(Shader*);
 	void skybox(Skybox*);
+
+	// Input
+	int keyboard_getKeyState(SDL_Scancode code);
+	bool mouse_leftButtonPressed();
+	bool mouse_rightButtonPressed();
+	bool mouse_middleButtonPressed();
 
 	Application() = default;
 	~Application() = default;

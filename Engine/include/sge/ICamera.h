@@ -4,6 +4,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Core.h"
+#include "Engine.h"
+#include "Input.h"
 
 #include "Keyboard.h"
 

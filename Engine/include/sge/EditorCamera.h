@@ -20,7 +20,6 @@ private:
 	void calculateOrientation();
 private:
 	bool m_isLocked = true;
-	std::shared_ptr<Keyboard> m_keyboard;
 
 	glm::vec3 m_position;
 	glm::vec3 m_front;

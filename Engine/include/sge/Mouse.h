@@ -1,39 +1,31 @@
 #pragma once
-class Mouse
+#include "Core.h"
+#include "SDL.h"
+
+
+class EngineAPI Mouse
 {
 public:
-	inline float GetXChange() {
-		return xChange;
-	}
+	enum class MouseButtons
+	{
+		LeftMousebutton,
+		RightMousebutton,
+		MiddleMousebutton,
+	};
+	struct MouseState
+	{
+		int x = 0;
+		int y = 0;
+		bool lmb = false;
+		bool rmb = false;
+		bool mmb = false;
+	};
 
-	inline float GetYChange() {
-		return yChange;
-	}
+	const MouseState& getMouseState();
+	void getMousePosition(int& x, int& y);
+	bool getButtonPressed(MouseButtons button);
 
-	inline void ResetChange() {
-		xChange = 0;
-		yChange = 0;
-	}
-
-	inline bool GetMouseLeftPressed() {
-		return mouseLeft;
-	}
-
-	inline bool GetMouseRightPressed() {
-		return mouseRight;
-	}
-
-	inline bool GetMouseMiddlePressed() {
-		return mouseMiddle;
-	}
 
 private:
-	float lastX = 0;
-	float lastY = 0;
-	float xChange = 0;
-	float yChange = 0;
-
-	bool mouseLeft = false;
-	bool mouseRight = false;
-	bool mouseMiddle = false;
+	MouseState m_state;
 };

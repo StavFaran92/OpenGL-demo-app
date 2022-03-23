@@ -15,25 +15,23 @@ EditorCamera::EditorCamera(glm::vec3 startPosition, float startMoveSpeed, float 
 	m_turnSpeed(startTurnSpeed),
 	distance(5)
 {
-	m_keyboard = std::make_shared<Keyboard>();
-
 	calculateOrientation();
 }
 
 void EditorCamera::keyControl(double deltaTime)
 {
-	if (m_keyboard->getKeyState(SDL_SCANCODE_DELETE))
+	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_DELETE))
 	{
 		auto objectSelection = Engine::get()->getContext()->getActiveScene()->GetObjectSelection();
 		auto selected = objectSelection->GetSelectedObject();
 		Engine::get()->getContext()->getActiveScene()->removeModel(selected);
 	}
-	if (m_keyboard->getKeyState(SDL_SCANCODE_2))
+	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_2))
 	{
 		Engine::get()->getContext()->setActiveScene(2);
 
 	}
-	if (m_keyboard->getKeyState(SDL_SCANCODE_1))
+	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_1))
 	{
 		Engine::get()->getContext()->setActiveScene(1);
 

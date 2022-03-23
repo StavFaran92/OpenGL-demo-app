@@ -2,17 +2,18 @@
 
 #include "Logger.h"
 
-Keyboard::Keyboard() {
+Keyboard::Keyboard() 
+{
 	m_keyboardState = SDL_GetKeyboardState(&m_length);
 }
 
-int Keyboard::getKeyState(int index)
+int Keyboard::getKeyState(SDL_Scancode code) const
 {
-	if (index < 0 || index > m_length)
+	if (code < 0 || code > m_length)
 	{
-		logError("Invalid key specified : " + index);
+		logError("Invalid key specified : " + code);
 		return false;
 	}
 
-	return m_keyboardState[index];
+	return m_keyboardState[code];
 }

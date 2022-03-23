@@ -21,8 +21,13 @@ public:
 
 	void draw() override
 	{
-		box->translate(.001, 0, 0);
-		box->rotateY(1);
+		
+		if (mouse_middleButtonPressed())
+		{
+			box->translate(.01, 0, 0);
+		}
+		
+		//box->rotateY(1);
 		draw(box);
 		draw(quad);
 	}

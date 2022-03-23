@@ -10,30 +10,28 @@ FlyCamera::FlyCamera(glm::vec3 startPosition, float startYaw, float startPitch, 
 	m_front(glm::vec3(0.0f, 0.0f, -1.0f)),
 	m_movementSpeed(startMoveSpeed),
 	m_turnSpeed(startTurnSpeed)
-{
-	keyboard = std::make_shared<Keyboard>();
-}
+{}
 
 void FlyCamera::keyControl(double deltaTime)
 {
 	float velocity = m_movementSpeed * deltaTime;
 
-	if (keyboard->getKeyState(SDL_SCANCODE_W))
+	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_W))
 	{
 		m_position += m_front * velocity;
 	}
 
-	if (keyboard->getKeyState(SDL_SCANCODE_S))
+	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_S))
 	{
 		m_position -= m_front * velocity;
 	}
 
-	if (keyboard->getKeyState(SDL_SCANCODE_A))
+	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_A))
 	{
 		m_position -= m_right * velocity;
 	}
 
-	if (keyboard->getKeyState(SDL_SCANCODE_D))
+	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_D))
 	{
 		m_position += m_right * velocity;
 	}

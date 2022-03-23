@@ -22,3 +22,6 @@
 #include "sge\Scene.h"
 #include "sge\Skybox.h"
 #include "sge\PostProcess.h"
+#include "sge\Input.h"
+#include "sge\Keyboard.h"
+#include "sge\Mouse.h"

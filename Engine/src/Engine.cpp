@@ -10,6 +10,7 @@
 #include "ICamera.h"
 #include "Scene.h"
 #include "Skybox.h"
+#include "Input.h"
 
 #include "Application.h"
 #include "SDL.h"
@@ -33,6 +34,9 @@ bool Engine::init()
         logError("Window init failed!");
         return false;
     }
+
+    m_input = std::make_shared<Input>();
+    m_input->init();
 
     m_context = std::make_shared<Context>();
 
@@ -180,6 +184,11 @@ void Engine::close()
 ImguiHandler* Engine::getImguiHandler() const
 {
     return m_imguiHandler.get();
+}
+
+Input* Engine::getInput() const
+{
+    return m_input.get();
 }
 
 void Engine::pause()

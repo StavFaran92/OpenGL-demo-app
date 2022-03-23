@@ -13,6 +13,7 @@ class ObjectSelection;
 class ScreenBufferProjector;
 class Application;
 union SDL_Event;
+class Input;
 
 class EngineAPI Engine
 {
@@ -25,6 +26,7 @@ public:
     Renderer* getRenderer() const;
     Context* getContext() const;
     ImguiHandler* getImguiHandler() const;
+    Input* getInput() const;
 
     void pause();
     void resume();
@@ -58,7 +60,7 @@ private:
     std::shared_ptr<Window> m_window = nullptr;
     std::shared_ptr<Context> m_context = nullptr;
     std::shared_ptr<ImguiHandler> m_imguiHandler = nullptr;
-
+    std::shared_ptr<Input> m_input;
 
 
 };
