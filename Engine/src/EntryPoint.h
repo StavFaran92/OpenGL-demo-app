@@ -1,5 +1,5 @@
 #pragma once
-#include "sge\Engine.h"
+#include "Engine.h"
 #include "Application.h"
 
 Application* CreateApplication();

@@ -139,7 +139,6 @@
     <ClCompile Include="src\PostProcess.cpp">
       <Filter>src\Graphics\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="src\IRenderer.cpp" />
     <ClCompile Include="src\EventSystem.cpp">
       <Filter>src\Graphics\Services</Filter>
     </ClCompile>
@@ -148,148 +147,148 @@
     <ClInclude Include="Resources\Primitives\cube.h">
       <Filter>Resource Files\primitives</Filter>
     </ClInclude>
-    <ClInclude Include="include\Application.h">
+    <ClInclude Include="src\Application.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\ApplicationConstants.h">
+    <ClInclude Include="src\ApplicationConstants.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Context.h">
+    <ClInclude Include="src\Context.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\Core.h">
+    <ClInclude Include="src\Core.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\DirectionalLight.h">
+    <ClInclude Include="src\DirectionalLight.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\EditorCamera.h">
+    <ClInclude Include="src\EditorCamera.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\ElementBufferObject.h">
+    <ClInclude Include="src\ElementBufferObject.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\EntryPoint.h">
+    <ClInclude Include="src\EntryPoint.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\FileUtil.h">
+    <ClInclude Include="src\FileUtil.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\FlyCamera.h">
+    <ClInclude Include="src\FlyCamera.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\FrameBufferObject.h">
+    <ClInclude Include="src\FrameBufferObject.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge.h">
+    <ClInclude Include="src\sge.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Grid.h">
+    <ClInclude Include="src\Grid.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\ICamera.h">
+    <ClInclude Include="src\ICamera.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\ImguiHandler.h">
+    <ClInclude Include="src\ImguiHandler.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Input.h">
+    <ClInclude Include="src\Input.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\IRenderer.h">
+    <ClInclude Include="src\IRenderer.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Keyboard.h">
+    <ClInclude Include="src\Keyboard.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Light.h">
+    <ClInclude Include="src\Light.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\LinearAlgebraUtil.h">
+    <ClInclude Include="src\LinearAlgebraUtil.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Logger.h">
+    <ClInclude Include="src\Logger.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Material.h">
+    <ClInclude Include="src\Material.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Menu.h">
+    <ClInclude Include="src\Menu.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Mesh.h">
+    <ClInclude Include="src\Mesh.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Model.h">
+    <ClInclude Include="src\Model.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Mouse.h">
+    <ClInclude Include="src\Mouse.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Object3D.h">
+    <ClInclude Include="src\Object3D.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\ObjectSelection.h">
+    <ClInclude Include="src\ObjectSelection.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\PointLight.h">
+    <ClInclude Include="src\PointLight.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\RenderBufferObject.h">
+    <ClInclude Include="src\RenderBufferObject.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Renderer.h">
+    <ClInclude Include="src\Renderer.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Renderer2D.h">
+    <ClInclude Include="src\Renderer2D.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Scene.h">
+    <ClInclude Include="src\Scene.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\ScreenBufferProjector.h">
+    <ClInclude Include="src\ScreenBufferProjector.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\ScreenQuad.h">
+    <ClInclude Include="src\ScreenQuad.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Shader.h">
+    <ClInclude Include="src\Shader.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Skybox.h">
+    <ClInclude Include="src\Skybox.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\SkyboxRenderer.h">
+    <ClInclude Include="src\SkyboxRenderer.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Texture.h">
+    <ClInclude Include="src\Texture.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Transform.h">
+    <ClInclude Include="src\Transform.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Utils.h">
+    <ClInclude Include="src\Utils.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Vertex.h">
+    <ClInclude Include="src\Vertex.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\VertexArrayObject.h">
+    <ClInclude Include="src\VertexArrayObject.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\VertexBufferElement.h">
+    <ClInclude Include="src\VertexBufferElement.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\VertexBufferLayout.h">
+    <ClInclude Include="src\VertexBufferLayout.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\VertexBufferObject.h">
+    <ClInclude Include="src\VertexBufferObject.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Window.h">
+    <ClInclude Include="src\Window.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\Engine.h">
+    <ClInclude Include="src\Engine.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="extern\imgui\imconfig.h">
@@ -319,10 +318,10 @@
     <ClInclude Include="extern\imgui\imstb_truetype.h">
       <Filter>src\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\PostProcess.h">
+    <ClInclude Include="src\PostProcess.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\sge\EventSystem.h">
+    <ClInclude Include="src\EventSystem.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>
