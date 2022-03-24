@@ -19,6 +19,7 @@ EditorCamera::EditorCamera(glm::vec3 startPosition, float startMoveSpeed, float 
 	calculateOrientation();
 
 	auto eventSystem = Engine::get()->getEventSystem();
+
 	eventSystem->addEventListener(SDL_MOUSEMOTION, [this](SDL_Event e) { 
 		OnMouseMotion(e.motion.xrel, e.motion.yrel);
 	});

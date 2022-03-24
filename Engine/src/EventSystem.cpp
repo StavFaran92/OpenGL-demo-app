@@ -12,6 +12,11 @@ void EventSystem::removeEventListener(std::function<void(SDL_Event e)> callback)
 
 }
 
+void EventSystem::pushEvent(SDL_Event e)
+{
+	SDL_PushEvent(&e);
+}
+
 void EventSystem::dispatch(SDL_Event e)
 {
 	for (const auto& listener : m_listeners[static_cast<SDL_EventType>(e.type)])

@@ -17,7 +17,6 @@ public:
 		quad->rotateZ(90);
 
 		postProcess(PostProcess::grayscale());
-		Engine::get()->getEventSystem()->addEventListener(SDL_EventType::SDL_MOUSEBUTTONUP, [](SDL_Event e) {std::cout << "print somethin" << std::endl; });
 	}
 
 	void draw() override

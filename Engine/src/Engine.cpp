@@ -169,7 +169,7 @@ void Engine::stop()
 
     SDL_Event e;
     e.type = SDL_QUIT;
-    SDL_PushEvent(&e);
+    m_eventSystem->pushEvent(e);
 }
 
 void Engine::close()

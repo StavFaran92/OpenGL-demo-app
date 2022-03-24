@@ -1,5 +1,6 @@
 #include "FlyCamera.h"
 
+#include "EventSystem.h"
 #include <gl/glew.h>
 
 FlyCamera::FlyCamera(glm::vec3 startPosition, float startYaw, float startPitch, float startMoveSpeed, float startTurnSpeed)
@@ -10,7 +11,13 @@ FlyCamera::FlyCamera(glm::vec3 startPosition, float startYaw, float startPitch, 
 	m_front(glm::vec3(0.0f, 0.0f, -1.0f)),
 	m_movementSpeed(startMoveSpeed),
 	m_turnSpeed(startTurnSpeed)
-{}
+{
+	auto eventSystem = Engine::get()->getEventSystem();
+
+	eventSystem->addEventListener(SDL_MOUSEMOTION, [this](SDL_Event e) {
+		OnMouseMotion(e.motion.xrel, e.motion.yrel);
+	});
+}
 
 void FlyCamera::keyControl(double deltaTime)
 {
