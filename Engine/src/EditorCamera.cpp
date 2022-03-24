@@ -7,6 +7,7 @@
 #include "Context.h"
 #include "ObjectSelection.h"
 #include "Scene.h"
+#include "EventSystem.h"
 
 EditorCamera::EditorCamera(glm::vec3 startPosition, float startMoveSpeed, float startTurnSpeed)
 	: m_position(startPosition),
@@ -16,6 +17,21 @@ EditorCamera::EditorCamera(glm::vec3 startPosition, float startMoveSpeed, float 
 	distance(5)
 {
 	calculateOrientation();
+
+	auto eventSystem = Engine::get()->getEventSystem();
+	eventSystem->addEventListener(SDL_MOUSEMOTION, [this](SDL_Event e) { 
+		OnMouseMotion(e.motion.xrel, e.motion.yrel);
+	});
+	eventSystem->addEventListener(SDL_MOUSEBUTTONDOWN, [this](SDL_Event e) {
+		OnMousePressed(e.button);
+	});
+	eventSystem->addEventListener(SDL_MOUSEBUTTONUP, [this](SDL_Event e) {
+		OnMouseReleased(e.button);
+	});
+	eventSystem->addEventListener(SDL_MOUSEWHEEL, [this](SDL_Event e) {
+		OnMouseScroll(e.wheel.y);
+	});
+
 }
 
 void EditorCamera::keyControl(double deltaTime)

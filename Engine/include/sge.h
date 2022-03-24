@@ -25,3 +25,4 @@
 #include "sge\Input.h"
 #include "sge\Keyboard.h"
 #include "sge\Mouse.h"
+#include "sge\EventSystem.h"

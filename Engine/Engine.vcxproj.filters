@@ -136,11 +136,12 @@
     <ClCompile Include="extern\imgui\imgui_widgets.cpp">
       <Filter>src\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="include\sge\IRenderer.cpp">
-      <Filter>src\Graphics\Renderers</Filter>
-    </ClCompile>
     <ClCompile Include="src\PostProcess.cpp">
       <Filter>src\Graphics\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IRenderer.cpp" />
+    <ClCompile Include="src\EventSystem.cpp">
+      <Filter>src\Graphics\Services</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -319,6 +320,9 @@
       <Filter>src\imgui</Filter>
     </ClInclude>
     <ClInclude Include="include\sge\PostProcess.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sge\EventSystem.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

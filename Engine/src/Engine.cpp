@@ -11,6 +11,7 @@
 #include "Scene.h"
 #include "Skybox.h"
 #include "Input.h"
+#include "EventSystem.h"
 
 #include "Application.h"
 #include "SDL.h"
@@ -27,6 +28,8 @@ bool Engine::init()
     }
 
     glEnable(GL_DEPTH_TEST);
+
+    m_eventSystem = std::make_shared<EventSystem>();
 
     m_window = std::make_shared<Window>(1024, 768);
     if (!m_window->init())
@@ -59,6 +62,8 @@ bool Engine::init()
         logError("Imgui init failed!");
         return false;
     }
+
+    
 
     m_isInit = true;
 
@@ -146,7 +151,7 @@ void Engine::run(Application* app)
         deltaTime = (double)SDL_GetPerformanceFrequency() / ((NOW - LAST) * 1000);
 
         //Handle events on queue
-        handleEvents(e, quit, deltaTime);
+        handleEvents(e, quit);
 
         if (quit)
             return;
@@ -191,11 +196,16 @@ Input* Engine::getInput() const
     return m_input.get();
 }
 
+EventSystem* Engine::getEventSystem() const
+{
+    return m_eventSystem.get();
+}
+
 void Engine::pause()
 {
 }
 
-void Engine::handleEvents(SDL_Event& e, bool& quit, double deltaTime)
+void Engine::handleEvents(SDL_Event& e, bool& quit)
 {
     while (SDL_PollEvent(&e) != 0)
     {
@@ -206,23 +216,9 @@ void Engine::handleEvents(SDL_Event& e, bool& quit, double deltaTime)
         {
             quit = true;
         }
-        //Handle keypress with current mouse position
-        else if (e.type == SDL_MOUSEMOTION)
-        {
-            m_context->getActiveScene()->getRenderer()->GetCamera()->OnMouseMotion(e.motion.xrel, e.motion.yrel);
-        }
-        else if (e.type == SDL_MOUSEBUTTONDOWN)
-        {
-            m_context->getActiveScene()->getRenderer()->GetCamera()->OnMousePressed(e.button);
-        }
-        else if (e.type == SDL_MOUSEBUTTONUP)
-        {
-            m_context->getActiveScene()->getRenderer()->GetCamera()->OnMouseReleased(e.button);
-        }
-        else if (e.type == SDL_MOUSEWHEEL)
-        {
-            m_context->getActiveScene()->getRenderer()->GetCamera()->OnMouseScroll(e.wheel.y);
-        }
+
+
+        m_eventSystem->dispatch(e);
     }
 }
 

@@ -96,7 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\sge\IRenderer.cpp" />
+    <ClCompile Include="src\EventSystem.cpp" />
     <ClCompile Include="src\PostProcess.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Context.cpp" />
@@ -155,6 +155,7 @@
     <ClInclude Include="include\sge\EditorCamera.h" />
     <ClInclude Include="include\sge\ElementBufferObject.h" />
     <ClInclude Include="include\sge\Engine.h" />
+    <ClInclude Include="include\sge\EventSystem.h" />
     <ClInclude Include="include\sge\FileUtil.h" />
     <ClInclude Include="include\sge\FlyCamera.h" />
     <ClInclude Include="include\sge\FrameBufferObject.h" />
