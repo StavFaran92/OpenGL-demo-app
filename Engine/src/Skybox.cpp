@@ -23,7 +23,7 @@ Skybox* Skybox::CreateSkybox()
             "Resources\\Textures\\Skybox\\back.jpg"
     };
 	auto texture = Texture::LoadCubemap(faces);
-    mesh->AddTexture(texture);
+    mesh->addTexture(texture);
 
     model->m_meshes.push_back(mesh);
 
@@ -52,7 +52,7 @@ void Skybox::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> s
 
     for (auto i = 0; i < m_meshes.size(); i++)
     {
-        m_meshes[i]->RenderMesh(currShader, renderer);
+        m_meshes[i]->renderMesh(currShader, renderer);
     }
 
     glDepthMask(GL_TRUE);

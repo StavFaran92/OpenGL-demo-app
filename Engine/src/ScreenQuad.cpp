@@ -31,6 +31,6 @@ void ScreenQuad::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shade
 
 	for (auto i = 0; i < m_meshes.size(); i++)
 	{
-		m_meshes[i]->RenderMesh(currShader, renderer);
+		m_meshes[i]->renderMesh(currShader, renderer);
 	}
 }

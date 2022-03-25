@@ -67,7 +67,7 @@ void Scene::draw(float deltaTime)
 	//			for (auto it = m_directionalLights.begin(); it != m_directionalLights.end(); ++it, ++i) {
 	//				it->second->useLight(shader, i);
 	//			}
-	//			shader->SetInt("dirLightCount", m_directionalLights.size());
+	//			shader->SetInt("dirLightCount", m_directionalLights.numOfVertices());
 	//		}
 
 	//		// Use all point lights
@@ -76,7 +76,7 @@ void Scene::draw(float deltaTime)
 	//			for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++i, ++it) {
 	//				it->second->useLight(shader, i);
 	//			}
-	//			shader->SetInt("pointLightCount", m_pointLights.size());
+	//			shader->SetInt("pointLightCount", m_pointLights.numOfVertices());
 	//		}
 	//	}
 

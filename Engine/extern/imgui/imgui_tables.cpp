@@ -88,7 +88,7 @@ Index of this file:
 //   - outer_size.y  = 0.0f  ->  Bottom-align, consistent with BeginChild(). Not recommended unless table is last item in parent window.
 //   - outer_size.y  > 0.0f  ->  Set Exact height. Recommended when using Scrolling on any axis.
 //-----------------------------------------------------------------------------
-// Outer size is also affected by the NoHostExtendX/NoHostExtendY flags.
+// Outer numOfVertices is also affected by the NoHostExtendX/NoHostExtendY flags.
 // Important to that note how the two flags have slightly different behaviors!
 //   - ImGuiTableFlags_NoHostExtendX -> Make outer width auto-fit to columns (overriding outer_size.x value). Only available when ScrollX/ScrollY are disabled and Stretch columns are not used.
 //   - ImGuiTableFlags_NoHostExtendY -> Make outer height stop exactly at outer_size.y (prevent auto-extending table past the limit). Only available when ScrollX/ScrollY is disabled. Data below the limit will be clipped and not visible.
@@ -100,7 +100,7 @@ Index of this file:
 //   - inner_width          ->  *ignored*
 //   With ScrollX enabled:
 //   - inner_width  < 0.0f  ->  *illegal* fit in known width (right align from outer_size.x) <-- weird
-//   - inner_width  = 0.0f  ->  fit in outer_width: Fixed size columns will take space they need (if avail, otherwise shrink down), Stretch columns becomes Fixed columns.
+//   - inner_width  = 0.0f  ->  fit in outer_width: Fixed numOfVertices columns will take space they need (if avail, otherwise shrink down), Stretch columns becomes Fixed columns.
 //   - inner_width  > 0.0f  ->  override scrolling width, generally to be larger than outer_size.x. Fixed column take space they need (if avail, otherwise shrink down), Stretch columns share remaining space!
 //-----------------------------------------------------------------------------
 // Details:
@@ -143,7 +143,7 @@ Index of this file:
 // If the column is not resizable and has no width specified with TableSetupColumn():
 //   - its width will be automatic and be set to the max of items submitted.
 //   - therefore you generally cannot have ALL items of the columns use e.g. SetNextItemWidth(-FLT_MIN).
-//   - but if the column has one or more items of known/fixed size, this will become the reference width used by SetNextItemWidth(-FLT_MIN).
+//   - but if the column has one or more items of known/fixed numOfVertices, this will become the reference width used by SetNextItemWidth(-FLT_MIN).
 //-----------------------------------------------------------------------------
 
 
@@ -177,7 +177,7 @@ Index of this file:
 //   However, in the majority of cases, the contribution to row height is the same for all columns, or the tallest cells are known by the programmer.
 //-----------------------------------------------------------------------------
 // About clipping/culling of whole Tables:
-// - Scrolling tables with a known outer size can be clipped earlier as BeginTable() will return false.
+// - Scrolling tables with a known outer numOfVertices can be clipped earlier as BeginTable() will return false.
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
@@ -319,7 +319,7 @@ bool    ImGui::BeginTableEx(const char* name, ImGuiID id, int columns_count, ImG
     if (flags & ImGuiTableFlags_ScrollX)
         IM_ASSERT(inner_width >= 0.0f);
 
-    // If an outer size is specified ahead we will be able to early out when not visible. Exact clipping rules may evolve.
+    // If an outer numOfVertices is specified ahead we will be able to early out when not visible. Exact clipping rules may evolve.
     const bool use_child_window = (flags & (ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY)) != 0;
     const ImVec2 avail_size = GetContentRegionAvail();
     ImVec2 actual_outer_size = CalcItemSize(outer_size, ImMax(avail_size.x, 1.0f), use_child_window ? ImMax(avail_size.y, 1.0f) : 0.0f);
@@ -531,7 +531,7 @@ bool    ImGui::BeginTableEx(const char* name, ImGuiID id, int columns_count, ImG
     // Handle DPI/font resize
     // This is designed to facilitate DPI changes with the assumption that e.g. style.CellPadding has been scaled as well.
     // It will also react to changing fonts with mixed results. It doesn't need to be perfect but merely provide a decent transition.
-    // FIXME-DPI: Provide consistent standards for reference size. Perhaps using g.CurrentDpiScale would be more self explanatory.
+    // FIXME-DPI: Provide consistent standards for reference numOfVertices. Perhaps using g.CurrentDpiScale would be more self explanatory.
     // This is will lead us to non-rounded WidthRequest in columns, which should work but is a poorly tested path.
     const float new_ref_scale_unit = g.FontSize; // g.Font->GetCharAdvance('A') ?
     if (table->RefScale != 0.0f && table->RefScale != new_ref_scale_unit)
@@ -847,13 +847,13 @@ void ImGui::TableUpdateLayout(ImGuiTable* table)
                 width_auto = fixed_max_width_auto;
 
             // Apply automatic width
-            // Latch initial size for fixed columns and update it constantly for auto-resizing column (unless clipped!)
+            // Latch initial numOfVertices for fixed columns and update it constantly for auto-resizing column (unless clipped!)
             if (column->AutoFitQueue != 0x00)
                 column->WidthRequest = width_auto;
             else if ((column->Flags & ImGuiTableColumnFlags_WidthFixed) && !column_is_resizable && (table->RequestOutputMaskByIndex & ((ImU64)1 << column_n)))
                 column->WidthRequest = width_auto;
 
-            // FIXME-TABLE: Increase minimum size during init frame to avoid biasing auto-fitting widgets
+            // FIXME-TABLE: Increase minimum numOfVertices during init frame to avoid biasing auto-fitting widgets
             // (e.g. TextWrapped) too much. Otherwise what tends to happen is that TextWrapped would output a very
             // large height (= first frame scrollbar display very off + clipper would skip lots of items).
             // This is merely making the side-effect less extreme, but doesn't properly fixes it.
@@ -1128,7 +1128,7 @@ void ImGui::TableUpdateLayout(ImGuiTable* table)
         inner_window->DrawList->PushClipRect(inner_window->ClipRect.Min, inner_window->ClipRect.Max, false);
 }
 
-// Process hit-testing on resizing borders. Actual size change will be applied in EndTable()
+// Process hit-testing on resizing borders. Actual numOfVertices change will be applied in EndTable()
 // - Set table->HoveredColumnBorder with a short delay/timer to reduce feedback noise
 // - Submit ahead of table contents and header, use ImGuiButtonFlags_AllowItemOverlap to prioritize widgets
 //   overlapping the same area.
@@ -1261,7 +1261,7 @@ void    ImGui::EndTable()
 #if 0
     // Strip out dummy channel draw calls
     // We have no way to prevent user submitting direct ImDrawList calls into a hidden column (but ImGui:: calls will be clipped out)
-    // Pros: remove draw calls which will have no effect. since they'll have zero-size cliprect they may be early out anyway.
+    // Pros: remove draw calls which will have no effect. since they'll have zero-numOfVertices cliprect they may be early out anyway.
     // Cons: making it harder for users watching metrics/debugger to spot the wasted vertices.
     if (table->DummyDrawChannel != (ImGuiTableColumnIdx)-1)
     {
@@ -1278,7 +1278,7 @@ void    ImGui::EndTable()
         TableMergeDrawChannels(table);
     splitter->Merge(inner_window->DrawList);
 
-    // Update ColumnsAutoFitWidth to get us ahead for host using our size to auto-resize without waiting for next BeginTable()
+    // Update ColumnsAutoFitWidth to get us ahead for host using our numOfVertices to auto-resize without waiting for next BeginTable()
     const float width_spacings = (table->OuterPaddingX * 2.0f) + (table->CellSpacingX1 + table->CellSpacingX2) * (table->ColumnsEnabledCount - 1);
     table->ColumnsAutoFitWidth = width_spacings + (table->CellPaddingX * 2.0f) * table->ColumnsEnabledCount;
     for (int column_n = 0; column_n < table->ColumnsCount; column_n++)
@@ -1332,7 +1332,7 @@ void    ImGui::EndTable()
     outer_window->DC.ColumnsOffset = temp_data->HostBackupColumnsOffset;
 
     // Layout in outer window
-    // (FIXME: To allow auto-fit and allow desirable effect of SameLine() we dissociate 'used' vs 'ideal' size by overriding
+    // (FIXME: To allow auto-fit and allow desirable effect of SameLine() we dissociate 'used' vs 'ideal' numOfVertices by overriding
     // CursorPosPrevLine and CursorMaxPos manually. That should be a more general layout feature, see same problem e.g. #3414)
     if (inner_window != outer_window)
     {
@@ -1989,7 +1989,7 @@ void ImGui::TableEndCell(ImGuiTable* table)
     ImGuiTableColumn* column = &table->Columns[table->CurrentColumn];
     ImGuiWindow* window = table->InnerWindow;
 
-    // Report maximum position so we can infer content size per column.
+    // Report maximum position so we can infer content numOfVertices per column.
     float* p_max_pos_x;
     if (table->RowFlags & ImGuiTableRowFlags_Headers)
         p_max_pos_x = &column->ContentMaxXHeadersUsed;  // Useful in case user submit contents in header row that is not a TableHeader() call
@@ -2075,7 +2075,7 @@ void ImGui::TableSetColumnWidth(int column_n, float width)
     float column_0_width = width;
 
     // Apply constraints early
-    // Compare both requested and actual given width to avoid overwriting requested width when column is stuck (minimum size, bounded)
+    // Compare both requested and actual given width to avoid overwriting requested width when column is stuck (minimum numOfVertices, bounded)
     IM_ASSERT(table->MinColumnWidth > 0.0f);
     const float min_width = table->MinColumnWidth;
     const float max_width = ImMax(min_width, TableGetMaxColumnWidth(table, column_n));
@@ -2098,7 +2098,7 @@ void ImGui::TableSetColumnWidth(int column_n, float width)
     // Scenarios:
     // - F1 F2 F3  resize from F1| or F2|   --> ok: alter ->WidthRequested of Fixed column. Subsequent columns will be offset.
     // - F1 F2 F3  resize from F3|          --> ok: alter ->WidthRequested of Fixed column. If active, ScrollX extent can be altered.
-    // - F1 F2 W3  resize from F1| or F2|   --> ok: alter ->WidthRequested of Fixed column. If active, ScrollX extent can be altered, but it doesn't make much sense as the Stretch column will always be minimal size.
+    // - F1 F2 W3  resize from F1| or F2|   --> ok: alter ->WidthRequested of Fixed column. If active, ScrollX extent can be altered, but it doesn't make much sense as the Stretch column will always be minimal numOfVertices.
     // - F1 F2 W3  resize from W3|          --> ok: no-op (disabled by Resize Rule 1)
     // - W1 W2 W3  resize from W1| or W2|   --> ok
     // - W1 W2 W3  resize from W3|          --> ok: no-op (disabled by Resize Rule 1)
@@ -2521,7 +2521,7 @@ void ImGui::TableDrawBorders(ImGuiTable* table)
             if (column->NextEnabledColumn == -1 && !is_resizable)
                 if ((table->Flags & ImGuiTableFlags_SizingMask_) != ImGuiTableFlags_SizingFixedSame || (table->Flags & ImGuiTableFlags_NoHostExtendX))
                     continue;
-            if (column->MaxX <= column->ClipRect.Min.x) // FIXME-TABLE FIXME-STYLE: Assume BorderSize==1, this is problematic if we want to increase the border size..
+            if (column->MaxX <= column->ClipRect.Min.x) // FIXME-TABLE FIXME-STYLE: Assume BorderSize==1, this is problematic if we want to increase the border numOfVertices..
                 continue;
 
             // Draw in outer window so right-most column won't be clipped
@@ -2552,7 +2552,7 @@ void ImGui::TableDrawBorders(ImGuiTable* table)
         // (Without the offset, in outer_window it would be rendered behind cells, because child windows are above their
         // parent. In inner_window, it won't reach out over scrollbars. Another weird solution would be to display part
         // of it in inner window, and the part that's over scrollbars in the outer window..)
-        // Either solution currently won't allow us to use a larger border size: the border would clipped.
+        // Either solution currently won't allow us to use a larger border numOfVertices: the border would clipped.
         const ImRect outer_border = table->OuterRect;
         const ImU32 outer_col = table->BorderColorStrong;
         if ((table->Flags & ImGuiTableFlags_BordersOuter) == ImGuiTableFlags_BordersOuter)
@@ -2876,7 +2876,7 @@ void ImGui::TableHeader(const char* label)
     ImRect cell_r = TableGetCellBgRect(table, column_n);
     float label_height = ImMax(label_size.y, table->RowMinHeight - table->CellPaddingY * 2.0f);
 
-    // Calculate ideal size for sort order arrow
+    // Calculate ideal numOfVertices for sort order arrow
     float w_arrow = 0.0f;
     float w_sort_text = 0.0f;
     char sort_order_suf[4] = "";

@@ -70,15 +70,28 @@ Model* Model::createPrimitiveModel(PrimitiveType ptype)
 
 	std::shared_ptr<Mesh> mesh = nullptr;
 
-	switch (ptype)
+	if (ptype == PrimitiveType::Quad)
 	{
-	case PrimitiveType::Quad:
 		mesh = std::make_shared<Mesh>((float*)Primtives::Quad::vertices, sizeof(Primtives::Quad::vertices),
 			(unsigned int*)Primtives::Quad::indices, sizeof(Primtives::Quad::indices));
-		break;
-	case PrimitiveType::Cube:
+		//mesh = std::make_shared<Mesh>();
+		//Mesh::VerticesLayout layout;
+		//layout.numOfVertices = 4;
+		//layout.entries.emplace("positions", 3);
+		//layout.entries.emplace("normals", 3);
+		//layout.entries.emplace("texcoords", 2);
+		//mesh->setRawVertices((float*)Primtives::Quad::vertices, layout);
+		//auto indices = std::make_shared<std::vector<unsigned int>>();
+		//for (unsigned int i : Primtives::Quad::indices)
+		//{
+		//	indices->push_back(i);
+		//}
+		//mesh->setIndices(indices);
+		//mesh->build();
+	}
+	else if (ptype == PrimitiveType::Cube)
+	{
 		mesh = std::make_shared<Mesh>((float*)Primtives::Cube::vertices, sizeof(Primtives::Cube::vertices));
-		break;
 	}
 
 	auto texturediff = Texture::LoadTextureFromFile("Resources\\Textures\\template.png");
@@ -87,8 +100,8 @@ Model* Model::createPrimitiveModel(PrimitiveType ptype)
 	auto textureSpec = Texture::LoadTextureFromFile("Resources\\Textures\\template.png");
 	textureSpec->SetType(Constants::g_textureSpecular);
 
-	mesh->AddTexture(texturediff);
-	mesh->AddTexture(textureSpec);
+	mesh->addTexture(texturediff);
+	mesh->addTexture(textureSpec);
 
 	std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
 	model->UseMaterial(material);
@@ -150,7 +163,7 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 
 	for (auto i = 0; i < m_meshes.size(); i++)
 	{
-		m_meshes[i]->RenderMesh(currShader, renderer);
+		m_meshes[i]->renderMesh(currShader, renderer);
 	}
 }
 
@@ -190,7 +203,7 @@ std::vector<std::shared_ptr<Texture>> Model::GetTextures()
 	
 	for (const auto &mesh : m_meshes)
 	{
-		auto textures = mesh->GetTextures();
+		auto textures = mesh->getTextures();
 		result.insert(result.end(), textures.begin(), textures.end());
 	}
 
@@ -226,43 +239,37 @@ bool Model::UseMaterial(std::shared_ptr<Material> material)
 
 std::shared_ptr<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
-	auto vertices = std::make_shared<std::vector<Vertex>>();
+	//auto vertices = std::make_shared<std::vector<Vertex>>();
+	auto positions = std::make_shared<std::vector<glm::vec3>>();
+	auto normals = std::make_shared<std::vector<glm::vec3>>();
+	auto texcoords = std::make_shared<std::vector<glm::vec2>>();
 	auto indices = std::make_shared<std::vector<unsigned int>>();
 	std::vector<std::shared_ptr<Texture>> textures;
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
-		Vertex vertex;
 		// process vertex positions, normals and texture coordinates
 		if (mesh->HasPositions())
 		{
-			glm::vec3 pos;
-			pos.x = mesh->mVertices[i].x;
-			pos.y = mesh->mVertices[i].y;
-			pos.z = mesh->mVertices[i].z;
-			vertex.Position = pos;
+			glm::vec3 pos(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+			positions->emplace_back(pos);
 		}
 
 		if (mesh->HasNormals())
 		{
-			glm::vec3 normal;
-			normal.x = mesh->mNormals[i].x;
-			normal.y = mesh->mNormals[i].y;
-			normal.z = mesh->mNormals[i].z;
-			vertex.Normal = normal;
+			glm::vec3 normal(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+			normals->emplace_back(normal);
 		}
 
 		if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
 		{
-			glm::vec2 vec;
-			vec.x = mesh->mTextureCoords[0][i].x;
-			vec.y = mesh->mTextureCoords[0][i].y;
-			vertex.TexCoords = vec;
+			glm::vec2 vec(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+			texcoords->emplace_back(vec);
 		}
 		else
-			vertex.TexCoords = glm::vec2(0.0f, 0.0f);
-
-		vertices->push_back(vertex);
+		{
+			texcoords->emplace_back(glm::vec2(0.0f, 0.0f));
+		}
 	}
 	// process indices
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -285,8 +292,14 @@ std::shared_ptr<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 	}
 
-	std::shared_ptr<Mesh> generatedMesh = std::make_shared<Mesh>(vertices, indices);
-	generatedMesh->AddTextures(textures);
+	std::shared_ptr<Mesh> generatedMesh = std::make_shared<Mesh>();
+	generatedMesh->setNumOfVertices(mesh->mNumVertices);
+	generatedMesh->setPositions(positions);
+	generatedMesh->setNormals(normals);
+	generatedMesh->setTexcoords(texcoords);
+	generatedMesh->addTextures(textures);
+	generatedMesh->setIndices(indices);
+	generatedMesh->build();
 
 	return generatedMesh;
 }
