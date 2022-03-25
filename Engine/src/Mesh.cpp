@@ -44,11 +44,6 @@ Mesh::Mesh(float* vertices, size_t verticesSize)
 	m_vao->AttachBuffer(*m_vbo);
 }
 
-//void Mesh::CreateMesh()
-//{
-//
-//}
-
 void Mesh::RenderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < IRenderer >renderer)
 {
 	if (shader->IsTexturesEnabled())

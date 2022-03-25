@@ -36,10 +36,29 @@ public:
 
 	};
 public:
+	// -------------------- Methods -------------------- //
+	/** Constructor */
 	Model();
+
+	/** Destructor */
 	~Model();
-	static Model* LoadModelFromFile(const std::string& path, bool flipTexture=false);
-	static Model* CreatePrimitiveModel(PrimitiveType ptype);
+
+	/**
+	 * Load a model from a file.
+	 * 
+	 * \param path			path to the given file
+	 * \param flipTexture	should flip loaded texture
+	 * \return A poitner to the newly created model
+	 */
+	static Model* loadModelFromFile(const std::string& path, bool flipTexture=false);
+
+	/**
+	 * Create a primitive shape model.
+	 * 
+	 * \param ptype	primitive type to create
+	 * \return A poitner to the newly created model
+	 */
+	static Model* createPrimitiveModel(PrimitiveType ptype);
 
 	
 
@@ -67,14 +86,12 @@ private:
 	std::vector<std::shared_ptr<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName);
 protected:
 	virtual void Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> shader = nullptr);
-	// model data
+	
+	// -------------------- Attributes -------------------- //
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
 	std::string m_modelDir = "";
 	std::vector<std::shared_ptr<Texture>> m_texturesCache;
 	std::string m_path = "";
-
-	
-
 	std::shared_ptr<Shader> m_shader = nullptr;
 	std::shared_ptr<Material> m_material = nullptr;
 	bool m_flipTexture = false;

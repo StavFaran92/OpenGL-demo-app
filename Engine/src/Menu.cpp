@@ -155,7 +155,7 @@ void ShowMenuFile()
 //
 //        std::shared_ptr<Model> model = std::make_shared<Model>(filePath);
 //        model->FlipTexture(true);
-//        model->LoadModelFromFile();
+//        model->loadModelFromFile();
 //        std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
 //        model->UseMaterial(material);
 //
@@ -287,7 +287,7 @@ void ShowModelCreatorWindow()
 
             logInfo("Open file: " + path);
 
-            auto model = Model::LoadModelFromFile(modelPath.c_str(), flipTexture);
+            auto model = Model::loadModelFromFile(modelPath.c_str(), flipTexture);
             std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
             model->UseMaterial(material);
             model->GetTransformation()->SetPosition(pos);
@@ -396,7 +396,7 @@ void ShowPrimitiveCreatorWindow()
 
             //auto texture = Texture::LoadTextureFromFile(texturePath.c_str(), flipTexture);
 
-            auto model = Model::CreatePrimitiveModel(shape);
+            auto model = Model::createPrimitiveModel(shape);
             model->FlipTexture(flipTexture);
             std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
             model->UseMaterial(material);
@@ -464,7 +464,7 @@ void ShowPrimitiveCreatorWindow()
 //
 //            std::shared_ptr<Model> model = nullptr;
 //
-//            model = Model::CreatePrimitiveModel(shape);
+//            model = Model::createPrimitiveModel(shape);
 //            model->FlipTexture(flipTexture);
 //            std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
 //            model->UseMaterial(material);

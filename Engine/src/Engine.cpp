@@ -46,9 +46,6 @@ bool Engine::init()
     auto defaultScene = std::make_shared<Scene>();
     defaultScene->setPostProcess(true);
 
-    //auto skybox = std::shared_ptr<Skybox>(Skybox::CreateSkybox());
-    //defaultScene->setSkybox(skybox);
-
     m_context->addScene(defaultScene);
     m_context->setActiveScene(defaultScene->getID());
 

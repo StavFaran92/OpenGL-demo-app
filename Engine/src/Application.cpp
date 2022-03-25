@@ -30,12 +30,12 @@ void Application::draw(Model* model)
 
 Model* Application::createBox()
 {
-	return Model::CreatePrimitiveModel(Model::PrimitiveType::Cube);
+	return Model::createPrimitiveModel(Model::PrimitiveType::Cube);
 }
 
 Model* Application::createQuad()
 {
-	return Model::CreatePrimitiveModel(Model::PrimitiveType::Quad);
+	return Model::createPrimitiveModel(Model::PrimitiveType::Quad);
 }
 
 bool Application::mouse_leftButtonPressed()

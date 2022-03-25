@@ -29,7 +29,6 @@ Model::Model()
 
 	m_transformation = std::make_shared<Transform>();
 
-	//m_shader = Engine::Get()->GetRenderer()->GetDefaultShader();
 	m_shader = std::shared_ptr<Shader>(Shader::PhongShader());
 }
 
@@ -38,7 +37,7 @@ Model::~Model()
 	logTrace(__FUNCTION__);
 }
 
-Model* Model::LoadModelFromFile(const std::string& path, bool flipTexture /*= false*/)
+Model* Model::loadModelFromFile(const std::string& path, bool flipTexture /*= false*/)
 {
 	auto model = new Model();
 
@@ -65,7 +64,7 @@ Model* Model::LoadModelFromFile(const std::string& path, bool flipTexture /*= fa
 	return model;
 }
 
-Model* Model::CreatePrimitiveModel(PrimitiveType ptype)
+Model* Model::createPrimitiveModel(PrimitiveType ptype)
 {
 	auto model = new Model();
 
