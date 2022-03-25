@@ -67,6 +67,7 @@ void Mesh::addTextures(std::vector<std::shared_ptr<Texture>> textures)
 
 void Mesh::setRawVertices(float* vertices, VerticesLayout& layout)
 {
+	m_numOfVertices = layout.numOfVertices;
 	// calculate stride
 	int stride = 0;
 	for (auto entry : layout.entries)
@@ -89,10 +90,12 @@ void Mesh::setRawVertices(float* vertices, VerticesLayout& layout)
 			positions->reserve(layout.numOfVertices * entry.second);
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
+				glm::vec3 pos;
 				for (int j = 0; j < entry.second; j++)
 				{
-					positions->emplace_back(vertices[stride * i + j + offset]);
+					pos[j] = vertices[stride * i + j + offset];
 				}
+				positions->emplace_back(pos);
 			}
 			setPositions(positions);
 		}
@@ -103,10 +106,12 @@ void Mesh::setRawVertices(float* vertices, VerticesLayout& layout)
 			normals->reserve(layout.numOfVertices * entry.second);
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
+				glm::vec3 normal;
 				for (int j = 0; j < entry.second; j++)
 				{
-					normals->emplace_back(vertices[stride * i + j + offset]);
+					normal[j] = vertices[stride * i + j + offset];
 				}
+				normals->emplace_back(normal);
 			}
 			setNormals(normals);
 		}
@@ -117,10 +122,12 @@ void Mesh::setRawVertices(float* vertices, VerticesLayout& layout)
 			texcoords->reserve(layout.numOfVertices * entry.second);
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
+				glm::vec3 vec;
 				for (int j = 0; j < entry.second; j++)
 				{
-					texcoords->emplace_back(vertices[stride * i + j + offset]);
+					vec[j] = vertices[stride * i + j + offset];
 				}
+				texcoords->emplace_back(vec);
 			}
 			setTexcoords(texcoords);
 		}

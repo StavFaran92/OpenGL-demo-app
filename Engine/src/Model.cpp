@@ -69,25 +69,24 @@ Model* Model::createPrimitiveModel(PrimitiveType ptype)
 	auto model = new Model();
 
 	std::shared_ptr<Mesh> mesh = nullptr;
-
 	if (ptype == PrimitiveType::Quad)
 	{
-		mesh = std::make_shared<Mesh>((float*)Primtives::Quad::vertices, sizeof(Primtives::Quad::vertices),
-			(unsigned int*)Primtives::Quad::indices, sizeof(Primtives::Quad::indices));
-		//mesh = std::make_shared<Mesh>();
-		//Mesh::VerticesLayout layout;
-		//layout.numOfVertices = 4;
-		//layout.entries.emplace("positions", 3);
-		//layout.entries.emplace("normals", 3);
-		//layout.entries.emplace("texcoords", 2);
-		//mesh->setRawVertices((float*)Primtives::Quad::vertices, layout);
-		//auto indices = std::make_shared<std::vector<unsigned int>>();
-		//for (unsigned int i : Primtives::Quad::indices)
-		//{
-		//	indices->push_back(i);
-		//}
-		//mesh->setIndices(indices);
-		//mesh->build();
+		//mesh = std::make_shared<Mesh>((float*)Primtives::Quad::vertices, sizeof(Primtives::Quad::vertices),
+		//	(unsigned int*)Primtives::Quad::indices, sizeof(Primtives::Quad::indices));
+		mesh = std::make_shared<Mesh>();
+		Mesh::VerticesLayout layout;
+		layout.numOfVertices = 4;
+		layout.entries.emplace_back("positions", 3);
+		layout.entries.emplace_back("normals", 3);
+		layout.entries.emplace_back("texcoords", 2);
+		mesh->setRawVertices((float*)Primtives::Quad::vertices, layout);
+		auto indices = std::make_shared<std::vector<unsigned int>>();
+		for (unsigned int i : Primtives::Quad::indices)
+		{
+			indices->push_back(i);
+		}
+		mesh->setIndices(indices);
+		mesh->build();
 	}
 	else if (ptype == PrimitiveType::Cube)
 	{

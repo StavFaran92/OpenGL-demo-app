@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <map>
+#include <vector>
 
 #include <GL\glew.h>
 
@@ -21,7 +21,7 @@ class Mesh
 public:
 	struct VerticesLayout
 	{
-		std::map<std::string, int> entries;
+		std::vector<std::pair<std::string, int>> entries;
 		size_t numOfVertices = 0;
 	};
 	// -------------------- Methods -------------------- //
