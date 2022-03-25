@@ -71,26 +71,27 @@ Model* Model::createPrimitiveModel(PrimitiveType ptype)
 	std::shared_ptr<Mesh> mesh = nullptr;
 	if (ptype == PrimitiveType::Quad)
 	{
-		//mesh = std::make_shared<Mesh>((float*)Primtives::Quad::vertices, sizeof(Primtives::Quad::vertices),
-		//	(unsigned int*)Primtives::Quad::indices, sizeof(Primtives::Quad::indices));
 		mesh = std::make_shared<Mesh>();
 		Mesh::VerticesLayout layout;
 		layout.numOfVertices = 4;
-		layout.entries.emplace_back("positions", 3);
-		layout.entries.emplace_back("normals", 3);
-		layout.entries.emplace_back("texcoords", 2);
+		layout.entries.emplace_back(Mesh::LayoutAttributes::Positions, 3);
+		layout.entries.emplace_back(Mesh::LayoutAttributes::Normals, 3);
+		layout.entries.emplace_back(Mesh::LayoutAttributes::Texcoords, 2);
 		mesh->setRawVertices((float*)Primtives::Quad::vertices, layout);
-		auto indices = std::make_shared<std::vector<unsigned int>>();
-		for (unsigned int i : Primtives::Quad::indices)
-		{
-			indices->push_back(i);
-		}
-		mesh->setIndices(indices);
+		mesh->setRawIndices((unsigned int*)Primtives::Quad::indices, sizeof(Primtives::Quad::indices) / sizeof(unsigned int));
 		mesh->build();
 	}
 	else if (ptype == PrimitiveType::Cube)
 	{
-		mesh = std::make_shared<Mesh>((float*)Primtives::Cube::vertices, sizeof(Primtives::Cube::vertices));
+		mesh = std::make_shared<Mesh>();
+		Mesh::VerticesLayout layout;
+		layout.numOfVertices = 36;
+		layout.entries.emplace_back(Mesh::LayoutAttributes::Positions, 3);
+		layout.entries.emplace_back(Mesh::LayoutAttributes::Normals, 3);
+		layout.entries.emplace_back(Mesh::LayoutAttributes::Texcoords, 2);
+		mesh->setRawVertices((float*)Primtives::Cube::vertices, layout);
+		//mesh->setRawIndices((unsigned int*)Primtives::Cube::indices, sizeof(Primtives::Cube::indices) / sizeof(unsigned int));
+		mesh->build();
 	}
 
 	auto texturediff = Texture::LoadTextureFromFile("Resources\\Textures\\template.png");

@@ -19,9 +19,15 @@
 class Mesh
 {
 public:
+	enum class LayoutAttributes
+	{
+		Positions,
+		Normals,
+		Texcoords
+	};
 	struct VerticesLayout
 	{
-		std::vector<std::pair<std::string, int>> entries;
+		std::vector<std::pair<LayoutAttributes, int>> entries;
 		size_t numOfVertices = 0;
 	};
 	// -------------------- Methods -------------------- //
@@ -39,6 +45,7 @@ public:
 	inline std::vector<std::shared_ptr<Texture>> getTextures() { return m_textures; };
 
 	void setRawVertices(float* vertices, VerticesLayout& layout);
+	void setRawIndices(unsigned int* indices, size_t size);
 	
 	void SetTexturesInShader(std::shared_ptr<Shader>& shader);
 	void setNumOfVertices(size_t size);

@@ -85,7 +85,7 @@ void Mesh::setRawVertices(float* vertices, VerticesLayout& layout)
 	for (auto entry : layout.entries)
 	{
 		// Parse positions
-		if (strcmp(entry.first.c_str(), "positions") == 0)
+		if (LayoutAttributes::Positions == entry.first)
 		{
 			positions->reserve(layout.numOfVertices * entry.second);
 			for (int i = 0; i < layout.numOfVertices; i++)
@@ -101,7 +101,7 @@ void Mesh::setRawVertices(float* vertices, VerticesLayout& layout)
 		}
 
 		// Parse normals
-		else if (strcmp(entry.first.c_str(), "normals") == 0)
+		else if (LayoutAttributes::Normals == entry.first)
 		{
 			normals->reserve(layout.numOfVertices * entry.second);
 			for (int i = 0; i < layout.numOfVertices; i++)
@@ -117,7 +117,7 @@ void Mesh::setRawVertices(float* vertices, VerticesLayout& layout)
 		}
 
 		// Parse texcoords
-		else if (strcmp(entry.first.c_str(), "texcoords") == 0)
+		else if (LayoutAttributes::Texcoords == entry.first)
 		{
 			texcoords->reserve(layout.numOfVertices * entry.second);
 			for (int i = 0; i < layout.numOfVertices; i++)
@@ -136,6 +136,17 @@ void Mesh::setRawVertices(float* vertices, VerticesLayout& layout)
 	}
 
 	
+}
+
+void Mesh::setRawIndices(unsigned int* indices, size_t size)
+{
+	auto vec = std::make_shared<std::vector<unsigned int>>();
+	vec->reserve(size);
+	for (auto i=0; i<size; i++)
+	{
+		vec->push_back(indices[i]);
+	}
+	setIndices(vec);
 }
 
 void Mesh::SetTexturesInShader(std::shared_ptr<Shader>& shader)
@@ -224,10 +235,14 @@ void Mesh::build()
 
 	// Create buffers
 	m_vao = std::make_shared<VertexArrayObject>();
-	m_ibo = std::make_shared<ElementBufferObject>(&(m_indices->at(0)), m_indices->size());
+	if(m_indices)
+		m_ibo = std::make_shared<ElementBufferObject>(&(m_indices->at(0)), m_indices->size());
 	m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), m_numOfVertices, sizeof(float) * 8);
 
-	m_vao->AttachBuffer(*m_vbo, *m_ibo);
+	if (m_indices)
+		m_vao->AttachBuffer(*m_vbo, *m_ibo);
+	else
+		m_vao->AttachBuffer(*m_vbo);
 }
 
 // Compute the normals of the mesh
