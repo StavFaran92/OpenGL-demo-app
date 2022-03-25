@@ -251,19 +251,27 @@ std::shared_ptr<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		// process vertex positions, normals and texture coordinates
 		if (mesh->HasPositions())
 		{
-			glm::vec3 pos(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+			glm::vec3 pos;
+			pos.x = mesh->mVertices[i].x;
+			pos.y = mesh->mVertices[i].y;
+			pos.z = mesh->mVertices[i].z;
 			positions->emplace_back(pos);
 		}
 
 		if (mesh->HasNormals())
 		{
-			glm::vec3 normal(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+			glm::vec3 normal;
+			normal.x = mesh->mNormals[i].x;
+			normal.y = mesh->mNormals[i].y;
+			normal.z = mesh->mNormals[i].z;
 			normals->emplace_back(normal);
 		}
 
 		if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
 		{
-			glm::vec2 vec(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+			glm::vec2 vec;
+			vec.x = mesh->mTextureCoords[0][i].x;
+			vec.y = mesh->mTextureCoords[0][i].y;
 			texcoords->emplace_back(vec);
 		}
 		else

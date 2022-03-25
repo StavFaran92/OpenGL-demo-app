@@ -198,7 +198,7 @@ void Mesh::build()
 	std::vector<float> vertices;
 	vertices.reserve(8 * m_numOfVertices);
 
-	for (int i=0; i< m_numOfVertices; i++) // TODO fix
+	for (int i=0; i< m_numOfVertices; i++)
 	{
 		auto position = m_positions->at(i);
 		vertices.emplace_back(position.x);
@@ -218,7 +218,7 @@ void Mesh::build()
 	// Create buffers
 	m_vao = std::make_shared<VertexArrayObject>();
 	m_ibo = std::make_shared<ElementBufferObject>(&(m_indices->at(0)), m_indices->size());
-	m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), m_numOfVertices * 8, sizeof(float));
+	m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), m_numOfVertices, sizeof(float) * 8);
 
 	m_vao->AttachBuffer(*m_vbo, *m_ibo);
 }
