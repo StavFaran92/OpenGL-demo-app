@@ -142,6 +142,9 @@
     <ClCompile Include="src\EventSystem.cpp">
       <Filter>src\Graphics\Services</Filter>
     </ClCompile>
+    <ClCompile Include="src\Sphere.cpp">
+      <Filter>src\Graphics\Shapes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -324,6 +327,12 @@
     <ClInclude Include="src\EventSystem.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Sphere.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Box.h">
+      <Filter>headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -394,6 +403,9 @@
     </Filter>
     <Filter Include="src\Graphics\PostProcess">
       <UniqueIdentifier>{c580e68a-6bb8-45d8-af6d-61d58075224a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Graphics\Shapes">
+      <UniqueIdentifier>{0470dca0-0617-4476-9624-1d5f16350652}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -6,6 +6,7 @@ public:
 	using Application::draw;
 	Model* box;
 	Model* quad;
+	Model* sphere;
 
 	void start() override
 	{
@@ -15,6 +16,9 @@ public:
 		quad = createQuad();
 		quad->translate(0, 0, -2);
 		quad->rotateZ(90);
+
+		sphere = Model::createPrimitiveModel(Model::PrimitiveType::Sphere);
+		sphere->translate(2, 0, 0);
 
 		postProcess(PostProcess::grayscale());
 	}
@@ -37,6 +41,7 @@ public:
 		//box->rotateY(1);
 		draw(box);
 		draw(quad);
+		draw(sphere);
 	}
 
 };

@@ -22,6 +22,7 @@
 #include "Mesh.h"
 #include "Vertex.h"
 #include "Engine.h"
+#include "Sphere.h"
 
 Model::Model()
 {
@@ -92,6 +93,11 @@ Model* Model::createPrimitiveModel(PrimitiveType ptype)
 		mesh->setRawVertices((float*)Primtives::Cube::vertices, layout);
 		//mesh->setRawIndices((unsigned int*)Primtives::Cube::indices, sizeof(Primtives::Cube::indices) / sizeof(unsigned int));
 		mesh->build();
+	}
+
+	else if (ptype == PrimitiveType::Sphere)
+	{
+		mesh = std::shared_ptr<Mesh>(Sphere::generateSphere(.5f, 40, 40));
 	}
 
 	auto texturediff = Texture::LoadTextureFromFile("Resources\\Textures\\template.png");

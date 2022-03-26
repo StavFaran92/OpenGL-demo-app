@@ -32,7 +32,8 @@ public:
 	enum class PrimitiveType 
 	{
 		Quad,
-		Cube
+		Cube,
+		Sphere
 
 	};
 public:
