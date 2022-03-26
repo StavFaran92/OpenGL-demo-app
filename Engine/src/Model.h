@@ -53,13 +53,13 @@ public:
 	 */
 	static Model* loadModelFromFile(const std::string& path, bool flipTexture=false);
 
-	/**
-	 * Create a primitive shape model.
-	 * 
-	 * \param ptype	primitive type to create
-	 * \return A poitner to the newly created model
-	 */
-	static Model* createPrimitiveModel(PrimitiveType ptype);
+	///**
+	// * Create a primitive shape model.
+	// * 
+	// * \param ptype	primitive type to create
+	// * \return A poitner to the newly created model
+	// */
+	//static Model* createPrimitiveModel(PrimitiveType ptype);
 
 	
 

@@ -2,10 +2,10 @@
 
 #include "Model.h"
 
-class Box : public Model
+class Quad : public Model
 {
 public:
-	static Box* generateBox();
+	static Quad* generateQuad();
 private:
 	static std::shared_ptr<Mesh> generateMesh();
 };

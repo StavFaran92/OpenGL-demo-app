@@ -4,9 +4,9 @@ class Sandbox : public Application
 {
 public:
 	using Application::draw;
-	Model* box;
-	Model* quad;
-	Model* sphere;
+	Box* box;
+	Quad* quad;
+	Sphere* sphere;
 
 	void start() override
 	{
@@ -17,7 +17,7 @@ public:
 		quad->translate(0, 0, -2);
 		quad->rotateZ(90);
 
-		sphere = Model::createPrimitiveModel(Model::PrimitiveType::Sphere);
+		sphere = Sphere::generateSphere(1, 20, 20);
 		sphere->translate(2, 0, 0);
 
 		postProcess(PostProcess::grayscale());

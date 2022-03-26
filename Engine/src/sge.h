@@ -26,3 +26,6 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "EventSystem.h"
+#include "Quad.h"
+#include "Box.h"
+#include "Sphere.h"

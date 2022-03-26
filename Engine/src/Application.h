@@ -5,6 +5,9 @@
 class Model;
 class Shader;
 class Skybox;
+class Box;
+class Quad;
+class Sphere;
 
 class EngineAPI Application
 {
@@ -18,8 +21,8 @@ protected:
 
 
 	void draw(Model* model);
-	Model* createBox();
-	Model* createQuad();
+	Box* createBox();
+	Quad* createQuad();
 	void postProcess(Shader*);
 	void skybox(Skybox*);
 

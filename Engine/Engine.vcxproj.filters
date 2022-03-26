@@ -145,6 +145,12 @@
     <ClCompile Include="src\Sphere.cpp">
       <Filter>src\Graphics\Shapes</Filter>
     </ClCompile>
+    <ClCompile Include="src\Box.cpp">
+      <Filter>src\Graphics\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Quad.cpp">
+      <Filter>src\Graphics\Shapes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -331,6 +337,9 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="src\Box.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Quad.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

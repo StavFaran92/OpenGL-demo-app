@@ -9,6 +9,8 @@
 #include "Input.h"
 #include "Mouse.h"
 #include "Keyboard.h"
+#include "Box.h"
+#include "Quad.h"
 
 void Application::skybox(Skybox*)
 {
@@ -28,14 +30,14 @@ void Application::draw(Model* model)
 
 }
 
-Model* Application::createBox()
+Box* Application::createBox()
 {
-	return Model::createPrimitiveModel(Model::PrimitiveType::Cube);
+	return Box::generateBox();
 }
 
-Model* Application::createQuad()
+Quad* Application::createQuad()
 {
-	return Model::createPrimitiveModel(Model::PrimitiveType::Quad);
+	return Quad::generateQuad();
 }
 
 bool Application::mouse_leftButtonPressed()

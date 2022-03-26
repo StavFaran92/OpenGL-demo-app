@@ -96,10 +96,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Box.cpp" />
     <ClCompile Include="src\EventSystem.cpp" />
     <ClCompile Include="src\PostProcess.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Context.cpp" />
+    <ClCompile Include="src\Quad.cpp" />
     <ClCompile Include="src\Sphere.cpp" />
     <ClCompile Include="src\DirectionalLight.cpp" />
     <ClCompile Include="src\EditorCamera.cpp" />
@@ -147,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Box.h" />
+    <ClInclude Include="src\Quad.h" />
     <ClInclude Include="src\Sphere.h" />
     <ClInclude Include="src\Core.h" />
     <ClInclude Include="src\ApplicationConstants.h" />

@@ -2,6 +2,8 @@
 #include "PointLight.h"
 #include "Scene.h"
 #include "DirectionalLight.h"
+#include "Quad.h"
+#include "Box.h"
 
 static void ShowExampleAppDockSpace();
 static void ShowExampleAppLog();
@@ -396,18 +398,31 @@ void ShowPrimitiveCreatorWindow()
 
             //auto texture = Texture::LoadTextureFromFile(texturePath.c_str(), flipTexture);
 
-            auto model = Model::createPrimitiveModel(shape);
-            model->FlipTexture(flipTexture);
-            std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-            model->UseMaterial(material);
-            model->GetTransformation()->SetPosition(pos);
-            model->GetTransformation()->SetScale(scale);
+            Model* model = nullptr;
+            if (shape == Model::PrimitiveType::Quad)
+            {
+                model = Quad::generateQuad();
+            }
+            else if (shape == Model::PrimitiveType::Cube)
+            {
+                model = Box::generateBox();
+            }
+            if (model != nullptr)
+            {
+                model->FlipTexture(flipTexture);
+                std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
+                model->UseMaterial(material);
+                model->GetTransformation()->SetPosition(pos);
+                model->GetTransformation()->SetScale(scale);
 
-            Engine::get()->getContext()->getActiveScene()->addModel(model);
+                Engine::get()->getContext()->getActiveScene()->addModel(model);
+
+                logInfo("Added Model successfully.");
+            }
 
             showPrimitiveCreatorWindow = false;
 
-            logInfo("Added Model successfully.");
+            
         }
         ImGui::SameLine();
         if (ImGui::Button("Cancel"))

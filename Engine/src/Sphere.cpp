@@ -2,7 +2,30 @@
 #include "ApplicationConstants.h"
 #include "Mesh.h"
 
-Mesh* Sphere::generateSphere(float radius, int sectors, int stacks)
+Sphere* Sphere::generateSphere(float radius, int sectors, int stacks)
+{
+    auto sphere = new Sphere();
+
+    std::shared_ptr<Mesh> mesh = generateMesh(radius, sectors, stacks);
+
+    auto texturediff = Texture::LoadTextureFromFile("Resources\\Textures\\template.png");
+    texturediff->SetType(Constants::g_textureDiffuse);
+
+    auto textureSpec = Texture::LoadTextureFromFile("Resources\\Textures\\template.png");
+    textureSpec->SetType(Constants::g_textureSpecular);
+
+    mesh->addTexture(texturediff);
+    mesh->addTexture(textureSpec);
+
+    std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
+    sphere->UseMaterial(material);
+
+    sphere->m_meshes.push_back(mesh);
+
+    return sphere;
+}
+
+std::shared_ptr<Mesh> Sphere::generateMesh(float radius, int sectors, int stacks)
 {
     // clear memory of prev arrays
     auto positions = std::make_shared<std::vector<glm::vec3>>();
@@ -43,7 +66,7 @@ Mesh* Sphere::generateSphere(float radius, int sectors, int stacks)
             // vertex tex coord (s, t) range between [0, 1]
             s = (float)j / sectors;
             t = (float)i / stacks;
-            texcoords->push_back({s, t});
+            texcoords->push_back({ s, t });
         }
     }
 
@@ -91,7 +114,7 @@ Mesh* Sphere::generateSphere(float radius, int sectors, int stacks)
         }
     }
 
-    auto generatedMesh = new Mesh();
+    auto generatedMesh = std::make_shared<Mesh>();
     generatedMesh->setNumOfVertices(positions->size());
     generatedMesh->setPositions(positions);
     generatedMesh->setNormals(normals);

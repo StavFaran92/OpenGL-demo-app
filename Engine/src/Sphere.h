@@ -1,9 +1,12 @@
 #pragma once
+#include "Core.h"
 
 #include "Model.h"
 
-class Sphere : public Model
+class EngineAPI Sphere : public Model
 {
 public:
-	static Mesh* generateSphere(float radius, int sectors, int stacks);
+	static Sphere* generateSphere(float radius, int sectors, int stacks);
+private:
+	static std::shared_ptr<Mesh> generateMesh(float radius, int sectors, int stacks);
 };
