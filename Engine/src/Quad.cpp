@@ -33,14 +33,14 @@ Quad* Quad::generateQuad()
 	std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
 	quad->UseMaterial(material);
 
-	quad->m_meshes.push_back(mesh);
+	quad->m_meshes.push_back(std::shared_ptr<Mesh>(mesh));
 
 	return quad;
 }
 
-std::shared_ptr<Mesh> Quad::generateMesh()
+Mesh* Quad::generateMesh()
 {
-	auto mesh = std::make_shared<Mesh>();
+	auto mesh = new Mesh();
 	Mesh::VerticesLayout layout;
 	layout.numOfVertices = 4;
 	layout.entries.emplace_back(Mesh::LayoutAttributes::Positions, 3);

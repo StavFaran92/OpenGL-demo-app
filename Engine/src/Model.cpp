@@ -65,59 +65,6 @@ Model* Model::loadModelFromFile(const std::string& path, bool flipTexture /*= fa
 	return model;
 }
 
-//Model* Model::createPrimitiveModel(PrimitiveType ptype)
-//{
-//	auto model = new Model();
-//
-//	std::shared_ptr<Mesh> mesh = nullptr;
-//	if (ptype == PrimitiveType::Quad)
-//	{
-//		mesh = std::make_shared<Mesh>();
-//		Mesh::VerticesLayout layout;
-//		layout.numOfVertices = 4;
-//		layout.entries.emplace_back(Mesh::LayoutAttributes::Positions, 3);
-//		layout.entries.emplace_back(Mesh::LayoutAttributes::Normals, 3);
-//		layout.entries.emplace_back(Mesh::LayoutAttributes::Texcoords, 2);
-//		mesh->setRawVertices((float*)Primtives::Quad::vertices, layout);
-//		mesh->setRawIndices((unsigned int*)Primtives::Quad::indices, sizeof(Primtives::Quad::indices) / sizeof(unsigned int));
-//		mesh->build();
-//	}
-//	else if (ptype == PrimitiveType::Cube)
-//	{
-//		mesh = std::make_shared<Mesh>();
-//		Mesh::VerticesLayout layout;
-//		layout.numOfVertices = 36;
-//		layout.entries.emplace_back(Mesh::LayoutAttributes::Positions, 3);
-//		layout.entries.emplace_back(Mesh::LayoutAttributes::Normals, 3);
-//		layout.entries.emplace_back(Mesh::LayoutAttributes::Texcoords, 2);
-//		mesh->setRawVertices((float*)Primtives::Cube::vertices, layout);
-//		//mesh->setRawIndices((unsigned int*)Primtives::Cube::indices, sizeof(Primtives::Cube::indices) / sizeof(unsigned int));
-//		mesh->build();
-//	}
-//
-//	else if (ptype == PrimitiveType::Sphere)
-//	{
-//		mesh = std::shared_ptr<Mesh>(Sphere::generateSphere(.5f, 40, 40));
-//	}
-//
-//	auto texturediff = Texture::LoadTextureFromFile("Resources\\Textures\\template.png");
-//	texturediff->SetType(Constants::g_textureDiffuse);
-//
-//	auto textureSpec = Texture::LoadTextureFromFile("Resources\\Textures\\template.png");
-//	textureSpec->SetType(Constants::g_textureSpecular);
-//
-//	mesh->addTexture(texturediff);
-//	mesh->addTexture(textureSpec);
-//
-//	std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-//	model->UseMaterial(material);
-//
-//	model->m_meshes.push_back(mesh);
-//
-//	return model;
-//}
-
-
 void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> shader /* = nullptr*/)
 {
 	auto currShader = m_shader;

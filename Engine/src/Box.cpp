@@ -71,7 +71,7 @@ Box* Box::generateBox()
 {
     auto box = new Box();
 
-    std::shared_ptr<Mesh> mesh = generateMesh();
+    auto mesh = generateMesh();
 
     auto texturediff = Texture::LoadTextureFromFile("Resources\\Textures\\template.png");
     texturediff->SetType(Constants::g_textureDiffuse);
@@ -85,14 +85,14 @@ Box* Box::generateBox()
     std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
     box->UseMaterial(material);
 
-    box->m_meshes.push_back(mesh);
+    box->m_meshes.push_back(std::shared_ptr<Mesh>(mesh));
 
     return box;
 }
 
-std::shared_ptr<Mesh> Box::generateMesh()
+Mesh* Box::generateMesh()
 {
-    auto mesh = std::make_shared<Mesh>();
+    auto mesh = new Mesh();
     Mesh::VerticesLayout layout;
     layout.numOfVertices = 36;
     layout.entries.emplace_back(Mesh::LayoutAttributes::Positions, 3);

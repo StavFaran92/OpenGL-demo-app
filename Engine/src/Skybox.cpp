@@ -3,6 +3,7 @@
 #include "Vertex.h"
 #include "Renderer.h"
 #include "Mesh.h"
+#include "Box.h"
 
 #include "EditorCamera.h"
 #include "Resources/Primitives/cube.h"
@@ -11,7 +12,7 @@ Skybox* Skybox::CreateSkybox()
 {
 	auto model = new Skybox();
 
-	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>((float*)Primtives::Cube::vertices, sizeof(Primtives::Cube::vertices));
+    auto mesh = Box::generateMesh();
 
     std::vector<std::string> faces
     {
@@ -25,7 +26,7 @@ Skybox* Skybox::CreateSkybox()
 	auto texture = Texture::LoadCubemap(faces);
     mesh->addTexture(texture);
 
-    model->m_meshes.push_back(mesh);
+    model->m_meshes.push_back(std::shared_ptr<Mesh>(mesh));
 
     auto shader = std::make_shared<Shader>("Resources\\Shaders\\SkyboxShader.vert", "Resources\\Shaders\\SkyboxShader.frag");
     model->AttachShader(shader);

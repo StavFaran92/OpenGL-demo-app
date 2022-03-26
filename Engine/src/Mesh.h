@@ -32,10 +32,10 @@ public:
 	};
 	// -------------------- Methods -------------------- //
 	Mesh() {};
-	Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices);
-	Mesh(float* vertices, size_t verticesSize, unsigned int* indices, size_t indicesSize);
-	Mesh(std::shared_ptr<std::vector<Vertex>> vertices);
-	Mesh(float* vertices, size_t verticesSize);
+	//Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices);
+	//Mesh(float* vertices, size_t verticesSize, unsigned int* indices, size_t indicesSize);
+	//Mesh(std::shared_ptr<std::vector<Vertex>> vertices);
+	//Mesh(float* vertices, size_t verticesSize);
 
 	void renderMesh(std::shared_ptr<Shader> shader, std::shared_ptr <IRenderer>renderer);
 

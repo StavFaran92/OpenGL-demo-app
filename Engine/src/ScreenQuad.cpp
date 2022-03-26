@@ -3,6 +3,7 @@
 #include "Vertex.h"
 #include "Renderer.h"
 #include "Mesh.h"
+#include "Quad.h"
 
 #include "Resources/Primitives/quad.h"
 
@@ -10,12 +11,9 @@ std::shared_ptr<ScreenQuad> ScreenQuad::GenerateScreenQuad()
 {
 	auto model = std::make_shared<ScreenQuad>();
 
-	std::shared_ptr<Mesh> mesh = nullptr;
+	auto mesh = Quad::generateMesh();
 
-	mesh = std::make_shared<Mesh>((float*)Primtives::Quad::vertices, sizeof(Primtives::Quad::vertices),
-		(unsigned int*)Primtives::Quad::indices, sizeof(Primtives::Quad::indices));
-
-	model->m_meshes.push_back(mesh);
+	model->m_meshes.push_back(std::shared_ptr<Mesh>(mesh));
 
 	return model;
 }
