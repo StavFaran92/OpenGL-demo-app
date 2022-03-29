@@ -17,7 +17,7 @@ public:
 		quad->translate(0, 0, -2);
 		quad->rotateZ(90);
 
-		sphere = Sphere::generateSphere(1, 20, 20);
+		sphere = Sphere::generateSphere(1, 36, 18);
 		sphere->translate(2, 0, 0);
 
 		postProcess(PostProcess::grayscale());
@@ -33,9 +33,24 @@ public:
 		//addEventListener(SDL_EventType::SDL_MOUSEBUTTONUP, []() {std::cout << "print somethin" << std::endl; });
 		//addEventListener(SDL_EventType type, []() {std::cout << "print somethin" << std::endl; });
 		
-		if (mouse_middleButtonPressed())
+		if (keyboard_getKeyState(SDL_Scancode::SDL_SCANCODE_X))
 		{
-			box->translate(.01, 0, 0);
+			box->rotateX(1);
+		}
+
+		if (keyboard_getKeyState(SDL_Scancode::SDL_SCANCODE_Y))
+		{
+			box->rotateY(1);
+		}
+
+		if (keyboard_getKeyState(SDL_Scancode::SDL_SCANCODE_Z))
+		{
+			box->rotateZ(1);
+		}
+
+		if (mouse_leftButtonPressed())
+		{
+			box->rotateY(1);
 		}
 		
 		//box->rotateY(1);

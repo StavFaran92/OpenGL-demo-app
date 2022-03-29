@@ -11,8 +11,7 @@ class EngineAPI Transform
 public:
 	Transform() :
 		m_translation(0, 0, 0),
-		m_rotationAngle(0),
-		m_rotationAxis(1, 0, 0),
+		m_orientation(1,0,0,0),
 		m_scale(1, 1, 1),
 		m_transformation(1.f)
 	{}
@@ -24,27 +23,23 @@ public:
 	void SetScale(glm::vec3 scale);
 
 	glm::vec3 GetPosition() const { return m_translation; }
-	float GetRotationAngle() const { return m_rotationAngle; }
-	glm::vec3 GetRotationAxis() const { return m_rotationAxis; }
+	glm::quat getOrientation() const;
 	glm::vec3 GetScale() const { return m_scale; }
 
 	void translate(float x, float y, float z);
-	void rotate(float angle, glm::vec3 axis);
+	void rotateX(float angle);
+	void rotateY(float angle);
+	void rotateZ(float angle);
 
 
 private:
 	glm::vec3 m_translation;
 
-	glm::vec3 m_rotationAxis;
-	float m_rotationAngle = 0;
+	glm::quat m_orientation;
 
 	glm::vec3 m_scale;
 
 	glm::mat4 m_transformation;
-
-	float m_rotationX = 0;
-	float m_rotationY = 0;
-	float m_rotationZ = 0;
 
 
 	bool m_change = false;

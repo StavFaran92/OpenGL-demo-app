@@ -40,3 +40,13 @@ void calcAverageNormal(unsigned int* indices, unsigned int indiceCount, GLfloat*
 		vertices[nOffset + 2] = vec.z;
 	}
 }
+
+float radToDeg(float radians)
+{
+	return radians / Constants::PI * 180;
+}
+
+float degToRad(float degrees)
+{
+	return degrees * Constants::PI / 180;
+}
