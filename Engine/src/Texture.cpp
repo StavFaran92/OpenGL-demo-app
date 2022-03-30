@@ -165,6 +165,11 @@ uint32_t Texture::getTarget() const
 	return m_target;
 }
 
+void Texture::setTarget(uint32_t target)
+{
+	m_target = target;
+}
+
 void Texture::ClearTexture()
 {
 	glDeleteTextures(1, &m_id);

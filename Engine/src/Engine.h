@@ -15,6 +15,7 @@ class Application;
 union SDL_Event;
 class Input;
 class EventSystem;
+class ModelImporter;
 
 class EngineAPI Engine
 {
@@ -29,6 +30,7 @@ public:
     ImguiHandler* getImguiHandler() const;
     Input* getInput() const;
     EventSystem* getEventSystem() const;
+    ModelImporter* getModelImporter() const;
 
     void pause();
     void resume();
@@ -64,6 +66,7 @@ private:
     std::shared_ptr<ImguiHandler> m_imguiHandler = nullptr;
     std::shared_ptr<Input> m_input;
     std::shared_ptr<EventSystem> m_eventSystem;
+    std::shared_ptr<ModelImporter> m_modelImporter;
 
 
 };

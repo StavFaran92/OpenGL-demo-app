@@ -12,6 +12,7 @@
 #include "Skybox.h"
 #include "Input.h"
 #include "EventSystem.h"
+#include "ModelImporter.h"
 
 #include "Application.h"
 #include "SDL.h"
@@ -60,7 +61,7 @@ bool Engine::init()
         return false;
     }
 
-    
+    m_modelImporter = std::make_shared<ModelImporter>();
 
     m_isInit = true;
 
@@ -196,6 +197,11 @@ Input* Engine::getInput() const
 EventSystem* Engine::getEventSystem() const
 {
     return m_eventSystem.get();
+}
+
+ModelImporter* Engine::getModelImporter() const
+{
+    return m_modelImporter.get();
 }
 
 void Engine::pause()

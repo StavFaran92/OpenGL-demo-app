@@ -4,6 +4,7 @@
 #include "DirectionalLight.h"
 #include "Quad.h"
 #include "Box.h"
+#include "ModelImporter.h"
 
 static void ShowExampleAppDockSpace();
 static void ShowExampleAppLog();
@@ -289,7 +290,7 @@ void ShowModelCreatorWindow()
 
             logInfo("Open file: " + path);
 
-            auto model = Model::loadModelFromFile(modelPath.c_str(), flipTexture);
+            auto model = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str(), flipTexture);
             std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
             model->UseMaterial(material);
             model->GetTransformation()->SetPosition(pos);
@@ -409,7 +410,6 @@ void ShowPrimitiveCreatorWindow()
             }
             if (model != nullptr)
             {
-                model->FlipTexture(flipTexture);
                 std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
                 model->UseMaterial(material);
                 model->GetTransformation()->SetPosition(pos);

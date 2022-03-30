@@ -19,7 +19,7 @@ public:
 	void rotateX(float x);
 	void rotateY(float y);
 	void rotateZ(float z);
-private:
+protected:
 	friend class Scene;
 	inline void setID(uint32_t id) { m_id = id; }
 

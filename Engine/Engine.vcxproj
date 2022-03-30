@@ -98,6 +98,7 @@
   <ItemGroup>
     <ClCompile Include="src\Box.cpp" />
     <ClCompile Include="src\EventSystem.cpp" />
+    <ClCompile Include="src\ModelImporter.cpp" />
     <ClCompile Include="src\PostProcess.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Context.cpp" />
@@ -148,6 +149,7 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ModelImporter.h" />
     <ClInclude Include="src\Box.h" />
     <ClInclude Include="src\Quad.h" />
     <ClInclude Include="src\Sphere.h" />
