@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include "ApplicationConstants.h"
 
 #include <GL/glew.h>
 #include "stb_image.h"
@@ -11,7 +12,7 @@ Texture::Texture()
 	logTrace( __FUNCTION__ );
 }
 
-std::shared_ptr<Texture> Texture::CreateEmptyTexture(int width, int height)
+std::shared_ptr<Texture> Texture::createEmptyTexture(int width, int height)
 {
 	std::shared_ptr<Texture> texture = std::make_shared<Texture>();
 
@@ -29,7 +30,7 @@ std::shared_ptr<Texture> Texture::CreateEmptyTexture(int width, int height)
 	return texture;
 }
 
-std::shared_ptr<Texture> Texture::LoadTextureFromFile(const std::string& fileLocation, bool isFlipped)
+std::shared_ptr<Texture> Texture::loadTextureFromFile(const std::string& fileLocation, bool isFlipped)
 {
 	std::shared_ptr<Texture> texture = std::make_shared<Texture>();
 
@@ -79,7 +80,7 @@ std::shared_ptr<Texture> Texture::LoadTextureFromFile(const std::string& fileLoc
 	return texture;
 }
 
-std::shared_ptr<Texture> Texture::LoadCubemap(std::vector<std::string> faces)
+std::shared_ptr<Texture> Texture::loadCubemapTexture(std::vector<std::string> faces)
 {
 	auto texture = std::make_shared<Texture>();
 	glGenTextures(1, &texture->m_id);
@@ -114,10 +115,54 @@ std::shared_ptr<Texture> Texture::LoadCubemap(std::vector<std::string> faces)
 	return texture;
 }
 
-void Texture::Bind()
+std::string Texture::textureTypeToString(Type type)
+{
+	switch (type)
+	{
+		case Texture::Type::Diffuse:
+			return Constants::g_textureDiffuse;
+		case Texture::Type::Specular:
+			return Constants::g_textureSpecular;
+		default:
+			logError("Unsupported texture format");
+			return "";
+	}
+}
+
+void Texture::bind()
 {
 	glActiveTexture(GL_TEXTURE0 + m_slot);
-	glBindTexture(getTarget(), m_id);
+	glBindTexture(m_target, m_id);
+}
+
+void Texture::unbind()
+{
+	glActiveTexture(0);
+}
+
+void Texture::setType(Type type)
+{
+	m_type = type;
+}
+
+unsigned int Texture::getID() const
+{
+	return m_id;
+}
+
+Texture::Type Texture::getType() const
+{
+	return m_type;
+}
+
+std::string Texture::getFilepath() const
+{
+	return m_fileLocation;
+}
+
+uint32_t Texture::getTarget() const
+{
+	return m_target;
 }
 
 void Texture::ClearTexture()

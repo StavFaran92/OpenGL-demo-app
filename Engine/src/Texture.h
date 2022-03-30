@@ -13,22 +13,27 @@ public:
 	enum class Type
 	{
 		Diffuse,
-		Specular
+		Specular,
+
+		None
 	};
 	// This should not be used.
 	Texture();
 
-	static std::shared_ptr<Texture> CreateEmptyTexture(int width, int height);
-	static std::shared_ptr<Texture> LoadTextureFromFile(const std::string& fileLocation, bool isFlipped = false);
-	static std::shared_ptr<Texture> LoadCubemap(std::vector<std::string> faces);
+	static std::shared_ptr<Texture> createEmptyTexture(int width, int height);
+	static std::shared_ptr<Texture> loadTextureFromFile(const std::string& fileLocation, bool isFlipped = false);
+	static std::shared_ptr<Texture> loadCubemapTexture(std::vector<std::string> faces);
 
-	void Bind();
+	static std::string textureTypeToString(Type type);
 
-	inline void SetType(const std::string type) { m_type = type; }
-	inline const unsigned int GetID() const { return m_id; }
-	inline const std::string GetType() const { return m_type; }
-	inline const std::string GetPath() const { return m_fileLocation; }
-	inline const uint32_t getTarget() const { return m_target; }
+	void bind();
+	void unbind();
+
+	void setType(Type type);
+	unsigned int getID() const;
+	Type getType() const;
+	std::string getFilepath() const;
+	uint32_t getTarget() const;
 	~Texture();
 private:
 	inline void setTarget(uint32_t target) { m_target = target; }
@@ -38,7 +43,7 @@ private:
 	uint32_t m_id;
 	int m_width, m_height, m_bitDepth;
 	int m_slot;
-	std::string m_type = "";
+	Type m_type;
 	uint32_t m_target = 0;
 
 	std::string m_fileLocation;

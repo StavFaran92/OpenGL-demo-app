@@ -23,7 +23,7 @@ Skybox* Skybox::CreateSkybox()
             "Resources\\Textures\\Skybox\\front.jpg",
             "Resources\\Textures\\Skybox\\back.jpg"
     };
-	auto texture = Texture::LoadCubemap(faces);
+	auto texture = Texture::loadCubemapTexture(faces);
     mesh->addTexture(texture);
 
     model->m_meshes.push_back(std::shared_ptr<Mesh>(mesh));

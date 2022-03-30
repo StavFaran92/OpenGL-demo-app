@@ -161,14 +161,16 @@ void Mesh::SetTexturesInShader(std::shared_ptr<Shader>& shader)
 		glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
 										  // retrieve texture number (the N in diffuse_textureN)
 		std::string number = "";
-		std::string name = m_textures[i]->GetType();
-		if (name == Constants::g_textureDiffuse)
+		auto type = m_textures[i]->getType();
+		if (type == Texture::Type::Diffuse)
 			number = std::to_string(diffuseNr++);
-		else if (name == Constants::g_textureSpecular)
+		else if (type == Texture::Type::Specular)
 			number = std::to_string(specularNr++);
 
+		auto name = Texture::textureTypeToString(type);
+
 		shader->SetInt(("material." + name + number).c_str(), i);
-		glBindTexture(GL_TEXTURE_2D, m_textures[i]->GetID());
+		glBindTexture(GL_TEXTURE_2D, m_textures[i]->getID());
 	}
 }
 void Mesh::setPositions(std::shared_ptr<std::vector<glm::vec3>> positions)

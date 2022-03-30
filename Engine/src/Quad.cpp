@@ -21,11 +21,11 @@ Quad* Quad::generateQuad()
 
 	auto mesh = generateMesh();
 
-	auto texturediff = Texture::LoadTextureFromFile("Resources\\Textures\\template.png");
-	texturediff->SetType(Constants::g_textureDiffuse);
+	auto texturediff = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
+	texturediff->setType(Texture::Type::Diffuse);
 
-	auto textureSpec = Texture::LoadTextureFromFile("Resources\\Textures\\template.png");
-	textureSpec->SetType(Constants::g_textureSpecular);
+	auto textureSpec = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
+	textureSpec->setType(Texture::Type::Specular);
 
 	mesh->addTexture(texturediff);
 	mesh->addTexture(textureSpec);

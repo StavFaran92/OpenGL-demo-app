@@ -396,7 +396,7 @@ void ShowPrimitiveCreatorWindow()
 
             logInfo("Open file: " + path);
 
-            //auto texture = Texture::LoadTextureFromFile(texturePath.c_str(), flipTexture);
+            //auto texture = Texture::loadTextureFromFile(texturePath.c_str(), flipTexture);
 
             Model* model = nullptr;
             if (shape == Model::PrimitiveType::Quad)
@@ -475,7 +475,7 @@ void ShowPrimitiveCreatorWindow()
 //
 //            logInfo("Open file: " + path);
 //
-//            //auto texture = Texture::LoadTextureFromFile(texturePath.c_str(), flipTexture);
+//            //auto texture = Texture::loadTextureFromFile(texturePath.c_str(), flipTexture);
 //
 //            std::shared_ptr<Model> model = nullptr;
 //

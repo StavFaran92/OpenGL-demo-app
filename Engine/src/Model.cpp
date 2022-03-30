@@ -86,7 +86,7 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 				logError("Skybox does not contain cubemap texture.");
 				return;
 			}
-			textures[0]->Bind();
+			textures[0]->bind();
 		}
 
 		if (m_isRefractive)
@@ -101,7 +101,7 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 				logError("Skybox does not contain cubemap texture.");
 				return;
 			}
-			textures[0]->Bind();
+			textures[0]->bind();
 		}
 	}
 
@@ -244,12 +244,10 @@ std::shared_ptr<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	{
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-		auto diffuseMaps = loadMaterialTextures(material,
-			aiTextureType_DIFFUSE, Constants::g_textureDiffuse);
+		auto diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, Constants::g_textureDiffuse);
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-		auto specularMaps = loadMaterialTextures(material,
-			aiTextureType_SPECULAR, Constants::g_textureSpecular);
+		auto specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, Constants::g_textureSpecular);
 		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 	}
 
@@ -275,7 +273,7 @@ std::vector<std::shared_ptr<Texture>> Model::loadMaterialTextures(aiMaterial* ma
 		bool skip = false;
 		for (unsigned int j = 0; j < m_texturesCache.size(); j++)
 		{
-			if (m_texturesCache[j]->GetPath().compare(m_modelDir + "\\" + str.C_Str()) == 0)
+			if (m_texturesCache[j]->getFilepath().compare(m_modelDir + "\\" + str.C_Str()) == 0)
 			{
 				textures.push_back(m_texturesCache[j]);
 				skip = true;
@@ -284,13 +282,31 @@ std::vector<std::shared_ptr<Texture>> Model::loadMaterialTextures(aiMaterial* ma
 		}
 		if (!skip)
 		{
-			auto texture = Texture::LoadTextureFromFile(m_modelDir + "\\" + str.C_Str(), m_flipTexture);
-			texture->SetType(typeName);
-			textures.push_back(texture);
-			m_texturesCache.push_back(texture);
+			auto texture = Texture::loadTextureFromFile(m_modelDir + "\\" + str.C_Str(), m_flipTexture);
+			auto pType = getTextureType(type);
+			if (pType != Texture::Type::None)
+			{
+				texture->setType(pType);
+				textures.push_back(texture);
+				m_texturesCache.push_back(texture);
+			}
 		}
 	}
 	return textures;
+}
+
+Texture::Type Model::getTextureType(aiTextureType type)
+{
+	switch (type)
+	{
+	case aiTextureType::aiTextureType_DIFFUSE:
+		return Texture::Type::Diffuse;
+	case aiTextureType::aiTextureType_SPECULAR:
+		return Texture::Type::Specular;
+	default:
+		logError("Unsupported type: " + type);
+		return Texture::Type::None;
+	}
 }
 
 void Model::FlipTexture(bool flip)

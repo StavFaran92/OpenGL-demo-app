@@ -14,14 +14,14 @@ VertexArrayObject::~VertexArrayObject()
 
 void VertexArrayObject::AttachBuffer(const VertexBufferObject& vbo, const ElementBufferObject& ebo)
 {
-	// Bind this VAO
+	// bind this VAO
 	Bind();
 
-	// Bind VBO to associate with this VAO
+	// bind VBO to associate with this VAO
 	vbo.Bind();
 	m_verticesCount = vbo.getLength();
 
-	// Bind IBO to associate with this VAO
+	// bind IBO to associate with this VAO
 	ebo.Bind();
 	m_indexCount = ebo.getLength();
 
@@ -43,10 +43,10 @@ void VertexArrayObject::FillVertexAttrib()
 
 void VertexArrayObject::AttachBuffer(const VertexBufferObject& vbo)
 {
-	// Bind this VAO
+	// bind this VAO
 	Bind();
 
-	// Bind VBO to associate with this VAO
+	// bind VBO to associate with this VAO
 	vbo.Bind();
 	m_verticesCount = vbo.getLength();
 

@@ -13,8 +13,8 @@ bool ScreenBufferProjector::init()
 	m_frameBuffer = std::make_shared<FrameBufferObject>();
 	m_frameBuffer->Bind();
 
-	m_texture = Texture::CreateEmptyTexture(Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
-	m_frameBuffer->AttachTexture(m_texture->GetID());
+	m_texture = Texture::createEmptyTexture(Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
+	m_frameBuffer->AttachTexture(m_texture->getID());
 
 	m_renderBuffer = std::make_shared<RenderBufferObject>();
 
@@ -52,7 +52,7 @@ void ScreenBufferProjector::RedirectToDefault()
 	m_screenShader->UseShader();
 	//glBindVertexArray(quadVAO);
 	glDisable(GL_DEPTH_TEST);
-	glBindTexture(GL_TEXTURE_2D, m_texture->GetID());
+	glBindTexture(GL_TEXTURE_2D, m_texture->getID());
 	//glDrawArrays(GL_TRIANGLES, 0, 6);
 	m_quad->Draw(m_renderer, m_screenShader);
 }
