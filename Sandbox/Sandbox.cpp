@@ -47,11 +47,6 @@ public:
 		{
 			box->rotateZ(1);
 		}
-
-		if (mouse_leftButtonPressed())
-		{
-			box->rotateY(1);
-		}
 		
 		//box->rotateY(1);
 		draw(box);

@@ -27,7 +27,7 @@ public:
 	};
 	struct VerticesLayout
 	{
-		std::vector<std::pair<LayoutAttributes, int>> entries;
+		std::vector<std::pair<LayoutAttributes, size_t>> entries;
 		size_t numOfVertices = 0;
 	};
 	// -------------------- Methods -------------------- //
