@@ -32,10 +32,6 @@ public:
 	};
 	// -------------------- Methods -------------------- //
 	Mesh() {};
-	//Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices);
-	//Mesh(float* vertices, size_t verticesSize, unsigned int* indices, size_t indicesSize);
-	//Mesh(std::shared_ptr<std::vector<Vertex>> vertices);
-	//Mesh(float* vertices, size_t verticesSize);
 
 	void renderMesh(std::shared_ptr<Shader> shader, std::shared_ptr <IRenderer>renderer);
 
@@ -61,7 +57,6 @@ private:
 	void clearMesh();
 private:
 	// -------------------- Attributes -------------------- //
-	std::shared_ptr<std::vector<Vertex>>       m_vertices;
 	/** Mesh positions */
 	std::shared_ptr<std::vector<glm::vec3>>       m_positions;
 

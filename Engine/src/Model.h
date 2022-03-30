@@ -56,25 +56,25 @@ public:
 
 	std::vector<std::shared_ptr<Texture>> GetTextures();
 
-	//void FlipTexture(bool flip);
+	void flipTexture();
+
 	inline void SetReflection(bool val) { m_isReflective = val; }
 	inline void SetRefraction(bool val) { m_isRefractive = val; }
 private:
 	friend class Scene;
-	void update(float deltaTime);
 	friend class ModelImporter;
+
+	void update(float deltaTime);
 	void addMesh(Mesh* mesh);
 	
 protected:
+	// -------------------- Methods -------------------- //
 	virtual void Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> shader = nullptr);
 	
 	// -------------------- Attributes -------------------- //
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
-	//std::string m_modelDir = "";
-	//std::string m_path = "";
 	std::shared_ptr<Shader> m_shader = nullptr;
 	std::shared_ptr<Material> m_material = nullptr;
-	bool m_flipTexture = false;
 
 	bool m_isReflective = false;
 	bool m_isRefractive = false;

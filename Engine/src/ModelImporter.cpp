@@ -78,7 +78,6 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 
 Mesh* ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporter::ModelImportSession& session)
 {
-	//auto vertices = std::make_shared<std::vector<Vertex>>();
 	auto positions = std::make_shared<std::vector<glm::vec3>>();
 	auto normals = std::make_shared<std::vector<glm::vec3>>();
 	auto texcoords = std::make_shared<std::vector<glm::vec2>>();

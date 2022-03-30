@@ -28,7 +28,6 @@ public:
 		bool flippedTexture = false;
 		std::string filepath;
 		std::string fileDir;
-
 	};
 
 	/** Constructor */
