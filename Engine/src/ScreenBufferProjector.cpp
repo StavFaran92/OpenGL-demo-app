@@ -49,7 +49,7 @@ void ScreenBufferProjector::RedirectToDefault()
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	m_screenShader->UseShader();
+	m_screenShader->use();
 	//glBindVertexArray(quadVAO);
 	glDisable(GL_DEPTH_TEST);
 	glBindTexture(GL_TEXTURE_2D, m_texture->getID());

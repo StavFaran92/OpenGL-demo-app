@@ -1,49 +1,5 @@
 #include "Mesh.h"
 
-//Mesh::Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices) :
-//	m_vertices(vertices), m_indices(indices)
-//{
-//	logTrace( __FUNCTION__ );
-//
-//	m_vao = std::make_shared<VertexArrayObject>();
-//	m_ibo = std::make_shared<ElementBufferObject>(&(m_indices->at(0)), indices->size());
-//	m_vbo = std::make_shared<VertexBufferObject>(&(vertices->at(0)), vertices->size(), sizeof(Vertex));
-//
-//	m_vao->AttachBuffer(*m_vbo, *m_ibo);
-//}
-//
-//Mesh::Mesh(float* vertices, size_t verticesSize, unsigned int* indices, size_t indicesSize)
-//{
-//	logTrace(__FUNCTION__);
-//
-//	m_vao = std::make_shared<VertexArrayObject>();
-//	m_ibo = std::make_shared<ElementBufferObject>(indices, indicesSize);
-//	m_vbo = std::make_shared<VertexBufferObject>(vertices, verticesSize / sizeof(Vertex), sizeof(Vertex));
-//
-//	m_vao->AttachBuffer(*m_vbo, *m_ibo);
-//}
-//
-//Mesh::Mesh(std::shared_ptr<std::vector<Vertex>> vertices) :
-//	m_vertices(vertices), m_indices(nullptr)
-//{
-//	logTrace(__FUNCTION__);
-//
-//	m_vao = std::make_shared<VertexArrayObject>();
-//	m_vbo = std::make_shared<VertexBufferObject>(&(vertices->at(0)), vertices->size(), sizeof(Vertex));
-//
-//	m_vao->AttachBuffer(*m_vbo);
-//}
-//
-//Mesh::Mesh(float* vertices, size_t verticesSize)
-//{
-//	logTrace(__FUNCTION__);
-//
-//	m_vao = std::make_shared<VertexArrayObject>();
-//	m_vbo = std::make_shared<VertexBufferObject>(vertices, verticesSize / sizeof(Vertex), sizeof(Vertex));
-//
-//	m_vao->AttachBuffer(*m_vbo);
-//}
-
 void Mesh::renderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < IRenderer >renderer)
 {
 	if (shader->IsTexturesEnabled())
@@ -151,26 +107,34 @@ void Mesh::setRawIndices(unsigned int* indices, size_t size)
 
 void Mesh::SetTexturesInShader(std::shared_ptr<Shader>& shader)
 {
-	// TODO extract this logic into texture class
+	// Initialized counters
 	uint32_t diffuseNr = 1;
 	uint32_t specularNr = 1;
 
 	// Iterate the mesh's textures
 	for (auto i = 0; i < m_textures.size(); i++)
 	{
-		glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
-										  // retrieve texture number (the N in diffuse_textureN)
-		std::string number = "";
+		// get type count
+		std::string count;
 		auto type = m_textures[i]->getType();
 		if (type == Texture::Type::Diffuse)
-			number = std::to_string(diffuseNr++);
+			count = std::to_string(diffuseNr++);
 		else if (type == Texture::Type::Specular)
-			number = std::to_string(specularNr++);
+			count = std::to_string(specularNr++);
 
-		auto name = Texture::textureTypeToString(type);
+		// Get type as string
+		auto typeStr = Texture::textureTypeToString(type);
 
-		shader->SetInt(("material." + name + number).c_str(), i);
+		// Activate texture unit i
+		glActiveTexture(GL_TEXTURE0 + i);
+
+		// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
 		glBindTexture(GL_TEXTURE_2D, m_textures[i]->getID());
+
+		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
+		shader->SetInt(("material." + typeStr + count).c_str(), i);
+
+		shader->SetInt("flipTexture", m_textures[i]->isFlipped());
 	}
 }
 void Mesh::setPositions(std::shared_ptr<std::vector<glm::vec3>> positions)

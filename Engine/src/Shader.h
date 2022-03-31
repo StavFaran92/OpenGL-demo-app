@@ -15,7 +15,8 @@ public:
 	Shader();
 	Shader(const std::string& vertexfilePath, const std::string& fragmentFilePath);
 
-	void UseShader() const;
+	void use() const;
+	void release() const;
 	void ClearShader();
 
 	inline unsigned int getID() const { return m_id; }
@@ -58,4 +59,6 @@ private:
 	bool m_enableLight = false;
 	bool m_enableMaterial = false;
 	bool m_enableTexture = false;
+
+	static uint32_t s_activateShader;
 };

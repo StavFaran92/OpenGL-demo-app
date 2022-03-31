@@ -50,7 +50,7 @@ public:
 
 	bool UseMaterial(std::shared_ptr<Material> material);
 
-	bool UseShader();
+	bool use();
 
 	std::shared_ptr<Shader> GetShader();
 

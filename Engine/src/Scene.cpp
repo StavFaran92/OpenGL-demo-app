@@ -53,11 +53,11 @@ void Scene::draw(float deltaTime)
 		m_screenBufferProjector->RedirectToFrameBuffer();
 	}
 
-	// Draw models
+	// Draw Engine models
 	for (auto model = m_models.begin(); model != m_models.end(); ++model)
 	{
 		auto shader = model->second->GetShader();
-		shader->UseShader();
+		shader->use();
 
 		if (shader->IsLightsEnabled())
 		{
@@ -84,9 +84,11 @@ void Scene::draw(float deltaTime)
 
 		// Draw model
 		model->second->Draw(m_renderer, shader);
+
+		shader->release();
 	}
 
-	// Draw models
+	// Draw Application models
 	while(!m_drawQueue.empty())
 	{
 		auto model = m_drawQueue.front();
@@ -95,7 +97,7 @@ void Scene::draw(float deltaTime)
 		model->update(deltaTime);
 
 		auto shader = model->GetShader();
-		shader->UseShader();
+		shader->use();
 
 		if (shader->IsLightsEnabled())
 		{
@@ -122,11 +124,13 @@ void Scene::draw(float deltaTime)
 
 		// Draw model
 		model->Draw(m_renderer, shader);
+
+		shader->release();
 	}
 
 	if (m_skybox)
 	{
-		m_skybox->UseShader();
+		m_skybox->use();
 		m_skybox->Draw(m_skyboxRenderer);
 	}
 

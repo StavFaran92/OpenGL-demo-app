@@ -47,7 +47,7 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 		if (m_isReflective)
 		{
 			currShader = context->GetReflectionShader();
-			currShader->UseShader();
+			currShader->use();
 			currShader->SetInt("skybox", 0);
 			auto textures = context->getActiveScene()->getSkybox()->GetTextures();
 			if (textures.size() <= 0)
@@ -61,7 +61,7 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 		if (m_isRefractive)
 		{
 			currShader = context->GetRefractiveShader();
-			currShader->UseShader();
+			currShader->use();
 			currShader->SetInt("skybox", 0);
 			currShader->SetFloat("refractiveRatio", 1 / 1.52f);
 			auto textures = context->getActiveScene()->getSkybox()->GetTextures();
@@ -113,9 +113,9 @@ void Model::addMesh(Mesh* mesh)
 	m_meshes.push_back(std::shared_ptr<Mesh>(mesh));
 }
 
-bool Model::UseShader()
+bool Model::use()
 {
-	m_shader->UseShader();
+	m_shader->use();
 
 	return true;
 }

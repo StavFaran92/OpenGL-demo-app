@@ -5,6 +5,7 @@
 #include "stb_image.h"
 
 #include "Logger.h"
+#include "Configurations.h"
 
 Texture::Texture()
 	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_slot(0)
@@ -16,31 +17,29 @@ std::shared_ptr<Texture> Texture::createEmptyTexture(int width, int height)
 {
 	std::shared_ptr<Texture> texture = std::make_shared<Texture>();
 
-	texture->setTarget(GL_TEXTURE_2D);
 	// generate texture
 	glGenTextures(1, &texture->m_id);
-	glBindTexture(texture->getTarget(), texture->m_id);
-	glTexImage2D(texture->getTarget(), 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture->m_id);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
-	glTexParameteri(texture->getTarget(), GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(texture->getTarget(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glBindTexture(texture->getTarget(), 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	return texture;
 }
 
-std::shared_ptr<Texture> Texture::loadTextureFromFile(const std::string& fileLocation, bool isFlipped)
+std::shared_ptr<Texture> Texture::loadTextureFromFile(const std::string& fileLocation)
 {
 	std::shared_ptr<Texture> texture = std::make_shared<Texture>();
-
-	texture->setTarget(GL_TEXTURE_2D);
 
 	// Cache file location
 	texture->m_fileLocation = fileLocation;
 
 	// flip the image
-	stbi_set_flip_vertically_on_load(isFlipped);
+	stbi_set_flip_vertically_on_load(FLIP_TEXTURE);
 
 	// load texture from file
 	unsigned char* data = stbi_load(texture->m_fileLocation.c_str(), &texture->m_width, &texture->m_height, &texture->m_bitDepth, 0);
@@ -53,7 +52,8 @@ std::shared_ptr<Texture> Texture::loadTextureFromFile(const std::string& fileLoc
 
 	// generate texture and bind it
 	glGenTextures(1, &texture->m_id);
-	glBindTexture(texture->getTarget(), texture->m_id);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture->m_id);
 
 	GLenum format = GL_RGB;
 	if (texture->m_bitDepth == 1)
@@ -64,17 +64,17 @@ std::shared_ptr<Texture> Texture::loadTextureFromFile(const std::string& fileLoc
 		format = GL_RGBA;
 
 	// sets the texture parameters
-	glTexParameteri(texture->getTarget(), GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(texture->getTarget(), GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(texture->getTarget(), GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(texture->getTarget(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// generate texture and mipmaps
-	glTexImage2D(texture->getTarget(), 0, format, texture->m_width, texture->m_height, 0, format, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(texture->getTarget());
+	glTexImage2D(GL_TEXTURE_2D, 0, format, texture->m_width, texture->m_height, 0, format, GL_UNSIGNED_BYTE, data);
+	glGenerateMipmap(GL_TEXTURE_2D);
 
 	// unbind texture and release the image.
-	glBindTexture(texture->getTarget(), 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	stbi_image_free(data);
 
 	return texture;
@@ -83,11 +83,10 @@ std::shared_ptr<Texture> Texture::loadTextureFromFile(const std::string& fileLoc
 std::shared_ptr<Texture> Texture::loadCubemapTexture(std::vector<std::string> faces)
 {
 	auto texture = std::make_shared<Texture>();
+
 	glGenTextures(1, &texture->m_id);
-
-	texture->setTarget(GL_TEXTURE_CUBE_MAP);
-
-	glBindTexture(texture->getTarget(), texture->m_id);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, texture->m_id);
 
 	int width, height, nrChannels;
 	for (unsigned int i = 0; i < faces.size(); i++)
@@ -106,11 +105,11 @@ std::shared_ptr<Texture> Texture::loadCubemapTexture(std::vector<std::string> fa
 			stbi_image_free(data);
 		}
 	}
-	glTexParameteri(texture->getTarget(), GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(texture->getTarget(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(texture->getTarget(), GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(texture->getTarget(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(texture->getTarget(), GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	return texture;
 }
@@ -145,6 +144,16 @@ void Texture::setType(Type type)
 	m_type = type;
 }
 
+void Texture::flip()
+{
+	m_flipped = !m_flipped;
+}
+
+bool Texture::isFlipped() const
+{
+	return m_flipped;
+}
+
 unsigned int Texture::getID() const
 {
 	return m_id;
@@ -158,16 +167,6 @@ Texture::Type Texture::getType() const
 std::string Texture::getFilepath() const
 {
 	return m_fileLocation;
-}
-
-uint32_t Texture::getTarget() const
-{
-	return m_target;
-}
-
-void Texture::setTarget(uint32_t target)
-{
-	m_target = target;
 }
 
 void Texture::ClearTexture()

@@ -348,6 +348,7 @@
     <ClInclude Include="src\ModelImporter.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Configurations.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

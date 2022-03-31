@@ -9,6 +9,8 @@
 Shader PhongShader;
 Shader SolidColorShader;
 
+uint32_t Shader::s_activateShader = 0;
+
 Shader::Shader()
 {
 }
@@ -92,9 +94,18 @@ bool Shader::ValidateProgramLink()
 	return true;
 }
 
-void Shader::UseShader() const
+void Shader::use() const
 {
+	s_activateShader = m_id;
+
 	glUseProgram(m_id);
+}
+
+void Shader::release() const
+{
+	s_activateShader = 0;
+
+	glUseProgram(0);
 }
 
 void Shader::ClearShader()
@@ -154,36 +165,78 @@ int Shader::GetUniformLocation(const std::string& name)
 
 void Shader::SetFloat(const std::string& name, float v)
 {
+	if(s_activateShader != m_id)
+	{
+		logDebug("Shader: {} is not currently bound", m_id);
+		return;
+	}
+
 	glUniform1f(GetUniformLocation(name), v);
 }
 
 void Shader::SetFloat(const std::string& name, glm::vec2 v)
 {
+	if (s_activateShader != m_id)
+	{
+		logDebug("Shader: {} is not currently bound", m_id);
+		return;
+	}
+
 	glUniform2f(GetUniformLocation(name), v.x, v.y);
 }
 
 void Shader::SetFloat(const std::string& name, glm::vec3 v)
 {
+	if (s_activateShader != m_id)
+	{
+		logDebug("Shader: {} is not currently bound", m_id);
+		return;
+	}
+
 	glUniform3f(GetUniformLocation(name), v.x, v.y, v.z);
 }
 
 void Shader::SetFloat(const std::string& name, glm::vec4 v)
 {
+	if (s_activateShader != m_id)
+	{
+		logDebug("Shader: {} is not currently bound", m_id);
+		return;
+	}
+
 	glUniform4f(GetUniformLocation(name), v.x, v.y, v.z, v.w);
 }
 
 void Shader::SetInt(const std::string& name, int v)
 {
+	if (s_activateShader != m_id)
+	{
+		logDebug("Shader: {} is not currently bound", m_id);
+		return;
+	}
+
 	glUniform1i(GetUniformLocation(name), v);
 }
 
 void Shader::SetMat3(const std::string& name, const glm::mat3& v)
 {
+	if (s_activateShader != m_id)
+	{
+		logDebug("Shader: {} is not currently bound", m_id);
+		return;
+	}
+
 	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(v));
 }
 
 void Shader::SetMat4(const std::string& name, const glm::mat4& v)
 {
+	if (s_activateShader != m_id)
+	{
+		logDebug("Shader: {} is not currently bound", m_id);
+		return;
+	}
+
 	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(v));
 }
 

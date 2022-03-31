@@ -167,7 +167,7 @@ std::vector<std::shared_ptr<Texture>> ModelImporter::loadMaterialTextures(aiMate
 		}
 		if (!skip)
 		{
-			auto texture = Texture::loadTextureFromFile(session.fileDir + "\\" + str.C_Str(), session.flippedTexture);
+			auto texture = Texture::loadTextureFromFile(session.fileDir + "\\" + str.C_Str());
 			auto pType = getTextureType(type);
 			if (pType != Texture::Type::None)
 			{

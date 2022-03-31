@@ -37,7 +37,7 @@ public:
 	 * \param isFlipped		Should flip the texture vertically
 	 * \return		A pointer to the loaded texture
 	 */
-	static std::shared_ptr<Texture> loadTextureFromFile(const std::string& fileLocation, bool isFlipped = false);
+	static std::shared_ptr<Texture> loadTextureFromFile(const std::string& fileLocation);
 	static std::shared_ptr<Texture> loadCubemapTexture(std::vector<std::string> faces);
 
 	/**
@@ -66,15 +66,17 @@ public:
 	 * 
 	 * \return Type of this texture
 	 */
+
 	Type getType() const;
+
+	void flip();
+	bool isFlipped() const;
 	unsigned int getID() const;
 	std::string getFilepath() const;
-	uint32_t getTarget() const;
 
 	/**  Destructor */
 	~Texture();
 private:
-	void setTarget(uint32_t target);
 	void ClearTexture();
 
 private:
@@ -83,6 +85,7 @@ private:
 	int m_slot;
 	Type m_type;
 	uint32_t m_target = 0;
+	bool m_flipped = false;
 
 	std::string m_fileLocation;
 };
