@@ -4,21 +4,30 @@ class Sandbox : public Application
 {
 public:
 	using Application::draw;
-	Box* box;
-	Quad* quad;
-	Sphere* sphere;
+	Box boxes[3][3][3];
 
 	void start() override
 	{
 		skybox(Skybox::CreateSkybox());
 
-		box = createBox();
-		quad = createQuad();
-		quad->translate(0, 0, -2);
-		quad->rotateZ(90);
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				for (int k = 0; k < 3; k++)
+				{
+					boxes[i][j][k] = *createBox();
+					boxes[i][j][k].translate(1.1f*i, 1.1f * j, 1.1f * k);
+				}
+			}
+		}
+		
+		//quad = createQuad();
+		//quad->translate(0, 0, -2);
+		//quad->rotateZ(90);
 
-		sphere = Sphere::generateSphere(1, 36, 18);
-		sphere->translate(2, 0, 0);
+		//sphere = Sphere::generateSphere(1, 36, 18);
+		//sphere->translate(2, 0, 0);
 
 		postProcess(PostProcess::grayscale());
 	}
@@ -35,23 +44,40 @@ public:
 		
 		if (keyboard_getKeyState(SDL_Scancode::SDL_SCANCODE_X))
 		{
-			box->rotateX(1);
+			boxes[0][0][0].rotateX(1);
+			boxes[0][0][1].rotateX(1);
+			boxes[0][0][2].rotateX(1);
+
+			boxes[0][1][0].rotateX(1);
+			boxes[0][1][1].rotateX(1);
+			boxes[0][1][2].rotateX(1);
+
+			boxes[0][2][0].rotateX(1);
+			boxes[0][2][1].rotateX(1);
+			boxes[0][2][2].rotateX(1);
 		}
 
-		if (keyboard_getKeyState(SDL_Scancode::SDL_SCANCODE_Y))
-		{
-			box->rotateY(1);
-		}
+		//if (keyboard_getKeyState(SDL_Scancode::SDL_SCANCODE_Y))
+		//{
+		//	box->rotateY(1);
+		//}
 
-		if (keyboard_getKeyState(SDL_Scancode::SDL_SCANCODE_Z))
-		{
-			box->rotateZ(1);
-		}
+		//if (keyboard_getKeyState(SDL_Scancode::SDL_SCANCODE_Z))
+		//{
+		//	box->rotateZ(1);
+		//}
 		
 		//box->rotateY(1);
-		draw(box);
-		draw(quad);
-		draw(sphere);
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				for (int k = 0; k < 3; k++)
+				{
+					draw(&boxes[i][j][k]);
+				}
+			}
+		}
 	}
 
 };
