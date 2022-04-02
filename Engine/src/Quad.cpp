@@ -41,14 +41,14 @@ Quad* Quad::generateQuad()
 Mesh* Quad::generateMesh()
 {
 	auto mesh = new Mesh();
-	Mesh::VerticesLayout layout;
-	layout.numOfVertices = 4;
-	layout.entries.emplace_back(Mesh::LayoutAttributes::Positions, 3);
-	layout.entries.emplace_back(Mesh::LayoutAttributes::Normals, 3);
-	layout.entries.emplace_back(Mesh::LayoutAttributes::Texcoords, 2);
-	mesh->setRawVertices((float*)vertices, layout);
-	mesh->setRawIndices((unsigned int*)indices, sizeof(indices) / sizeof(unsigned int));
-	mesh->build();
+	//Mesh::VerticesLayout layout;
+	//layout.numOfVertices = 4;
+	//layout.attribs.emplace_back(LayoutAttributes::Positions);
+	//layout.attribs.emplace_back(LayoutAttributes::Normals);
+	//layout.attribs.emplace_back(LayoutAttributes::Texcoords);
+	//mesh->setRawVertices((float*)vertices, layout);
+	//mesh->setRawIndices((unsigned int*)indices, sizeof(indices) / sizeof(unsigned int));
+	//mesh->build();
 
 	return mesh;
 }

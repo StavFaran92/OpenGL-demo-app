@@ -10,6 +10,7 @@
 #include "ObjectSelection.h"
 #include "SkyboxRenderer.h"
 #include "ScreenBufferProjector.h"
+#include "Logger.h"
 
 void Scene::init()
 {

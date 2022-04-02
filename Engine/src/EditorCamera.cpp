@@ -9,6 +9,8 @@
 #include "Scene.h"
 #include "EventSystem.h"
 
+#include "Logger.h"
+
 EditorCamera::EditorCamera(glm::vec3 startPosition, float startMoveSpeed, float startTurnSpeed)
 	: m_position(startPosition),
 	m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),

@@ -1,5 +1,9 @@
 #include "Mesh.h"
 
+#include "Logger.h"
+
+#include <GL\glew.h>
+
 void Mesh::renderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < IRenderer >renderer)
 {
 	if (shader->IsTexturesEnabled())
@@ -21,89 +25,87 @@ void Mesh::addTextures(std::vector<std::shared_ptr<Texture>> textures)
 	m_textures.insert(m_textures.end(), textures.begin(), textures.end());
 }
 
-void Mesh::setRawVertices(float* vertices, VerticesLayout& layout)
-{
-	m_numOfVertices = layout.numOfVertices;
-	// calculate stride
-	int stride = 0;
-	for (auto entry : layout.entries)
-	{
-		stride += entry.second;
-	}
+//void Mesh::setRawVertices(float* vertices, VerticesLayout& layout)
+//{
+//	m_numOfVertices = layout.numOfVertices;
+//	// calculate stride
+//	int stride = 0;
+//	for (auto entry : layout.attribs)
+//	{
+//		stride += getAttributeSize(entry);
+//	}
+//
+//	int offset = 0;
+//
+//	// Parse vertices
+//	auto positions = std::make_shared<std::vector<glm::vec3>>();
+//	auto normals = std::make_shared<std::vector<glm::vec3>>();
+//	auto texcoords = std::make_shared<std::vector<glm::vec2>>();
+//
+//	for (auto entry : layout.attribs)
+//	{
+//		// Parse positions
+//		if (LayoutAttributes::Positions == entry)
+//		{
+//			positions->reserve(layout.numOfVertices * getAttributeSize(entry));
+//			for (int i = 0; i < layout.numOfVertices; i++)
+//			{
+//				glm::vec3 pos;
+//				for (int j = 0; j < getAttributeSize(entry); j++)
+//				{
+//					pos[j] = vertices[stride * i + j + offset];
+//				}
+//				positions->emplace_back(pos);
+//			}
+//			setPositions(positions);
+//		}
+//
+//		// Parse normals
+//		else if (LayoutAttributes::Normals == entry)
+//		{
+//			normals->reserve(layout.numOfVertices * getAttributeSize(entry));
+//			for (int i = 0; i < layout.numOfVertices; i++)
+//			{
+//				glm::vec3 normal;
+//				for (int j = 0; j < getAttributeSize(entry); j++)
+//				{
+//					normal[j] = vertices[stride * i + j + offset];
+//				}
+//				normals->emplace_back(normal);
+//			}
+//			setNormals(normals);
+//		}
+//
+//		// Parse texcoords
+//		else if (LayoutAttributes::Texcoords == entry)
+//		{
+//			texcoords->reserve(layout.numOfVertices * getAttributeSize(entry));
+//			for (int i = 0; i < layout.numOfVertices; i++)
+//			{
+//				glm::vec3 vec;
+//				for (int j = 0; j < getAttributeSize(entry); j++)
+//				{
+//					vec[j] = vertices[stride * i + j + offset];
+//				}
+//				texcoords->emplace_back(vec);
+//			}
+//			setTexcoords(texcoords);
+//		}
+//
+//		offset += getAttributeSize(entry);
+//	}
+//}
 
-	int offset = 0;
-
-	// Parse vertices
-	auto positions = std::make_shared<std::vector<glm::vec3>>();
-	auto normals = std::make_shared<std::vector<glm::vec3>>();
-	auto texcoords = std::make_shared<std::vector<glm::vec2>>();
-
-	for (auto entry : layout.entries)
-	{
-		// Parse positions
-		if (LayoutAttributes::Positions == entry.first)
-		{
-			positions->reserve(layout.numOfVertices * entry.second);
-			for (int i = 0; i < layout.numOfVertices; i++)
-			{
-				glm::vec3 pos;
-				for (int j = 0; j < entry.second; j++)
-				{
-					pos[j] = vertices[stride * i + j + offset];
-				}
-				positions->emplace_back(pos);
-			}
-			setPositions(positions);
-		}
-
-		// Parse normals
-		else if (LayoutAttributes::Normals == entry.first)
-		{
-			normals->reserve(layout.numOfVertices * entry.second);
-			for (int i = 0; i < layout.numOfVertices; i++)
-			{
-				glm::vec3 normal;
-				for (int j = 0; j < entry.second; j++)
-				{
-					normal[j] = vertices[stride * i + j + offset];
-				}
-				normals->emplace_back(normal);
-			}
-			setNormals(normals);
-		}
-
-		// Parse texcoords
-		else if (LayoutAttributes::Texcoords == entry.first)
-		{
-			texcoords->reserve(layout.numOfVertices * entry.second);
-			for (int i = 0; i < layout.numOfVertices; i++)
-			{
-				glm::vec3 vec;
-				for (int j = 0; j < entry.second; j++)
-				{
-					vec[j] = vertices[stride * i + j + offset];
-				}
-				texcoords->emplace_back(vec);
-			}
-			setTexcoords(texcoords);
-		}
-
-		offset += entry.second;
-	}
-
-	
-}
-
-void Mesh::setRawIndices(unsigned int* indices, size_t size)
-{
-	auto vec = std::make_shared<std::vector<unsigned int>>();
-	vec->reserve(size);
-	for (auto i=0; i<size; i++)
-	{
-		vec->push_back(indices[i]);
-	}
-	setIndices(vec);
-}
+//void Mesh::setRawIndices(unsigned int* indices, size_t size)
+//{
+//	auto vec = std::make_shared<std::vector<unsigned int>>();
+//	vec->reserve(size);
+//	for (auto i=0; i<size; i++)
+//	{
+//		vec->push_back(indices[i]);
+//	}
+//	setIndices(vec);
+//}
 
 void Mesh::SetTexturesInShader(std::shared_ptr<Shader>& shader)
 {
@@ -157,6 +159,10 @@ void Mesh::setIndices(std::shared_ptr<std::vector<unsigned int>> indices)
 {
 	m_indices = indices;
 }
+void Mesh::setColors(std::shared_ptr<std::vector<glm::vec3>> colors)
+{
+	m_colors = colors;
+}
 void Mesh::build()
 {
 	// validate mesh data
@@ -180,7 +186,7 @@ void Mesh::build()
 
 	// Create verticies array
 	std::vector<float> vertices;
-	vertices.reserve(8 * m_numOfVertices);
+	vertices.reserve(8 * m_numOfVertices); //TODO fix
 
 	for (int i=0; i< m_numOfVertices; i++)
 	{
@@ -203,7 +209,7 @@ void Mesh::build()
 	m_vao = std::make_shared<VertexArrayObject>();
 	if(m_indices)
 		m_ibo = std::make_shared<ElementBufferObject>(&(m_indices->at(0)), m_indices->size());
-	m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), m_numOfVertices, sizeof(float) * 8);
+	m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), m_numOfVertices, sizeof(float) * 8); //TODO fix
 
 	if (m_indices)
 		m_vao->AttachBuffer(*m_vbo, *m_ibo);

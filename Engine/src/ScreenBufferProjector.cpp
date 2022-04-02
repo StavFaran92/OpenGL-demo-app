@@ -7,6 +7,7 @@
 #include "ScreenQuad.h"
 #include "Engine.h"
 #include "Window.h"
+#include "Logger.h"
 
 bool ScreenBufferProjector::init()
 {

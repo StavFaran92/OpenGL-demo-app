@@ -2,6 +2,8 @@
 
 #include "Menu.h"
 
+#include "Logger.h"
+
 bool ImguiHandler::init(SDL_Window* window, const SDL_GLContext& context)
 {
 	const char* glsl_version = "#version 140";

@@ -1,7 +1,7 @@
 #pragma once
 #include "VertexBufferObject.h"
 
-#include "VertexBufferLayout.h"
+//#include "VertexBufferLayout.h"
 #include "VertexBufferElement.h"
 #include "ElementBufferObject.h"
 

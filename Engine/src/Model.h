@@ -13,6 +13,7 @@
 #include "Material.h"
 #include "Texture.h"
 
+
 // Forward declerations
 struct aiNode;
 struct aiScene;
@@ -25,6 +26,7 @@ class IRenderer;
 class Mesh;
 class Scene;
 class ModelImporter;
+class ModelBuilder;
 
 
 class EngineAPI Model : public Object3D
@@ -60,9 +62,12 @@ public:
 
 	inline void SetReflection(bool val) { m_isReflective = val; }
 	inline void SetRefraction(bool val) { m_isRefractive = val; }
+
+	static ModelBuilder builder();
 private:
 	friend class Scene;
 	friend class ModelImporter;
+	friend class ModelBuilder;
 
 	void update(float deltaTime);
 	void addMesh(Mesh* mesh);

@@ -2,6 +2,7 @@
 
 #include "EventSystem.h"
 #include <gl/glew.h>
+#include "Logger.h"
 
 FlyCamera::FlyCamera(glm::vec3 startPosition, float startYaw, float startPitch, float startMoveSpeed, float startTurnSpeed)
 	:m_position(startPosition),

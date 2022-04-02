@@ -8,6 +8,7 @@
 #include "Context.h"
 #include "Window.h"
 #include "Model.h"
+#include "Mesh.h"
 #include "Object3D.h"
 #include "Shader.h"
 #include "Transform.h"
@@ -29,3 +30,5 @@
 #include "Quad.h"
 #include "Box.h"
 #include "Sphere.h"
+#include "Configurations.h"
+#include "ModelBuilder.h"

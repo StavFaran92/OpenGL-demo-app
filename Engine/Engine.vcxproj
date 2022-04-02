@@ -97,7 +97,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Box.cpp" />
+    <ClCompile Include="src\configurations.cpp" />
     <ClCompile Include="src\EventSystem.cpp" />
+    <ClCompile Include="src\IRenderer.cpp" />
+    <ClCompile Include="src\ModelBuilder.cpp" />
     <ClCompile Include="src\ModelImporter.cpp" />
     <ClCompile Include="src\PostProcess.cpp" />
     <ClCompile Include="src\Application.cpp" />
@@ -150,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Configurations.h" />
+    <ClInclude Include="src\ModelBuilder.h" />
     <ClInclude Include="src\ModelImporter.h" />
     <ClInclude Include="src\Box.h" />
     <ClInclude Include="src\Quad.h" />

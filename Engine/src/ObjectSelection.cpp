@@ -1,5 +1,7 @@
 #include "ObjectSelection.h"
 
+#include "Logger.h"
+
 ObjectSelection::ObjectSelection() :
 	m_selectedObject(0)
 {

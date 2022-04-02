@@ -19,6 +19,8 @@
 #include "Vertex.h"
 #include "Engine.h"
 #include "Sphere.h"
+#include "ModelBuilder.h"
+#include "Logger.h"
 
 Model::Model()
 {
@@ -143,6 +145,11 @@ bool Model::UseMaterial(std::shared_ptr<Material> material)
 	m_material = material;
 
 	return true;
+}
+
+ModelBuilder Model::builder()
+{
+	return ModelBuilder();
 }
 
 

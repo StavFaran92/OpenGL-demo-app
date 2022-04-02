@@ -1,5 +1,10 @@
 #include "Renderer2D.h"
 
+#include "Logger.h"
+#include <GL/glew.h>
+
+#include "VertexArrayObject.h"
+
 void Renderer2D::Draw(const VertexArrayObject& vao, std::shared_ptr<Shader> shader) const
 {
 	vao.Bind();

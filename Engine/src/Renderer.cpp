@@ -1,12 +1,15 @@
 #include "Renderer.h"
 
+#include <GL/glew.h>
+#include "glm/glm.hpp"
+
 #include "VertexArrayObject.h"
 #include "Shader.h"
 #include "ICamera.h"
 #include "EditorCamera.h"
 #include "SkyboxRenderer.h"
+#include "Logger.h"
 
-#include "glm/glm.hpp"
 
 Renderer::Renderer()
 {

@@ -1,5 +1,7 @@
 #include "Skybox.h"
 
+#include <GL/glew.h>
+
 #include "Vertex.h"
 #include "Renderer.h"
 #include "Mesh.h"

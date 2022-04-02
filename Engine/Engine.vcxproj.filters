@@ -154,6 +154,9 @@
     <ClCompile Include="src\ModelImporter.cpp">
       <Filter>src\Utils\IO</Filter>
     </ClCompile>
+    <ClCompile Include="src\ModelBuilder.cpp" />
+    <ClCompile Include="src\configurations.cpp" />
+    <ClCompile Include="src\IRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -349,6 +352,7 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="src\Configurations.h" />
+    <ClInclude Include="src\ModelBuilder.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

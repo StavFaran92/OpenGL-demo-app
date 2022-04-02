@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include "Logger.h"
 
 std::string Utils::ReadFile(const std::string& filePath)
 {

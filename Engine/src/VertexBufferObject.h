@@ -2,10 +2,6 @@
 
 #include <iostream>
 
-#include "Logger.h"
-
-
-
 #include "Vertex.h"
 
 class VertexBufferObject

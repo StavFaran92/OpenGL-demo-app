@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#include "Logger.h"
-
 class ElementBufferObject
 {
 public:

@@ -1,5 +1,9 @@
 #include "VertexArrayObject.h"
 
+#include <gl/glew.h>
+
+#include "Logger.h"
+
 VertexArrayObject::VertexArrayObject()
 {
 	glGenVertexArrays(1, &m_id);

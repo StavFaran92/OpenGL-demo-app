@@ -13,6 +13,7 @@
 #include "Input.h"
 #include "EventSystem.h"
 #include "ModelImporter.h"
+#include "Logger.h"
 
 #include "Application.h"
 #include "SDL.h"

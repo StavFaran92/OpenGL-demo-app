@@ -2,7 +2,7 @@
 #include "SDL.h"
 #include <GL/glew.h>
 #include <cstdint>
-#include "Logger.h"
+
 
 class ObjectSelection
 {
