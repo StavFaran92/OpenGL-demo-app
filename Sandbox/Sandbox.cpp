@@ -60,9 +60,13 @@ public:
 		layout.attribs.push_back(LayoutAttributes::Positions);
 		layout.attribs.push_back(LayoutAttributes::Normals);
 		layout.attribs.push_back(LayoutAttributes::Texcoords);
-		test = Model::builder().
-			setRawVertices(vertices, layout).
-			build();
+		test = Model::builder()
+			.setRawVertices(vertices, layout)
+			.build();
+
+		Model* test2 = Quad::builder()
+			.setRawVertices(vertices, layout)
+			.build();
 
 		//quad = createQuad();
 		//quad->translate(0, 0, -2);

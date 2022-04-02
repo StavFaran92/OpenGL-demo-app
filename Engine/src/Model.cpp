@@ -149,7 +149,7 @@ bool Model::UseMaterial(std::shared_ptr<Material> material)
 
 ModelBuilder Model::builder()
 {
+	std::cout << "Model builder" << std::endl;
 	return ModelBuilder();
 }
-
 

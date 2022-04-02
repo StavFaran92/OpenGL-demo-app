@@ -1,6 +1,7 @@
 #include "Quad.h"
 
 #include "Mesh.h"
+#include "ModelBuilder.h"
 
 static const float vertices[] = {
 	// positions          // colors           // texture coords
@@ -52,3 +53,17 @@ Mesh* Quad::generateMesh()
 
 	return mesh;
 }
+
+ModelBuilder Quad::builder()
+{
+	Mesh::VerticesLayout layout;
+	layout.numOfVertices = 4;
+	layout.attribs.emplace_back(LayoutAttributes::Positions);
+	layout.attribs.emplace_back(LayoutAttributes::Normals);
+	layout.attribs.emplace_back(LayoutAttributes::Texcoords);
+
+	return Model::builder()
+		.setRawVertices((float*)vertices, layout)
+		.setRawIndices((unsigned int*)indices, sizeof(indices) / sizeof(unsigned int));
+}
+
