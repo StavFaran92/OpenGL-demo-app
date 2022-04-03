@@ -154,9 +154,16 @@
     <ClCompile Include="src\ModelImporter.cpp">
       <Filter>src\Utils\IO</Filter>
     </ClCompile>
+    <ClCompile Include="src\IRenderer.cpp">
+      <Filter>src\Graphics\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\configurations.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshBuilder.cpp">
+      <Filter>src\Utils\Builders</Filter>
+    </ClCompile>
     <ClCompile Include="src\ModelBuilder.cpp" />
-    <ClCompile Include="src\configurations.cpp" />
-    <ClCompile Include="src\IRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -351,7 +358,12 @@
     <ClInclude Include="src\ModelImporter.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Configurations.h" />
+    <ClInclude Include="src\Configurations.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MeshBuilder.h">
+      <Filter>headers</Filter>
+    </ClInclude>
     <ClInclude Include="src\ModelBuilder.h" />
   </ItemGroup>
   <ItemGroup>
@@ -426,6 +438,9 @@
     </Filter>
     <Filter Include="src\Graphics\Shapes">
       <UniqueIdentifier>{0470dca0-0617-4476-9624-1d5f16350652}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Utils\Builders">
+      <UniqueIdentifier>{9a4394a4-c467-41e9-85ba-3face76b5998}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

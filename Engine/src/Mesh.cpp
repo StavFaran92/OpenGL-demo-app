@@ -1,5 +1,6 @@
 #include "Mesh.h"
 
+#include "MeshBuilder.h"
 #include "Logger.h"
 
 #include <GL\glew.h>
@@ -106,6 +107,11 @@ void Mesh::addTextures(std::vector<std::shared_ptr<Texture>> textures)
 //	}
 //	setIndices(vec);
 //}
+
+MeshBuilder Mesh::builder() 
+{
+	return MeshBuilder();
+}
 
 void Mesh::SetTexturesInShader(std::shared_ptr<Shader>& shader)
 {

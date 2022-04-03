@@ -3,58 +3,109 @@
 #include "glm/glm.hpp"
 #include <vector>
 #include <memory>
+#include <type_traits>
 
 #include "Core.h"
 
 #include "Mesh.h"
+#include "Shader.h"
+#include "Material.h"
+#include "MeshBuilder.h"
 
-class Shader;
+
 class Model;
 
+template<class T> 
 class EngineAPI ModelBuilder
 {
+	static_assert(std::is_base_of<Model, T>::value, "T must inherit from Model");
 public:
 	/** Constructor */
-	ModelBuilder() = default;
+	template<class T>
+	ModelBuilder()
+	{
+		std::cout << "" << std::endl;
+		//m_meshBuilder = T::createMeshBuilder(*this);
+	}
 
 	/** Destructor */
-	~ModelBuilder() = default;
+	inline ~ModelBuilder() {};
 
-	ModelBuilder& setNumOfVertices(size_t size);
+	template<class T>
+	inline ModelBuilder<T>& setShader(Shader& shader, bool copy = false)
+	{
+		if (copy)
+		{
+			m_shader = std::make_shared<Shader>(shader);
+		}
+		else
+		{
+			m_shader = std::shared_ptr<Shader>(&shader);
+		}
 
-	ModelBuilder& setPositions(std::vector<glm::vec3>& positions, bool copy = false);
-	ModelBuilder& setPositions(const float* positions, size_t size);
+		return *this;
+	}
 
-	ModelBuilder& setNormals(std::vector<glm::vec3>& normals, bool copy = false);
-	ModelBuilder& setNormals(const float* normals, size_t size);
 
-	ModelBuilder& setTexcoords(std::vector<glm::vec2>& texCoords, bool copy = false);
-	ModelBuilder& setTexcoords(const float* texCoords, size_t size);
+	inline MeshBuilder& getMeshBuilder();
 
-	ModelBuilder& setColors(std::vector<glm::vec3>& colors, bool copy = false);
+	template<class T, class... _Types>
+	inline T* build(_Types&&... _Args)
+	{
+		auto model = std::make_shared<T>(std::forward<_Types>(_Args)...);
 
-	ModelBuilder& setColors(const float* colors, size_t size);
+		auto mesh = m_meshBuilder->build();
 
-	ModelBuilder& setIndices(std::vector<unsigned int>& indices, bool copy = false);
+		//TODO optimize: can load textuer on startup and simply assign texture Ptr / ID
+		auto texturediff = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
+		texturediff->setType(Texture::Type::Diffuse);
 
-	ModelBuilder& setRawVertices(const float* vertices, Mesh::VerticesLayout layout);
+		auto textureSpec = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
+		textureSpec->setType(Texture::Type::Specular);
 
-	ModelBuilder& setShader(Shader& shader, bool copy = false);
+		mesh->addTexture(texturediff);
+		mesh->addTexture(textureSpec);
 
-	ModelBuilder& setRawIndices(const unsigned int* indices, size_t size);
+		std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
+		model->UseMaterial(material);
 
-	Model* build();
+		model->addMesh(mesh);
+
+		return model.get();
+	}
 private:
-	Mesh* generateMesh();
-private:
-	size_t m_numOfVertices = 0;
-	std::shared_ptr<std::vector<glm::vec3>> m_positions = nullptr;
-	std::shared_ptr<std::vector<glm::vec3>> m_normals = nullptr;
-	std::shared_ptr<std::vector<glm::vec2>> m_texCoords = nullptr;
-	std::shared_ptr<std::vector<glm::vec3>> m_colors = nullptr;
-	std::shared_ptr<std::vector<unsigned int>> m_indices = nullptr;
 	std::shared_ptr<Shader> m_shader = nullptr;
+	std::shared_ptr<MeshBuilder> m_meshBuilder = nullptr;
 
 	bool isBuilt = false;
 
 };
+
+//template<class T>
+//ModelBuilder<T>::ModelBuilder()
+//{
+//	m_meshBuilder = T::createMeshBuilder(*this);
+//}
+
+
+//template<class T>
+//ModelBuilder<T>& ModelBuilder<T>::setShader(Shader& shader, bool copy)
+//{
+//	if (copy)
+//	{
+//		m_shader = std::make_shared<Shader>(shader);
+//	}
+//	else
+//	{
+//		m_shader = std::shared_ptr<Shader>(&shader);
+//	}
+//
+//	return *this;
+//}
+
+
+template<class T>
+MeshBuilder& ModelBuilder<T>::getMeshBuilder()
+{
+	return *m_meshBuilder.get();
+}

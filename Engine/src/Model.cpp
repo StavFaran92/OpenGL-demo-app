@@ -22,6 +22,8 @@
 #include "ModelBuilder.h"
 #include "Logger.h"
 
+template ModelBuilder<Model>* Model::builder<Model>();
+
 Model::Model()
 {
 	logTrace(__FUNCTION__);
@@ -147,9 +149,9 @@ bool Model::UseMaterial(std::shared_ptr<Material> material)
 	return true;
 }
 
-ModelBuilder Model::builder()
-{
-	std::cout << "Model builder" << std::endl;
-	return ModelBuilder();
-}
+//template<typename T>
+//ModelBuilder<T>* Model::builder()
+//{
+//	return ModelBuilder<T>();
+//}
 

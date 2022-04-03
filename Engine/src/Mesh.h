@@ -15,6 +15,8 @@
 
 #include "Configurations.h"
 
+class MeshBuilder;
+
 class Mesh
 {
 public:
@@ -36,6 +38,8 @@ public:
 
 	//void setRawVertices(float* vertices, VerticesLayout& layout);
 	//void setRawIndices(unsigned int* indices, size_t size);
+
+	static MeshBuilder builder();
 	
 	void SetTexturesInShader(std::shared_ptr<Shader>& shader);
 	void setNumOfVertices(size_t size);
