@@ -4,23 +4,19 @@
 #include <vector>
 #include <memory>
 
+#include <any>
 #include "Core.h"
 
 #include "Mesh.h"
 
-//template<typename T>
-//class ModelBuilder;
+template<typename T>
+class ModelBuilder;
 
 class EngineAPI MeshBuilder
 {
 public:
 	/** Constructor */
 	MeshBuilder() = default;
-
-	//template<typename T>
-	//MeshBuilder(ModelBuilder<T> modelBuilder)
-	//	: modelBuilder(modelBuilder)
-	//{}
 
 	/** Destructor */
 	~MeshBuilder() = default;
@@ -50,11 +46,12 @@ public:
 
 	Mesh* build();
 
-	//template<typename T>
-	//ModelBuilder<T> getModelBuilder()
-	//{
-	//	return m_modelBuilder;
-	//}
+	template<typename T>
+	void setModelBuilder(ModelBuilder<T>* modelBuilder);
+
+	template<typename T>
+	ModelBuilder<T>& getModelBuilder();
+	
 private:
 	size_t m_numOfVertices = 0;
 	std::shared_ptr<std::vector<glm::vec3>> m_positions = nullptr;
@@ -63,9 +60,20 @@ private:
 	std::shared_ptr<std::vector<glm::vec3>> m_colors = nullptr;
 	std::shared_ptr<std::vector<unsigned int>> m_indices = nullptr;
 
-	//template<typename T>
-	//ModelBuilder<T> m_modelBuilder;
+	std::any m_modelBuilder;
 
 	bool m_isBuilt = false;
 
 };
+
+template<typename T>
+void MeshBuilder::setModelBuilder(ModelBuilder<T>* modelBuilder)
+{
+	m_modelBuilder = modelBuilder;
+}
+
+template<typename T>
+ModelBuilder<T>& MeshBuilder::getModelBuilder()
+{
+	return std::any_cast<ModelBuilder<T>&>(m_modelBuilder);
+}

@@ -61,11 +61,17 @@ public:
 		layout.attribs.push_back(LayoutAttributes::Normals);
 		layout.attribs.push_back(LayoutAttributes::Texcoords);
 
-		auto builder = ModelBuilder<Model>::builder();
-		builder.getMeshBuilder()
+		//auto builder = ModelBuilder<Model>::builder();
+		//builder.getMeshBuilder()
+		//	.setRawVertices(vertices, layout)
+		//	.build();
+		//builder.build();
+
+		auto builder = ModelBuilder<Model>::builder()
+			.getMeshBuilder()
 			.setRawVertices(vertices, layout)
+			.getModelBuilder<Model>()
 			.build();
-		builder.build();
 
 
 

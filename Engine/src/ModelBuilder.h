@@ -25,11 +25,11 @@ public:
 	template<typename... _Types>
 	ModelBuilder(_Types&&... _Args);
 
-	template<typename... _Types>
-	static ModelBuilder<T> builder(_Types&&... _Args);
-	
 	/** Destructor */
 	~ModelBuilder() {};
+
+	template<typename... _Types>
+	static ModelBuilder<T> builder(_Types&&... _Args);
 
 	ModelBuilder<T>& setShader(Shader& shader, bool copy = false);
 
@@ -75,6 +75,7 @@ ModelBuilder<T>::ModelBuilder(_Types&&... _Args)
 	m_model = std::make_shared<T>(std::forward<_Types>(_Args)...);
 
 	m_meshBuilder = std::shared_ptr<MeshBuilder>(m_model->createMeshBuilder());
+	m_meshBuilder->setModelBuilder(this);
 }
 
 
