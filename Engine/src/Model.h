@@ -26,8 +26,8 @@ class Mesh;
 class Scene;
 class ModelImporter;
 
-template<typename T>
-class ModelBuilder;
+//template<typename T>
+//class ModelBuilder;
 
 class EngineAPI Model : public Object3D
 {
@@ -63,11 +63,11 @@ public:
 	inline void SetReflection(bool val) { m_isReflective = val; }
 	inline void SetRefraction(bool val) { m_isRefractive = val; }
 
-	template<typename T>
-	static ModelBuilder<T>* builder()
-	{
-		return ModelBuilder<Model>();
-	}
+	//template<typename T>
+	//static ModelBuilder<T>* builder()
+	//{
+	//	return ModelBuilder<Model>();
+	//}
 
 private:
 	friend class Scene;

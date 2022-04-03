@@ -1,8 +1,8 @@
 #pragma once
-
 #include <memory>
 #include <vector>
 
+#include "Core.h"
 #include "Renderer.h"
 #include "Shader.h"
 #include "Texture.h"
@@ -17,7 +17,7 @@
 
 class MeshBuilder;
 
-class Mesh
+class EngineAPI Mesh
 {
 public:
 	

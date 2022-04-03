@@ -22,7 +22,7 @@
 #include "ModelBuilder.h"
 #include "Logger.h"
 
-template ModelBuilder<Model>* Model::builder<Model>();
+//template ModelBuilder<Model>* Model::builder<Model>();
 
 Model::Model()
 {
