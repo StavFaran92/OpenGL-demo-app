@@ -74,7 +74,7 @@ ModelBuilder<T>::ModelBuilder(_Types&&... _Args)
 {
 	m_model = std::make_shared<T>(std::forward<_Types>(_Args)...);
 
-	//m_meshBuilder = T::createMeshBuilder(*this);
+	m_meshBuilder = std::shared_ptr<MeshBuilder>(m_model->createMeshBuilder());
 }
 
 

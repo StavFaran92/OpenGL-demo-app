@@ -21,6 +21,7 @@
 #include "Sphere.h"
 #include "ModelBuilder.h"
 #include "Logger.h"
+#include "MeshBuilder.h"
 
 //template ModelBuilder<Model>* Model::builder<Model>();
 
@@ -147,6 +148,11 @@ bool Model::UseMaterial(std::shared_ptr<Material> material)
 	m_material = material;
 
 	return true;
+}
+
+MeshBuilder* Model::createMeshBuilder()
+{
+	return new MeshBuilder();
 }
 
 //template<typename T>
