@@ -259,8 +259,6 @@ Mesh* MeshBuilder::build()
 
 	mesh->build();
 
-	m_isBuilt = true;
-
 	return mesh;
 }
 
@@ -272,6 +270,11 @@ void MeshBuilder::setModelBuilder(ModelBuilder* modelBuilder)
 ModelBuilder& MeshBuilder::getModelBuilder() const
 {
 	return *m_modelBuilder;
+}
+
+MeshBuilder& MeshBuilder::builder()
+{
+	return *new MeshBuilder();
 }
 
 bool MeshBuilder::isBuilt() const

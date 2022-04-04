@@ -30,16 +30,6 @@ void Application::draw(Model* model)
 
 }
 
-Box* Application::createBox()
-{
-	return Box::generateBox();
-}
-
-Quad* Application::createQuad()
-{
-	return Quad::generateQuad();
-}
-
 bool Application::mouse_leftButtonPressed()
 {
 	return Engine::get()->getInput()->getMouse()->getButtonPressed(Mouse::MouseButtons::LeftMousebutton);

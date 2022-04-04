@@ -16,44 +16,6 @@ static const unsigned int indices[] = {
 	1, 0, 3    // second triangle
 };
 
-Quad* Quad::generateQuad()
-{
-	auto quad = new Quad();
-
-	auto mesh = generateMesh();
-
-	auto texturediff = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
-	texturediff->setType(Texture::Type::Diffuse);
-
-	auto textureSpec = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
-	textureSpec->setType(Texture::Type::Specular);
-
-	mesh->addTexture(texturediff);
-	mesh->addTexture(textureSpec);
-
-	std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-	quad->UseMaterial(material);
-
-	quad->m_meshes.push_back(std::shared_ptr<Mesh>(mesh));
-
-	return quad;
-}
-
-Mesh* Quad::generateMesh()
-{
-	auto mesh = new Mesh();
-	//Mesh::VerticesLayout layout;
-	//layout.numOfVertices = 4;
-	//layout.attribs.emplace_back(LayoutAttributes::Positions);
-	//layout.attribs.emplace_back(LayoutAttributes::Normals);
-	//layout.attribs.emplace_back(LayoutAttributes::Texcoords);
-	//mesh->setRawVertices((float*)vertices, layout);
-	//mesh->setRawIndices((unsigned int*)indices, sizeof(indices) / sizeof(unsigned int));
-	//mesh->build();
-
-	return mesh;
-}
-
 MeshBuilder* Quad::createMeshBuilder()
 {
 	Mesh::VerticesLayout layout;
@@ -62,9 +24,8 @@ MeshBuilder* Quad::createMeshBuilder()
 	layout.attribs.emplace_back(LayoutAttributes::Normals);
 	layout.attribs.emplace_back(LayoutAttributes::Texcoords);
 
-	auto builder = new MeshBuilder();
-	builder->setRawVertices((float*)vertices, layout)
+	return &MeshBuilder::builder()
+		.setRawVertices((float*)vertices, layout)
 		.setRawIndices((unsigned int*)indices, sizeof(indices) / sizeof(unsigned int));
-	return builder;
 }
 

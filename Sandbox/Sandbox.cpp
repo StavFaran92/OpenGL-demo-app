@@ -70,7 +70,7 @@ public:
 		//builder.build();
 
 		box = (Box*)ModelBuilder::builder<Box>()
-			->build();
+			.build();
 
 		//std::cout << box->getID() << std::endl;
 

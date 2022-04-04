@@ -21,6 +21,9 @@ Model* ModelBuilder::build()
 
 	m_model->addMesh(mesh);
 
+	// We are finished with the builder and it can now be erased.
+	delete this;
+
 	return m_model;
 }
 

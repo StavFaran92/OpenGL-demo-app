@@ -68,45 +68,6 @@ static const unsigned int indices[] = {
     6, 7, 3
 };
 
-Box* Box::generateBox()
-{
-    auto box = new Box();
-
-    auto mesh = generateMesh();
-
-    //TODO optimize: can load textuer on startup and simply assign texture Ptr / ID
-    auto texturediff = Texture::loadTextureFromFile("Resources\\Textures\\template.png"); 
-    texturediff->setType(Texture::Type::Diffuse);
-
-    auto textureSpec = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
-    textureSpec->setType(Texture::Type::Specular);
-
-    mesh->addTexture(texturediff);
-    mesh->addTexture(textureSpec);
-
-    std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-    box->UseMaterial(material);
-
-    box->m_meshes.push_back(std::shared_ptr<Mesh>(mesh));
-
-    return box;
-}
-
-Mesh* Box::generateMesh()
-{
-    auto mesh = new Mesh();
-    //Mesh::VerticesLayout layout;
-    //layout.numOfVertices = 36;
-    //layout.attribs.emplace_back(LayoutAttributes::Positions);
-    //layout.attribs.emplace_back(LayoutAttributes::Normals);
-    //layout.attribs.emplace_back(LayoutAttributes::Texcoords);
-    //mesh->setRawVertices((float*)vertices, layout);
-    ////mesh->setRawIndices((unsigned int*)Primtives::Cube::indices, sizeof(Primtives::Cube::indices) / sizeof(unsigned int));
-    //mesh->build();
-
-    return mesh;
-}
-
 MeshBuilder* Box::createMeshBuilder()
 {
     Mesh::VerticesLayout layout;
@@ -115,7 +76,6 @@ MeshBuilder* Box::createMeshBuilder()
     layout.attribs.emplace_back(LayoutAttributes::Normals);
     layout.attribs.emplace_back(LayoutAttributes::Texcoords);
 
-    auto builder = new MeshBuilder();
-    builder->setRawVertices((float*)vertices, layout);
-    return builder;
+    return &MeshBuilder::builder()
+        .setRawVertices((float*)vertices, layout);
 }

@@ -15,14 +15,6 @@ class ModelBuilder;
 class EngineAPI MeshBuilder
 {
 public:
-	/** Constructor */
-	MeshBuilder() = default;
-
-	/** Destructor */
-	~MeshBuilder() = default;
-
-	//static MeshBuilder* builder();
-
 	bool isBuilt() const;
 
 	MeshBuilder& setNumOfVertices(size_t size);
@@ -52,9 +44,16 @@ public:
 
 	ModelBuilder& getModelBuilder() const;
 
-
+	static MeshBuilder& builder();
 	
+	/** Destructor */
+	~MeshBuilder() = default;
 private:
+	/** Constructor */
+	MeshBuilder() = default;
+
+
+
 	size_t m_numOfVertices = 0;
 	std::shared_ptr<std::vector<glm::vec3>> m_positions = nullptr;
 	std::shared_ptr<std::vector<glm::vec3>> m_normals = nullptr;

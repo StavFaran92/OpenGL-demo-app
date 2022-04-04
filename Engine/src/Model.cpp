@@ -152,7 +152,7 @@ bool Model::UseMaterial(std::shared_ptr<Material> material)
 
 MeshBuilder* Model::createMeshBuilder()
 {
-	return new MeshBuilder();
+	return &MeshBuilder::builder();
 }
 
 //template<typename T>

@@ -25,7 +25,7 @@ public:
 	~ModelBuilder() {};
 
 	template<typename T, typename... _Types>
-	static ModelBuilder* builder(_Types&&... _Args);
+	static ModelBuilder& builder(_Types&&... _Args);
 
 	ModelBuilder& setShader(Shader& shader, bool copy = false);
 
@@ -52,12 +52,12 @@ void ModelBuilder::init(_Types&&... _Args)
 
 
 template<typename T, typename... _Types>
-ModelBuilder* ModelBuilder::builder(_Types&&... _Args)
+ModelBuilder& ModelBuilder::builder(_Types&&... _Args)
 {
 	static_assert(std::is_base_of<Model, T>::value, "T must inherit from Model");
 
 	auto builder = new ModelBuilder();
 	builder->init<T>(std::forward<_Types>(_Args)...);
 
-	return builder;
+	return *builder;
 }
