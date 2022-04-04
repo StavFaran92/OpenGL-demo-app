@@ -6,6 +6,8 @@ public:
 	using Application::draw;
 	//Box boxes[3][3][3];
 
+	Box* box;
+
 	void start() override
 	{
 		//skybox(Skybox::CreateSkybox());
@@ -59,17 +61,16 @@ public:
 		layout.attribs.push_back(LayoutAttributes::Normals);
 		layout.attribs.push_back(LayoutAttributes::Texcoords);
 
+
+
 		//auto builder = ModelBuilder<Model>::builder();
 		//builder.getMeshBuilder()
 		//	.setRawVertices(vertices, layout)
 		//	.build();
 		//builder.build();
 
-		//Box* box = (Box*)ModelBuilder::builder<Box>()
-		//	->getMeshBuilder()
-		//	.setRawVertices(vertices, layout)
-		//	.getModelBuilder()
-		//	.build();
+		box = (Box*)ModelBuilder::builder<Box>()
+			->build();
 
 		//std::cout << box->getID() << std::endl;
 
@@ -126,7 +127,7 @@ public:
 		//	box->rotateZ(1);
 		//}
 
-		//draw(test);
+		draw(box);
 		
 		//box->rotateY(1);
 		//for (int i = 0; i < 3; i++)

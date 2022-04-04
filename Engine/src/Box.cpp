@@ -1,6 +1,7 @@
 #include "Box.h"
 
 #include "Mesh.h"
+#include "MeshBuilder.h"
 
 static const float vertices[] = {
 -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
@@ -104,4 +105,17 @@ Mesh* Box::generateMesh()
     //mesh->build();
 
     return mesh;
+}
+
+MeshBuilder* Box::createMeshBuilder()
+{
+    Mesh::VerticesLayout layout;
+    layout.numOfVertices = 36;
+    layout.attribs.emplace_back(LayoutAttributes::Positions);
+    layout.attribs.emplace_back(LayoutAttributes::Normals);
+    layout.attribs.emplace_back(LayoutAttributes::Texcoords);
+
+    auto builder = new MeshBuilder();
+    builder->setRawVertices((float*)vertices, layout);
+    return builder;
 }
