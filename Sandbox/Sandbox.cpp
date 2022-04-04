@@ -67,10 +67,10 @@ public:
 		//	.build();
 		//builder.build();
 
-		auto builder = ModelBuilder<Model>::builder()
+		auto builder = (Box*)ModelBuilder<Box>::builder()
 			.getMeshBuilder()
 			.setRawVertices(vertices, layout)
-			.getModelBuilder<Model>()
+			.getModelBuilder()
 			.build();
 
 

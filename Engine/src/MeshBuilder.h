@@ -8,9 +8,9 @@
 #include "Core.h"
 
 #include "Mesh.h"
+#include "Model.h"
 
-template<typename T>
-class ModelBuilder;
+template class ModelBuilder<Model>;
 
 class EngineAPI MeshBuilder
 {
@@ -46,11 +46,16 @@ public:
 
 	Mesh* build();
 
-	template<typename T>
-	void setModelBuilder(ModelBuilder<T>* modelBuilder);
+	void setModelBuilder(ModelBuilder<Model>* modelBuilder)
+	{
+		m_modelBuilder = modelBuilder;
+	}
 
-	template<typename T>
-	ModelBuilder<T>& getModelBuilder();
+	ModelBuilder<Model>& getModelBuilder()
+	{
+		return *m_modelBuilder;
+	}
+
 	
 private:
 	size_t m_numOfVertices = 0;
@@ -60,20 +65,18 @@ private:
 	std::shared_ptr<std::vector<glm::vec3>> m_colors = nullptr;
 	std::shared_ptr<std::vector<unsigned int>> m_indices = nullptr;
 
-	std::any m_modelBuilder;
+	ModelBuilder<Model>* m_modelBuilder;
 
 	bool m_isBuilt = false;
 
 };
 
-template<typename T>
-void MeshBuilder::setModelBuilder(ModelBuilder<T>* modelBuilder)
-{
-	m_modelBuilder = modelBuilder;
-}
-
-template<typename T>
-ModelBuilder<T>& MeshBuilder::getModelBuilder()
-{
-	return std::any_cast<ModelBuilder<T>&>(m_modelBuilder);
-}
+//void MeshBuilder::setModelBuilder(ModelBuilder<Model>* modelBuilder)
+//{
+//	m_modelBuilder = modelBuilder;
+//}
+//
+//ModelBuilder<Model>& MeshBuilder::getModelBuilder()
+//{
+//	return *m_modelBuilder;
+//}
