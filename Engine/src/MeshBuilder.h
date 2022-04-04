@@ -10,7 +10,7 @@
 #include "Mesh.h"
 #include "Model.h"
 
-template class ModelBuilder<Model>;
+class ModelBuilder;
 
 class EngineAPI MeshBuilder
 {
@@ -46,15 +46,10 @@ public:
 
 	Mesh* build();
 
-	void setModelBuilder(ModelBuilder<Model>* modelBuilder)
-	{
-		m_modelBuilder = modelBuilder;
-	}
+	void setModelBuilder(ModelBuilder* modelBuilder);
 
-	ModelBuilder<Model>& getModelBuilder()
-	{
-		return *m_modelBuilder;
-	}
+	ModelBuilder& getModelBuilder() const;
+
 
 	
 private:
@@ -65,7 +60,7 @@ private:
 	std::shared_ptr<std::vector<glm::vec3>> m_colors = nullptr;
 	std::shared_ptr<std::vector<unsigned int>> m_indices = nullptr;
 
-	ModelBuilder<Model>* m_modelBuilder;
+	ModelBuilder* m_modelBuilder;
 
 	bool m_isBuilt = false;
 

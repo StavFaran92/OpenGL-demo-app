@@ -75,7 +75,6 @@ public:
 private:
 	friend class Scene;
 	friend class ModelImporter;
-	template<typename T>
 	friend class ModelBuilder;
 
 	void update(float deltaTime);

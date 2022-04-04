@@ -264,6 +264,16 @@ Mesh* MeshBuilder::build()
 	return mesh;
 }
 
+void MeshBuilder::setModelBuilder(ModelBuilder* modelBuilder)
+{
+	m_modelBuilder = modelBuilder;
+}
+
+ModelBuilder& MeshBuilder::getModelBuilder() const
+{
+	return *m_modelBuilder;
+}
+
 bool MeshBuilder::isBuilt() const
 {
 	return m_isBuilt;
