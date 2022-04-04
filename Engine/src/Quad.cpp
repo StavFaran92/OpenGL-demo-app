@@ -54,7 +54,7 @@ Mesh* Quad::generateMesh()
 	return mesh;
 }
 
-MeshBuilder Quad::getMeshBuilder()
+MeshBuilder* Quad::createMeshBuilder()
 {
 	Mesh::VerticesLayout layout;
 	layout.numOfVertices = 4;
@@ -62,8 +62,9 @@ MeshBuilder Quad::getMeshBuilder()
 	layout.attribs.emplace_back(LayoutAttributes::Normals);
 	layout.attribs.emplace_back(LayoutAttributes::Texcoords);
 
-	return Mesh::builder()
-		.setRawVertices((float*)vertices, layout)
+	auto builder = new MeshBuilder();
+	builder->setRawVertices((float*)vertices, layout)
 		.setRawIndices((unsigned int*)indices, sizeof(indices) / sizeof(unsigned int));
+	return builder;
 }
 

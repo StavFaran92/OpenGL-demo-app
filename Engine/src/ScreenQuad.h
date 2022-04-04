@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Model.h"
+#include "Quad.h"
 
-class ScreenQuad : Model
+class ScreenQuad : public Quad
 {
 public:
 	static std::shared_ptr<ScreenQuad> GenerateScreenQuad();

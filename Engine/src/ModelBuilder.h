@@ -25,7 +25,7 @@ public:
 	~ModelBuilder() {};
 
 	template<typename T, typename... _Types>
-	static ModelBuilder builder(_Types&&... _Args);
+	static ModelBuilder* builder(_Types&&... _Args);
 
 	ModelBuilder& setShader(Shader& shader, bool copy = false);
 
@@ -35,7 +35,7 @@ public:
 private:
 	std::shared_ptr<Shader> m_shader = nullptr;
 	std::shared_ptr<MeshBuilder> m_meshBuilder = nullptr;
-	std::shared_ptr<Model> m_model = nullptr;
+	Model* m_model = nullptr;
 
 	bool isBuilt = false;
 
@@ -44,7 +44,7 @@ private:
 template<typename T, typename... _Types>
 void ModelBuilder::init(_Types&&... _Args)
 {
-	m_model = std::make_shared<T>(std::forward<_Types>(_Args)...);
+	m_model = new T(std::forward<_Types>(_Args)...);
 
 	m_meshBuilder = std::shared_ptr<MeshBuilder>(m_model->createMeshBuilder());
 	m_meshBuilder->setModelBuilder(this);
@@ -52,12 +52,12 @@ void ModelBuilder::init(_Types&&... _Args)
 
 
 template<typename T, typename... _Types>
-ModelBuilder ModelBuilder::builder(_Types&&... _Args)
+ModelBuilder* ModelBuilder::builder(_Types&&... _Args)
 {
 	static_assert(std::is_base_of<Model, T>::value, "T must inherit from Model");
 
-	auto builder = ModelBuilder();
-	builder.init<T>(std::forward<_Types>(_Args)...);
+	auto builder = new ModelBuilder();
+	builder->init<T>(std::forward<_Types>(_Args)...);
 
 	return builder;
 }

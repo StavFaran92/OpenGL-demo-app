@@ -5,6 +5,11 @@
 
 #include <GL\glew.h>
 
+Mesh::Mesh()
+{
+	logInfo(__FUNCTION__);
+}
+
 void Mesh::renderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < IRenderer >renderer)
 {
 	if (shader->IsTexturesEnabled())
@@ -108,10 +113,10 @@ void Mesh::addTextures(std::vector<std::shared_ptr<Texture>> textures)
 //	setIndices(vec);
 //}
 
-MeshBuilder Mesh::builder() 
-{
-	return MeshBuilder();
-}
+//MeshBuilder Mesh::builder() 
+//{
+//	return MeshBuilder();
+//}
 
 void Mesh::SetTexturesInShader(std::shared_ptr<Shader>& shader)
 {
@@ -267,6 +272,6 @@ void Mesh::clearMesh()
 
 Mesh::~Mesh()
 {
-	logTrace( __FUNCTION__ );
+	logInfo( __FUNCTION__ );
 	clearMesh();
 }

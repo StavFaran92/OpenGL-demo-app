@@ -11,6 +11,6 @@ public:
 	static Quad* generateQuad();
 	static Mesh* generateMesh();
 
-	static MeshBuilder getMeshBuilder();
+	MeshBuilder* createMeshBuilder() override;
 };
 

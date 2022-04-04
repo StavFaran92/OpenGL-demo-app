@@ -21,7 +21,7 @@ Model* ModelBuilder::build()
 
 	m_model->addMesh(mesh);
 
-	return m_model.get();
+	return m_model;
 }
 
 ModelBuilder& ModelBuilder::setShader(Shader& shader, bool copy)

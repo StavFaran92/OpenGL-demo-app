@@ -21,6 +21,8 @@ public:
 	/** Destructor */
 	~MeshBuilder() = default;
 
+	//static MeshBuilder* builder();
+
 	bool isBuilt() const;
 
 	MeshBuilder& setNumOfVertices(size_t size);
@@ -60,7 +62,7 @@ private:
 	std::shared_ptr<std::vector<glm::vec3>> m_colors = nullptr;
 	std::shared_ptr<std::vector<unsigned int>> m_indices = nullptr;
 
-	ModelBuilder* m_modelBuilder;
+	ModelBuilder* m_modelBuilder = nullptr;
 
 	bool m_isBuilt = false;
 

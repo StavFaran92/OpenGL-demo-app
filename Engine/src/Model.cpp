@@ -23,9 +23,9 @@
 #include "Logger.h"
 #include "MeshBuilder.h"
 
-//template ModelBuilder<Model>* Model::builder<Model>();
 
 Model::Model()
+	: Object3D()
 {
 	logTrace(__FUNCTION__);
 

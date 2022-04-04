@@ -4,16 +4,13 @@
 #include "Renderer.h"
 #include "Mesh.h"
 #include "Quad.h"
+#include "ModelBuilder.h"
 
 #include "Resources/Primitives/quad.h"
 
 std::shared_ptr<ScreenQuad> ScreenQuad::GenerateScreenQuad()
 {
-	auto model = std::make_shared<ScreenQuad>();
-
-	auto mesh = Quad::generateMesh();
-
-	model->m_meshes.push_back(std::shared_ptr<Mesh>(mesh));
+	auto model = std::shared_ptr<ScreenQuad>((ScreenQuad*)ModelBuilder::builder<ScreenQuad>()->build());
 
 	return model;
 }
@@ -32,3 +29,8 @@ void ScreenQuad::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shade
 		m_meshes[i]->renderMesh(currShader, renderer);
 	}
 }
+
+//MeshBuilder* ScreenQuad::createMeshBuilder()
+//{
+//	return Quad::createMeshBuilder();
+//}

@@ -6,8 +6,6 @@ public:
 	using Application::draw;
 	//Box boxes[3][3][3];
 
-	Model* test;
-
 	void start() override
 	{
 		//skybox(Skybox::CreateSkybox());
@@ -67,13 +65,13 @@ public:
 		//	.build();
 		//builder.build();
 
-		Box* box = (Box*)ModelBuilder::builder<Box>()
-			.getMeshBuilder()
-			.setRawVertices(vertices, layout)
-			.getModelBuilder()
-			.build();
+		//Box* box = (Box*)ModelBuilder::builder<Box>()
+		//	->getMeshBuilder()
+		//	.setRawVertices(vertices, layout)
+		//	.getModelBuilder()
+		//	.build();
 
-
+		//std::cout << box->getID() << std::endl;
 
 
 		//Model* test2 = Quad::builder()
@@ -128,7 +126,7 @@ public:
 		//	box->rotateZ(1);
 		//}
 
-		draw(test);
+		//draw(test);
 		
 		//box->rotateY(1);
 		//for (int i = 0; i < 3; i++)

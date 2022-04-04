@@ -27,7 +27,7 @@ public:
 		size_t numOfVertices = 0;
 	};
 	// -------------------- Methods -------------------- //
-	Mesh() {};
+	Mesh();
 
 	void renderMesh(std::shared_ptr<Shader> shader, std::shared_ptr <IRenderer>renderer);
 
@@ -38,8 +38,6 @@ public:
 
 	//void setRawVertices(float* vertices, VerticesLayout& layout);
 	//void setRawIndices(unsigned int* indices, size_t size);
-
-	static MeshBuilder builder();
 	
 	void SetTexturesInShader(std::shared_ptr<Shader>& shader);
 	void setNumOfVertices(size_t size);
