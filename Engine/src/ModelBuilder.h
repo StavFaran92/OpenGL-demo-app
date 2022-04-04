@@ -18,8 +18,7 @@ public:
 	/** Constructor */
 	ModelBuilder() = default;
 
-	template<typename T, typename... _Types>
-	void init(_Types&&... _Args);
+
 
 	/** Destructor */
 	~ModelBuilder() {};
@@ -32,6 +31,9 @@ public:
 	MeshBuilder& getMeshBuilder();
 	
 	Model* build();
+private:
+	template<typename T, typename... _Types>
+	void init(_Types&&... _Args);
 private:
 	std::shared_ptr<Shader> m_shader = nullptr;
 	std::shared_ptr<MeshBuilder> m_meshBuilder = nullptr;

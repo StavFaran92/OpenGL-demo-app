@@ -6,32 +6,31 @@
 #include "Renderer.h"
 #include "Mesh.h"
 #include "Box.h"
+#include "ModelBuilder.h"
 
 #include "EditorCamera.h"
 #include "Resources/Primitives/cube.h"
 
 Skybox* Skybox::CreateSkybox()
 {
-	auto model = new Skybox();
-
-    auto mesh = Box::generateMesh();
+    Shader shader("Resources\\Shaders\\SkyboxShader.vert", "Resources\\Shaders\\SkyboxShader.frag"); //todo check
 
     std::vector<std::string> faces
     {
         "Resources\\Textures\\Skybox\\right.jpg",
-            "Resources\\Textures\\Skybox\\left.jpg",
-            "Resources\\Textures\\Skybox\\top.jpg",
-            "Resources\\Textures\\Skybox\\bottom.jpg",
-            "Resources\\Textures\\Skybox\\front.jpg",
-            "Resources\\Textures\\Skybox\\back.jpg"
+        "Resources\\Textures\\Skybox\\left.jpg",
+        "Resources\\Textures\\Skybox\\top.jpg",
+        "Resources\\Textures\\Skybox\\bottom.jpg",
+        "Resources\\Textures\\Skybox\\front.jpg",
+        "Resources\\Textures\\Skybox\\back.jpg"
     };
-	auto texture = Texture::loadCubemapTexture(faces);
-    mesh->addTexture(texture);
+    auto texture = Texture::loadCubemapTexture(faces);
 
-    model->m_meshes.push_back(std::shared_ptr<Mesh>(mesh));
-
-    auto shader = std::make_shared<Shader>("Resources\\Shaders\\SkyboxShader.vert", "Resources\\Shaders\\SkyboxShader.frag");
-    model->AttachShader(shader);
+    auto model = ModelBuilder::builder<Skybox>()
+        .setShader(shader)
+        .getMeshBuilder()
+        .addTexture(texture)
+        .build();
 
     return model;
 }
