@@ -13,9 +13,15 @@ Texture::Texture()
 	logTrace( __FUNCTION__ );
 }
 
-std::shared_ptr<Texture> Texture::createEmptyTexture(int width, int height)
+Texture::Texture(const Texture& other)
+	: m_id(other.m_id), m_width(other.m_width), m_height(other.m_height), m_bitDepth(other.m_bitDepth), m_slot(other.m_slot)
 {
-	std::shared_ptr<Texture> texture = std::make_shared<Texture>();
+	logTrace(__FUNCTION__);
+}
+
+Texture* Texture::createEmptyTexture(int width, int height)
+{
+	auto texture = new Texture();
 
 	// generate texture
 	glGenTextures(1, &texture->m_id);
@@ -31,9 +37,9 @@ std::shared_ptr<Texture> Texture::createEmptyTexture(int width, int height)
 	return texture;
 }
 
-std::shared_ptr<Texture> Texture::loadTextureFromFile(const std::string& fileLocation)
+Texture* Texture::loadTextureFromFile(const std::string& fileLocation)
 {
-	std::shared_ptr<Texture> texture = std::make_shared<Texture>();
+	auto texture = new Texture();
 
 	// Cache file location
 	texture->m_fileLocation = fileLocation;
@@ -80,9 +86,9 @@ std::shared_ptr<Texture> Texture::loadTextureFromFile(const std::string& fileLoc
 	return texture;
 }
 
-std::shared_ptr<Texture> Texture::loadCubemapTexture(std::vector<std::string> faces)
+Texture* Texture::loadCubemapTexture(std::vector<std::string> faces)
 {
-	auto texture = std::make_shared<Texture>();
+	auto texture = new Texture();
 
 	glGenTextures(1, &texture->m_id);
 	glActiveTexture(GL_TEXTURE0);

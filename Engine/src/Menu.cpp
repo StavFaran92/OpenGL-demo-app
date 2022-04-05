@@ -5,6 +5,7 @@
 #include "Quad.h"
 #include "Box.h"
 #include "ModelImporter.h"
+#include "ModelBuilder.h"
 
 static void ShowExampleAppDockSpace();
 static void ShowExampleAppLog();
@@ -402,11 +403,11 @@ void ShowPrimitiveCreatorWindow()
             Model* model = nullptr;
             if (shape == Model::PrimitiveType::Quad)
             {
-                model = Quad::generateQuad();
+                model = ModelBuilder::builder<Quad>().build();
             }
             else if (shape == Model::PrimitiveType::Cube)
             {
-                model = Box::generateBox();
+                model = ModelBuilder::builder<Box>().build();
             }
             if (model != nullptr)
             {

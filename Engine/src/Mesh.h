@@ -31,8 +31,8 @@ public:
 
 	void renderMesh(std::shared_ptr<Shader> shader, std::shared_ptr <IRenderer>renderer);
 
-	void addTexture(std::shared_ptr<Texture> texture);
-	void addTextures(std::vector<std::shared_ptr<Texture>> textures);
+	void addTexture(Texture* texture);
+	void addTextures(std::vector<Texture*>& textures);
 
 	inline std::vector<std::shared_ptr<Texture>> getTextures() { return m_textures; };
 

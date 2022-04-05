@@ -21,97 +21,18 @@ void Mesh::renderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < IRendere
 	glActiveTexture(GL_TEXTURE0);
 }
 
-void Mesh::addTexture(std::shared_ptr<Texture> texture)
+void Mesh::addTexture(Texture* texture)
 {
-	m_textures.push_back(texture);
+	m_textures.push_back(std::shared_ptr<Texture>(texture));
 }
 
-void Mesh::addTextures(std::vector<std::shared_ptr<Texture>> textures)
+void Mesh::addTextures(std::vector<Texture*>& textures)
 {
-	m_textures.insert(m_textures.end(), textures.begin(), textures.end());
+	for (auto texture : textures)
+	{
+		addTexture(texture);
+	}
 }
-
-//void Mesh::setRawVertices(float* vertices, VerticesLayout& layout)
-//{
-//	m_numOfVertices = layout.numOfVertices;
-//	// calculate stride
-//	int stride = 0;
-//	for (auto entry : layout.attribs)
-//	{
-//		stride += getAttributeSize(entry);
-//	}
-//
-//	int offset = 0;
-//
-//	// Parse vertices
-//	auto positions = std::make_shared<std::vector<glm::vec3>>();
-//	auto normals = std::make_shared<std::vector<glm::vec3>>();
-//	auto texcoords = std::make_shared<std::vector<glm::vec2>>();
-//
-//	for (auto entry : layout.attribs)
-//	{
-//		// Parse positions
-//		if (LayoutAttributes::Positions == entry)
-//		{
-//			positions->reserve(layout.numOfVertices * getAttributeSize(entry));
-//			for (int i = 0; i < layout.numOfVertices; i++)
-//			{
-//				glm::vec3 pos;
-//				for (int j = 0; j < getAttributeSize(entry); j++)
-//				{
-//					pos[j] = vertices[stride * i + j + offset];
-//				}
-//				positions->emplace_back(pos);
-//			}
-//			setPositions(positions);
-//		}
-//
-//		// Parse normals
-//		else if (LayoutAttributes::Normals == entry)
-//		{
-//			normals->reserve(layout.numOfVertices * getAttributeSize(entry));
-//			for (int i = 0; i < layout.numOfVertices; i++)
-//			{
-//				glm::vec3 normal;
-//				for (int j = 0; j < getAttributeSize(entry); j++)
-//				{
-//					normal[j] = vertices[stride * i + j + offset];
-//				}
-//				normals->emplace_back(normal);
-//			}
-//			setNormals(normals);
-//		}
-//
-//		// Parse texcoords
-//		else if (LayoutAttributes::Texcoords == entry)
-//		{
-//			texcoords->reserve(layout.numOfVertices * getAttributeSize(entry));
-//			for (int i = 0; i < layout.numOfVertices; i++)
-//			{
-//				glm::vec3 vec;
-//				for (int j = 0; j < getAttributeSize(entry); j++)
-//				{
-//					vec[j] = vertices[stride * i + j + offset];
-//				}
-//				texcoords->emplace_back(vec);
-//			}
-//			setTexcoords(texcoords);
-//		}
-//
-//		offset += getAttributeSize(entry);
-//	}
-//}
-
-//void Mesh::setRawIndices(unsigned int* indices, size_t size)
-//{
-//	auto vec = std::make_shared<std::vector<unsigned int>>();
-//	vec->reserve(size);
-//	for (auto i=0; i<size; i++)
-//	{
-//		vec->push_back(indices[i]);
-//	}
-//	setIndices(vec);
-//}
 
 //MeshBuilder Mesh::builder() 
 //{

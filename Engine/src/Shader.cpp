@@ -19,18 +19,8 @@ Shader::Shader()
 Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath) :
 	m_id(0)
 {
-	m_vertexFilePath = vertexFilePath;
-	m_fragmentFilePath = fragmentFilePath;
 
-	init(m_vertexFilePath, m_fragmentFilePath);
-}
-
-Shader::Shader(const Shader& other)
-{
-	m_vertexFilePath = other.m_vertexFilePath;
-	m_fragmentFilePath = other.m_fragmentFilePath;
-
-	init(m_vertexFilePath, m_fragmentFilePath);
+	init(vertexFilePath, fragmentFilePath);
 }
 
 void Shader::init(const std::string& vertexFilePath, const std::string& fragmentFilePath)

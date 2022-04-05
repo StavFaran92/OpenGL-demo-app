@@ -13,7 +13,7 @@
 
 Skybox* Skybox::CreateSkybox()
 {
-    Shader shader("Resources\\Shaders\\SkyboxShader.vert", "Resources\\Shaders\\SkyboxShader.frag"); //todo check
+    Shader shader("Resources\\Shaders\\SkyboxShader.vert", "Resources\\Shaders\\SkyboxShader.frag");
 
     std::vector<std::string> faces
     {
@@ -26,10 +26,11 @@ Skybox* Skybox::CreateSkybox()
     };
     auto texture = Texture::loadCubemapTexture(faces);
 
-    auto model = ModelBuilder::builder<Skybox>()
-        .setShader(shader)
+    auto model = (Skybox*)ModelBuilder::builder<Skybox>()
+        .setShader(shader, true)
         .getMeshBuilder()
-        .addTexture(texture)
+        .addTexture(*texture)
+        .getModelBuilder()
         .build();
 
     return model;

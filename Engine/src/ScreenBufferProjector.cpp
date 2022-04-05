@@ -14,7 +14,7 @@ bool ScreenBufferProjector::init()
 	m_frameBuffer = std::make_shared<FrameBufferObject>();
 	m_frameBuffer->Bind();
 
-	m_texture = Texture::createEmptyTexture(Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
+	m_texture = std::shared_ptr<Texture>(Texture::createEmptyTexture(Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight()));
 	m_frameBuffer->AttachTexture(m_texture->getID());
 
 	m_renderBuffer = std::make_shared<RenderBufferObject>();

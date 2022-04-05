@@ -11,6 +11,7 @@
 #include "Model.h"
 
 class ModelBuilder;
+class Texture;
 
 class EngineAPI MeshBuilder
 {
@@ -38,6 +39,9 @@ public:
 
 	MeshBuilder& setRawIndices(const unsigned int* indices, size_t size);
 
+	MeshBuilder& addTexture(Texture& texture, bool copy = false);
+	MeshBuilder& addTextures(std::vector<Texture*>& textures, bool copy = false);
+
 	Mesh* build();
 
 	void setModelBuilder(ModelBuilder* modelBuilder);
@@ -50,9 +54,9 @@ public:
 	~MeshBuilder() = default;
 private:
 	/** Constructor */
-	MeshBuilder() = default;
+	MeshBuilder();
 
-
+private:
 
 	size_t m_numOfVertices = 0;
 	std::shared_ptr<std::vector<glm::vec3>> m_positions = nullptr;
@@ -60,6 +64,7 @@ private:
 	std::shared_ptr<std::vector<glm::vec2>> m_texCoords = nullptr;
 	std::shared_ptr<std::vector<glm::vec3>> m_colors = nullptr;
 	std::shared_ptr<std::vector<unsigned int>> m_indices = nullptr;
+	std::shared_ptr<std::vector<Texture*>> m_textures = nullptr;
 
 	ModelBuilder* m_modelBuilder = nullptr;
 

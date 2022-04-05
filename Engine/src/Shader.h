@@ -14,7 +14,8 @@ class EngineAPI Shader
 public:
 	Shader();
 	Shader(const std::string& vertexfilePath, const std::string& fragmentFilePath);
-	Shader(const Shader& other);
+	Shader(const Shader& other) = default;
+	Shader& operator=(const Shader& other) = default;
 
 	void use() const;
 	void release() const;
@@ -60,9 +61,6 @@ private:
 	bool m_enableLight = false;
 	bool m_enableMaterial = false;
 	bool m_enableTexture = false;
-
-	std::string m_vertexFilePath;
-	std::string m_fragmentFilePath;
 
 	static uint32_t s_activateShader;
 };

@@ -6,6 +6,7 @@
 
 #include "Logger.h"
 #include <filesystem>
+#include "MeshBuilder.h"
 
 ModelImporter::ModelImporter()
 {
@@ -78,11 +79,11 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 
 Mesh* ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporter::ModelImportSession& session)
 {
-	auto positions = std::make_shared<std::vector<glm::vec3>>();
-	auto normals = std::make_shared<std::vector<glm::vec3>>();
-	auto texcoords = std::make_shared<std::vector<glm::vec2>>();
-	auto indices = std::make_shared<std::vector<unsigned int>>();
-	std::vector<std::shared_ptr<Texture>> textures;
+	auto positions = new std::vector<glm::vec3>();
+	auto normals = new std::vector<glm::vec3>();
+	auto texcoords = new std::vector<glm::vec2>();
+	auto indices = new std::vector<unsigned int>();
+	auto textures = new std::vector<Texture*>();
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -130,27 +131,36 @@ Mesh* ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImport
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
 		auto diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, session);
-		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+		textures->insert(textures->end(), diffuseMaps.begin(), diffuseMaps.end());
 
 		auto specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, session);
-		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+		textures->insert(textures->end(), specularMaps.begin(), specularMaps.end());
 	}
 
-	Mesh* generatedMesh = new Mesh();
-	generatedMesh->setNumOfVertices(mesh->mNumVertices);
-	generatedMesh->setPositions(positions);
-	generatedMesh->setNormals(normals);
-	generatedMesh->setTexcoords(texcoords);
-	generatedMesh->addTextures(textures);
-	generatedMesh->setIndices(indices);
-	generatedMesh->build();
+	return MeshBuilder::builder()
+		.setNumOfVertices(mesh->mNumVertices)
+		.setPositions(*positions)
+		.setNormals(*normals)
+		.setTexcoords(*texcoords)
+		.addTextures(*textures)
+		.setIndices(*indices)
+		.build();
 
-	return generatedMesh;
+	//Mesh* generatedMesh = new Mesh();
+	//generatedMesh->setNumOfVertices(mesh->mNumVertices);
+	//generatedMesh->setPositions(positions);
+	//generatedMesh->setNormals(normals);
+	//generatedMesh->setTexcoords(texcoords);
+	//generatedMesh->addTextures(textures);
+	//generatedMesh->setIndices(indices);
+	//generatedMesh->build();
+
+	//return generatedMesh;
 }
 
-std::vector<std::shared_ptr<Texture>> ModelImporter::loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImporter::ModelImportSession& session)
+std::vector<Texture*> ModelImporter::loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImporter::ModelImportSession& session)
 {
-	std::vector<std::shared_ptr<Texture>> textures;
+	std::vector<Texture*> textures;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 	{
 		aiString str;

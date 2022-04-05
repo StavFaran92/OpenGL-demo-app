@@ -10,7 +10,7 @@ public:
 
 	void start() override
 	{
-		//skybox(Skybox::CreateSkybox());
+		skybox(Skybox::CreateSkybox());
 
 		//for (int i = 0; i < 3; i++)
 		//{

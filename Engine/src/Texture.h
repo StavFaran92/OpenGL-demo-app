@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Core.h"
+#include "ApplicationConstants.h"
 
 
 class EngineAPI Texture
@@ -21,6 +22,9 @@ public:
 	/** Constructor */
 	Texture();
 
+	/** Copy constructor */
+	Texture(const Texture& other);
+
 	/**
 	 * Create an empty texture.
 	 * 
@@ -28,7 +32,7 @@ public:
 	 * \param height	The generated texture height
 	 * \return		A pointer to the generated texture
 	 */
-	static std::shared_ptr<Texture> createEmptyTexture(int width, int height);
+	static Texture* createEmptyTexture(int width, int height);
 
 	/**
 	 * Load a texture from a given file path.
@@ -37,8 +41,8 @@ public:
 	 * \param isFlipped		Should flip the texture vertically
 	 * \return		A pointer to the loaded texture
 	 */
-	static std::shared_ptr<Texture> loadTextureFromFile(const std::string& fileLocation);
-	static std::shared_ptr<Texture> loadCubemapTexture(std::vector<std::string> faces);
+	static Texture* loadTextureFromFile(const std::string& fileLocation);
+	static Texture* loadCubemapTexture(std::vector<std::string> faces);
 
 	/**
 	 * Converts a texture type to a string.
@@ -66,7 +70,6 @@ public:
 	 * 
 	 * \return Type of this texture
 	 */
-
 	Type getType() const;
 
 	void flip();
@@ -87,5 +90,5 @@ private:
 	uint32_t m_target = 0;
 	bool m_flipped = false;
 
-	std::string m_fileLocation;
+	std::string m_fileLocation = Constants::N_A;
 };
