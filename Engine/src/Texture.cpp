@@ -94,6 +94,9 @@ Texture* Texture::loadCubemapTexture(std::vector<std::string> faces)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, texture->m_id);
 
+	// flip the image
+	stbi_set_flip_vertically_on_load(FLIP_TEXTURE);
+
 	int width, height, nrChannels;
 	for (unsigned int i = 0; i < faces.size(); i++)
 	{

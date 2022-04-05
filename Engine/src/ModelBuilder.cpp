@@ -21,6 +21,9 @@ Model* ModelBuilder::build()
 
 	m_model->addMesh(mesh);
 
+	if (m_shader)
+		m_model->AttachShader(m_shader);
+
 	// We are finished with the builder and it can now be erased.
 	delete this;
 
