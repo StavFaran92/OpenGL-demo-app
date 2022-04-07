@@ -1,54 +1,32 @@
 #include "Sphere.h"
 #include "ApplicationConstants.h"
 #include "Mesh.h"
+#include "MeshBuilder.h"
 
-Sphere* Sphere::generateSphere(float radius, int sectors, int stacks)
-{
-    auto sphere = new Sphere();
-
-    std::shared_ptr<Mesh> mesh = generateMesh(radius, sectors, stacks);
-
-    auto texturediff = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
-    texturediff->setType(Texture::Type::Diffuse);
-
-    auto textureSpec = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
-    textureSpec->setType(Texture::Type::Specular);
-
-    mesh->addTexture(texturediff);
-    mesh->addTexture(textureSpec);
-
-    std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-    sphere->UseMaterial(material);
-
-    sphere->m_meshes.push_back(mesh);
-
-    return sphere;
-}
-
-std::shared_ptr<Mesh> Sphere::generateMesh(float radius, int sectors, int stacks)
+MeshBuilder* Sphere::createMeshBuilder()
 {
     // clear memory of prev arrays
-    auto positions = std::make_shared<std::vector<glm::vec3>>();
-    auto normals = std::make_shared<std::vector<glm::vec3>>();
-    auto texcoords = std::make_shared<std::vector<glm::vec2>>();
+    auto positions = new std::vector<glm::vec3>();
+    auto normals = new std::vector<glm::vec3>();
+    auto texcoords = new std::vector<glm::vec2>();
 
     float x, y, z, xy;                              // vertex position
-    float nx, ny, nz, lengthInv = 1.0f / radius;    // vertex normal
+    float nx, ny, nz, lengthInv = 1.0f / m_radius;    // vertex normal
     float s, t;                                     // vertex texCoord
 
-    float sectorStep = 2 * Constants::PI / sectors;
-    float stackStep = Constants::PI / stacks;
+    float sectorStep = 2 * Constants::PI / m_sectors;
+    float stackStep = Constants::PI / m_stacks;
     float sectorAngle, stackAngle;
 
-    for (int i = 0; i <= stacks; ++i)
+    for (int i = 0; i <= m_stacks; ++i)
     {
         stackAngle = Constants::PI / 2 - i * stackStep;        // starting from pi/2 to -pi/2
-        xy = radius * cosf(stackAngle);             // r * cos(u)
-        z = radius * sinf(stackAngle);              // r * sin(u)
+        xy = m_radius * cosf(stackAngle);             // r * cos(u)
+        z = m_radius * sinf(stackAngle);              // r * sin(u)
 
         // add (sectorCount+1) positions per stack
         // the first and last positions have same position and normal, but different tex coords
-        for (int j = 0; j <= sectors; ++j)
+        for (int j = 0; j <= m_sectors; ++j)
         {
             sectorAngle = j * sectorStep;           // starting from 0 to 2pi
 
@@ -64,8 +42,8 @@ std::shared_ptr<Mesh> Sphere::generateMesh(float radius, int sectors, int stacks
             normals->push_back({ nx, ny, nz });
 
             // vertex tex coord (s, t) range between [0, 1]
-            s = (float)j / sectors;
-            t = (float)i / stacks;
+            s = (float)j / m_sectors;
+            t = (float)i / m_stacks;
             texcoords->push_back({ s, t });
         }
     }
@@ -75,15 +53,15 @@ std::shared_ptr<Mesh> Sphere::generateMesh(float radius, int sectors, int stacks
     // |  / |
     // | /  |
     // k2--k2+1
-    auto indices = std::make_shared<std::vector<unsigned int>>();
+    auto indices = new std::vector<unsigned int>();
     std::vector<int> lineIndices;
     int k1, k2;
-    for (int i = 0; i < stacks; ++i)
+    for (int i = 0; i < m_stacks; ++i)
     {
-        k1 = i * (sectors + 1);     // beginning of current stack
-        k2 = k1 + sectors + 1;      // beginning of next stack
+        k1 = i * (m_sectors + 1);     // beginning of current stack
+        k2 = k1 + m_sectors + 1;      // beginning of next stack
 
-        for (int j = 0; j < sectors; ++j, ++k1, ++k2)
+        for (int j = 0; j < m_sectors; ++j, ++k1, ++k2)
         {
             // 2 triangles per sector excluding first and last stacks
             // k1 => k2 => k1+1
@@ -95,7 +73,7 @@ std::shared_ptr<Mesh> Sphere::generateMesh(float radius, int sectors, int stacks
             }
 
             // k1+1 => k2 => k2+1
-            if (i != (stacks - 1))
+            if (i != (m_stacks - 1))
             {
                 indices->push_back(k1 + 1);
                 indices->push_back(k2);
@@ -114,13 +92,10 @@ std::shared_ptr<Mesh> Sphere::generateMesh(float radius, int sectors, int stacks
         }
     }
 
-    auto generatedMesh = std::make_shared<Mesh>();
-    generatedMesh->setNumOfVertices(positions->size());
-    generatedMesh->setPositions(positions);
-    generatedMesh->setNormals(normals);
-    generatedMesh->setTexcoords(texcoords);
-    generatedMesh->setIndices(indices);
-    generatedMesh->build();
-
-    return generatedMesh;
+    return &MeshBuilder::builder()
+        .setNumOfVertices(positions->size())
+        .setPositions(*positions)
+        .setNormals(*normals)
+        .setTexcoords(*texcoords)
+        .setIndices(*indices);
 }

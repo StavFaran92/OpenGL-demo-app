@@ -6,7 +6,12 @@
 class EngineAPI Sphere : public Model
 {
 public:
-	static Sphere* generateSphere(float radius, int sectors, int stacks);
+	Sphere(float radius, int sectors, int stacks)
+		: m_radius(radius), m_sectors(sectors), m_stacks(stacks) {};
+
+	MeshBuilder* createMeshBuilder() override;
 private:
-	static std::shared_ptr<Mesh> generateMesh(float radius, int sectors, int stacks);
+	const int m_radius = 0;
+	const int m_sectors = 0;
+	const int m_stacks = 0;
 };

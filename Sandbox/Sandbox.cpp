@@ -6,7 +6,7 @@ public:
 	using Application::draw;
 	//Box boxes[3][3][3];
 
-	Box* box;
+	Sphere* sphere;
 
 	void start() override
 	{
@@ -61,7 +61,8 @@ public:
 		layout.attribs.push_back(LayoutAttributes::Normals);
 		layout.attribs.push_back(LayoutAttributes::Texcoords);
 
-
+		sphere = (Sphere*)ModelBuilder::builder<Sphere>(2, 36, 18)
+			.build();
 
 		//auto builder = ModelBuilder<Model>::builder();
 		//builder.getMeshBuilder()
@@ -127,7 +128,7 @@ public:
 		//	box->rotateZ(1);
 		//}
 
-		//draw(box);
+		draw(sphere);
 		
 		//box->rotateY(1);
 		//for (int i = 0; i < 3; i++)
