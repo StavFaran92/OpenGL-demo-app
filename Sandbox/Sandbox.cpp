@@ -64,12 +64,6 @@ public:
 		sphere = (Sphere*)ModelBuilder::builder<Sphere>(2, 36, 18)
 			.build();
 
-		//auto builder = ModelBuilder<Model>::builder();
-		//builder.getMeshBuilder()
-		//	.setRawVertices(vertices, layout)
-		//	.build();
-		//builder.build();
-
 		//box = (Box*)ModelBuilder::builder<Box>()
 		//	.build();
 

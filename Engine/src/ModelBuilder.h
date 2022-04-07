@@ -12,13 +12,53 @@
 #include "MeshBuilder.h"
 #include "Texture.h"
 
+// 
+// Create a default Box -> Build
+// ```
+//	Box* box = (Box*)ModelBuilder::builder<Box>().build();
+// ```
+
+// Create a default Box -> Go to it's mesh builder -> add a texture to the mesh -> return to the model builder -> Build
+// ```
+//	(Box*)ModelBuilder::builder<Box>()
+//		.getMeshBuilder()
+//		.addTexture(texture)
+//		.getModelBuilder()
+//		.build();
+// ```
+
+//// Create a default Model ->  Set it's vertices data -> Set it's shader -> Build
+// ```
+//	Mesh::VerticesLayout layout;
+//	layout.numOfVertices = 3;
+//	layout.attribs.push_back(LayoutAttributes::Positions);
+//	
+//	ModelBuilder::builder<Model>()
+//		.getMeshBuilder()
+//		.setRawVertices(vertices, layout)
+//		.getModelBuilder()
+//		.setShader(shader)
+//		.build();
+// ```
+
+// Create a sphere-> Set it's position and Colors ->  Build
+// ```
+//	float positions[10] = { /*...*/ };
+//	std::vector<glm::vec3> colors = { /*...*/ };
+//	
+//	sphere = (Sphere*)ModelBuilder::builder<Sphere>(2, 36, 18)
+//		.getMeshBuilder()
+//		.setPositions(positions, 10)
+//		.setColors(colors)
+//		.getModelBuilder()
+//		.build();
+// ```
+
 class EngineAPI ModelBuilder
 {
 public:
 	/** Constructor */
 	ModelBuilder() = default;
-
-
 
 	/** Destructor */
 	~ModelBuilder() {};

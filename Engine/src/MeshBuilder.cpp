@@ -249,6 +249,18 @@ MeshBuilder& MeshBuilder::addTexture(std::shared_ptr<Texture>& texture, bool cop
 	return *this;
 }
 
+MeshBuilder& MeshBuilder::addTexture(Texture* texture, bool copy)
+{
+	throw std::exception("Not implemented yet");
+	return *this;
+}
+
+MeshBuilder& MeshBuilder::addTextures(std::vector<Texture*>& textures, bool copy)
+{
+	throw std::exception("Not implemented yet");
+	return *this;
+}
+
 MeshBuilder& MeshBuilder::addTextures(std::vector<std::shared_ptr<Texture>>& textures, bool copy)
 {
 	for (auto texture : textures)

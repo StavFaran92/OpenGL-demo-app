@@ -42,19 +42,21 @@ public:
 	MeshBuilder& addTexture(std::shared_ptr<Texture>& texture, bool copy = false);
 	MeshBuilder& addTextures(std::vector<std::shared_ptr<Texture>>& textures, bool copy = false);
 
-	Mesh* build();
-
-	void setModelBuilder(ModelBuilder* modelBuilder);
+	MeshBuilder& addTexture(Texture* texture, bool copy = false);
+	MeshBuilder& addTextures(std::vector<Texture*>& textures, bool copy = false);
 
 	ModelBuilder& getModelBuilder() const;
+	Mesh* build();
 
 	static MeshBuilder& builder();
 	
 	/** Destructor */
 	~MeshBuilder() = default;
 private:
+	friend class ModelBuilder;
 	/** Constructor */
 	MeshBuilder();
+	void setModelBuilder(ModelBuilder* modelBuilder);
 
 private:
 
