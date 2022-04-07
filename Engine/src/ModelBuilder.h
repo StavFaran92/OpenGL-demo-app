@@ -76,7 +76,7 @@ private:
 	void init(_Types&&... _Args);
 private:
 	std::shared_ptr<Shader> m_shader = nullptr;
-	std::shared_ptr<MeshBuilder> m_meshBuilder = nullptr;
+	MeshBuilder* m_meshBuilder = nullptr;
 	Model* m_model = nullptr;
 
 	bool isBuilt = false;
@@ -88,7 +88,7 @@ void ModelBuilder::init(_Types&&... _Args)
 {
 	m_model = new T(std::forward<_Types>(_Args)...);
 
-	m_meshBuilder = std::shared_ptr<MeshBuilder>(m_model->createMeshBuilder());
+	m_meshBuilder = m_model->createMeshBuilder();
 	m_meshBuilder->setModelBuilder(this);
 }
 

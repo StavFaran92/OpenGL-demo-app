@@ -1,6 +1,7 @@
 #include "MeshBuilder.h"
 
 #include "Model.h"
+#include "Logger.h"
 
 MeshBuilder& MeshBuilder::setNumOfVertices(size_t size)
 {
@@ -298,6 +299,8 @@ Mesh* MeshBuilder::build()
 
 	mesh->build();
 
+	delete this;
+
 	return mesh;
 }
 
@@ -319,9 +322,4 @@ MeshBuilder& MeshBuilder::builder()
 MeshBuilder::MeshBuilder()
 {
 	m_textures = std::make_shared<std::vector<std::shared_ptr<Texture>>>();
-}
-
-bool MeshBuilder::isBuilt() const
-{
-	return m_isBuilt;
 }

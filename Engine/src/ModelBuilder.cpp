@@ -50,6 +50,6 @@ ModelBuilder& ModelBuilder::setShader(Shader& shader, bool copy)
 
 MeshBuilder& ModelBuilder::getMeshBuilder()
 {
-	return *m_meshBuilder.get();
+	return *m_meshBuilder;
 }
 

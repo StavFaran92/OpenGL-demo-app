@@ -9,6 +9,7 @@ public:
 	Sphere* sphere;
 
 	Model* guitar;
+	Box* box;
 
 	void start() override
 	{
@@ -25,10 +26,58 @@ public:
 		//		}
 		//	}
 		//}
-	
-		guitar = Engine::get()->getModelImporter()->loadModelFromFile("D:\\program files\\downloads\\backpack\\backpack.obj");
 
-		guitar->SetReflection(true);
+		float colors[108] = {
+		 -1.0f,  0.0f,  0.0f,
+		 -1.0f,  1.0f,  0.0f,
+		 -1.0f,  1.0f,  1.0f,
+		 -1.0f,  1.0f,  1.0f,
+		 -1.0f,  0.0f,  1.0f,
+		 -1.0f,  0.0f,  0.0f,
+
+		  1.0f,  0.0f,  0.0f,
+		  1.0f,  1.0f,  0.0f,
+		  1.0f,  1.0f,  1.0f,
+		  1.0f,  1.0f,  1.0f,
+		  1.0f,  0.0f,  1.0f,
+		  1.0f,  0.0f,  0.0f,
+
+		  0.0f,  1.0f,  0.0f,
+		  0.0f,  1.0f,  1.0f,
+		  0.0f,  0.0f,  1.0f,
+		  0.0f,  0.0f,  1.0f,
+		  0.0f,  0.0f,  0.0f,
+		  0.0f,  1.0f,  0.0f,
+
+		  0.0f,  1.0f,  0.0f,
+		  0.0f,  1.0f,  1.0f,
+		  0.0f,  0.0f,  1.0f,
+		  0.0f,  0.0f,  1.0f,
+		  0.0f,  0.0f,  0.0f,
+		  0.0f,  1.0f,  0.0f,
+
+		  0.0f,  0.0f,  1.0f,
+		  0.0f,  1.0f,  1.0f,
+		  0.0f,  1.0f,  0.0f,
+		  0.0f,  1.0f,  0.0f,
+		  0.0f,  0.0f,  0.0f,
+		  0.0f,  0.0f,  1.0f,
+
+		  0.0f,  0.0f,  1.0f,
+		  0.0f,  1.0f,  1.0f,
+		  0.0f,  1.0f,  0.0f,
+		  0.0f,  1.0f,  0.0f,
+		  0.0f,  0.0f,  0.0f,
+		  0.0f,  0.0f,  1.0f
+		};
+
+		box = (Box*)ModelBuilder::builder<Box>()
+			.getMeshBuilder()
+			.setColors(colors, 108)
+			.getModelBuilder()
+			.build();
+
+
 
 		//postProcess(PostProcess::grayscale());
 	}
@@ -68,7 +117,7 @@ public:
 		//	box->rotateZ(1);
 		//}
 
-		draw(guitar);
+		draw(box);
 		
 		//box->rotateY(1);
 		//for (int i = 0; i < 3; i++)

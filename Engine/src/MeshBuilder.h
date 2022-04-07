@@ -16,8 +16,6 @@ class Texture;
 class EngineAPI MeshBuilder
 {
 public:
-	bool isBuilt() const;
-
 	MeshBuilder& setNumOfVertices(size_t size);
 
 	MeshBuilder& setPositions(std::vector<glm::vec3>& positions, bool copy = false);
@@ -69,8 +67,6 @@ private:
 	std::shared_ptr<std::vector<std::shared_ptr<Texture>>> m_textures = nullptr;
 
 	ModelBuilder* m_modelBuilder = nullptr;
-
-	bool m_isBuilt = false;
 
 };
 
