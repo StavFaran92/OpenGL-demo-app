@@ -1,6 +1,7 @@
 #pragma once
 
-#include <vector>
+#include <unordered_map>
+#include <map>
 #include <memory>
 #include <string>
 
@@ -47,10 +48,10 @@ public:
 private:
 	void processNode(aiNode* node, const aiScene* scene, ModelImportSession& session, Model& model);
 	Mesh* processMesh(aiMesh* mesh, const aiScene* scene, ModelImportSession& session);
-	std::vector<Texture*> loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImportSession& session);
+	std::vector<std::shared_ptr<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImportSession& session);
 	static Texture::Type getTextureType(aiTextureType type);
 private:
-	std::vector<Texture*> m_texturesCache;
+	std::unordered_map<std::string, std::weak_ptr<Texture>> m_texturesCache;
 	std::map<uint32_t, ModelImportSession> m_sessions;
 	std::shared_ptr<Assimp::Importer> m_importer = nullptr;
 };

@@ -10,7 +10,7 @@ public:
 
 	void start() override
 	{
-		skybox(Skybox::CreateSkybox());
+		//skybox(Skybox::CreateSkybox());
 
 		//for (int i = 0; i < 3; i++)
 		//{
@@ -69,8 +69,8 @@ public:
 		//	.build();
 		//builder.build();
 
-		box = (Box*)ModelBuilder::builder<Box>()
-			.build();
+		//box = (Box*)ModelBuilder::builder<Box>()
+		//	.build();
 
 		//std::cout << box->getID() << std::endl;
 
@@ -89,7 +89,7 @@ public:
 		//sphere = Sphere::generateSphere(1, 36, 18);
 		//sphere->translate(2, 0, 0);
 
-		postProcess(PostProcess::grayscale());
+		//postProcess(PostProcess::grayscale());
 	}
 
 	void draw() override
@@ -127,7 +127,7 @@ public:
 		//	box->rotateZ(1);
 		//}
 
-		draw(box);
+		//draw(box);
 		
 		//box->rotateY(1);
 		//for (int i = 0; i < 3; i++)

@@ -235,25 +235,25 @@ MeshBuilder& MeshBuilder::setRawIndices(const unsigned int* indices, size_t size
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::addTexture(Texture& texture, bool copy)
+MeshBuilder& MeshBuilder::addTexture(std::shared_ptr<Texture>& texture, bool copy)
 {
 	if (copy)
 	{
-		m_textures->push_back(new Texture(texture));
+		m_textures->push_back(std::make_shared<Texture>(*texture.get()));
 	}
 	else
 	{
-		m_textures->push_back(&texture);
+		m_textures->push_back(texture);
 	}
 
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::addTextures(std::vector<Texture*>& textures, bool copy)
+MeshBuilder& MeshBuilder::addTextures(std::vector<std::shared_ptr<Texture>>& textures, bool copy)
 {
 	for (auto texture : textures)
 	{
-		addTexture(*texture, copy);
+		addTexture(texture, copy);
 	}
 
 	return *this;
@@ -306,7 +306,7 @@ MeshBuilder& MeshBuilder::builder()
 
 MeshBuilder::MeshBuilder()
 {
-	m_textures = std::make_shared<std::vector<Texture*>>();
+	m_textures = std::make_shared<std::vector<std::shared_ptr<Texture>>>();
 }
 
 bool MeshBuilder::isBuilt() const

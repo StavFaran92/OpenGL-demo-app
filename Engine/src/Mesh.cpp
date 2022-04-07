@@ -23,10 +23,29 @@ void Mesh::renderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < IRendere
 
 void Mesh::addTexture(Texture* texture)
 {
+	if (texture == nullptr)
+	{
+		logError("Cannot add a null texture to mesh.");
+		return;
+	}
+
 	m_textures.push_back(std::shared_ptr<Texture>(texture));
 }
 
 void Mesh::addTextures(std::vector<Texture*>& textures)
+{
+	for (auto texture : textures)
+	{
+		addTexture(texture);
+	}
+}
+
+void Mesh::addTexture(const std::shared_ptr<Texture>& texture)
+{
+	m_textures.push_back(texture);
+}
+
+void Mesh::addTextures(const std::vector<std::shared_ptr<Texture>>& textures)
 {
 	for (auto texture : textures)
 	{

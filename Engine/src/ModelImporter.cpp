@@ -83,7 +83,7 @@ Mesh* ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImport
 	auto normals = new std::vector<glm::vec3>();
 	auto texcoords = new std::vector<glm::vec2>();
 	auto indices = new std::vector<unsigned int>();
-	auto textures = new std::vector<Texture*>();
+	auto textures = new std::vector<std::shared_ptr<Texture>>();
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -145,45 +145,35 @@ Mesh* ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImport
 		.addTextures(*textures)
 		.setIndices(*indices)
 		.build();
-
-	//Mesh* generatedMesh = new Mesh();
-	//generatedMesh->setNumOfVertices(mesh->mNumVertices);
-	//generatedMesh->setPositions(positions);
-	//generatedMesh->setNormals(normals);
-	//generatedMesh->setTexcoords(texcoords);
-	//generatedMesh->addTextures(textures);
-	//generatedMesh->setIndices(indices);
-	//generatedMesh->build();
-
-	//return generatedMesh;
 }
 
-std::vector<Texture*> ModelImporter::loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImporter::ModelImportSession& session)
+std::vector<std::shared_ptr<Texture>> ModelImporter::loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImporter::ModelImportSession& session)
 {
-	std::vector<Texture*> textures;
+	std::vector<std::shared_ptr<Texture>> textures;
+
+	// Iterate material's textures
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 	{
 		aiString str;
 		mat->GetTexture(type, i, &str);
-		bool skip = false;
-		for (unsigned int j = 0; j < m_texturesCache.size(); j++)
+		auto textureName = str.C_Str();
+
+		// Check if texture is in cache and is not expired
+		if(m_texturesCache.find(str.C_Str()) != m_texturesCache.end() && !m_texturesCache[textureName].expired())
 		{
-			if (m_texturesCache[j]->getFilepath().compare(session.fileDir + "\\" + str.C_Str()) == 0)
-			{
-				textures.push_back(m_texturesCache[j]);
-				skip = true;
-				break;
-			}
+			textures.push_back(m_texturesCache[textureName].lock());
 		}
-		if (!skip)
+		else
 		{
-			auto texture = Texture::loadTextureFromFile(session.fileDir + "\\" + str.C_Str());
+			// Texture not found in cache -> load it and add to cache
+			auto texture = Texture::loadTextureFromFile(session.fileDir + "\\" + textureName);
 			auto pType = getTextureType(type);
 			if (pType != Texture::Type::None)
 			{
 				texture->setType(pType);
-				textures.push_back(texture);
-				m_texturesCache.push_back(texture);
+				auto sharedTexture = std::shared_ptr<Texture>(texture);
+				textures.push_back(sharedTexture);
+				m_texturesCache[textureName] = sharedTexture;
 			}
 		}
 	}

@@ -39,8 +39,8 @@ public:
 
 	MeshBuilder& setRawIndices(const unsigned int* indices, size_t size);
 
-	MeshBuilder& addTexture(Texture& texture, bool copy = false);
-	MeshBuilder& addTextures(std::vector<Texture*>& textures, bool copy = false);
+	MeshBuilder& addTexture(std::shared_ptr<Texture>& texture, bool copy = false);
+	MeshBuilder& addTextures(std::vector<std::shared_ptr<Texture>>& textures, bool copy = false);
 
 	Mesh* build();
 
@@ -64,7 +64,7 @@ private:
 	std::shared_ptr<std::vector<glm::vec2>> m_texCoords = nullptr;
 	std::shared_ptr<std::vector<glm::vec3>> m_colors = nullptr;
 	std::shared_ptr<std::vector<unsigned int>> m_indices = nullptr;
-	std::shared_ptr<std::vector<Texture*>> m_textures = nullptr;
+	std::shared_ptr<std::vector<std::shared_ptr<Texture>>> m_textures = nullptr;
 
 	ModelBuilder* m_modelBuilder = nullptr;
 

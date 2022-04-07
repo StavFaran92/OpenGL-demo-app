@@ -10,13 +10,13 @@
 Texture::Texture()
 	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_slot(0)
 {
-	logTrace( __FUNCTION__ );
+	logInfo( __FUNCTION__ );
 }
 
 Texture::Texture(const Texture& other)
 	: m_id(other.m_id), m_width(other.m_width), m_height(other.m_height), m_bitDepth(other.m_bitDepth), m_slot(other.m_slot)
 {
-	logTrace(__FUNCTION__);
+	logInfo(__FUNCTION__);
 }
 
 Texture* Texture::createEmptyTexture(int width, int height)
@@ -185,6 +185,6 @@ void Texture::ClearTexture()
 
 Texture::~Texture()
 {
-	logTrace( __FUNCTION__ );
+	logInfo( __FUNCTION__ );
 	ClearTexture();
 }

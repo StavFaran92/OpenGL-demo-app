@@ -1,5 +1,7 @@
 #include "ModelBuilder.h"
 
+#include <memory>
+
 #include "Model.h"
 
 Model* ModelBuilder::build()
@@ -13,8 +15,8 @@ Model* ModelBuilder::build()
 	auto textureSpec = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
 	textureSpec->setType(Texture::Type::Specular);
 
-	mesh->addTexture(texturediff);
-	mesh->addTexture(textureSpec);
+	mesh->addTexture(std::shared_ptr<Texture>(texturediff));
+	mesh->addTexture(std::shared_ptr<Texture>(textureSpec));
 
 	std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
 	m_model->UseMaterial(material);
@@ -24,10 +26,12 @@ Model* ModelBuilder::build()
 	if (m_shader)
 		m_model->AttachShader(m_shader);
 
+	auto tempModel = m_model;
+
 	// We are finished with the builder and it can now be erased.
 	delete this;
 
-	return m_model;
+	return tempModel;
 }
 
 ModelBuilder& ModelBuilder::setShader(Shader& shader, bool copy)

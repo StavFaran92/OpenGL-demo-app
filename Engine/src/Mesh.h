@@ -31,13 +31,13 @@ public:
 
 	void renderMesh(std::shared_ptr<Shader> shader, std::shared_ptr <IRenderer>renderer);
 
+	void addTexture(const std::shared_ptr<Texture>& texture);
+	void addTextures(const std::vector<std::shared_ptr<Texture>>& textures);
+
 	void addTexture(Texture* texture);
 	void addTextures(std::vector<Texture*>& textures);
 
 	inline std::vector<std::shared_ptr<Texture>> getTextures() { return m_textures; };
-
-	//void setRawVertices(float* vertices, VerticesLayout& layout);
-	//void setRawIndices(unsigned int* indices, size_t size);
 	
 	void SetTexturesInShader(std::shared_ptr<Shader>& shader);
 	void setNumOfVertices(size_t size);
