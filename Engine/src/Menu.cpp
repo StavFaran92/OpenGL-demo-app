@@ -291,7 +291,7 @@ void ShowModelCreatorWindow()
 
             logInfo("Open file: " + path);
 
-            auto model = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str(), flipTexture);
+            auto model = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str());
             std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
             model->UseMaterial(material);
             model->GetTransformation()->SetPosition(pos);

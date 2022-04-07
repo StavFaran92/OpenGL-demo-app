@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 
+#include "Core.h"
 #include "Model.h"
 #include "Mesh.h"
 #include "Texture.h"
@@ -15,27 +16,24 @@ struct aiScene;
 struct aiMesh;
 struct aiMaterial;
 enum aiTextureType;
+class Engine;
 
 namespace Assimp
 {
 	class Importer;
 }
 
-class ModelImporter
+class EngineAPI ModelImporter
 {
 public:
 	struct ModelImportSession
 	{
-		bool flippedTexture = false;
 		std::string filepath;
 		std::string fileDir;
 	};
 
 	/** Constructor */
 	ModelImporter();
-
-	/** Init the model loader module */
-	void init();
 
 	/**
 	 * Import a model from a file.
@@ -44,8 +42,11 @@ public:
 	 * \param flipTexture	should flip loaded texture
 	 * \return A poitner to the newly created model
 	 */
-	Model* loadModelFromFile(const std::string& path, bool flipTexture = false);
+	Model* loadModelFromFile(const std::string& path);
 private:
+	friend class Engine;
+	/** Init the model loader module */
+	void init();
 	void processNode(aiNode* node, const aiScene* scene, ModelImportSession& session, Model& model);
 	Mesh* processMesh(aiMesh* mesh, const aiScene* scene, ModelImportSession& session);
 	std::vector<std::shared_ptr<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImportSession& session);

@@ -20,7 +20,7 @@ void ModelImporter::init()
 	logInfo("Model importer init successfully.");
 }
 
-Model* ModelImporter::loadModelFromFile(const std::string& path, bool flipTextures /*= false*/)
+Model* ModelImporter::loadModelFromFile(const std::string& path)
 {
 	// validate init
 	if (m_importer == nullptr)
@@ -50,7 +50,6 @@ Model* ModelImporter::loadModelFromFile(const std::string& path, bool flipTextur
 
 	// create new model session
 	ModelImportSession session;
-	session.flippedTexture = flipTextures;
 	session.filepath = path;
 	session.fileDir = path.substr(0, path.find_last_of('\\'));
 

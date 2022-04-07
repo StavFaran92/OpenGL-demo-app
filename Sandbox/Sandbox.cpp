@@ -8,9 +8,11 @@ public:
 
 	Sphere* sphere;
 
+	Model* guitar;
+
 	void start() override
 	{
-		//skybox(Skybox::CreateSkybox());
+		skybox(Skybox::CreateSkybox());
 
 		//for (int i = 0; i < 3; i++)
 		//{
@@ -23,66 +25,10 @@ public:
 		//		}
 		//	}
 		//}
-		
-		//// Create a default Box ->
-		//// Build
-		//Box::builder().
-		//	build();
+	
+		guitar = Engine::get()->getModelImporter()->loadModelFromFile("D:\\program files\\downloads\\backpack\\backpack.obj");
 
-		//// Create a default Box -> 
-		//// Update it's color vertices -> 
-		//// Build
-		//float colors[3]{1, 1, 1};
-		//Box::builder().
-		//	setColors(colors, 3).
-		//	build();
-
-		//// Create a default Box -> 
-		//// Override it's content entirely using different vertices data and layout -> 
-		//// Change it's shader from default ->
-		//// Build
-		//float vertices[3];
-		//Mesh::VerticesLayout layout;
-		//layout.numOfVertices = 3;
-		//layout.attribs.push_back(LayoutAttributes::Positions);
-		//Shader shader("Resources\\Shaders\\LightShader.vert", "Resources\\Shaders\\LightShader.frag");
-		//Box::builder().
-		//	setRawVertices(vertices, layout).
-		//	setShader(shader).
-		//	build();
-
-		// Create a default Model ->
-		// Set vertices data and layout -> 
-		// Build
-		float vertices[8]{1,1,1, 1,1,1, 1,1};
-		Mesh::VerticesLayout layout;
-		layout.numOfVertices = 1;
-		layout.attribs.push_back(LayoutAttributes::Positions);
-		layout.attribs.push_back(LayoutAttributes::Normals);
-		layout.attribs.push_back(LayoutAttributes::Texcoords);
-
-		sphere = (Sphere*)ModelBuilder::builder<Sphere>(2, 36, 18)
-			.build();
-
-		//box = (Box*)ModelBuilder::builder<Box>()
-		//	.build();
-
-		//std::cout << box->getID() << std::endl;
-
-
-		//Model* test2 = Quad::builder()
-		//	.setRawVertices(vertices, layout)
-		//	.build();
-
-		//Box* box = Model::builder<Box>()
-		//	.build();
-
-		//quad = createQuad();
-		//quad->translate(0, 0, -2);
-		//quad->rotateZ(90);
-
-		//sphere = Sphere::generateSphere(1, 36, 18);
-		//sphere->translate(2, 0, 0);
+		guitar->SetReflection(true);
 
 		//postProcess(PostProcess::grayscale());
 	}
@@ -122,7 +68,7 @@ public:
 		//	box->rotateZ(1);
 		//}
 
-		draw(sphere);
+		draw(guitar);
 		
 		//box->rotateY(1);
 		//for (int i = 0; i < 3; i++)
