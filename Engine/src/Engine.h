@@ -40,7 +40,7 @@ public:
     Engine(const Engine&) = delete;
     void operator=(const Engine&) = delete;
 
-private:
+protected:
     // -------------------- Methods -------------------- //
     friend int main();
 
@@ -53,7 +53,7 @@ private:
     void SetContext(std::shared_ptr<Context> context);
     void SetWindow(std::shared_ptr<Window> window);
     void handleEvents(SDL_Event& e, bool& quit);
-private:
+protected:
 
     Engine();
 

@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Sandbox\RubicsCubeSample.cpp">
+    <ClCompile Include="RubicsCubeSample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

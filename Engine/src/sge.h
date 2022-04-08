@@ -2,7 +2,10 @@
 
 #include "Core.h"
 #include "Application.h"
+
+#ifndef TESTBED
 #include "EntryPoint.h"
+#endif
 
 //sge
 #include "Context.h"
