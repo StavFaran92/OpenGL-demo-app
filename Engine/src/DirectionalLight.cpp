@@ -3,9 +3,9 @@
 #include "Shader.h"
 #include "Logger.h"
 
-void DirectionalLight::useLight(std::shared_ptr<Shader> shader, int index)
+void DirectionalLight::useLight(Shader& shader, int index)
 {
-	if (!shader->IsLightsEnabled())
+	if (!shader.IsLightsEnabled())
 	{
 		logError("Shader does not support light");
 		return;
@@ -13,5 +13,5 @@ void DirectionalLight::useLight(std::shared_ptr<Shader> shader, int index)
 
 	Light::useLight(shader, index);
 
-	shader->SetFloat(m_name + "[" + std::to_string(index) + "]" + ".direction", m_direction);
+	shader.SetFloat(m_name + "[" + std::to_string(index) + "]" + ".direction", m_direction);
 }

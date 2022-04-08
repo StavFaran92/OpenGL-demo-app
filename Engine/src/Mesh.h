@@ -43,7 +43,7 @@ public:
 	 * \param shader
 	 * \param renderer
 	 */
-	void render(std::shared_ptr<Shader> shader, std::shared_ptr<IRenderer>renderer);
+	void render(Shader& shader, IRenderer& renderer);
 
 	/** Destructor */
 	~Mesh();
@@ -53,7 +53,7 @@ private:
 	friend class MeshBuilder;
 
 	// -------------------- Methods -------------------- //
-	void SetTexturesInShader(std::shared_ptr<Shader>& shader);
+	void SetTexturesInShader(Shader& shader);
 
 
 	std::vector<std::shared_ptr<Texture>> getTextures() const;

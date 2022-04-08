@@ -13,15 +13,15 @@ Material::Material(float shine)
 {
 }
 
-void Material::UseMaterial(std::shared_ptr<Shader> shader)
+void Material::UseMaterial(Shader& shader)
 {
-	if (!shader->IsMaterialsEnabled())
+	if (!shader.IsMaterialsEnabled())
 	{
 		logError("Shader does not support material");
 		return;
 	}
 
-	shader->SetFloat("material.shininess", m_shininess);
+	shader.SetFloat("material.shininess", m_shininess);
 }
 
 Material::~Material()

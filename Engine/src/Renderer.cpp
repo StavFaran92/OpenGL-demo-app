@@ -26,7 +26,7 @@ Renderer::Renderer(const Renderer& other)
 	m_projection = other.m_projection;
 }
 
-void Renderer::Draw(const VertexArrayObject& vao, std::shared_ptr<Shader> shader) const
+void Renderer::Draw(const VertexArrayObject& vao, Shader& shader) const
 {
 	SetMVP(shader);
 
@@ -43,11 +43,11 @@ void Renderer::Draw(const VertexArrayObject& vao, std::shared_ptr<Shader> shader
 
 }
 
-void Renderer::SetMVP(std::shared_ptr<Shader>& shader) const
+void Renderer::SetMVP(Shader& shader) const
 {
-	shader->SetFloat("viewPos", m_camera->getPosition()); // TODO fix
-	shader->SetMat4("projection", m_projection);
-	shader->SetMat4("view", m_camera->getView());
+	shader.SetFloat("viewPos", m_camera->getPosition()); // TODO fix
+	shader.SetMat4("projection", m_projection);
+	shader.SetMat4("view", m_camera->getView());
 }
 
 std::shared_ptr<Shader> Renderer::GetDefaultShader() const

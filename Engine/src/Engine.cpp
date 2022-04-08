@@ -51,9 +51,9 @@ bool Engine::init()
     m_context->addScene(defaultScene);
     m_context->setActiveScene(defaultScene->getID());
 
-    auto secondScene = std::make_shared<Scene>();
-    secondScene->setPostProcess(true);
-    m_context->addScene(secondScene);
+    //auto secondScene = std::make_shared<Scene>();
+    //secondScene->setPostProcess(true);
+    //m_context->addScene(secondScene);
 
     m_imguiHandler = std::make_shared<ImguiHandler>();
     if (!m_imguiHandler->init(m_window->GetWindow(), m_window->GetContext()))

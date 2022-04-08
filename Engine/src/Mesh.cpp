@@ -15,14 +15,14 @@ inline std::vector<std::shared_ptr<Texture>> Mesh::getTextures() const
 	return m_textures;
 }
 
-void Mesh::render(std::shared_ptr<Shader> shader, std::shared_ptr < IRenderer >renderer)
+void Mesh::render(Shader& shader, IRenderer& renderer)
 {
-	if (shader->IsTexturesEnabled())
+	if (shader.IsTexturesEnabled())
 	{
 		SetTexturesInShader(shader);
 	}
 
-	renderer->Draw(*m_vao, shader);
+	renderer.Draw(*m_vao, shader);
 	glActiveTexture(GL_TEXTURE0);
 }
 
@@ -63,7 +63,7 @@ void Mesh::addTextures(const std::vector<std::shared_ptr<Texture>>& textures)
 //	return MeshBuilder();
 //}
 
-void Mesh::SetTexturesInShader(std::shared_ptr<Shader>& shader)
+void Mesh::SetTexturesInShader(Shader& shader)
 {
 	// Initialized counters
 	uint32_t diffuseNr = 1;
@@ -90,9 +90,9 @@ void Mesh::SetTexturesInShader(std::shared_ptr<Shader>& shader)
 		glBindTexture(GL_TEXTURE_2D, m_textures[i]->getID());
 
 		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
-		shader->SetInt(("material." + typeStr + count).c_str(), i);
+		shader.SetInt(("material." + typeStr + count).c_str(), i);
 
-		shader->SetInt("flipTexture", m_textures[i]->isFlipped());
+		shader.SetInt("flipTexture", m_textures[i]->isFlipped());
 	}
 }
 void Mesh::setPositions(std::shared_ptr<std::vector<glm::vec3>> positions)
@@ -215,7 +215,7 @@ void Mesh::clearMesh()
 	m_normals = nullptr;
 	m_texcoords = nullptr;
 	m_indices = nullptr;
-	m_textures = nullptr;
+	m_textures.clear();
 	m_colors = nullptr;
 	m_vao = nullptr;
 	m_ibo = nullptr;

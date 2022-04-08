@@ -17,18 +17,33 @@ Light::Light(glm::vec3 color, float aIntensity, float dIntensity) :
 	m_transform = std::make_shared<Transform>();
 }
 
-void Light::useLight(std::shared_ptr<Shader> shader, int index)
+void Light::useLight(Shader& shader, int index)
 {
-	if (!shader->IsLightsEnabled())
+	if (!shader.IsLightsEnabled())
 	{
 		logError("Shader does not support light");
 		return;
 	}
 
-	shader->SetFloat(m_name + "[" +std::to_string(index) + "]" + ".color", m_color);
-	shader->SetFloat(m_name + "[" +std::to_string(index) + "]" + ".ambient", Constants::VEC3_ONE * m_ambientIntensity);
-	shader->SetFloat(m_name + "[" +std::to_string(index) + "]" + ".diffuse", Constants::VEC3_ONE * m_diffuseIntensity); // darken diffuse light a bit
-	shader->SetFloat(m_name + "[" +std::to_string(index) + "]" + ".specular", Constants::VEC3_ONE);
+	shader.SetFloat(m_name + "[" +std::to_string(index) + "]" + ".color", m_color);
+	shader.SetFloat(m_name + "[" +std::to_string(index) + "]" + ".ambient", Constants::VEC3_ONE * m_ambientIntensity);
+	shader.SetFloat(m_name + "[" +std::to_string(index) + "]" + ".diffuse", Constants::VEC3_ONE * m_diffuseIntensity); // darken diffuse light a bit
+	shader.SetFloat(m_name + "[" +std::to_string(index) + "]" + ".specular", Constants::VEC3_ONE);
+}
+
+void Light::SetAmbientIntensity(float intensity)
+{
+	m_ambientIntensity = intensity;
+}
+
+void Light::SetDiffuseIntensity(float intensity)
+{
+	m_diffuseIntensity = intensity;
+}
+
+void Light::SetColor(glm::vec3 color)
+{
+	m_color = color;
 }
 
 Light::~Light()

@@ -99,14 +99,14 @@ bool Context::RemoveShader(std::shared_ptr<Shader> shader)
 	return true;
 }
 
-std::shared_ptr<Shader> Context::GetReflectionShader()
+Shader& Context::GetReflectionShader()
 {
-	return m_reflectionShader;
+	return *m_reflectionShader.get();
 }
 
-std::shared_ptr<Shader> Context::GetRefractiveShader()
+Shader& Context::GetRefractiveShader()
 {
-	return m_refractiveShader;
+	return *m_refractiveShader.get();
 }
 
 void Context::setActiveScene(uint32_t index)

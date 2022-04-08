@@ -12,9 +12,14 @@ PointLight::PointLight(glm::vec3 color, glm::vec3 pos, float aIntensity, float d
 	m_transform->SetPosition(pos);
 }
 
-void PointLight::useLight(std::shared_ptr<Shader >shader, int index)
+void PointLight::SetAttenuation(Attenuation attenuation)
 {
-	if (!shader->IsLightsEnabled())
+	m_attenuation = attenuation;
+}
+
+void PointLight::useLight(Shader& shader, int index)
+{
+	if (!shader.IsLightsEnabled())
 	{
 		logError("Shader does not support light");
 		return;
@@ -22,8 +27,8 @@ void PointLight::useLight(std::shared_ptr<Shader >shader, int index)
 
 	Light::useLight(shader, index);
 
-	shader->SetFloat(m_name + "["+std::to_string(index) +"]"+ ".position", m_transform->GetPosition());
-	shader->SetFloat(m_name + "["+std::to_string(index) +"]"+ ".constant", m_attenuation.constant);
-	shader->SetFloat(m_name + "["+std::to_string(index) +"]"+ ".linear", m_attenuation.linear);
-	shader->SetFloat(m_name + "["+std::to_string(index) +"]"+ ".quadratic", m_attenuation.quadratic);
+	shader.SetFloat(m_name + "["+std::to_string(index) +"]"+ ".position", m_transform->GetPosition());
+	shader.SetFloat(m_name + "["+std::to_string(index) +"]"+ ".constant", m_attenuation.constant);
+	shader.SetFloat(m_name + "["+std::to_string(index) +"]"+ ".linear", m_attenuation.linear);
+	shader.SetFloat(m_name + "["+std::to_string(index) +"]"+ ".quadratic", m_attenuation.quadratic);
 }

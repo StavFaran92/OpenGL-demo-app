@@ -36,12 +36,12 @@ Skybox* Skybox::CreateSkybox()
     return model;
 }
 
-void Skybox::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> shader)
+void Skybox::Draw(IRenderer& renderer, Shader* shader)
 {
     glDepthMask(GL_FALSE);
     glDepthFunc(GL_LEQUAL);
 
-    auto currShader = m_shader;
+    Shader* currShader = m_shader.get();
 
     if (shader)
         currShader = shader;
@@ -51,11 +51,11 @@ void Skybox::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> s
 
 
 
-    renderer->SetDrawType(Renderer::DrawType::Triangles);
+    renderer.SetDrawType(Renderer::DrawType::Triangles);
 
     for (auto i = 0; i < m_meshes.size(); i++)
     {
-        m_meshes[i]->render(currShader, renderer);
+        m_meshes[i]->render(*currShader, renderer);
     }
 
     glDepthMask(GL_TRUE);

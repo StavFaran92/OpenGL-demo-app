@@ -13,17 +13,17 @@ std::shared_ptr<ScreenQuad> ScreenQuad::GenerateScreenQuad()
 	return std::shared_ptr<ScreenQuad>((ScreenQuad*)ModelBuilder::builder<ScreenQuad>().build());
 }
 
-void ScreenQuad::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> shader)
+void ScreenQuad::Draw(IRenderer& renderer, Shader* shader)
 {
-	auto currShader = m_shader;
+	Shader* currShader = m_shader.get();
 
 	if (shader)
 		currShader = shader;
 
-	renderer->SetDrawType(Renderer::DrawType::Triangles);
+	renderer.SetDrawType(Renderer::DrawType::Triangles);
 
 	for (auto i = 0; i < m_meshes.size(); i++)
 	{
-		m_meshes[i]->render(currShader, renderer);
+		m_meshes[i]->render(*currShader, renderer);
 	}
 }

@@ -20,12 +20,9 @@ public:
 
 	PointLight(glm::vec3 color, glm::vec3 pos, float aIntensity, float dIntensity, Attenuation attenuation);
 
-	void useLight(std::shared_ptr<Shader >shader, int index);
+	void useLight(Shader& shader, int index);
 
-	void SetAttenuation(Attenuation attenuation)
-	{
-		m_attenuation = attenuation;
-	}
+	void SetAttenuation(Attenuation attenuation);
 
 private:
 	Attenuation m_attenuation;

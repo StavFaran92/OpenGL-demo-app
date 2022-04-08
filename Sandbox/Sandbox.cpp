@@ -13,7 +13,7 @@ public:
 
 	void start() override
 	{
-		skybox(Skybox::CreateSkybox());
+		//skybox(Skybox::CreateSkybox());
 
 		//for (int i = 0; i < 3; i++)
 		//{
@@ -72,9 +72,6 @@ public:
 		};
 
 		box = (Box*)ModelBuilder::builder<Box>()
-			.getMeshBuilder()
-			.setColors(colors, 108)
-			.getModelBuilder()
 			.build();
 
 

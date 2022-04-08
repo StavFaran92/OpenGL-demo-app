@@ -12,7 +12,7 @@ public:
 	Object3D() = default;
 	virtual ~Object3D() = default;
 
-	std::shared_ptr<Transform> GetTransformation() const;
+	Transform& GetTransformation() const;
 	uint32_t getID() const;
 
 	void translate(float x, float y, float z);

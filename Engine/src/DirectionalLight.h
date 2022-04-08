@@ -18,7 +18,7 @@ public:
 		m_name = "dirLight";
 	}
 
-	void useLight(std :: shared_ptr<Shader> shader, int index) override;
+	void useLight(Shader& shader, int index) override;
 
 private:
 	glm::vec3 m_direction;

@@ -53,7 +53,7 @@ public:
 
 	bool use();
 
-	std::shared_ptr<Shader> GetShader();
+	Shader& GetShader();
 
 	std::vector<std::shared_ptr<Texture>> GetTextures();
 
@@ -80,7 +80,7 @@ private:
 	
 protected:
 	// -------------------- Methods -------------------- //
-	virtual void Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> shader = nullptr);
+	virtual void Draw(IRenderer& renderer, Shader* shader = nullptr);
 	
 	// -------------------- Attributes -------------------- //
 	std::vector<std::shared_ptr<Mesh>> m_meshes;

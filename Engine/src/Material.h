@@ -11,7 +11,7 @@ public:
 	Material();
 	Material(float shine);
 
-	void UseMaterial(std::shared_ptr<Shader> shader);
+	void UseMaterial(Shader& shader);
 
 	~Material();
 

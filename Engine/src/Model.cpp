@@ -31,7 +31,7 @@ Model::Model()
 
 	m_transformation = std::make_shared<Transform>();
 
-	m_shader = std::shared_ptr<Shader>(Shader::PhongShader());
+	m_shader = std::make_shared<Shader>(*Shader::PhongShader());
 }
 
 Model::~Model()
@@ -39,9 +39,9 @@ Model::~Model()
 	logTrace(__FUNCTION__);
 }
 
-void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> shader /* = nullptr*/)
+void Model::Draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 {
-	auto currShader = m_shader;
+	Shader* currShader = m_shader.get();
 
 	if (shader)
 		currShader = shader;
@@ -51,7 +51,7 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 	{
 		if (m_isReflective)
 		{
-			currShader = context->GetReflectionShader();
+			currShader = &context->GetReflectionShader();
 			currShader->use();
 			currShader->SetInt("skybox", 0);
 			auto textures = context->getActiveScene()->getSkybox()->GetTextures();
@@ -65,7 +65,7 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 
 		if (m_isRefractive)
 		{
-			currShader = context->GetRefractiveShader();
+			currShader = &context->GetRefractiveShader();
 			currShader->use();
 			currShader->SetInt("skybox", 0);
 			currShader->SetFloat("refractiveRatio", 1 / 1.52f);
@@ -83,14 +83,14 @@ void Model::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> sh
 
 	if (currShader->IsMaterialsEnabled() && m_material)
 	{
-		m_material->UseMaterial(currShader);
+		m_material->UseMaterial(*currShader);
 	}
 
-	renderer->SetDrawType(Renderer::DrawType::Triangles);
+	renderer.SetDrawType(Renderer::DrawType::Triangles);
 
 	for (auto i = 0; i < m_meshes.size(); i++)
 	{
-		m_meshes[i]->render(currShader, renderer);
+		m_meshes[i]->render(*currShader, renderer);
 	}
 }
 
@@ -138,9 +138,9 @@ std::vector<std::shared_ptr<Texture>> Model::GetTextures()
 	return result;
 }
 
-std::shared_ptr<Shader> Model::GetShader()
+Shader& Model::GetShader()
 {
-	return m_shader;
+	return *m_shader.get();
 }
 
 bool Model::UseMaterial(std::shared_ptr<Material> material)

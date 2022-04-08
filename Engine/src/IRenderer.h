@@ -20,7 +20,7 @@ public:
 	IRenderer() {
 		SetDrawType(DrawType::Triangles);
 	};
-	virtual void Draw(const VertexArrayObject& vao, std::shared_ptr<Shader> shader) const = 0;
+	virtual void Draw(const VertexArrayObject& vao, Shader& shader) const = 0;
 	virtual void Clear() const = 0;
 	void SetDrawType(DrawType drawType);
 

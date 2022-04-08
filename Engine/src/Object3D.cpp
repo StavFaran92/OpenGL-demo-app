@@ -2,9 +2,9 @@
 
 #include "Transform.h"
 
-std::shared_ptr<Transform> Object3D::GetTransformation() const
+Transform& Object3D::GetTransformation() const
 { 
-	return m_transformation; 
+	return *m_transformation.get(); 
 }
 
 uint32_t Object3D::getID() const
