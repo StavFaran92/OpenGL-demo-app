@@ -6,9 +6,11 @@
 
 #include <any>
 #include "Core.h"
+#include "Configurations.h"
 
 #include "Mesh.h"
 #include "Model.h"
+#include "VertexLayout.h"
 
 class ModelBuilder;
 class Texture;
@@ -33,7 +35,7 @@ public:
 
 	MeshBuilder& setIndices(std::vector<unsigned int>& indices, bool copy = false);
 
-	MeshBuilder& setRawVertices(const float* vertices, Mesh::VerticesLayout layout);
+	MeshBuilder& setRawVertices(const float* vertices, VertexLayout layout);
 
 	MeshBuilder& setRawIndices(const unsigned int* indices, size_t size);
 
@@ -42,6 +44,9 @@ public:
 
 	MeshBuilder& addTexture(Texture* texture, bool copy = false);
 	MeshBuilder& addTextures(std::vector<Texture*>& textures, bool copy = false);
+
+	MeshBuilder& enableAttribute(LayoutAttribute attribute);
+	MeshBuilder& disableAttribute(LayoutAttribute attribute);
 
 	ModelBuilder& getModelBuilder() const;
 	Mesh* build();
@@ -65,6 +70,7 @@ private:
 	std::shared_ptr<std::vector<glm::vec3>> m_colors = nullptr;
 	std::shared_ptr<std::vector<unsigned int>> m_indices = nullptr;
 	std::shared_ptr<std::vector<std::shared_ptr<Texture>>> m_textures = nullptr;
+	VertexLayout m_layout;
 
 	ModelBuilder* m_modelBuilder = nullptr;
 

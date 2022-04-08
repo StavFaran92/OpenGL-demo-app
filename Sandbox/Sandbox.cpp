@@ -28,12 +28,12 @@ public:
 		//}
 
 		float colors[108] = {
-		 -1.0f,  0.0f,  0.0f,
-		 -1.0f,  1.0f,  0.0f,
-		 -1.0f,  1.0f,  1.0f,
-		 -1.0f,  1.0f,  1.0f,
-		 -1.0f,  0.0f,  1.0f,
-		 -1.0f,  0.0f,  0.0f,
+		 1.0f,  0.0f,  0.0f,
+		 1.0f,  1.0f,  0.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  0.0f,  1.0f,
+		 1.0f,  0.0f,  0.0f,
 
 		  1.0f,  0.0f,  0.0f,
 		  1.0f,  1.0f,  0.0f,
@@ -72,6 +72,10 @@ public:
 		};
 
 		box = (Box*)ModelBuilder::builder<Box>()
+			.getMeshBuilder()
+			.setColors(colors, 36)
+			.enableAttribute(LayoutAttribute::Colors)
+			.getModelBuilder()
 			.build();
 
 

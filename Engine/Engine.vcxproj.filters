@@ -365,6 +365,7 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="src\ModelBuilder.h" />
+    <ClInclude Include="src\VertexLayout.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

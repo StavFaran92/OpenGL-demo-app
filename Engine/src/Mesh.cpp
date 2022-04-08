@@ -127,25 +127,71 @@ void Mesh::build()
 		calculateNormals();
 	}
 
-	// Create verticies array
-	std::vector<float> vertices;
-	vertices.reserve(8 * m_numOfVertices); //TODO fix
-
-	for (int i=0; i< m_numOfVertices; i++)
+	// calculate stride
+	int stride = 0;
+	for (auto entry : m_layout.attribs)
 	{
-		auto position = m_positions->at(i);
-		vertices.emplace_back(position.x);
-		vertices.emplace_back(position.y);
-		vertices.emplace_back(position.z);
+		stride += getAttributeSize(entry);
+	}
 
-		auto normal = m_normals->at(i);
-		vertices.emplace_back(normal.x);
-		vertices.emplace_back(normal.y);
-		vertices.emplace_back(normal.z);
+	// Update layout info
+	m_layout.numOfVertices = m_numOfVertices;
+	m_layout.stride = stride;
 
-		auto texcoord = m_texcoords->at(i);
-		vertices.emplace_back(texcoord.x);
-		vertices.emplace_back(texcoord.y);
+	// Create verticies array
+	int offset = 0;
+	std::vector<float> vertices(stride * m_numOfVertices, 0);
+
+	for (auto entry : m_layout.attribs)
+	{
+		// Parse positions
+		if (LayoutAttribute::Positions == entry)
+		{
+			for (int i = 0; i < m_layout.numOfVertices; i++)
+			{
+				auto pos = m_positions->at(i);
+				vertices[stride * i + offset + 0] = pos.x;
+				vertices[stride * i + offset + 1] = pos.y;
+				vertices[stride * i + offset + 2] = pos.z;
+			}
+		}
+
+		// Parse normals
+		else if (LayoutAttribute::Normals == entry)
+		{
+			for (int i = 0; i < m_layout.numOfVertices; i++)
+			{
+				auto normal = m_normals->at(i);
+				vertices[stride * i + offset + 0] = normal.x;
+				vertices[stride * i + offset + 1] = normal.y;
+				vertices[stride * i + offset + 2] = normal.z;
+			}
+		}
+
+		// Parse texcoords
+		else if (LayoutAttribute::Texcoords == entry)
+		{
+			for (int i = 0; i < m_layout.numOfVertices; i++)
+			{
+				auto texCoord = m_texcoords->at(i);
+				vertices[stride * i + offset + 0] = texCoord.x;
+				vertices[stride * i + offset + 1] = texCoord.y;
+			}
+		}
+
+		// Parse colors
+		else if (LayoutAttribute::Colors == entry)
+		{
+			for (int i = 0; i < m_layout.numOfVertices; i++)
+			{
+				auto color = m_colors->at(i);
+				vertices[stride * i + offset + 0] = color.x;
+				vertices[stride * i + offset + 1] = color.y;
+				vertices[stride * i + offset + 2] = color.z;
+			}
+		}
+
+		offset += getAttributeSize(entry);
 	}
 
 	// Create buffers
@@ -154,9 +200,9 @@ void Mesh::build()
 	if(m_indices)
 		m_ibo = std::make_shared<ElementBufferObject>(&(m_indices->at(0)), m_indices->size());
 
-	m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), m_numOfVertices, sizeof(float) * 8); //TODO fix
+	m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), m_numOfVertices, sizeof(float) * stride);
 
-	m_vao->AttachBuffer(*m_vbo, m_ibo.get());
+	m_vao->AttachBuffer(*m_vbo, m_ibo.get(), m_layout);
 }
 
 // Compute the normals of the mesh
@@ -206,6 +252,11 @@ void Mesh::clearMesh()
 	m_vao = nullptr;
 	m_ibo = nullptr;
 	m_vbo = nullptr;
+}
+
+void Mesh::setVertexLayout(VertexLayout layout)
+{
+	m_layout = layout;
 }
 
 Mesh::~Mesh()

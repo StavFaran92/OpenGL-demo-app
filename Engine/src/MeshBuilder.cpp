@@ -2,6 +2,7 @@
 
 #include "Model.h"
 #include "Logger.h"
+#include "VertexLayout.h"
 
 MeshBuilder& MeshBuilder::setNumOfVertices(size_t size)
 {
@@ -132,7 +133,7 @@ MeshBuilder& MeshBuilder::setIndices(std::vector<unsigned int>& indices, bool co
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, Mesh::VerticesLayout layout)
+MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, VertexLayout layout)
 {
 	setNumOfVertices(layout.numOfVertices);
 	// calculate stride
@@ -153,7 +154,7 @@ MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, Mesh::VerticesLa
 	for (auto entry : layout.attribs)
 	{
 		// Parse positions
-		if (LayoutAttributes::Positions == entry)
+		if (LayoutAttribute::Positions == entry)
 		{
 			positions->reserve(layout.numOfVertices * getAttributeSize(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
@@ -169,7 +170,7 @@ MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, Mesh::VerticesLa
 		}
 
 		// Parse normals
-		else if (LayoutAttributes::Normals == entry)
+		else if (LayoutAttribute::Normals == entry)
 		{
 			normals->reserve(layout.numOfVertices * getAttributeSize(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
@@ -185,7 +186,7 @@ MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, Mesh::VerticesLa
 		}
 
 		// Parse texcoords
-		else if (LayoutAttributes::Texcoords == entry)
+		else if (LayoutAttribute::Texcoords == entry)
 		{
 			texcoords->reserve(layout.numOfVertices * getAttributeSize(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
@@ -201,7 +202,7 @@ MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, Mesh::VerticesLa
 		}
 
 		// Parse colors
-		else if (LayoutAttributes::Colors == entry)
+		else if (LayoutAttribute::Colors == entry)
 		{
 			colors->reserve(layout.numOfVertices * getAttributeSize(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
@@ -310,6 +311,14 @@ Mesh* MeshBuilder::build()
 		mesh->addTexture(std::shared_ptr<Texture>(textureSpec));
 	}
 
+	std::sort(m_layout.attribs.begin(), m_layout.attribs.end(),
+		[](LayoutAttribute l1, LayoutAttribute l2)
+	{
+		return getAttributeLocationInShader(l1) < getAttributeLocationInShader(l2);
+	});
+
+	mesh->setVertexLayout(m_layout);
+
 	mesh->setNumOfVertices(m_numOfVertices);
 
 	mesh->build();
@@ -337,4 +346,23 @@ MeshBuilder& MeshBuilder::builder()
 MeshBuilder::MeshBuilder()
 {
 	m_textures = std::make_shared<std::vector<std::shared_ptr<Texture>>>();
+
+	m_layout.attribs = g_defaultLayoutAttributes;
+}
+
+MeshBuilder& MeshBuilder::enableAttribute(LayoutAttribute attribute)
+{
+	if (std::find(m_layout.attribs.begin(), m_layout.attribs.end(), attribute) == m_layout.attribs.end())
+		m_layout.attribs.emplace_back(attribute);
+
+	return *this;
+}
+
+MeshBuilder& MeshBuilder::disableAttribute(LayoutAttribute attribute)
+{
+	auto iter = std::find(m_layout.attribs.begin(), m_layout.attribs.end(), attribute);
+	if (iter != m_layout.attribs.end())
+		m_layout.attribs.erase(iter);
+
+	return *this;
 }

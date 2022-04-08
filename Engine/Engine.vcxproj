@@ -218,6 +218,7 @@
     <ClInclude Include="extern\imgui\imstb_rectpack.h" />
     <ClInclude Include="extern\imgui\imstb_textedit.h" />
     <ClInclude Include="extern\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\VertexLayout.h" />
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\Vertex.h" />
   </ItemGroup>

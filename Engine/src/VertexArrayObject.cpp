@@ -3,6 +3,7 @@
 #include <gl/glew.h>
 
 #include "Logger.h"
+#include "VertexLayout.h"
 
 VertexArrayObject::VertexArrayObject()
 {
@@ -16,7 +17,7 @@ VertexArrayObject::~VertexArrayObject()
 	glDeleteVertexArrays(1, &m_id);
 }
 
-void VertexArrayObject::AttachBuffer(const VertexBufferObject& vbo, const ElementBufferObject* ebo)
+void VertexArrayObject::AttachBuffer(const VertexBufferObject& vbo, const ElementBufferObject* ebo, const VertexLayout& layout)
 {
 	// bind this VAO
 	Bind();
@@ -32,23 +33,23 @@ void VertexArrayObject::AttachBuffer(const VertexBufferObject& vbo, const Elemen
 		m_indexCount = ebo->getLength();
 	}
 
-	FillVertexAttrib();
+	fillVertexAttributes(layout);
 }
 
-void VertexArrayObject::FillVertexAttrib()
+void VertexArrayObject::fillVertexAttributes(const VertexLayout& layout)
 {
-	// vertex positions
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-	// vertex normals
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
-	// vertex texture coords
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
-	//// vertex texture coords
-	//glEnableVertexAttribArray(3);
-	//glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Colors));
+	int offset = 0;
+	for (auto entry : layout.attribs)
+	{
+		auto location = getAttributeLocationInShader(entry);
+		auto size = getAttributeSize(entry);
+		
+
+		glEnableVertexAttribArray(location);
+		glVertexAttribPointer(location, size, GL_FLOAT, GL_FALSE, layout.stride * sizeof(float), (void*)offset);
+
+		offset += size * sizeof(float);
+	}
 }
 
 void VertexArrayObject::Bind() const
@@ -59,4 +60,14 @@ void VertexArrayObject::Bind() const
 void VertexArrayObject::Unbind() const
 {
 	glBindVertexArray(0);
+}
+
+unsigned int VertexArrayObject::GetIndexCount() const
+{
+	return m_indexCount;
+}
+
+unsigned int VertexArrayObject::GetVerticesCount() const
+{
+	return m_verticesCount;
 }

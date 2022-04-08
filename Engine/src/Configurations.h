@@ -1,10 +1,11 @@
 #pragma once
 
 #include <map>
+#include <vector>
 
 constexpr bool FLIP_TEXTURE = true;
 
-enum class LayoutAttributes
+enum class LayoutAttribute
 {
 	Positions,
 	Normals,
@@ -12,12 +13,29 @@ enum class LayoutAttributes
 	Colors
 };
 
-const std::map<LayoutAttributes, size_t> g_attributeToSizeMap =
+const std::map<LayoutAttribute, size_t> g_attributeToSizeMap =
 {
-	{ LayoutAttributes::Positions, 3},
-	{ LayoutAttributes::Normals, 3 },
-	{ LayoutAttributes::Texcoords, 2 },
-	{ LayoutAttributes::Colors, 3 },
+	{ LayoutAttribute::Positions, 3},
+	{ LayoutAttribute::Normals, 3 },
+	{ LayoutAttribute::Texcoords, 2 },
+	{ LayoutAttribute::Colors, 3 },
 };
 
-size_t getAttributeSize(LayoutAttributes attribute);
+size_t getAttributeSize(LayoutAttribute attribute);
+
+const std::map<LayoutAttribute, size_t> g_attributeToLocationMap =
+{
+	{ LayoutAttribute::Positions, 0},
+	{ LayoutAttribute::Normals, 1 },
+	{ LayoutAttribute::Texcoords, 2 },
+	{ LayoutAttribute::Colors, 3 },
+};
+
+size_t getAttributeLocationInShader(LayoutAttribute attribute);
+
+const std::vector<LayoutAttribute> g_defaultLayoutAttributes =
+{
+	LayoutAttribute::Positions,
+	LayoutAttribute::Normals,
+	LayoutAttribute::Texcoords,
+};

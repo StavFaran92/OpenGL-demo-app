@@ -14,6 +14,7 @@
 #include "ApplicationConstants.h"
 
 #include "Configurations.h"
+#include "VertexLayout.h"
 
 // Forward declerations
 class MeshBuilder;
@@ -27,12 +28,6 @@ class Model;
 class EngineAPI Mesh
 {
 public:
-	// -------------------- Structs -------------------- //
-	struct VerticesLayout
-	{
-		std::vector<LayoutAttributes> attribs;
-		size_t numOfVertices = 0;
-	};
 	// -------------------- Methods -------------------- //
 	/** Constructor */
 	Mesh();
@@ -142,6 +137,8 @@ private:
 	 * 
 	 */
 	void clearMesh();
+
+	void setVertexLayout(VertexLayout layout);
 private:
 	// -------------------- Attributes -------------------- //
 	/** Mesh positions */
@@ -170,4 +167,6 @@ private:
 	size_t m_numOfVertices = 0;
 
 	size_t m_indexCount = 0;
+
+	VertexLayout m_layout;
 };
