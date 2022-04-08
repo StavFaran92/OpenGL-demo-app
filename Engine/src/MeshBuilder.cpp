@@ -293,21 +293,26 @@ Mesh* MeshBuilder::build()
 		mesh->setIndices(m_indices);
 
 	if (!m_textures->empty())
+	{
 		mesh->addTextures(*m_textures.get());
+	}
+	else
+	{
+		//TODO refactor
+		//TODO optimize: can load textuer on startup and simply assign texture Ptr / ID
+		auto texturediff = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
+		texturediff->setType(Texture::Type::Diffuse);
+
+		auto textureSpec = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
+		textureSpec->setType(Texture::Type::Specular);
+
+		mesh->addTexture(std::shared_ptr<Texture>(texturediff));
+		mesh->addTexture(std::shared_ptr<Texture>(textureSpec));
+	}
 
 	mesh->setNumOfVertices(m_numOfVertices);
 
 	mesh->build();
-
-	//TODO optimize: can load textuer on startup and simply assign texture Ptr / ID
-	auto texturediff = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
-	texturediff->setType(Texture::Type::Diffuse);
-
-	auto textureSpec = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
-	textureSpec->setType(Texture::Type::Specular);
-
-	mesh->addTexture(std::shared_ptr<Texture>(texturediff));
-	mesh->addTexture(std::shared_ptr<Texture>(textureSpec));
 
 	delete this;
 

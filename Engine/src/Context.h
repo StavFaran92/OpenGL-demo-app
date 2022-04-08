@@ -29,8 +29,8 @@ public:
 	bool AddShader(std::shared_ptr<Shader> shader);
 	bool RemoveShader(std::shared_ptr<Shader> shader);
 
-	Shader& GetReflectionShader();
-	Shader& GetRefractiveShader();
+	Shader* GetReflectionShader();
+	Shader* GetRefractiveShader();
 
 	std::shared_ptr<Scene> getActiveScene() const
 	{

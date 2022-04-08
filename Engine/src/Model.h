@@ -46,7 +46,8 @@ public:
 	/** Destructor */
 	~Model();	
 
-	bool AttachShader(std::shared_ptr<Shader > shader);
+	bool AttachShader(Shader* shader);
+	bool AttachShader(std::shared_ptr<Shader> shader);
 	bool DetachShader();
 
 	bool UseMaterial(std::shared_ptr<Material> material);
@@ -59,17 +60,10 @@ public:
 
 	void flipTexture();
 
-	inline void SetReflection(bool val) { m_isReflective = val; }
-	inline void SetRefraction(bool val) { m_isRefractive = val; }
+	void SetReflection(bool val);
+	void SetRefraction(bool val);
 
 	virtual MeshBuilder* createMeshBuilder();
-
-	//template<typename T>
-	//static ModelBuilder<T>* builder()
-	//{
-	//	return ModelBuilder<Model>();
-	//}
-
 private:
 	friend class Scene;
 	friend class ModelImporter;

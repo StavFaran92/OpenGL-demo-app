@@ -16,7 +16,7 @@ public:
 		m_transformation(1.f)
 	{}
 
-	inline const glm::mat4 GetTransformation() const { return m_transformation; }
+	glm::mat4 GetTransformation() const;
 	void update(float deltaTime);
 	void SetPosition(glm::vec3 pos);
 	void SetRotation(float angle, glm::vec3 axis);
@@ -40,7 +40,6 @@ private:
 	glm::vec3 m_scale;
 
 	glm::mat4 m_transformation;
-
 
 	bool m_change = false;
 };

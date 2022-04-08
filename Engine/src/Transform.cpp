@@ -2,6 +2,11 @@
 #include<glm/gtc/quaternion.hpp>
 #include "LinearAlgebraUtil.h"
 
+glm::mat4 Transform::GetTransformation() const
+{
+	return m_transformation;
+}
+
 void Transform::update(float deltaTime)
 {
 	if (m_change)
