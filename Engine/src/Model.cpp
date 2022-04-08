@@ -32,6 +32,7 @@ Model::Model()
 	m_transformation = std::make_shared<Transform>();
 
 	m_shader = std::make_shared<Shader>(*Shader::PhongShader());
+	std::cout << m_shader << std::endl;
 }
 
 Model::~Model()
@@ -138,9 +139,9 @@ std::vector<std::shared_ptr<Texture>> Model::GetTextures()
 	return result;
 }
 
-Shader& Model::GetShader()
+Shader* Model::GetShader()
 {
-	return *m_shader.get();
+	return m_shader.get();
 }
 
 bool Model::UseMaterial(std::shared_ptr<Material> material)

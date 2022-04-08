@@ -57,36 +57,36 @@ void Scene::draw(float deltaTime)
 	// Draw Engine models
 	for (auto model = m_models.begin(); model != m_models.end(); ++model)
 	{
-		auto shader = model->second->GetShader();
-		shader.use();
+		Shader* shader = model->second->GetShader();
+		shader->use();
 
-		if (shader.IsLightsEnabled())
+		if (shader->IsLightsEnabled())
 		{
 			// Use all directional lights
 			{
 				int i = 0;
 				for (auto it = m_directionalLights.begin(); it != m_directionalLights.end(); ++it, ++i) {
-					it->second->useLight(shader, i);
+					it->second->useLight(*shader, i);
 				}
-				shader.SetInt("dirLightCount", m_directionalLights.size());
+				shader->SetInt("dirLightCount", m_directionalLights.size());
 			}
 
 			// Use all point lights
 			{
 				int i = 0;
 				for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++i, ++it) {
-					it->second->useLight(shader, i);
+					it->second->useLight(*shader, i);
 				}
-				shader.SetInt("pointLightCount", m_pointLights.size());
+				shader->SetInt("pointLightCount", m_pointLights.size());
 			}
 		}
 
 		glStencilFunc(GL_ALWAYS, model->second->getID(), 0xff);
 
 		// Draw model
-		model->second->Draw(*m_renderer.get(), &shader);
+		model->second->Draw(*m_renderer.get(), shader);
 
-		shader.release();
+		shader->release();
 	}
 
 	// Draw Application models
@@ -97,36 +97,36 @@ void Scene::draw(float deltaTime)
 
 		model->update(deltaTime);
 
-		auto shader = model->GetShader();
-		shader.use();
+		Shader* shader = model->GetShader();
+		shader->use();
 
-		if (shader.IsLightsEnabled())
+		if (shader->IsLightsEnabled())
 		{
 			// Use all directional lights
 			{
 				int i = 0;
 				for (auto it = m_directionalLights.begin(); it != m_directionalLights.end(); ++it, ++i) {
-					it->second->useLight(shader, i);
+					it->second->useLight(*shader, i);
 				}
-				shader.SetInt("dirLightCount", m_directionalLights.size());
+				shader->SetInt("dirLightCount", m_directionalLights.size());
 			}
 
 			// Use all point lights
 			{
 				int i = 0;
 				for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++i, ++it) {
-					it->second->useLight(shader, i);
+					it->second->useLight(*shader, i);
 				}
-				shader.SetInt("pointLightCount", m_pointLights.size());
+				shader->SetInt("pointLightCount", m_pointLights.size());
 			}
 		}
 
 		glStencilFunc(GL_ALWAYS, model->getID(), 0xff);
 
 		// Draw model
-		model->Draw(*m_renderer.get(), &shader);
+		model->Draw(*m_renderer.get(), shader);
 
-		shader.release();
+		shader->release();
 	}
 
 	if (m_skybox)

@@ -53,7 +53,7 @@ public:
 
 	bool use();
 
-	Shader& GetShader();
+	Shader* GetShader();
 
 	std::vector<std::shared_ptr<Texture>> GetTextures();
 
