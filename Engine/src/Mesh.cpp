@@ -10,7 +10,12 @@ Mesh::Mesh()
 	logInfo(__FUNCTION__);
 }
 
-void Mesh::renderMesh(std::shared_ptr<Shader> shader, std::shared_ptr < IRenderer >renderer)
+inline std::vector<std::shared_ptr<Texture>> Mesh::getTextures() const
+{
+	return m_textures;
+}
+
+void Mesh::render(std::shared_ptr<Shader> shader, std::shared_ptr < IRenderer >renderer)
 {
 	if (shader->IsTexturesEnabled())
 	{
@@ -203,8 +208,15 @@ void Mesh::calculateNormals()
 	//	mNormals[i] = mNormals[i].normalize();
 	//}
 }
+
 void Mesh::clearMesh()
 {
+	m_positions = nullptr;
+	m_normals = nullptr;
+	m_texcoords = nullptr;
+	m_indices = nullptr;
+	m_textures = nullptr;
+	m_colors = nullptr;
 	m_vao = nullptr;
 	m_ibo = nullptr;
 	m_vbo = nullptr;

@@ -8,15 +8,15 @@ Model* ModelBuilder::build()
 {
 	auto mesh = m_meshBuilder->build();
 
-	//TODO optimize: can load textuer on startup and simply assign texture Ptr / ID
-	auto texturediff = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
-	texturediff->setType(Texture::Type::Diffuse);
+	////TODO optimize: can load textuer on startup and simply assign texture Ptr / ID
+	//auto texturediff = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
+	//texturediff->setType(Texture::Type::Diffuse);
 
-	auto textureSpec = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
-	textureSpec->setType(Texture::Type::Specular);
+	//auto textureSpec = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
+	//textureSpec->setType(Texture::Type::Specular);
 
-	mesh->addTexture(std::shared_ptr<Texture>(texturediff));
-	mesh->addTexture(std::shared_ptr<Texture>(textureSpec));
+	//mesh->addTexture(std::shared_ptr<Texture>(texturediff));
+	//mesh->addTexture(std::shared_ptr<Texture>(textureSpec));
 
 	std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
 	m_model->UseMaterial(material);

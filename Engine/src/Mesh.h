@@ -15,42 +15,132 @@
 
 #include "Configurations.h"
 
+// Forward declerations
 class MeshBuilder;
+class Model;
 
+/**
+ * The mesh class is used to represent the Egnine's basic mesh object,
+ * it can be used to manipulate an existing Mesh data or to generate one yourself.
+ * It should be used with the MeshBuilder class.
+ */
 class EngineAPI Mesh
 {
 public:
-	
+	// -------------------- Structs -------------------- //
 	struct VerticesLayout
 	{
 		std::vector<LayoutAttributes> attribs;
 		size_t numOfVertices = 0;
 	};
 	// -------------------- Methods -------------------- //
+	/** Constructor */
 	Mesh();
 
-	void renderMesh(std::shared_ptr<Shader> shader, std::shared_ptr <IRenderer>renderer);
+	/**
+	 * Renders the mesh to the screen using a speicifed shader and a renderer.
+	 * 
+	 * \param shader
+	 * \param renderer
+	 */
+	void render(std::shared_ptr<Shader> shader, std::shared_ptr<IRenderer>renderer);
 
-	void addTexture(const std::shared_ptr<Texture>& texture);
-	void addTextures(const std::vector<std::shared_ptr<Texture>>& textures);
-
-	void addTexture(Texture* texture);
-	void addTextures(std::vector<Texture*>& textures);
-
-	inline std::vector<std::shared_ptr<Texture>> getTextures() { return m_textures; };
-	
-	void SetTexturesInShader(std::shared_ptr<Shader>& shader);
-	void setNumOfVertices(size_t size);
-	void setPositions(std::shared_ptr<std::vector<glm::vec3>> positions);
-	void setNormals(std::shared_ptr<std::vector<glm::vec3>> normals);
-	void setTexcoords(std::shared_ptr<std::vector<glm::vec2>> texCoords);
-	void setIndices(std::shared_ptr<std::vector<unsigned int>> indices);
-	void setColors(std::shared_ptr<std::vector<glm::vec3>> colors);
-	void build();
-
+	/** Destructor */
 	~Mesh();
 private:
+	// -------------------- Friends -------------------- //
+	friend class Model;
+	friend class MeshBuilder;
+
+	// -------------------- Methods -------------------- //
+	void SetTexturesInShader(std::shared_ptr<Shader>& shader);
+
+
+	std::vector<std::shared_ptr<Texture>> getTextures() const;
+
+	/**
+	 * Sets the number of vertices in the mesh.
+	 * 
+	 * \param size	Number of vertices the mesh contains
+	 */
+	void setNumOfVertices(size_t size);
+
+	/**
+	 * Sets The mesh's positions vertices.
+	 * 
+	 * \param positions
+	 */
+	void setPositions(std::shared_ptr<std::vector<glm::vec3>> positions);
+
+	/**
+	 * Sets the mesh's Normals vertices.
+	 * 
+	 * \param normals
+	 */
+	void setNormals(std::shared_ptr<std::vector<glm::vec3>> normals);
+
+	/**
+	 * Sets the mesh's TexCoords vertices.
+	 *
+	 * \param texCoords
+	 */
+	void setTexcoords(std::shared_ptr<std::vector<glm::vec2>> texCoords);
+
+	/**
+	 * Sets the mesh's Indices.
+	 *
+	 * \param indices
+	 */
+	void setIndices(std::shared_ptr<std::vector<unsigned int>> indices);
+
+	/**
+	 * Sets the mesh's Color vertices.
+	 *
+	 * \param colors
+	 */
+	void setColors(std::shared_ptr<std::vector<glm::vec3>> colors);
+
+	/**
+	 * Add a texture to the mesh.
+	 *
+	 * \param texture	 a shared pointer to a texture
+	 */
+	void addTexture(const std::shared_ptr<Texture>& texture);
+
+	/**
+	 * Add multiple textures to the mesh.
+	 *
+	 * \param textures
+	 */
+	void addTextures(const std::vector<std::shared_ptr<Texture>>& textures);
+
+	/**
+	 * Add a texture to the mesh.
+	 *
+	 * \param texture	a texture raw pointer
+	 */
+	void addTexture(Texture* texture);
+
+	/**
+	 * Add multiple textures to the mesh.
+	 *
+	 * \param textures
+	 */
+	void addTextures(std::vector<Texture*>& textures);
+
+	/**
+	 * Build the mesh using the specified vertices data.
+	 * This call will initialize all the OpenGL related Buffer data
+	 * 
+	 */
+	void build();
+
 	void calculateNormals();
+
+	/**
+	 * Clear the Mesh entirely.
+	 * 
+	 */
 	void clearMesh();
 private:
 	// -------------------- Attributes -------------------- //

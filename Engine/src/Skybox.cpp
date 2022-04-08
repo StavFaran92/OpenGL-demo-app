@@ -55,7 +55,7 @@ void Skybox::Draw(std::shared_ptr<IRenderer> renderer, std::shared_ptr<Shader> s
 
     for (auto i = 0; i < m_meshes.size(); i++)
     {
-        m_meshes[i]->renderMesh(currShader, renderer);
+        m_meshes[i]->render(currShader, renderer);
     }
 
     glDepthMask(GL_TRUE);
