@@ -16,7 +16,7 @@ VertexArrayObject::~VertexArrayObject()
 	glDeleteVertexArrays(1, &m_id);
 }
 
-void VertexArrayObject::AttachBuffer(const VertexBufferObject& vbo, const ElementBufferObject& ebo)
+void VertexArrayObject::AttachBuffer(const VertexBufferObject& vbo, const ElementBufferObject* ebo)
 {
 	// bind this VAO
 	Bind();
@@ -26,8 +26,11 @@ void VertexArrayObject::AttachBuffer(const VertexBufferObject& vbo, const Elemen
 	m_verticesCount = vbo.getLength();
 
 	// bind IBO to associate with this VAO
-	ebo.Bind();
-	m_indexCount = ebo.getLength();
+	if (ebo)
+	{
+		ebo->Bind();
+		m_indexCount = ebo->getLength();
+	}
 
 	FillVertexAttrib();
 }
@@ -43,18 +46,9 @@ void VertexArrayObject::FillVertexAttrib()
 	// vertex texture coords
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
-}
-
-void VertexArrayObject::AttachBuffer(const VertexBufferObject& vbo)
-{
-	// bind this VAO
-	Bind();
-
-	// bind VBO to associate with this VAO
-	vbo.Bind();
-	m_verticesCount = vbo.getLength();
-
-	FillVertexAttrib();
+	//// vertex texture coords
+	//glEnableVertexAttribArray(3);
+	//glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Colors));
 }
 
 void VertexArrayObject::Bind() const

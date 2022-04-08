@@ -58,11 +58,6 @@ void Mesh::addTextures(const std::vector<std::shared_ptr<Texture>>& textures)
 	}
 }
 
-//MeshBuilder Mesh::builder() 
-//{
-//	return MeshBuilder();
-//}
-
 void Mesh::SetTexturesInShader(Shader& shader)
 {
 	// Initialized counters
@@ -91,8 +86,6 @@ void Mesh::SetTexturesInShader(Shader& shader)
 
 		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
 		shader.SetInt(("material." + typeStr + count).c_str(), i);
-
-		shader.SetInt("flipTexture", m_textures[i]->isFlipped());
 	}
 }
 void Mesh::setPositions(std::shared_ptr<std::vector<glm::vec3>> positions)
@@ -128,12 +121,6 @@ void Mesh::build()
 		return;
 	}
 
-	// validate numOfVertices of texcoord
-	if (!m_texcoords)
-	{
-		logError("Missing texcoords data, mesh could not be built.");
-		return;
-	}
 	// if mesh doesn't have normals calculate them
 	if (!m_normals || m_normals->empty())
 	{
@@ -163,14 +150,13 @@ void Mesh::build()
 
 	// Create buffers
 	m_vao = std::make_shared<VertexArrayObject>();
+
 	if(m_indices)
 		m_ibo = std::make_shared<ElementBufferObject>(&(m_indices->at(0)), m_indices->size());
+
 	m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), m_numOfVertices, sizeof(float) * 8); //TODO fix
 
-	if (m_indices)
-		m_vao->AttachBuffer(*m_vbo, *m_ibo);
-	else
-		m_vao->AttachBuffer(*m_vbo);
+	m_vao->AttachBuffer(*m_vbo, m_ibo.get());
 }
 
 // Compute the normals of the mesh

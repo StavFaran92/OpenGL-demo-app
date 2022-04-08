@@ -11,9 +11,8 @@ public:
 	VertexArrayObject();
 	~VertexArrayObject();
 
-	void AttachBuffer(const VertexBufferObject& vbo, const ElementBufferObject& ebo);
+	void AttachBuffer(const VertexBufferObject& vbo, const ElementBufferObject* ebo);
 	void FillVertexAttrib();
-	void AttachBuffer(const VertexBufferObject& vbo);
 
 	void Bind() const;
 	void Unbind() const;

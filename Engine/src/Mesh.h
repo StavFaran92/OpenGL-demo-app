@@ -163,9 +163,9 @@ private:
 	std::shared_ptr<std::vector<glm::vec3>>         m_colors;
 
 	// render data
-	std::shared_ptr<ElementBufferObject>  m_ibo;
-	std::shared_ptr < VertexBufferObject> m_vbo;
-	std::shared_ptr < VertexArrayObject>  m_vao;
+	std::shared_ptr<ElementBufferObject>  m_ibo = nullptr;
+	std::shared_ptr<VertexBufferObject> m_vbo = nullptr;
+	std::shared_ptr<VertexArrayObject>  m_vao = nullptr;
 
 	size_t m_numOfVertices = 0;
 
