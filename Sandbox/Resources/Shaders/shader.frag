@@ -57,7 +57,7 @@ uniform int dirLightCount;
 uniform vec3 viewPos;
 
 // use
-bool useColor = false;
+bool useColor = true;
 
 // Forward declerations
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec2 aTexCoord);  
@@ -80,7 +80,7 @@ void main()
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir, texCoord);        
     
     if(useColor)
-        result *= Color;
+        result = Color;
 
     colour = vec4(result, 1.0);
 }

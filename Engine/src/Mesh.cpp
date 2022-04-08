@@ -140,7 +140,7 @@ void Mesh::build()
 
 	// Create verticies array
 	int offset = 0;
-	std::vector<float> vertices(stride * m_numOfVertices, 0);
+	std::vector<float> vertices(stride * m_numOfVertices, 0); //TODO optimize
 
 	for (auto entry : m_layout.attribs)
 	{
