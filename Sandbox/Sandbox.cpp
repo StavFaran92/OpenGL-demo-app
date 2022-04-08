@@ -81,6 +81,7 @@ public:
 			.getMeshBuilder()
 			.setColors(colors, 36)
 			.enableAttribute(LayoutAttribute::Colors)
+			.disableAttribute(LayoutAttribute::Texcoords)
 			.getModelBuilder()
 			.build();
 
