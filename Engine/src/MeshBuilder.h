@@ -4,7 +4,6 @@
 #include <vector>
 #include <memory>
 
-#include <any>
 #include "Core.h"
 #include "Configurations.h"
 

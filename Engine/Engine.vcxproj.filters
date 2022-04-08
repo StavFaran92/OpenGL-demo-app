@@ -163,7 +163,9 @@
     <ClCompile Include="src\MeshBuilder.cpp">
       <Filter>src\Utils\Builders</Filter>
     </ClCompile>
-    <ClCompile Include="src\ModelBuilder.cpp" />
+    <ClCompile Include="src\ModelBuilder.cpp">
+      <Filter>src\Utils\Builders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -364,8 +366,12 @@
     <ClInclude Include="src\MeshBuilder.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\ModelBuilder.h" />
-    <ClInclude Include="src\VertexLayout.h" />
+    <ClInclude Include="src\VertexLayout.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ModelBuilder.h">
+      <Filter>headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

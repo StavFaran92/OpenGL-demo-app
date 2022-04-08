@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sandbox", "Sandbox\Sandbox.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testbed", "testbed\testbed.vcxproj", "{EA00DB79-CF3E-4073-80DB-99E060322491}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RubicsCubeSample", "RubicsCubeSample\RubicsCubeSample.vcxproj", "{588D2FE8-B22B-4B8E-9D22-551EB179163A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -39,6 +41,14 @@ Global
 		{EA00DB79-CF3E-4073-80DB-99E060322491}.Release|x64.Build.0 = Release|x64
 		{EA00DB79-CF3E-4073-80DB-99E060322491}.Release|x86.ActiveCfg = Release|Win32
 		{EA00DB79-CF3E-4073-80DB-99E060322491}.Release|x86.Build.0 = Release|Win32
+		{588D2FE8-B22B-4B8E-9D22-551EB179163A}.Debug|x64.ActiveCfg = Debug|x64
+		{588D2FE8-B22B-4B8E-9D22-551EB179163A}.Debug|x64.Build.0 = Debug|x64
+		{588D2FE8-B22B-4B8E-9D22-551EB179163A}.Debug|x86.ActiveCfg = Debug|Win32
+		{588D2FE8-B22B-4B8E-9D22-551EB179163A}.Debug|x86.Build.0 = Debug|Win32
+		{588D2FE8-B22B-4B8E-9D22-551EB179163A}.Release|x64.ActiveCfg = Release|x64
+		{588D2FE8-B22B-4B8E-9D22-551EB179163A}.Release|x64.Build.0 = Release|x64
+		{588D2FE8-B22B-4B8E-9D22-551EB179163A}.Release|x86.ActiveCfg = Release|Win32
+		{588D2FE8-B22B-4B8E-9D22-551EB179163A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

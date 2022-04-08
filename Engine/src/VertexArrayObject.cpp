@@ -43,7 +43,6 @@ void VertexArrayObject::fillVertexAttributes(const VertexLayout& layout)
 	{
 		auto location = getAttributeLocationInShader(entry);
 		auto size = getAttributeSize(entry);
-		
 
 		glEnableVertexAttribArray(location);
 		glVertexAttribPointer(location, size, GL_FLOAT, GL_FALSE, layout.stride * sizeof(float), (void*)offset);
