@@ -42,7 +42,11 @@ public:
 
 protected:
     // -------------------- Methods -------------------- //
-    friend int main();
+    friend void sgeEntry();
+
+#ifdef TESTBED
+    friend class TestEngine;
+#endif
 
     bool init();
     void update(float deltaTime);

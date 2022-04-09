@@ -33,8 +33,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <ClCompile Include="MockEngine.h" />
-    <ClCompile Include="TestEngine.cpp" />
+    <ClCompile Include="TestEngine.h" />
     <ClCompile Include="TestModelBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -4,8 +4,8 @@
 
 Application* CreateApplication();
 
-int main()
-{ 
+void sgeEntry()
+{
 	auto engine = Engine::get();
 	engine->init();
 
@@ -16,6 +16,11 @@ int main()
 
 	app->close();
 	engine->close();
+}
+
+int main()
+{ 
+	sgeEntry();
 
 	return 0;
 }
