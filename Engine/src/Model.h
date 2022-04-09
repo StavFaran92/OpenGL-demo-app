@@ -56,7 +56,7 @@ public:
 
 	Shader* GetShader();
 
-	std::vector<std::shared_ptr<Texture>> GetTextures();
+	std::vector<const Texture*> GetTextures();
 
 	void flipTexture();
 

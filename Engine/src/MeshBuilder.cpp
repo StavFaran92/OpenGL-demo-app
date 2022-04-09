@@ -241,7 +241,7 @@ MeshBuilder& MeshBuilder::addTexture(std::shared_ptr<Texture>& texture, bool cop
 {
 	if (copy)
 	{
-		m_textures->push_back(std::make_shared<Texture>(*texture.get()));
+		throw std::exception("Not implemented yet.");
 	}
 	else
 	{
@@ -253,13 +253,25 @@ MeshBuilder& MeshBuilder::addTexture(std::shared_ptr<Texture>& texture, bool cop
 
 MeshBuilder& MeshBuilder::addTexture(Texture* texture, bool copy)
 {
-	throw std::exception("Not implemented yet");
+	if (copy)
+	{
+		throw std::exception("Not implemented yet.");
+	}
+	else
+	{
+		m_textures->push_back(std::shared_ptr<Texture>(texture));
+	}
+
 	return *this;
 }
 
 MeshBuilder& MeshBuilder::addTextures(std::vector<Texture*>& textures, bool copy)
 {
-	throw std::exception("Not implemented yet");
+	for (auto texture : textures)
+	{
+		addTexture(texture, copy);
+	}
+
 	return *this;
 }
 

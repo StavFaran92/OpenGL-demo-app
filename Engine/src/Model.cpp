@@ -132,9 +132,9 @@ bool Model::use()
 	return true;
 }
 
-std::vector<std::shared_ptr<Texture>> Model::GetTextures()
+std::vector<const Texture*> Model::GetTextures()
 {
-	std::vector<std::shared_ptr<Texture>> result;
+	std::vector<const Texture*> result;
 	
 	for (const auto &mesh : m_meshes)
 	{

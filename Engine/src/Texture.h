@@ -30,7 +30,7 @@ public:
 	 * 
 	 * \param width		The generated texture width 
 	 * \param height	The generated texture height
-	 * \return		A pointer to the generated texture
+	 * \return			A pointer to the generated texture
 	 */
 	static Texture* createEmptyTexture(int width, int height);
 
@@ -39,9 +39,16 @@ public:
 	 * 
 	 * \param fileLocation	The filepath location
 	 * \param isFlipped		Should flip the texture vertically
-	 * \return		A pointer to the loaded texture
+	 * \return				A pointer to the loaded texture
 	 */
 	static Texture* loadTextureFromFile(const std::string& fileLocation);
+
+	/**
+	 * Load a cubemap texture using the specified faces file locations.
+	 * 
+	 * \param faces		the faces file locations to load the cubemap using
+	 * \return			A pointer to the loaded texture
+	 */
 	static Texture* loadCubemapTexture(std::vector<std::string> faces);
 
 	/**
@@ -53,10 +60,10 @@ public:
 	static std::string textureTypeToString(Type type);
 
 	/** Binds the GPU to this texture */
-	void bind();
+	void bind() const;
 
 	/** Unbinds this texture from the GPU */
-	void unbind();
+	void unbind() const;
 
 	/**
 	 * Sets the texture type.

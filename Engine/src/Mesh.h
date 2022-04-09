@@ -40,39 +40,47 @@ public:
 	 */
 	void render(Shader& shader, IRenderer& renderer);
 
-	/** Destructor */
-	~Mesh();
-private:
-	// -------------------- Friends -------------------- //
-	friend class Model;
-	friend class MeshBuilder;
-
-	// -------------------- Methods -------------------- //
-	void SetTexturesInShader(Shader& shader);
-
-
-	std::vector<std::shared_ptr<Texture>> getTextures() const;
-
 	/**
 	 * Sets the number of vertices in the mesh.
-	 * 
+	 *
 	 * \param size	Number of vertices the mesh contains
 	 */
 	void setNumOfVertices(size_t size);
 
 	/**
+	 * Gets the number of vertices in the mesh.
+	 *
+	 * \param size	Number of vertices the mesh contains
+	 */
+	size_t getNumOfVertices() const;
+
+	/**
 	 * Sets The mesh's positions vertices.
-	 * 
+	 *
 	 * \param positions
 	 */
 	void setPositions(std::shared_ptr<std::vector<glm::vec3>> positions);
 
 	/**
+	 * Gets The mesh's positions vertices.
+	 *
+	 * \return	positions vector pointer
+	 */
+	const std::vector<glm::vec3>* getPositions() const;
+
+	/**
 	 * Sets the mesh's Normals vertices.
-	 * 
+	 *
 	 * \param normals
 	 */
 	void setNormals(std::shared_ptr<std::vector<glm::vec3>> normals);
+
+	/**
+	 * Gets the mesh's Normals vertices.
+	 *
+	 * \return	normals vector pointer
+	 */
+	const std::vector<glm::vec3>* getNormals() const;
 
 	/**
 	 * Sets the mesh's TexCoords vertices.
@@ -82,6 +90,13 @@ private:
 	void setTexcoords(std::shared_ptr<std::vector<glm::vec2>> texCoords);
 
 	/**
+	 * Gets the mesh's TexCoords vertices.
+	 *
+	 * \return	texcoords vector pointer
+	 */
+	const std::vector<glm::vec2>* getTexcoords() const;
+
+	/**
 	 * Sets the mesh's Indices.
 	 *
 	 * \param indices
@@ -89,11 +104,25 @@ private:
 	void setIndices(std::shared_ptr<std::vector<unsigned int>> indices);
 
 	/**
+	 * Gets the mesh's Indices.
+	 *
+	 * \return	indices vector pointer
+	 */
+	const std::vector<unsigned int>* getIndices() const;
+
+	/**
 	 * Sets the mesh's Color vertices.
 	 *
 	 * \param colors
 	 */
 	void setColors(std::shared_ptr<std::vector<glm::vec3>> colors);
+
+	/**
+	 * Gets the mesh's Color vertices.
+	 *
+	 * \param colors
+	 */
+	const std::vector<glm::vec3>* getColors() const;
 
 	/**
 	 * Add a texture to the mesh.
@@ -124,23 +153,52 @@ private:
 	void addTextures(std::vector<Texture*>& textures);
 
 	/**
-	 * Build the mesh using the specified vertices data.
-	 * This call will initialize all the OpenGL related Buffer data
-	 * 
-	 * return true if the model was built succesfully, false otherwise.
-	 * 
+	 * Gets the mesh's Textures.
+	 *
+	 * \param colors
 	 */
-	bool build();
-
-	void calculateNormals();
+	std::vector<const Texture*> getTextures() const;
 
 	/**
 	 * Clear the Mesh entirely.
-	 * 
+	 *
 	 */
 	void clearMesh();
 
+	/**
+	 * Sets the mesh's vertexLayout
+	 *
+	 */
 	void setVertexLayout(VertexLayout layout);
+
+	/**
+	 * Gets the mesh's vertexLayout
+	 *
+	 * \return The mesh's Vertex layout
+	 */
+	VertexLayout getVertexLayout();
+
+	/**
+	 * Build the mesh using the specified vertices data.
+	 * This call will initialize all the OpenGL related Buffer data
+	 *
+	 * return true if the model was built succesfully, false otherwise.
+	 */
+	bool build();
+
+	/** Destructor */
+	~Mesh();
+private:
+	// -------------------- Friends -------------------- //
+	friend class Model;
+	friend class MeshBuilder;
+
+private:
+	// -------------------- Methods -------------------- //
+	void calculateNormals();
+
+	void SetTexturesInShader(Shader& shader);
+
 private:
 	// -------------------- Attributes -------------------- //
 	/** Mesh positions */
@@ -159,16 +217,14 @@ private:
 	std::vector<std::shared_ptr<Texture>>         m_textures;
 
 	/** Mesh colors */
-	std::shared_ptr<std::vector<glm::vec3>>         m_colors;
+	std::shared_ptr<std::vector<glm::vec3>>       m_colors;
 
 	// render data
-	std::shared_ptr<ElementBufferObject>  m_ibo = nullptr;
-	std::shared_ptr<VertexBufferObject> m_vbo = nullptr;
-	std::shared_ptr<VertexArrayObject>  m_vao = nullptr;
+	std::shared_ptr<ElementBufferObject> m_ibo = nullptr;
+	std::shared_ptr<VertexBufferObject>  m_vbo = nullptr;
+	std::shared_ptr<VertexArrayObject>   m_vao = nullptr;
 
 	size_t m_numOfVertices = 0;
-
 	size_t m_indexCount = 0;
-
 	VertexLayout m_layout;
 };

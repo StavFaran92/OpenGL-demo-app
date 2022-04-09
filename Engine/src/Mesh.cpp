@@ -10,9 +10,16 @@ Mesh::Mesh()
 	logInfo(__FUNCTION__);
 }
 
-inline std::vector<std::shared_ptr<Texture>> Mesh::getTextures() const
+std::vector<const Texture*> Mesh::getTextures() const
 {
-	return m_textures;
+	std::vector<const Texture*> textures;
+
+	for (auto texture : m_textures)
+	{
+		textures.emplace_back(texture.get());
+	}
+
+	return textures;
 }
 
 void Mesh::render(Shader& shader, IRenderer& renderer)
@@ -92,26 +99,62 @@ void Mesh::setPositions(std::shared_ptr<std::vector<glm::vec3>> positions)
 {
 	m_positions = positions;
 }
+
+const std::vector<glm::vec3>* Mesh::getPositions() const
+{
+	return m_positions.get();
+}
+
 void Mesh::setNormals(std::shared_ptr<std::vector<glm::vec3>> normals)
 {
 	m_normals = normals;
 }
+
+const std::vector<glm::vec3>* Mesh::getNormals() const
+{
+	return m_normals.get();
+}
+
 void Mesh::setNumOfVertices(size_t size)
 {
 	m_numOfVertices = size;
 }
+
+size_t Mesh::getNumOfVertices() const
+{
+	return m_numOfVertices;
+}
+
 void Mesh::setTexcoords(std::shared_ptr<std::vector<glm::vec2>> texCoords)
 {
 	m_texcoords = texCoords;
 }
+
+const std::vector<glm::vec2>* Mesh::getTexcoords() const
+{
+	return m_texcoords.get();
+}
+
 void Mesh::setIndices(std::shared_ptr<std::vector<unsigned int>> indices)
 {
 	m_indices = indices;
 }
+
+const std::vector<unsigned int>* Mesh::getIndices() const
+{
+	return m_indices.get();
+}
+
 void Mesh::setColors(std::shared_ptr<std::vector<glm::vec3>> colors)
 {
 	m_colors = colors;
 }
+
+const std::vector<glm::vec3>* Mesh::getColors() const
+{
+	return m_colors.get();
+}
+
 bool Mesh::build()
 {
 	// validate mesh data
@@ -259,6 +302,11 @@ void Mesh::clearMesh()
 void Mesh::setVertexLayout(VertexLayout layout)
 {
 	m_layout = layout;
+}
+
+VertexLayout Mesh::getVertexLayout()
+{
+	return m_layout;
 }
 
 Mesh::~Mesh()

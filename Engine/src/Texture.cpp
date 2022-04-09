@@ -137,13 +137,13 @@ std::string Texture::textureTypeToString(Type type)
 	}
 }
 
-void Texture::bind()
+void Texture::bind() const
 {
 	glActiveTexture(GL_TEXTURE0 + m_slot);
 	glBindTexture(m_target, m_id);
 }
 
-void Texture::unbind()
+void Texture::unbind() const
 {
 	glActiveTexture(0);
 }
