@@ -13,9 +13,15 @@ class EngineAPI Shader
 {
 public:
 	Shader();
+
+	/** Constructor */
 	Shader(const std::string& vertexfilePath, const std::string& fragmentFilePath);
-	Shader(const Shader& other) = default;
-	Shader& operator=(const Shader& other) = default;
+
+	/** Copy Constructor */
+	Shader(const Shader& other);
+
+	/** Copy Assignemnt operator */
+	Shader& operator=(const Shader& other);
 
 	void use() const;
 	void release() const;
@@ -48,7 +54,7 @@ public:
 private:
 	friend class Context;
 	inline void SetID(uint32_t id) { m_id = id; }
-	void init(const std::string& vertexFilePath, const std::string& fragmentFilePath);
+	void init();
 	void BuildShaders(const std::string& vertexCode, const std::string& fragmentCode);
 	uint32_t AddShader(const std::string& shaderCode, unsigned int shaderType);
 
@@ -61,6 +67,8 @@ private:
 	bool m_enableLight = false;
 	bool m_enableMaterial = false;
 	bool m_enableTexture = false;
+	std::string m_vertexShaderFilepath;
+	std::string m_FragmentShaderFilepath;
 
 	static uint32_t s_activateShader;
 };

@@ -112,13 +112,13 @@ void Mesh::setColors(std::shared_ptr<std::vector<glm::vec3>> colors)
 {
 	m_colors = colors;
 }
-void Mesh::build()
+bool Mesh::build()
 {
 	// validate mesh data
 	if (!m_positions || m_positions->empty())
 	{
 		logError("Cannot build mesh without position data.");
-		return;
+		return false;
 	}
 
 	// if mesh doesn't have normals calculate them
@@ -203,6 +203,8 @@ void Mesh::build()
 	m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), m_numOfVertices, sizeof(float) * stride);
 
 	m_vao->AttachBuffer(*m_vbo, m_ibo.get(), m_layout);
+
+	return true;
 }
 
 // Compute the normals of the mesh

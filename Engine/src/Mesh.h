@@ -127,8 +127,10 @@ private:
 	 * Build the mesh using the specified vertices data.
 	 * This call will initialize all the OpenGL related Buffer data
 	 * 
+	 * return true if the model was built succesfully, false otherwise.
+	 * 
 	 */
-	void build();
+	bool build();
 
 	void calculateNormals();
 

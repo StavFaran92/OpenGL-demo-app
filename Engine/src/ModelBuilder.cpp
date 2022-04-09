@@ -3,10 +3,20 @@
 #include <memory>
 
 #include "Model.h"
+#include "Logger.h"
 
 Model* ModelBuilder::build()
 {
 	auto mesh = m_meshBuilder->build();
+
+	if (!mesh)
+	{
+		logError("Model builder failed to build model.");
+
+		delete this;
+
+		return nullptr;
+	}
 
 	std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
 	m_model->UseMaterial(material);

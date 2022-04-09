@@ -17,17 +17,37 @@ Shader::Shader()
 }
 
 Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath) :
-	m_id(0)
+	m_id(0), 
+	m_vertexShaderFilepath(vertexFilePath), 
+	m_FragmentShaderFilepath(fragmentFilePath)
 {
-
-	init(vertexFilePath, fragmentFilePath);
+	init();
 }
 
-void Shader::init(const std::string& vertexFilePath, const std::string& fragmentFilePath)
+Shader::Shader(const Shader& other) :
+	m_id(0),
+	m_vertexShaderFilepath(other.m_vertexShaderFilepath),
+	m_FragmentShaderFilepath(other.m_FragmentShaderFilepath)
+{
+	init();
+}
+
+Shader& Shader::operator=(const Shader& other)
+{
+	m_vertexShaderFilepath = other.m_vertexShaderFilepath;
+	m_FragmentShaderFilepath = other.m_FragmentShaderFilepath;
+
+	init();
+
+	return *this;
+}
+
+
+void Shader::init()
 {
 	// Parse shaders
-	std::string vertexCode = Utils::ReadFile(vertexFilePath);
-	std::string fragmentCode = Utils::ReadFile(fragmentFilePath);
+	std::string vertexCode = Utils::ReadFile(m_vertexShaderFilepath);
+	std::string fragmentCode = Utils::ReadFile(m_FragmentShaderFilepath);
 
 	// Build shaders
 	BuildShaders(vertexCode, fragmentCode);

@@ -321,7 +321,14 @@ Mesh* MeshBuilder::build()
 
 	mesh->setNumOfVertices(m_numOfVertices);
 
-	mesh->build();
+	if (!mesh->build())
+	{
+		logError("Mesh Builder failed to build mesh.");
+
+		delete this;
+
+		return nullptr;
+	}
 
 	delete this;
 
