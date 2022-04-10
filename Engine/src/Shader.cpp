@@ -29,6 +29,10 @@ Shader::Shader(const Shader& other) :
 	m_vertexShaderFilepath(other.m_vertexShaderFilepath),
 	m_FragmentShaderFilepath(other.m_FragmentShaderFilepath)
 {
+	m_enableLight = other.m_enableLight;
+	m_enableMaterial = other.m_enableMaterial;
+	m_enableTexture = other.m_enableTexture;
+
 	init();
 }
 
@@ -36,6 +40,10 @@ Shader& Shader::operator=(const Shader& other)
 {
 	m_vertexShaderFilepath = other.m_vertexShaderFilepath;
 	m_FragmentShaderFilepath = other.m_FragmentShaderFilepath;
+
+	m_enableLight = other.m_enableLight;
+	m_enableMaterial = other.m_enableMaterial;
+	m_enableTexture = other.m_enableTexture;
 
 	init();
 

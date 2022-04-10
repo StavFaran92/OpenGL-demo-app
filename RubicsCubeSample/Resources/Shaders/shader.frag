@@ -80,7 +80,7 @@ void main()
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir, texCoord);        
     
     if(useColor)
-        result = Color;
+        result *= Color;
 
     colour = vec4(result, 1.0);
 }

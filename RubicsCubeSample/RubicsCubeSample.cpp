@@ -52,11 +52,17 @@ float colors[108] = {
 
 Box* createRubicsCubeBox()
 {
+	auto texture1 = Texture::loadTextureFromFile("Resources\\Textures\\plane.png");
+	texture1->setType(Texture::Type::Diffuse);
+
+	auto texture2 = Texture::loadTextureFromFile("Resources\\Textures\\plane.png");
+	texture2->setType(Texture::Type::Specular);
+
 	return (Box*)ModelBuilder::builder<Box>()
 		.getMeshBuilder()
 		.setColors(colors, 36)
-		.enableAttribute(LayoutAttribute::Colors)
-		.disableAttribute(LayoutAttribute::Texcoords)
+		.addTexture(texture1)
+		.addTexture(texture2)
 		.getModelBuilder()
 		.build();
 }
@@ -83,7 +89,7 @@ public:
 				for (int k = 0; k < 3; k++)
 				{
 					boxes[i][j][k] = *createRubicsCubeBox();
-					boxes[i][j][k].translate(1.1f*i, 1.1f * j, 1.1f * k);
+					boxes[i][j][k].translate(i, j, k);
 				}
 			}
 		}

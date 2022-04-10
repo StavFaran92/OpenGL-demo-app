@@ -393,7 +393,7 @@ TEST(TestMeshBuilder, addTexture)
  * Test basic funcionallity of setRawVertices.
  *
  */
-TEST(TestMeshBuilder, rawVertices)
+TEST(TestMeshBuilder, setRawVertices)
 {
 	TestEngine testEngine;
 	testEngine.startEngine();
