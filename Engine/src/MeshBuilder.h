@@ -44,8 +44,8 @@ public:
 	MeshBuilder& addTexture(Texture* texture, bool copy = false);
 	MeshBuilder& addTextures(std::vector<Texture*>& textures, bool copy = false);
 
-	MeshBuilder& enableAttribute(LayoutAttribute attribute);
-	MeshBuilder& disableAttribute(LayoutAttribute attribute);
+	
+	
 
 	ModelBuilder& getModelBuilder() const;
 	Mesh* build();
@@ -59,6 +59,8 @@ private:
 	/** Constructor */
 	MeshBuilder();
 	void setModelBuilder(ModelBuilder* modelBuilder);
+	void enableAttribute(LayoutAttribute attribute);
+	void disableAttribute(LayoutAttribute attribute);
 
 private:
 

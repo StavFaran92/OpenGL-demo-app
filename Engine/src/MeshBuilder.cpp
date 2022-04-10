@@ -22,11 +22,25 @@ MeshBuilder& MeshBuilder::setPositions(std::vector<glm::vec3>& positions, bool c
 		m_positions = std::shared_ptr<std::vector<glm::vec3>>(&positions);
 	}
 
+	enableAttribute(LayoutAttribute::Positions);
+
 	return *this;
 }
 
 MeshBuilder& MeshBuilder::setPositions(const float* positions, size_t size)
 {
+	if (!positions)
+	{
+		logError("Specified ptr is null.");
+		return *this;
+	}
+
+	if (size == 0)
+	{
+		logError("Size cannot be set to 0.");
+		return *this;
+	}
+
 	m_positions = std::make_shared<std::vector<glm::vec3>>();
 
 	for (int i = 0; i < size; i++)
@@ -34,6 +48,8 @@ MeshBuilder& MeshBuilder::setPositions(const float* positions, size_t size)
 		glm::vec3 pos{ positions[i * 3 + 0], positions[i * 3 + 1], positions[i * 3 + 2] };
 		m_positions->emplace_back(pos);
 	}
+
+	enableAttribute(LayoutAttribute::Positions);
 
 	return *this;
 }
@@ -49,11 +65,25 @@ MeshBuilder& MeshBuilder::setNormals(std::vector<glm::vec3>& normals, bool copy)
 		m_normals = std::shared_ptr<std::vector<glm::vec3>>(&normals);
 	}
 
+	enableAttribute(LayoutAttribute::Normals);
+
 	return *this;
 }
 
 MeshBuilder& MeshBuilder::setNormals(const float* normals, size_t size)
 {
+	if (!normals)
+	{
+		logError("Specified ptr is null");
+		return *this;
+	}
+
+	if (size == 0)
+	{
+		logError("Size cannot be set to 0.");
+		return *this;
+	}
+
 	m_normals = std::make_shared<std::vector<glm::vec3>>();
 
 	for (int i = 0; i < size; i++)
@@ -61,6 +91,8 @@ MeshBuilder& MeshBuilder::setNormals(const float* normals, size_t size)
 		glm::vec3 normal{ normals[i * 3 + 0], normals[i * 3 + 1], normals[i * 3 + 2] };
 		m_normals->emplace_back(normal);
 	}
+
+	enableAttribute(LayoutAttribute::Normals);
 
 	return *this;
 }
@@ -76,11 +108,25 @@ MeshBuilder& MeshBuilder::setTexcoords(std::vector<glm::vec2>& texCoords, bool c
 		m_texCoords = std::shared_ptr<std::vector<glm::vec2>>(&texCoords);
 	}
 
+	enableAttribute(LayoutAttribute::Texcoords);
+
 	return *this;
 }
 
 MeshBuilder& MeshBuilder::setTexcoords(const float* texCoords, size_t size)
 {
+	if (!texCoords)
+	{
+		logError("Specified ptr is null");
+		return *this;
+	}
+
+	if (size == 0)
+	{
+		logError("Size cannot be set to 0.");
+		return *this;
+	}
+
 	m_texCoords = std::make_shared<std::vector<glm::vec2>>();
 
 	for (int i = 0; i < size; i++)
@@ -88,6 +134,8 @@ MeshBuilder& MeshBuilder::setTexcoords(const float* texCoords, size_t size)
 		glm::vec3 texCoord{ texCoords[i * 3 + 0], texCoords[i * 3 + 1], texCoords[i * 3 + 2] };
 		m_texCoords->emplace_back(texCoord);
 	}
+
+	enableAttribute(LayoutAttribute::Texcoords);
 
 	return *this;
 }
@@ -103,11 +151,25 @@ MeshBuilder& MeshBuilder::setColors(std::vector<glm::vec3>& colors, bool copy)
 		m_colors = std::shared_ptr<std::vector<glm::vec3>>(&colors);
 	}
 
+	enableAttribute(LayoutAttribute::Colors);
+
 	return *this;
 }
 
 MeshBuilder& MeshBuilder::setColors(const float* colors, size_t size)
 {
+	if (!colors)
+	{
+		logError("Specified ptr is null");
+		return *this;
+	}
+
+	if (size == 0)
+	{
+		logError("Size cannot be set to 0.");
+		return *this;
+	}
+
 	m_colors = std::make_shared<std::vector<glm::vec3>>();
 
 	for (int i = 0; i < size; i++)
@@ -115,6 +177,8 @@ MeshBuilder& MeshBuilder::setColors(const float* colors, size_t size)
 		glm::vec3 color{ colors[i * 3 + 0], colors[i * 3 + 1], colors[i * 3 + 2] };
 		m_colors->emplace_back(color);
 	}
+
+	enableAttribute(LayoutAttribute::Colors);
 
 	return *this;
 }
@@ -135,6 +199,18 @@ MeshBuilder& MeshBuilder::setIndices(std::vector<unsigned int>& indices, bool co
 
 MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, VertexLayout layout)
 {
+	if (!vertices)
+	{
+		logError("Specified ptr is null");
+		return *this;
+	}
+
+	if (layout.numOfVertices == 0)
+	{
+		logError("Size cannot be set to 0.");
+		return *this;
+	}
+
 	setNumOfVertices(layout.numOfVertices);
 	// calculate stride
 	int stride = 0;
@@ -226,6 +302,18 @@ MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, VertexLayout lay
 
 MeshBuilder& MeshBuilder::setRawIndices(const unsigned int* indices, size_t size)
 {
+	if (!indices)
+	{
+		logError("Specified ptr is null");
+		return *this;
+	}
+
+	if (size == 0)
+	{
+		logError("Size cannot be set to 0.");
+		return *this;
+	}
+
 	auto vec = new std::vector<unsigned int>();
 	vec->reserve(size);
 	for (auto i = 0; i < size; i++)
@@ -253,6 +341,12 @@ MeshBuilder& MeshBuilder::addTexture(std::shared_ptr<Texture>& texture, bool cop
 
 MeshBuilder& MeshBuilder::addTexture(Texture* texture, bool copy)
 {
+	if (!texture)
+	{
+		logError("Speicifed ptr is null");
+		return *this;
+	}
+
 	if (copy)
 	{
 		throw std::exception("Not implemented yet.");
@@ -365,23 +459,17 @@ MeshBuilder& MeshBuilder::builder()
 MeshBuilder::MeshBuilder()
 {
 	m_textures = std::make_shared<std::vector<std::shared_ptr<Texture>>>();
-
-	m_layout.attribs = g_defaultLayoutAttributes;
 }
 
-MeshBuilder& MeshBuilder::enableAttribute(LayoutAttribute attribute)
+void MeshBuilder::enableAttribute(LayoutAttribute attribute)
 {
 	if (std::find(m_layout.attribs.begin(), m_layout.attribs.end(), attribute) == m_layout.attribs.end())
 		m_layout.attribs.emplace_back(attribute);
-
-	return *this;
 }
 
-MeshBuilder& MeshBuilder::disableAttribute(LayoutAttribute attribute)
+void MeshBuilder::disableAttribute(LayoutAttribute attribute)
 {
 	auto iter = std::find(m_layout.attribs.begin(), m_layout.attribs.end(), attribute);
 	if (iter != m_layout.attribs.end())
 		m_layout.attribs.erase(iter);
-
-	return *this;
 }

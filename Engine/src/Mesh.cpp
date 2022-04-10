@@ -164,6 +164,18 @@ bool Mesh::build()
 		return false;
 	}
 
+	if (m_numOfVertices == 0)
+	{
+		logError("Number of vertices cannot be 0.");
+		return false;
+	}
+
+	if (m_layout.attribs.size() == 0)
+	{
+		logError("Number of attributes cannot be 0.");
+		return false;
+	}
+
 	// if mesh doesn't have normals calculate them
 	if (!m_normals || m_normals->empty())
 	{

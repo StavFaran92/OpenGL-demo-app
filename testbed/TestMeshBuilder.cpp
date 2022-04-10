@@ -18,6 +18,7 @@ TEST(TestMeshBuilder, builder)
 	{
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
+			.setNumOfVertices(1)
 			.build();
 
 		EXPECT_TRUE(mesh != nullptr);
@@ -29,6 +30,24 @@ TEST(TestMeshBuilder, builder)
 	// Test an invalid build
 	{
 		Mesh* mesh = MeshBuilder::builder()
+			.build();
+
+		EXPECT_TRUE(mesh == nullptr);
+	}
+
+	// Test an invalid build
+	{
+		Mesh* mesh = MeshBuilder::builder()
+			.setNumOfVertices(1)
+			.build();
+
+		EXPECT_TRUE(mesh == nullptr);
+	}
+
+	// Test an invalid build
+	{
+		Mesh* mesh = MeshBuilder::builder()
+			.setPositions(positions, 1)
 			.build();
 
 		EXPECT_TRUE(mesh == nullptr);
@@ -47,36 +66,113 @@ TEST(TestMeshBuilder, enableDisableAttribute)
 	testEngine.startEngine();
 
 	float positions[]{ 1.f,1.f,1.f };
+	float normals[]{ 1.f,1.f,1.f };
+	float texCoords[]{ 1.f,1.f };
+	float color[]{ 1.f,1.f,1.f };
 
 	// Test basic enable attribute
 	{
 		auto mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
-			.enableAttribute(LayoutAttribute::Colors)
+			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
 
 		VertexLayout layout = mesh->getVertexLayout();
 
-		EXPECT_NE(std::find(layout.attribs.begin(), layout.attribs.end(), LayoutAttribute::Colors), layout.attribs.end());
+		EXPECT_EQ(layout.attribs.size(), 1);
+		EXPECT_NE(std::find(layout.attribs.begin(), layout.attribs.end(), LayoutAttribute::Positions), layout.attribs.end());
 
 		// release resources
 		delete mesh;
 	}
 
-	// Test basic disable attribute
+	// Test basic multiple attributes
 	{
 		auto mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
-			.disableAttribute(LayoutAttribute::Texcoords)
+			.setNormals(normals, 1)
+			.setTexcoords(texCoords, 1)
+			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
 
 		VertexLayout layout = mesh->getVertexLayout();
 
-		EXPECT_EQ(std::find(layout.attribs.begin(), layout.attribs.end(), LayoutAttribute::Texcoords), layout.attribs.end());
+		EXPECT_EQ(layout.attribs.size(), 3);
+		EXPECT_EQ(layout.attribs.at(0), LayoutAttribute::Positions);
+		EXPECT_EQ(layout.attribs.at(1), LayoutAttribute::Normals);
+		EXPECT_EQ(layout.attribs.at(2), LayoutAttribute::Texcoords);
+
+		// release resources
+		delete mesh;
+	}
+
+	// Test complex enables
+	{
+		auto mesh = MeshBuilder::builder()
+			.setPositions(positions, 1)
+			.setPositions(positions, 1)
+			.setPositions(positions, 1)
+			.setPositions(positions, 1)
+			.setNumOfVertices(1)
+			.build();
+
+		ASSERT_TRUE(mesh != nullptr);
+
+		VertexLayout layout = mesh->getVertexLayout();
+
+		EXPECT_EQ(layout.attribs.size(), 1);
+		EXPECT_EQ(layout.attribs.at(0), LayoutAttribute::Positions);
+
+		// release resources
+		delete mesh;
+	}
+
+	{
+		// Valdiate setNormals with size 0
+		{
+			float normals[]{ 1.f,0.f,-1.f };
+
+			Mesh* mesh = MeshBuilder::builder()
+				.setPositions(positions, 1)
+				.setNormals(normals, 0)
+				.setNumOfVertices(1)
+				.build();
+
+			ASSERT_TRUE(mesh != nullptr);
+
+			VertexLayout layout = mesh->getVertexLayout();
+
+			EXPECT_EQ(layout.attribs.size(), 1);
+			EXPECT_EQ(layout.attribs.at(0), LayoutAttribute::Positions);
+
+			// release resources
+			delete mesh;
+		}
+	}
+
+	// Test layout order
+	{
+		auto mesh = MeshBuilder::builder()
+			.setNormals(normals, 1)
+			.setColors(color, 1)
+			.setPositions(positions, 1)
+			.setTexcoords(texCoords, 1)
+			.setNumOfVertices(1)
+			.build();
+
+		ASSERT_TRUE(mesh != nullptr);
+
+		VertexLayout layout = mesh->getVertexLayout();
+
+		EXPECT_EQ(layout.attribs.size(), 4);
+		EXPECT_EQ(layout.attribs.at(0), LayoutAttribute::Positions);
+		EXPECT_EQ(layout.attribs.at(1), LayoutAttribute::Normals);
+		EXPECT_EQ(layout.attribs.at(2), LayoutAttribute::Texcoords);
+		EXPECT_EQ(layout.attribs.at(3), LayoutAttribute::Colors);
 
 		// release resources
 		delete mesh;
@@ -100,6 +196,7 @@ TEST(TestMeshBuilder, setPositions)
 
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
+			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -115,12 +212,28 @@ TEST(TestMeshBuilder, setPositions)
 		delete mesh;
 	}
 
+	// Valdiate setPositions with size 0
+	{
+		float positions[]{ 1.f,0.f,-1.f };
+
+		Mesh* mesh = MeshBuilder::builder()
+			.setPositions(positions, 0)
+			.setNumOfVertices(1)
+			.build();
+
+		ASSERT_TRUE(mesh == nullptr);
+
+		// release resources
+		delete mesh;
+	}
+
 	// Valdiate setPositions a vector - no copy
 	{
 		std::vector<glm::vec3>* positions = new std::vector<glm::vec3>{ {1.f,0.f,-1.f} };
 
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(*positions)
+			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -145,6 +258,7 @@ TEST(TestMeshBuilder, setPositions)
 
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(*positions, true)
+			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -184,6 +298,7 @@ TEST(TestMeshBuilder, setNormals)
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
 			.setNormals(normals, 1)
+			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -199,6 +314,22 @@ TEST(TestMeshBuilder, setNormals)
 		delete mesh;
 	}
 
+	// Valdiate setNormals with size 0
+	{
+		float normals[]{ 1.f,0.f,-1.f };
+
+		Mesh* mesh = MeshBuilder::builder()
+			.setPositions(positions, 1)
+			.setNormals(normals, 0)
+			.setNumOfVertices(1)
+			.build();
+
+		ASSERT_TRUE(mesh != nullptr);
+
+		// release resources
+		delete mesh;
+	}
+
 	// Valdiate setNormals a vector - no copy
 	{
 		std::vector<glm::vec3>* normals = new std::vector<glm::vec3>{ {1.f,0.f,-1.f} };
@@ -206,6 +337,7 @@ TEST(TestMeshBuilder, setNormals)
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
 			.setNormals(*normals)
+			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -231,6 +363,7 @@ TEST(TestMeshBuilder, setNormals)
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
 			.setNormals(*normals, true)
+			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -271,6 +404,7 @@ TEST(TestMeshBuilder, addTexture)
 
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
+			.setNumOfVertices(1)
 			.addTexture(tex)
 			.build();
 
