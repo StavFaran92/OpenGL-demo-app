@@ -137,7 +137,6 @@ Mesh* ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImport
 	}
 
 	return MeshBuilder::builder()
-		.setNumOfVertices(mesh->mNumVertices)
 		.setPositions(*positions)
 		.setNormals(*normals)
 		.setTexcoords(*texcoords)

@@ -17,7 +17,7 @@ class Texture;
 class EngineAPI MeshBuilder
 {
 public:
-	MeshBuilder& setNumOfVertices(size_t size);
+	
 
 	MeshBuilder& setPositions(std::vector<glm::vec3>& positions, bool copy = false);
 	MeshBuilder& setPositions(const float* positions, size_t size);
@@ -61,6 +61,7 @@ private:
 	void setModelBuilder(ModelBuilder* modelBuilder);
 	void enableAttribute(LayoutAttribute attribute);
 	void disableAttribute(LayoutAttribute attribute);
+	void setNumOfVertices(size_t size);
 
 private:
 

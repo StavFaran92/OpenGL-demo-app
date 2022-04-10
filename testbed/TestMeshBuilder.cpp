@@ -18,7 +18,6 @@ TEST(TestMeshBuilder, builder)
 	{
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
-			.setNumOfVertices(1)
 			.build();
 
 		EXPECT_TRUE(mesh != nullptr);
@@ -30,24 +29,6 @@ TEST(TestMeshBuilder, builder)
 	// Test an invalid build
 	{
 		Mesh* mesh = MeshBuilder::builder()
-			.build();
-
-		EXPECT_TRUE(mesh == nullptr);
-	}
-
-	// Test an invalid build
-	{
-		Mesh* mesh = MeshBuilder::builder()
-			.setNumOfVertices(1)
-			.build();
-
-		EXPECT_TRUE(mesh == nullptr);
-	}
-
-	// Test an invalid build
-	{
-		Mesh* mesh = MeshBuilder::builder()
-			.setPositions(positions, 1)
 			.build();
 
 		EXPECT_TRUE(mesh == nullptr);
@@ -74,7 +55,6 @@ TEST(TestMeshBuilder, enableDisableAttribute)
 	{
 		auto mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
-			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -94,7 +74,6 @@ TEST(TestMeshBuilder, enableDisableAttribute)
 			.setPositions(positions, 1)
 			.setNormals(normals, 1)
 			.setTexcoords(texCoords, 1)
-			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -117,7 +96,6 @@ TEST(TestMeshBuilder, enableDisableAttribute)
 			.setPositions(positions, 1)
 			.setPositions(positions, 1)
 			.setPositions(positions, 1)
-			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -139,7 +117,6 @@ TEST(TestMeshBuilder, enableDisableAttribute)
 			Mesh* mesh = MeshBuilder::builder()
 				.setPositions(positions, 1)
 				.setNormals(normals, 0)
-				.setNumOfVertices(1)
 				.build();
 
 			ASSERT_TRUE(mesh != nullptr);
@@ -161,7 +138,6 @@ TEST(TestMeshBuilder, enableDisableAttribute)
 			.setColors(color, 1)
 			.setPositions(positions, 1)
 			.setTexcoords(texCoords, 1)
-			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -196,7 +172,6 @@ TEST(TestMeshBuilder, setPositions)
 
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
-			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -218,7 +193,6 @@ TEST(TestMeshBuilder, setPositions)
 
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(positions, 0)
-			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh == nullptr);
@@ -233,7 +207,6 @@ TEST(TestMeshBuilder, setPositions)
 
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(*positions)
-			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -258,7 +231,6 @@ TEST(TestMeshBuilder, setPositions)
 
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(*positions, true)
-			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -298,7 +270,6 @@ TEST(TestMeshBuilder, setNormals)
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
 			.setNormals(normals, 1)
-			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -321,7 +292,6 @@ TEST(TestMeshBuilder, setNormals)
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
 			.setNormals(normals, 0)
-			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -337,7 +307,6 @@ TEST(TestMeshBuilder, setNormals)
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
 			.setNormals(*normals)
-			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -363,7 +332,6 @@ TEST(TestMeshBuilder, setNormals)
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
 			.setNormals(*normals, true)
-			.setNumOfVertices(1)
 			.build();
 
 		ASSERT_TRUE(mesh != nullptr);
@@ -404,7 +372,6 @@ TEST(TestMeshBuilder, addTexture)
 
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
-			.setNumOfVertices(1)
 			.addTexture(tex)
 			.build();
 
@@ -414,6 +381,47 @@ TEST(TestMeshBuilder, addTexture)
 		int actualID = textures[0]->getID();
 
 		EXPECT_EQ(expectedID, actualID);
+
+		// release resources
+		delete mesh;
+	}
+
+	testEngine.stopEngine();
+}
+
+/**
+ * Test basic funcionallity of setRawVertices.
+ *
+ */
+TEST(TestMeshBuilder, rawVertices)
+{
+	TestEngine testEngine;
+	testEngine.startEngine();
+
+	float vertices[]{ 1.f,0.f,-1.f,		0.f, -1.f, 1.f};
+
+	// Test simple raw vertices set
+	{
+		VertexLayout layout;
+		layout.numOfVertices = 1;
+		layout.attribs.push_back(LayoutAttribute::Positions);
+		layout.attribs.push_back(LayoutAttribute::Normals);
+
+		Mesh* mesh = MeshBuilder::builder()
+			.setRawVertices(vertices, layout)
+			.build();
+
+		EXPECT_TRUE(mesh != nullptr);
+
+		auto positions = mesh->getPositions();
+		EXPECT_EQ(positions->at(0).x, vertices[0]);
+		EXPECT_EQ(positions->at(0).y, vertices[1]);
+		EXPECT_EQ(positions->at(0).z, vertices[2]);
+		
+		auto normals = mesh->getNormals();
+		EXPECT_EQ(normals->at(0).x, vertices[3]);
+		EXPECT_EQ(normals->at(0).y, vertices[4]);
+		EXPECT_EQ(normals->at(0).z, vertices[5]);
 
 		// release resources
 		delete mesh;

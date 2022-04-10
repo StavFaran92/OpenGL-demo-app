@@ -4,11 +4,21 @@
 #include "Logger.h"
 #include "VertexLayout.h"
 
-MeshBuilder& MeshBuilder::setNumOfVertices(size_t size)
+void MeshBuilder::setNumOfVertices(size_t size)
 {
-	m_numOfVertices = size;
+	if (size == 0)
+	{
+		logError("Size cannot be set to 0.");
+		return;
+	}
 
-	return *this;
+	if (m_numOfVertices != 0 && m_numOfVertices != size)
+	{
+		logWarning("2 different numOfVertices values have been specified, using the first one.."); 
+		return;
+	}
+
+	m_numOfVertices = size;
 }
 
 MeshBuilder& MeshBuilder::setPositions(std::vector<glm::vec3>& positions, bool copy)
@@ -23,6 +33,7 @@ MeshBuilder& MeshBuilder::setPositions(std::vector<glm::vec3>& positions, bool c
 	}
 
 	enableAttribute(LayoutAttribute::Positions);
+	setNumOfVertices(positions.size());
 
 	return *this;
 }
@@ -50,6 +61,7 @@ MeshBuilder& MeshBuilder::setPositions(const float* positions, size_t size)
 	}
 
 	enableAttribute(LayoutAttribute::Positions);
+	setNumOfVertices(size);
 
 	return *this;
 }
@@ -93,6 +105,7 @@ MeshBuilder& MeshBuilder::setNormals(const float* normals, size_t size)
 	}
 
 	enableAttribute(LayoutAttribute::Normals);
+	setNumOfVertices(size);
 
 	return *this;
 }
@@ -136,6 +149,7 @@ MeshBuilder& MeshBuilder::setTexcoords(const float* texCoords, size_t size)
 	}
 
 	enableAttribute(LayoutAttribute::Texcoords);
+	setNumOfVertices(size);
 
 	return *this;
 }
@@ -179,6 +193,7 @@ MeshBuilder& MeshBuilder::setColors(const float* colors, size_t size)
 	}
 
 	enableAttribute(LayoutAttribute::Colors);
+	setNumOfVertices(size);
 
 	return *this;
 }

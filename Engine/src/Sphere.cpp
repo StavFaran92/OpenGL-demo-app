@@ -93,7 +93,6 @@ MeshBuilder* Sphere::createMeshBuilder()
     }
 
     return &MeshBuilder::builder()
-        .setNumOfVertices(positions->size())
         .setPositions(*positions)
         .setNormals(*normals)
         .setTexcoords(*texcoords)
