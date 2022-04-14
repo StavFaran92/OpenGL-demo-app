@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "Core.h"
+#include "glm/glm.hpp"
 
 class Transformation;
 class Scene;
@@ -12,13 +13,13 @@ public:
 	Object3D() = default;
 	virtual ~Object3D() = default;
 
-	Transformation& getTransformation() const;
+	Transformation* getTransformation() const;
 	uint32_t getID() const;
 
-	void translate(float x, float y, float z);
-	void rotateX(float x);
-	void rotateY(float y);
-	void rotateZ(float z);
+	void translate(float x, float y, float z) const;
+	void rotate(glm::vec3 eulers) const;
+	void rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle) const;
+
 protected:
 	friend class Scene;
 	inline void setID(uint32_t id) { m_id = id; }

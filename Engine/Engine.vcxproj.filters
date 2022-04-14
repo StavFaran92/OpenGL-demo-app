@@ -103,7 +103,7 @@
     <ClCompile Include="src\Texture.cpp">
       <Filter>src\Graphics\Models</Filter>
     </ClCompile>
-    <ClCompile Include="src\Transform.cpp">
+    <ClCompile Include="src\Transformation.cpp">
       <Filter>src\Graphics\Models</Filter>
     </ClCompile>
     <ClCompile Include="src\Window.cpp">
@@ -288,7 +288,7 @@
     <ClInclude Include="src\Texture.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Transform.h">
+    <ClInclude Include="src\Transformation.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="src\Utils.h">

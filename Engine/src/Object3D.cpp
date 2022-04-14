@@ -1,10 +1,10 @@
 #include "Object3D.h"
 
-#include "Transform.h"
+#include "Transformation.h"
 
-Transformation& Object3D::getTransformation() const
+Transformation* Object3D::getTransformation() const
 { 
-	return *m_transformation.get(); 
+	return m_transformation.get(); 
 }
 
 uint32_t Object3D::getID() const
@@ -12,20 +12,17 @@ uint32_t Object3D::getID() const
 	return m_id; 
 }
 
-void Object3D::translate(float x, float y, float z)
+void Object3D::translate(float x, float y, float z) const
 {
 	m_transformation->translate(x, y, z);
 }
 
-void Object3D::rotateX(float x)
+void Object3D::rotate(glm::vec3 eulers) const
 {
-	m_transformation->rotateLocalX(x);
+	m_transformation->rotate(eulers);
 }
-void Object3D::rotateY(float y)
+
+void Object3D::rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle) const
 {
-	m_transformation->rotateLocalY(y);
-}
-void Object3D::rotateZ(float z)
-{
-	m_transformation->rotateLocalZ(z);
+	m_transformation->rotateAround(pivot, axis, angle);
 }

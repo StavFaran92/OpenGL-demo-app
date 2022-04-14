@@ -11,9 +11,11 @@ class EngineAPI Transformation
 public:
 	Transformation() :
 		m_translation(0, 0, 0),
-		m_orientation(1,0,0,0),
+		m_orientationLocal(1,0,0,0),
+		m_orientationWorld(1,0,0,0),
 		m_scale(1, 1, 1),
-		m_transformation(1.f)
+		m_transformation(1.f),
+		m_pivot(0,0,0)
 	{}
 
 	void update(float deltaTime);
@@ -24,19 +26,22 @@ public:
 
 	glm::mat4 getTransformation() const;
 	glm::vec3 getPosition() const;
-	glm::quat getOrientation() const;
+	glm::quat getLocalOrientation() const;
+	glm::quat getWorldOrientation() const;
 	glm::vec3 getScale() const;
 
 	void translate(float x, float y, float z);
-	void rotateLocalX(float angle);
-	void rotateLocalY(float angle);
-	void rotateLocalZ(float angle);
+
+	void rotate(glm::vec3 eulers);
+	void rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle);
 
 
 private:
 	glm::vec3 m_translation;
 
-	glm::quat m_orientation;
+	glm::quat m_orientationLocal;
+	glm::quat m_orientationWorld;
+	glm::vec3 m_pivot;
 
 	glm::vec3 m_scale;
 

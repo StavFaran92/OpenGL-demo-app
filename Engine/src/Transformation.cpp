@@ -1,4 +1,4 @@
-#include "Transform.h"
+#include "Transformation.h"
 #include<glm/gtc/quaternion.hpp>
 #include "LinearAlgebraUtil.h"
 
@@ -11,15 +11,16 @@ void Transformation::update(float deltaTime)
 {
 	if (m_change)
 	{
-		auto a = glm::translate(glm::mat4(1.0f), {1,1,1});
-		auto b = glm::translate(glm::mat4(1.0f), {-1,-1,-1});
+		auto pivot = glm::translate(glm::mat4(1.0f), m_pivot);
+		auto pivotInv = glm::translate(glm::mat4(1.0f), -m_pivot);
 
 		glm::mat4 identity(1.0f);
 		auto translate = glm::translate(glm::mat4(1.0f), m_translation);
-		auto rotate = glm::mat4_cast(m_orientation);
+		auto rotateLocal = glm::mat4_cast(m_orientationLocal);
+		auto rotateWorld = glm::mat4_cast(m_orientationWorld);
 		auto scale = glm::scale(glm::mat4(1.0f), m_scale);
 
-		m_transformation = a * scale * rotate * b * translate * identity;
+		m_transformation = pivot * scale * rotateWorld * pivotInv * translate * rotateLocal * identity;
 
 		m_change = false;
 	}
@@ -46,9 +47,14 @@ glm::vec3 Transformation::getPosition() const
 	return m_translation;
 }
 
-glm::quat Transformation::getOrientation() const
+glm::quat Transformation::getLocalOrientation() const
 {
-	return m_orientation;
+	return m_orientationLocal;
+}
+
+glm::quat Transformation::getWorldOrientation() const
+{
+	return m_orientationWorld;
 }
 
 glm::vec3 Transformation::getScale() const
@@ -65,23 +71,17 @@ void Transformation::translate(float x, float y, float z)
 	m_change = true;
 }
 
-void Transformation::rotateLocalX(float angle)
+void Transformation::rotate(glm::vec3 eulers)
 {
-	m_orientation = glm::rotate(m_orientation, degToRad(angle), {1,0,0});
+	m_orientationLocal *= glm::quat(eulers);
 
 	m_change = true;
 }
 
-void Transformation::rotateLocalY(float angle)
+void Transformation::rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle)
 {
-	m_orientation = glm::rotate(m_orientation, degToRad(angle), { 0,1,0 });
-
-	m_change = true;
-}
-
-void Transformation::rotateLocalZ(float angle)
-{
-	m_orientation = glm::rotate(m_orientation, degToRad(angle), { 0,0, 1 });
+	m_orientationWorld = glm::rotate(m_orientationWorld, degToRad(angle), axis);
+	m_pivot = pivot;
 
 	m_change = true;
 }
