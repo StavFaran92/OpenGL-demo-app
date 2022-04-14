@@ -294,8 +294,8 @@ void ShowModelCreatorWindow()
             auto model = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str());
             std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
             model->UseMaterial(material);
-            model->GetTransformation().SetPosition(pos);
-            model->GetTransformation().SetScale(scale);
+            model->getTransformation().SetPosition(pos);
+            model->getTransformation().SetScale(scale);
 
             Engine::get()->getContext()->getActiveScene()->addModel(model);
 
@@ -413,8 +413,8 @@ void ShowPrimitiveCreatorWindow()
             {
                 std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
                 model->UseMaterial(material);
-                model->GetTransformation().SetPosition(pos);
-                model->GetTransformation().SetScale(scale);
+                model->getTransformation().SetPosition(pos);
+                model->getTransformation().SetScale(scale);
 
                 Engine::get()->getContext()->getActiveScene()->addModel(model);
 

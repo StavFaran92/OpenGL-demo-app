@@ -26,6 +26,6 @@ protected:
 	glm::vec3 m_color;
 	float m_ambientIntensity = 0;
 	float m_diffuseIntensity = 0;
-	std::shared_ptr<Transform >m_transform = nullptr;
+	std::shared_ptr<Transformation >m_transform = nullptr;
 	std::string m_name;
 };

@@ -3,7 +3,7 @@
 #include <memory>
 #include "Core.h"
 
-class Transform;
+class Transformation;
 class Scene;
 
 class EngineAPI Object3D
@@ -12,7 +12,7 @@ public:
 	Object3D() = default;
 	virtual ~Object3D() = default;
 
-	Transform& GetTransformation() const;
+	Transformation& getTransformation() const;
 	uint32_t getID() const;
 
 	void translate(float x, float y, float z);
@@ -26,5 +26,5 @@ protected:
 protected:
 	uint32_t m_id = 0;
 
-	std::shared_ptr<Transform> m_transformation;
+	std::shared_ptr<Transformation> m_transformation;
 };

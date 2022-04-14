@@ -2,7 +2,7 @@
 
 #include "Transform.h"
 
-Transform& Object3D::GetTransformation() const
+Transformation& Object3D::getTransformation() const
 { 
 	return *m_transformation.get(); 
 }
@@ -19,13 +19,13 @@ void Object3D::translate(float x, float y, float z)
 
 void Object3D::rotateX(float x)
 {
-	m_transformation->rotateX(x);
+	m_transformation->rotateLocalX(x);
 }
 void Object3D::rotateY(float y)
 {
-	m_transformation->rotateY(y);
+	m_transformation->rotateLocalY(y);
 }
 void Object3D::rotateZ(float z)
 {
-	m_transformation->rotateZ(z);
+	m_transformation->rotateLocalZ(z);
 }

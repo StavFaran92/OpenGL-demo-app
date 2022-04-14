@@ -29,7 +29,7 @@ Model::Model()
 {
 	logTrace(__FUNCTION__);
 
-	m_transformation = std::make_shared<Transform>();
+	m_transformation = std::make_shared<Transformation>();
 
 	m_shader = std::make_shared<Shader>(*Shader::PhongShader());
 }
@@ -79,7 +79,7 @@ void Model::Draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 		}
 	}
 
-	currShader->SetMat4("model", m_transformation->GetTransformation());
+	currShader->SetMat4("model", m_transformation->getTransformation());
 
 	if (currShader->IsMaterialsEnabled() && m_material)
 	{
