@@ -78,6 +78,13 @@ void Transformation::rotate(glm::vec3 eulers)
 	m_change = true;
 }
 
+void Transformation::rotate(glm::vec3 axis, float angle)
+{
+	m_orientationLocal = glm::rotate(m_orientationLocal, degToRad(angle), axis);
+
+	m_change = true;
+}
+
 void Transformation::rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle)
 {
 	m_orientationWorld = glm::rotate(m_orientationWorld, degToRad(angle), axis);

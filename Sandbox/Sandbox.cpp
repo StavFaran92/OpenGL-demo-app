@@ -58,7 +58,8 @@ public:
 
 	Model* guitar;
 	Box* box;
-	Sphere* sphere;
+	Sphere* sphere1;
+	Sphere* sphere2;
 
 	void start() override
 	{
@@ -67,12 +68,17 @@ public:
 		box = (Box*)ModelBuilder::builder<Box>()
 			.build();
 
-		sphere = (Sphere*)ModelBuilder::builder<Sphere>(1, 36, 18)
+		sphere1 = (Sphere*)ModelBuilder::builder<Sphere>(1, 36, 18)
 			.build();
 
-		sphere->translate(1, 0, 0);
+		sphere2 = (Sphere*)ModelBuilder::builder<Sphere>(1, 36, 18)
+			.build();
 
-		box->addChildren(sphere);
+		sphere1->translate(3, 0, 0);
+		sphere2->translate(6, 0, 0);
+
+		box->addChildren(sphere1);
+		sphere1->addChildren(sphere2);
 
 		//postProcess(PostProcess::grayscale());
 	}
@@ -81,11 +87,17 @@ public:
 	{
 		if (keyboard_getKeyState(SDL_Scancode::SDL_SCANCODE_X))
 		{
-			box->translate(.1f,0,0);
+			box->rotate({0,0,1}, 1);
+		}
+
+		if (keyboard_getKeyState(SDL_Scancode::SDL_SCANCODE_Z))
+		{
+			sphere1->rotate({ 0,0,1 }, 1);
 		}
 
 		draw(box);
-		draw(sphere);
+		draw(sphere1);
+		draw(sphere2);
 	}
 
 };

@@ -20,6 +20,7 @@ public:
 
 	void translate(float x, float y, float z) const;
 	void rotate(glm::vec3 eulers) const;
+	void rotate(glm::vec3 axis, float angle) const;
 	void rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle) const;
 
 	void addChildren(std::shared_ptr<Object3D> child);

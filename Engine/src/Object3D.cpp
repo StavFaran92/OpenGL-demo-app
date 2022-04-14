@@ -39,6 +39,19 @@ void Object3D::rotate(glm::vec3 eulers) const
 	}
 }
 
+void Object3D::rotate(glm::vec3 axis, float angle) const
+{
+	m_transformation->rotate(axis, angle);
+
+	for (const auto& child : m_childrens)
+	{
+		if (!child)
+			continue;
+
+		child->rotateAround(m_transformation->getPosition(), axis, angle);
+	}
+}
+
 void Object3D::rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle) const
 {
 	m_transformation->rotateAround(pivot, axis, angle);

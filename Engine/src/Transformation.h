@@ -33,6 +33,7 @@ public:
 	void translate(float x, float y, float z);
 
 	void rotate(glm::vec3 eulers);
+	void rotate(glm::vec3 axis, float angle);
 	void rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle);
 
 
