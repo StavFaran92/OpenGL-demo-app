@@ -26,7 +26,7 @@ Renderer::Renderer(const Renderer& other)
 	m_projection = other.m_projection;
 }
 
-void Renderer::Draw(const VertexArrayObject& vao, Shader& shader) const
+void Renderer::draw(const VertexArrayObject& vao, Shader& shader) const
 {
 	SetMVP(shader);
 

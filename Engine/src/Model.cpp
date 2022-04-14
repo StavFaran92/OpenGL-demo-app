@@ -39,7 +39,7 @@ Model::~Model()
 	logTrace(__FUNCTION__);
 }
 
-void Model::Draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
+void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 {
 	Shader* currShader = m_shader.get();
 
@@ -54,7 +54,7 @@ void Model::Draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 			currShader = context->GetReflectionShader();
 			currShader->use();
 			currShader->SetInt("skybox", 0);
-			auto textures = context->getActiveScene()->getSkybox()->GetTextures();
+			auto textures = context->getActiveScene()->getSkybox()->getTextures();
 			if (textures.size() <= 0)
 			{
 				logError("Skybox does not contain cubemap texture.");
@@ -69,7 +69,7 @@ void Model::Draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 			currShader->use();
 			currShader->SetInt("skybox", 0);
 			currShader->SetFloat("refractiveRatio", 1 / 1.52f);
-			auto textures = context->getActiveScene()->getSkybox()->GetTextures();
+			auto textures = context->getActiveScene()->getSkybox()->getTextures();
 			if (textures.size() <= 0)
 			{
 				logError("Skybox does not contain cubemap texture.");
@@ -94,21 +94,21 @@ void Model::Draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 	}
 }
 
-bool Model::AttachShader(std::shared_ptr<Shader> shader)
+bool Model::attachShader(std::shared_ptr<Shader> shader)
 {
 	m_shader = shader;
 
 	return true;
 }
 
-bool Model::AttachShader(Shader* shader)
+bool Model::attachShader(Shader* shader)
 {
 	m_shader = std::shared_ptr<Shader>(shader);
 
 	return true;
 }
 
-bool Model::DetachShader()
+bool Model::detachShader()
 {
 	m_shader = Engine::get()->getRenderer()->GetDefaultShader();
 
@@ -125,14 +125,7 @@ void Model::addMesh(Mesh* mesh)
 	m_meshes.push_back(std::shared_ptr<Mesh>(mesh));
 }
 
-bool Model::use()
-{
-	m_shader->use();
-
-	return true;
-}
-
-std::vector<const Texture*> Model::GetTextures()
+std::vector<const Texture*> Model::getTextures()
 {
 	std::vector<const Texture*> result;
 	
@@ -145,26 +138,26 @@ std::vector<const Texture*> Model::GetTextures()
 	return result;
 }
 
-Shader* Model::GetShader()
+Shader* Model::getShader()
 {
 	return m_shader.get();
 }
 
-bool Model::UseMaterial(std::shared_ptr<Material> material)
+bool Model::useMaterial(std::shared_ptr<Material> material)
 {
 	m_material = material;
 
 	return true;
 }
 
-void Model::SetReflection(bool val)
+void Model::setReflection(bool enable)
 {
-	m_isReflective = val;
+	m_isReflective = enable;
 }
 
-void Model::SetRefraction(bool val)
+void Model::setRefraction(bool enable)
 {
-	m_isRefractive = val;
+	m_isRefractive = enable;
 }
 
 MeshBuilder* Model::createMeshBuilder()

@@ -55,7 +55,7 @@ void ScreenBufferProjector::RedirectToDefault()
 	glDisable(GL_DEPTH_TEST);
 	glBindTexture(GL_TEXTURE_2D, m_texture->getID());
 	//glDrawArrays(GL_TRIANGLES, 0, 6);
-	m_quad->Draw(*m_renderer.get(), m_screenShader.get());
+	m_quad->draw(*m_renderer.get(), m_screenShader.get());
 }
 
 void ScreenBufferProjector::setPostProcessShader(std::shared_ptr<Shader> shader)

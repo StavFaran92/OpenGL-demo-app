@@ -29,7 +29,7 @@ void Mesh::render(Shader& shader, IRenderer& renderer)
 		SetTexturesInShader(shader);
 	}
 
-	renderer.Draw(*m_vao, shader);
+	renderer.draw(*m_vao, shader);
 	glActiveTexture(GL_TEXTURE0);
 }
 

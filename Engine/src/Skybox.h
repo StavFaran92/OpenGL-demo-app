@@ -11,7 +11,7 @@ class EngineAPI Skybox : public Box
 public:
     static Skybox* CreateSkybox();
 
-    void Draw(IRenderer& renderer, Shader* shader = nullptr) override;
+    void draw(IRenderer& renderer, Shader* shader = nullptr) override;
     
 private:
     friend class ModelBuilder;

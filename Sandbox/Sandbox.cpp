@@ -50,43 +50,29 @@ float colors[108] = {
 	1.0f,  1.0f,  1.0f,
 };
 
-Box* createRubicsCubeBox()
-{
-	return (Box*)ModelBuilder::builder<Box>()
-		.getMeshBuilder()
-		.setColors(colors, 36)
-		.enableAttribute(LayoutAttribute::Colors)
-		.disableAttribute(LayoutAttribute::Texcoords)
-		.getModelBuilder()
-		.build();
-}
-
-class RubicsCubeSample : public Application
+class Sandbox : public Application
 {
 public:
 	using Application::draw;
-	Box boxes[3][3][3];
 
-	Sphere* sphere;
 
 	Model* guitar;
 	Box* box;
+	Sphere* sphere;
 
 	void start() override
 	{
 		//skybox(Skybox::CreateSkybox());
 
-		for (int i = 0; i < 3; i++)
-		{
-			for (int j = 0; j < 3; j++)
-			{
-				for (int k = 0; k < 3; k++)
-				{
-					boxes[i][j][k] = *createRubicsCubeBox();
-					boxes[i][j][k].translate(1.1f*i, 1.1f * j, 1.1f * k);
-				}
-			}
-		}
+		box = (Box*)ModelBuilder::builder<Box>()
+			.build();
+
+		sphere = (Sphere*)ModelBuilder::builder<Sphere>(1, 36, 18)
+			.build();
+
+		sphere->translate(1, 0, 0);
+
+		box->addChildren(sphere);
 
 		//postProcess(PostProcess::grayscale());
 	}
@@ -95,34 +81,16 @@ public:
 	{
 		if (keyboard_getKeyState(SDL_Scancode::SDL_SCANCODE_X))
 		{
-			boxes[0][0][0].rotateX(1);
-			boxes[0][0][1].rotateX(1);
-			boxes[0][0][2].rotateX(1);
-
-			boxes[0][1][0].rotateX(1);
-			boxes[0][1][1].rotateX(1);
-			boxes[0][1][2].rotateX(1);
-
-			boxes[0][2][0].rotateX(1);
-			boxes[0][2][1].rotateX(1);
-			boxes[0][2][2].rotateX(1);
+			box->translate(.1f,0,0);
 		}
 
-		for (int i = 0; i < 3; i++)
-		{
-			for (int j = 0; j < 3; j++)
-			{
-				for (int k = 0; k < 3; k++)
-				{
-					draw(&boxes[i][j][k]);
-				}
-			}
-		}
+		draw(box);
+		draw(sphere);
 	}
 
 };
 
 Application* CreateApplication()
 {
-	return new RubicsCubeSample();
+	return new Sandbox();
 }

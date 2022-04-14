@@ -57,7 +57,7 @@ void Scene::draw(float deltaTime)
 	// Draw Engine models
 	for (auto model = m_models.begin(); model != m_models.end(); ++model)
 	{
-		Shader* shader = model->second->GetShader();
+		Shader* shader = model->second->getShader();
 		shader->use();
 
 		if (shader->IsLightsEnabled())
@@ -84,7 +84,7 @@ void Scene::draw(float deltaTime)
 		glStencilFunc(GL_ALWAYS, model->second->getID(), 0xff);
 
 		// Draw model
-		model->second->Draw(*m_renderer.get(), shader);
+		model->second->draw(*m_renderer.get(), shader);
 
 		shader->release();
 	}
@@ -97,7 +97,7 @@ void Scene::draw(float deltaTime)
 
 		model->update(deltaTime);
 
-		Shader* shader = model->GetShader();
+		Shader* shader = model->getShader();
 		shader->use();
 
 		if (shader->IsLightsEnabled())
@@ -124,15 +124,15 @@ void Scene::draw(float deltaTime)
 		glStencilFunc(GL_ALWAYS, model->getID(), 0xff);
 
 		// Draw model
-		model->Draw(*m_renderer.get(), shader);
+		model->draw(*m_renderer.get(), shader);
 
 		shader->release();
 	}
 
 	if (m_skybox)
 	{
-		m_skybox->use();
-		m_skybox->Draw(*m_skyboxRenderer.get());
+		m_skybox->getShader()->use();
+		m_skybox->draw(*m_skyboxRenderer.get());
 	}
 
 	if (m_isPostProcessEnabled && m_screenBufferProjector)

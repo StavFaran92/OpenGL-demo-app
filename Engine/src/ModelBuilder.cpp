@@ -19,12 +19,12 @@ Model* ModelBuilder::build()
 	}
 
 	std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-	m_model->UseMaterial(material);
+	m_model->useMaterial(material);
 
 	m_model->addMesh(mesh);
 
 	if (m_shader)
-		m_model->AttachShader(m_shader);
+		m_model->attachShader(m_shader);
 
 	auto tempModel = m_model;
 

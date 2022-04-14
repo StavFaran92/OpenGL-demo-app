@@ -7,6 +7,14 @@
 #include "ModelImporter.h"
 #include "ModelBuilder.h"
 
+enum class PrimitiveType
+{
+    Quad,
+    Cube,
+    Sphere
+
+};
+
 static void ShowExampleAppDockSpace();
 static void ShowExampleAppLog();
 
@@ -293,7 +301,7 @@ void ShowModelCreatorWindow()
 
             auto model = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str());
             std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-            model->UseMaterial(material);
+            model->useMaterial(material);
             model->getTransformation()->SetPosition(pos);
             model->getTransformation()->SetScale(scale);
 
@@ -360,7 +368,7 @@ void ShowPrimitiveCreatorWindow()
         static glm::vec3 pos(0.f, 0.f, 0.f);
         static glm::vec3 rotation(0.f, 0.f, 0.f);
         static glm::vec3 scale(1.f, 1.f, 1.f);
-        static Model::PrimitiveType shape = Model::PrimitiveType::Quad;
+        static PrimitiveType shape = PrimitiveType::Quad;
         //static Model:: type = Model::PrimitiveType::Quad;
 
 
@@ -401,18 +409,18 @@ void ShowPrimitiveCreatorWindow()
             //auto texture = Texture::loadTextureFromFile(texturePath.c_str(), flipTexture);
 
             Model* model = nullptr;
-            if (shape == Model::PrimitiveType::Quad)
+            if (shape == PrimitiveType::Quad)
             {
                 model = ModelBuilder::builder<Quad>().build();
             }
-            else if (shape == Model::PrimitiveType::Cube)
+            else if (shape == PrimitiveType::Cube)
             {
                 model = ModelBuilder::builder<Box>().build();
             }
             if (model != nullptr)
             {
                 std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-                model->UseMaterial(material);
+                model->useMaterial(material);
                 model->getTransformation()->SetPosition(pos);
                 model->getTransformation()->SetScale(scale);
 

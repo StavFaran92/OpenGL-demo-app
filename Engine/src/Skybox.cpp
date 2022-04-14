@@ -36,7 +36,7 @@ Skybox* Skybox::CreateSkybox()
     return model;
 }
 
-void Skybox::Draw(IRenderer& renderer, Shader* shader)
+void Skybox::draw(IRenderer& renderer, Shader* shader)
 {
     glDepthMask(GL_FALSE);
     glDepthFunc(GL_LEQUAL);

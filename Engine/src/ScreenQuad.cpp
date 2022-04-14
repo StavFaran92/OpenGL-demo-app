@@ -13,7 +13,7 @@ std::shared_ptr<ScreenQuad> ScreenQuad::GenerateScreenQuad()
 	return std::shared_ptr<ScreenQuad>((ScreenQuad*)ModelBuilder::builder<ScreenQuad>().build());
 }
 
-void ScreenQuad::Draw(IRenderer& renderer, Shader* shader)
+void ScreenQuad::draw(IRenderer& renderer, Shader* shader)
 {
 	Shader* currShader = m_shader.get();
 

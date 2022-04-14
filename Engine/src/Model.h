@@ -31,14 +31,6 @@ class ModelBuilder;
 class EngineAPI Model : public Object3D
 {
 public:
-	enum class PrimitiveType 
-	{
-		Quad,
-		Cube,
-		Sphere
-
-	};
-public:
 	// -------------------- Methods -------------------- //
 	/** Constructor */
 	Model();
@@ -46,25 +38,53 @@ public:
 	/** Destructor */
 	~Model();	
 
-	bool AttachShader(Shader* shader);
-	bool AttachShader(std::shared_ptr<Shader> shader);
-	bool DetachShader();
+	/**
+	 * Attach a shader to the model.
+	 * 
+	 * The attached shader will be used to render the mesh with.
+	 * 
+	 * \param shader	A pointer to the shader to be attached
+	 * \return			True if the attach was succesfull, False otherwise
+	 */
+	bool attachShader(Shader* shader);
 
-	bool UseMaterial(std::shared_ptr<Material> material);
+	/**
+	 * Attach a shader to the model.
+	 *
+	 * The attached shader will be used to render the mesh with.
+	 *
+	 * \param shader	A pointer to the shader to be attached
+	 * \return			True if the attach was succesful, False otherwise
+	 */
+	bool attachShader(std::shared_ptr<Shader> shader);
 
-	bool use();
+	/**
+	 * Detach a shader from the model.
+	 *
+	 * Detach the currently attached shader from the model,
+	 * a default shader will be used to render the model if a draw call is issued.
+	 *
+	 * \return			True if the detach was succesful, False otherwise
+	 */
+	bool detachShader();
 
-	Shader* GetShader();
+	bool useMaterial(std::shared_ptr<Material> material);
 
-	std::vector<const Texture*> GetTextures();
+	/**
+	 * Get the currently attached shader.
+	 *
+	 * \return	The currently attached shader
+	 */
+	Shader* getShader();
 
-	void flipTexture();
+	std::vector<const Texture*> getTextures();
 
-	void SetReflection(bool val);
-	void SetRefraction(bool val);
+	void setReflection(bool enable);
+	void setRefraction(bool enable);
 
 	virtual MeshBuilder* createMeshBuilder();
 private:
+	// -------------------- Friends -------------------- //
 	friend class Scene;
 	friend class ModelImporter;
 	friend class ModelBuilder;
@@ -74,7 +94,7 @@ private:
 	
 protected:
 	// -------------------- Methods -------------------- //
-	virtual void Draw(IRenderer& renderer, Shader* shader = nullptr);
+	virtual void draw(IRenderer& renderer, Shader* shader = nullptr);
 	
 	// -------------------- Attributes -------------------- //
 	std::vector<std::shared_ptr<Mesh>> m_meshes;

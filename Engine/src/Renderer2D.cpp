@@ -5,7 +5,7 @@
 
 #include "VertexArrayObject.h"
 
-void Renderer2D::Draw(const VertexArrayObject& vao, Shader& shader) const
+void Renderer2D::draw(const VertexArrayObject& vao, Shader& shader) const
 {
 	vao.Bind();
 

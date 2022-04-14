@@ -16,7 +16,7 @@ public:
 	Renderer(const Renderer& other);
 
 	//Overrides
-	void Draw(const VertexArrayObject& vao, Shader& shader) const override;
+	void draw(const VertexArrayObject& vao, Shader& shader) const override;
 	virtual void SetMVP(Shader& shader) const;
  	void Clear() const override;
 

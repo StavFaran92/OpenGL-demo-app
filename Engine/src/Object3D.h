@@ -1,8 +1,10 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 #include "Core.h"
 #include "glm/glm.hpp"
+
 
 class Transformation;
 class Scene;
@@ -20,12 +22,20 @@ public:
 	void rotate(glm::vec3 eulers) const;
 	void rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle) const;
 
+	void addChildren(std::shared_ptr<Object3D> child);
+	void addChildren(Object3D* child);
+
+	void removeChildren(std::shared_ptr<Object3D> child);
+	void removeChildren(Object3D* child);
+
 protected:
 	friend class Scene;
-	inline void setID(uint32_t id) { m_id = id; }
+	void setID(uint32_t id);
 
 protected:
 	uint32_t m_id = 0;
 
 	std::shared_ptr<Transformation> m_transformation;
+
+	std::vector<Object3D*> m_childrens;
 };
