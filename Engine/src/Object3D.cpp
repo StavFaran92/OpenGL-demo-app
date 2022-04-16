@@ -8,6 +8,11 @@ Object3D::Object3D()
 	m_transformation = std::make_shared<Transformation>();
 }
 
+void Object3D::update(float deltatime)
+{
+	m_transformation->update(deltatime);
+}
+
 Transformation* Object3D::getTransformation() const
 { 
 	return m_transformation.get(); 

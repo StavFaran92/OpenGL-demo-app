@@ -91,7 +91,6 @@ protected:
 	friend class ModelImporter;
 	friend class ModelBuilder;
 
-	virtual void update(float deltaTime);
 	void addMesh(Mesh* mesh);
 	
 protected:

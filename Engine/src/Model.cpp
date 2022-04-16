@@ -113,11 +113,6 @@ bool Model::detachShader()
 	return true;
 }
 
-void Model::update(float delta)
-{
-	m_transformation->update(delta);
-}
-
 void Model::addMesh(Mesh* mesh)
 {
 	m_meshes.push_back(std::shared_ptr<Mesh>(mesh));

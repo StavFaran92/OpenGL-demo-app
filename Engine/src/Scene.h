@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <deque>
+#include <functional>
 
 #include "Core.h"
 
@@ -19,6 +20,7 @@ class Renderer;
 class ObjectSelection;
 class ScreenBufferProjector;
 class Shader;
+class CoroutineSystem;
 
 class EngineAPI Scene
 {
@@ -49,6 +51,9 @@ public:
 	void setPostProcess(bool value);
 	bool setPostProcessShader(Shader* shader);
 
+	void addCoroutine(const std::function<bool(float)>& coroutine);
+	void removeCoroutine(std::function<bool(float)> coroutine);
+
 	std::shared_ptr<Renderer> getRenderer() const;
 	std::shared_ptr<Renderer> getSkyboxRenderer();
 
@@ -58,6 +63,7 @@ public:
 
 	std::shared_ptr<ObjectSelection> GetObjectSelection() const;
 
+	void update(Model* model);
 	void draw(Model* model);
 
 
@@ -90,8 +96,10 @@ private:
 	std::shared_ptr<Skybox> m_skybox = nullptr;
 	std::shared_ptr<ObjectSelection> m_objectSelection = nullptr;
 	std::shared_ptr<ScreenBufferProjector> m_screenBufferProjector = nullptr;
+	std::shared_ptr<CoroutineSystem> m_coroutineManager = nullptr;
 
 	std::deque<Model*> m_drawQueue;
+	std::deque<Model*> m_updateQueue;
 
 	bool m_isPostProcessEnabled = false;
 

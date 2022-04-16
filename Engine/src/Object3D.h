@@ -32,6 +32,7 @@ public:
 protected:
 	friend class Scene;
 	void setID(uint32_t id);
+	virtual void update(float deltatime);
 
 protected:
 	uint32_t m_id = 0;

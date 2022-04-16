@@ -21,6 +21,7 @@ protected:
 	/** API */
 
 
+	void update(Model* model);
 	void draw(Model* model);
 	Box* createBox();
 	Quad* createQuad();

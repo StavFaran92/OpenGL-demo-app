@@ -24,6 +24,12 @@ void Application::postProcess(Shader* shader)
 	context->getActiveScene()->setPostProcessShader(shader);
 }
 
+void Application::update(Model* model)
+{
+	Engine::get()->getContext()->getActiveScene()->update(model);
+
+}
+
 void Application::draw(Model* model)
 {
 	Engine::get()->getContext()->getActiveScene()->draw(model);

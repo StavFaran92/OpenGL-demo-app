@@ -10,6 +10,7 @@
 #include "ObjectSelection.h"
 #include "SkyboxRenderer.h"
 #include "ScreenBufferProjector.h"
+#include "CoroutineSystem.h"
 #include "Logger.h"
 
 void Scene::init()
@@ -26,21 +27,40 @@ void Scene::init()
 		logError("Screen buffer projector failed to init!");
 	}
 
+	m_coroutineManager = std::make_shared<CoroutineSystem>();
+
 	auto light = new DirectionalLight();
 	addDirectionalLight(light);
 }
 
 void Scene::update(float deltaTime)
 {
-	
 	m_renderer->Clear();
 
 	m_renderer->GetCamera()->update(deltaTime);
+
+	// Advance all coroutines
+	auto coroutines = m_coroutineManager->getAllCoroutines();
+	for (int i=0; i < coroutines.size(); i++)
+	{
+		if ((*coroutines[i])(deltaTime))
+		{
+			m_coroutineManager->removeCoroutine(i);
+		}
+	}
 
 	//Update models
 	for (auto model = m_models.begin(); model != m_models.end(); ++model)
 	{
 		model->second->update(deltaTime);
+	}
+
+	while (!m_updateQueue.empty())
+	{
+		auto model = m_updateQueue.front();
+		m_updateQueue.pop_front();
+
+		model->update(deltaTime);
 	}
 
 	if (m_skybox)
@@ -95,7 +115,7 @@ void Scene::draw(float deltaTime)
 		auto model = m_drawQueue.front();
 		m_drawQueue.pop_front();
 
-		model->update(deltaTime);
+		//model->update(deltaTime);
 
 		Shader* shader = model->getShader();
 		shader->use();
@@ -268,6 +288,11 @@ std::shared_ptr<ObjectSelection> Scene::GetObjectSelection() const
 	return m_objectSelection;
 }
 
+void Scene::update(Model* model)
+{
+	m_updateQueue.push_back(model);
+}
+
 void Scene::draw(Model* model)
 {
 	m_drawQueue.push_back(model);
@@ -282,6 +307,16 @@ bool Scene::setPostProcessShader(Shader* shader)
 	}
 	return false;
 }
+
+void Scene::addCoroutine(const std::function<bool(float)>& coroutine)
+{
+	m_coroutineManager->addCoroutine(coroutine);
+}
+
+//void Scene::removeCoroutine(std::function<bool(float)>* coroutine)
+//{
+//	m_coroutineManager->removeCoroutine(coroutine);
+//}
 
 std::shared_ptr<Skybox> Scene::getSkybox()
 {

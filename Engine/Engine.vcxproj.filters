@@ -139,9 +139,6 @@
     <ClCompile Include="src\PostProcess.cpp">
       <Filter>src\Graphics\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="src\EventSystem.cpp">
-      <Filter>src\Graphics\Services</Filter>
-    </ClCompile>
     <ClCompile Include="src\Sphere.cpp">
       <Filter>src\Graphics\Shapes</Filter>
     </ClCompile>
@@ -165,6 +162,12 @@
     </ClCompile>
     <ClCompile Include="src\ModelBuilder.cpp">
       <Filter>src\Utils\Builders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EventSystem.cpp">
+      <Filter>src\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CoroutineSystem.cpp">
+      <Filter>src\Services</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -372,6 +375,9 @@
     <ClInclude Include="src\ModelBuilder.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="src\CoroutineSystem.h">
+      <Filter>headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -448,6 +454,9 @@
     </Filter>
     <Filter Include="src\Utils\Builders">
       <UniqueIdentifier>{9a4394a4-c467-41e9-85ba-3face76b5998}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Services">
+      <UniqueIdentifier>{596b40c0-d3c2-47cd-9767-0e6a2ad88e50}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

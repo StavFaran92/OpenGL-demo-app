@@ -55,6 +55,11 @@ void RubiksCube::draw(IRenderer& renderer, Shader* shader)
 	Model::draw(renderer, shader);
 }
 
+void RubiksCube::update(float deltaTime)
+{
+	Model::update(deltaTime);
+}
+
 Model* RubiksCube::createRubiksCubeBox()
 {
 	auto texture1 = Texture::loadTextureFromFile("Resources\\Textures\\plane.png");
@@ -199,27 +204,22 @@ void RubiksCube::init(size_t size)
 	m_faceBottom->addChildren(getCube(2, 0, 2));
 }
 
-void RubiksCube::update(float deltaTime)
-{
-	for (int i=m_asyncCallbacks.size()-1; i >= 0; i--)
-	{
-		if (m_asyncCallbacks[i](deltaTime))
-			m_asyncCallbacks.erase(m_asyncCallbacks.begin() + i);
-	}
-}
+
 
 void RubiksCube::rotateFront(Shift dir)
 {
-	//m_faceFront->rotate(glm::vec3(0, 0, -1), 90);
+	//glm::vec3 axis = (dir == Shift::CW) ? glm::vec3(0, 0, -1) : glm::vec3(0, 0, 1);
+
+	//m_faceFront->rotate(axis, 90);
 
 	int angle = 0;
-	m_asyncCallbacks.push_back([&, angle, dir](float deltaTime) mutable
+	glm::vec3 axis = (dir == Shift::CW) ? glm::vec3(0, 0, -1) : glm::vec3(0, 0, 1);
+
+	Engine::get()->getContext()->getActiveScene()->addCoroutine([&, angle, axis](float deltaTime) mutable
 	{
-		angle++;
-
-		glm::vec3 axis = (dir == Shift::CW) ? glm::vec3(0, 0, -1) : glm::vec3(0, 0, 1);
-
 		m_faceFront->rotate(axis, 1);
+
+		angle += 1;
 
 		if (angle > 90)
 		{

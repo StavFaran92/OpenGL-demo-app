@@ -7,6 +7,7 @@ class RubiksCubeDemo : public Application
 {
 public:
 	using Application::draw;
+	using Application::update;
 	RubiksCube* rubiksCube;
 
 	void start() override
@@ -26,7 +27,10 @@ public:
 
 	void update(float deltaTime)
 	{
-		rubiksCube->update(deltaTime);
+		for (const auto cube : rubiksCube->getCubes())
+		{
+			update(cube);
+		}
 	}
 
 	void draw() override
