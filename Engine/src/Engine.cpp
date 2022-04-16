@@ -155,6 +155,7 @@ void Engine::run(Application* app)
         if (quit)
             return;
 
+        app->update(deltaTime);
         update(deltaTime);
         app->draw();
         draw(deltaTime);

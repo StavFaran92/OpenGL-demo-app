@@ -4,7 +4,7 @@
 #include "Application.h"
 
 #ifndef TESTBED
-#include "EntryPoint.h"
+//#include "EntryPoint.h"
 #endif
 
 //sge

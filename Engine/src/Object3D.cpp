@@ -3,6 +3,11 @@
 #include "Transformation.h"
 #include "Logger.h"
 
+Object3D::Object3D()
+{
+	m_transformation = std::make_shared<Transformation>();
+}
+
 Transformation* Object3D::getTransformation() const
 { 
 	return m_transformation.get(); 

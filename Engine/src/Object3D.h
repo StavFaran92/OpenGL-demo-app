@@ -12,7 +12,7 @@ class Scene;
 class EngineAPI Object3D
 {
 public:
-	Object3D() = default;
+	Object3D();
 	virtual ~Object3D() = default;
 
 	Transformation* getTransformation() const;

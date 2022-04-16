@@ -83,18 +83,20 @@ public:
 	void setRefraction(bool enable);
 
 	virtual MeshBuilder* createMeshBuilder();
-private:
+
+	virtual void draw(IRenderer& renderer, Shader* shader = nullptr);
+protected:
 	// -------------------- Friends -------------------- //
 	friend class Scene;
 	friend class ModelImporter;
 	friend class ModelBuilder;
 
-	void update(float deltaTime);
+	virtual void update(float deltaTime);
 	void addMesh(Mesh* mesh);
 	
 protected:
 	// -------------------- Methods -------------------- //
-	virtual void draw(IRenderer& renderer, Shader* shader = nullptr);
+	//virtual void draw(IRenderer& renderer, Shader* shader = nullptr);
 	
 	// -------------------- Attributes -------------------- //
 	std::vector<std::shared_ptr<Mesh>> m_meshes;

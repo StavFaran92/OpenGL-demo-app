@@ -29,8 +29,6 @@ Model::Model()
 {
 	logTrace(__FUNCTION__);
 
-	m_transformation = std::make_shared<Transformation>();
-
 	m_shader = std::make_shared<Shader>(*Shader::PhongShader());
 }
 

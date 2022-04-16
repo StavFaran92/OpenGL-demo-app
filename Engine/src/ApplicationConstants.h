@@ -4,7 +4,7 @@
 #include "glm/glm.hpp"
 
 namespace Constants {
-	static const float PI = 3.1315265f;
+	static const float PI = 3.14159265358979323846f;
 	static const float toRadians = PI / 180;
 
 	static const std::string g_textureDiffuse = "texture_diffuse";

@@ -1,5 +1,6 @@
 #include "Keyboard.h"
-
+#include "Engine.h"
+#include "EventSystem.h"
 #include "Logger.h"
 
 Keyboard::Keyboard() 
@@ -16,4 +17,38 @@ int Keyboard::getKeyState(SDL_Scancode code) const
 	}
 
 	return m_keyboardState[code];
+}
+
+void Keyboard::onKeyPressed(SDL_Scancode code, std::function<void(SDL_Event e)> callback) const
+{
+	if (code < 0 || code > m_length)
+	{
+		logError("Invalid key specified : " + code);
+		return;
+	}
+
+	Engine::get()->getEventSystem()->addEventListener(SDL_EventType::SDL_KEYDOWN, [=](SDL_Event e)
+	{
+		if (e.key.keysym.scancode == code)
+		{
+			callback(e);
+		}
+	});
+}
+
+void Keyboard::onKeyReleased(SDL_Scancode code, std::function<void(SDL_Event e)> callback) const
+{
+	if (code < 0 || code > m_length)
+	{
+		logError("Invalid key specified : " + code);
+		return;
+	}
+
+	Engine::get()->getEventSystem()->addEventListener(SDL_EventType::SDL_KEYUP, [=](SDL_Event e)
+	{
+		if (e.key.keysym.scancode == code)
+		{
+			callback(e);
+		}
+	});
 }
