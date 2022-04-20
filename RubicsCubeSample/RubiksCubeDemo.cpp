@@ -2,6 +2,8 @@
 #include "sge.h"
 
 #include "RubiksCube.h"
+#include "RubiksCubeEnt.h"
+#include "RubiksCubeConfigurations.h"
 
 class RubiksCubeDemo : public Application
 {
@@ -19,7 +21,12 @@ public:
 
 		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_Scancode::SDL_SCANCODE_X, [&](SDL_Event e) 
 		{
-			rubiksCube->rotateFront(RubiksCube::Shift::CW);
+			rubiksCube->rotateFace(Axis::X, 0, Shift::CW);
+		});
+
+		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_Scancode::SDL_SCANCODE_Y, [&](SDL_Event e)
+		{
+			rubiksCube->rotateFace(Axis::Y, 0, Shift::CW);
 		});
 
 		//postProcess(PostProcess::grayscale());
@@ -35,16 +42,6 @@ public:
 
 	void draw() override
 	{
-		
-
-		//if (keyboard_getKeyState(SDL_Scancode::SDL_SCANCODE_Z))
-		//{
-		//	rubiksCube->rotateRight(RubiksCube::Shift::CW);
-		//}
-
-		
-
-		//TODO fix
 		for (const auto cube : rubiksCube->getCubes())
 		{
 			draw(cube);

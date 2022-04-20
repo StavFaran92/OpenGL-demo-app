@@ -1,4 +1,9 @@
 #include "RubiksCube.h"
+#include "RubiksCubeFace.h"
+#include "RubiksCubeEnt.h"
+#include "RubiksCubeUtils.h"
+
+using namespace rubiksCube;
 
 float colors[108] = {
 	//Red
@@ -60,7 +65,51 @@ void RubiksCube::update(float deltaTime)
 	Model::update(deltaTime);
 }
 
-Model* RubiksCube::createRubiksCubeBox()
+
+void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
+{
+	if (index < 0 || index > m_size - 1)
+	{
+		std::cout << "index out of bounds specified: " << index << std::endl;
+		return;
+	}
+
+	glm::vec3 dir(1);
+	switch (axis)
+	{
+	case Axis::X:
+		dir = glm::vec3(-1, 0, 0);
+		break;
+	case Axis::Y:
+		dir = glm::vec3(0, -1, 0);
+		break;
+	case Axis::Z:
+		dir = glm::vec3(0, 0, -1);
+		break;
+	}
+
+	int angle = 0;
+	dir = (shift == Shift::CW) ? dir : -dir;
+
+	auto face = m_faces.at({ axis, index });
+
+	//Rotate geometric representation of cubes
+	Engine::get()->getContext()->getActiveScene()->addCoroutine([face, index, angle, axis, dir](float deltaTime) mutable
+	{
+		face->rotate(dir, 1);
+
+		if (angle++ > 90)
+			return true;
+
+		return false;
+	});
+
+	// Rotate cubes physically (i.e. replace the cube' attached face according to rotation)
+	face->rotateCubes();
+
+}
+
+RubiksCubeEnt* RubiksCube::createRubiksCubeBox()
 {
 	auto texture1 = Texture::loadTextureFromFile("Resources\\Textures\\plane.png");
 	texture1->setType(Texture::Type::Diffuse);
@@ -68,16 +117,16 @@ Model* RubiksCube::createRubiksCubeBox()
 	auto texture2 = Texture::loadTextureFromFile("Resources\\Textures\\plane.png");
 	texture2->setType(Texture::Type::Specular);
 
-	return ModelBuilder::builder<Box>()
+	return dynamic_cast<RubiksCubeEnt*>(ModelBuilder::builder<RubiksCubeEnt>()
 	.getMeshBuilder()
 	.setColors(colors, 36)
 	.addTexture(texture1)
 	.addTexture(texture2)
 	.getModelBuilder()
-	.build();
+	.build());
 }
 
-Model* RubiksCube::getCube(int x, int y, int z) const
+RubiksCubeEnt* RubiksCube::getCube(int x, int y, int z) const
 {
 	return m_cubes[x * m_size * m_size + y * m_size + z];
 }
@@ -107,161 +156,48 @@ void RubiksCube::init(size_t size)
 		}
 	}
 
-	// Front
-	m_faceFront = new Object3D();
-	m_faceFront->translate(1, 1, 0);
-
-	m_faceFront->addChildren(getCube(0,0,0));
-	m_faceFront->addChildren(getCube(1,0,0));
-	m_faceFront->addChildren(getCube(2,0,0));
-
-	m_faceFront->addChildren(getCube(0,1,0));
-	m_faceFront->addChildren(getCube(1,1,0));
-	m_faceFront->addChildren(getCube(2,1,0));
-
-	m_faceFront->addChildren(getCube(0,2,0));
-	m_faceFront->addChildren(getCube(1,2,0));
-	m_faceFront->addChildren(getCube(2,2,0));
-
-	// Right
-	m_faceRight = new Object3D();
-	m_faceRight->translate(2, 1, 1);
-
-	m_faceRight->addChildren(getCube(2, 0, 0));
-	m_faceRight->addChildren(getCube(2, 0, 1));
-	m_faceRight->addChildren(getCube(2, 0, 2));
-
-	m_faceRight->addChildren(getCube(2, 1, 0));
-	m_faceRight->addChildren(getCube(2, 1, 1));
-	m_faceRight->addChildren(getCube(2, 1, 2));
-
-	m_faceRight->addChildren(getCube(2, 2, 0));
-	m_faceRight->addChildren(getCube(2, 2, 1));
-	m_faceRight->addChildren(getCube(2, 2, 2));
-
-	// Top
-	m_faceTop = new Object3D();
-	m_faceTop->translate(1, 2, 1);
-
-	m_faceTop->addChildren(getCube(0, 2, 0));
-	m_faceTop->addChildren(getCube(0, 2, 1));
-	m_faceTop->addChildren(getCube(0, 2, 2));
-
-	m_faceTop->addChildren(getCube(1, 2, 0));
-	m_faceTop->addChildren(getCube(1, 2, 1));
-	m_faceTop->addChildren(getCube(1, 2, 2));
-
-	m_faceTop->addChildren(getCube(2, 2, 0));
-	m_faceTop->addChildren(getCube(2, 2, 1));
-	m_faceTop->addChildren(getCube(2, 2, 2));
-
-	// Back
-	m_faceBack = new Object3D();
-	m_faceBack->translate(1, 1, 2);
-
-	m_faceBack->addChildren(getCube(0, 0, 2));
-	m_faceBack->addChildren(getCube(1, 0, 2));
-	m_faceBack->addChildren(getCube(2, 0, 2));
-
-	m_faceBack->addChildren(getCube(0, 1, 2));
-	m_faceBack->addChildren(getCube(1, 1, 2));
-	m_faceBack->addChildren(getCube(2, 1, 2));
-
-	m_faceBack->addChildren(getCube(0, 2, 2));
-	m_faceBack->addChildren(getCube(1, 2, 2));
-	m_faceBack->addChildren(getCube(2, 2, 2));
-
-	// Left
-	m_faceLeft = new Object3D();
-	m_faceLeft->translate(0, 1, 1);
-
-	m_faceLeft->addChildren(getCube(0, 0, 0));
-	m_faceLeft->addChildren(getCube(0, 0, 1));
-	m_faceLeft->addChildren(getCube(0, 0, 2));
-
-	m_faceLeft->addChildren(getCube(0, 1, 0));
-	m_faceLeft->addChildren(getCube(0, 1, 1));
-	m_faceLeft->addChildren(getCube(0, 1, 2));
-
-	m_faceLeft->addChildren(getCube(0, 2, 0));
-	m_faceLeft->addChildren(getCube(0, 2, 1));
-	m_faceLeft->addChildren(getCube(0, 2, 2));
-
-	// Bottom
-	m_faceBottom = new Object3D();
-	m_faceBottom->translate(1, 0, 1);
-
-	m_faceBottom->addChildren(getCube(0, 0, 0));
-	m_faceBottom->addChildren(getCube(0, 0, 1));
-	m_faceBottom->addChildren(getCube(0, 0, 2));
-
-	m_faceBottom->addChildren(getCube(1, 0, 0));
-	m_faceBottom->addChildren(getCube(1, 0, 1));
-	m_faceBottom->addChildren(getCube(1, 0, 2));
-
-	m_faceBottom->addChildren(getCube(2, 0, 0));
-	m_faceBottom->addChildren(getCube(2, 0, 1));
-	m_faceBottom->addChildren(getCube(2, 0, 2));
-}
-
-
-
-void RubiksCube::rotateFront(Shift dir)
-{
-	//glm::vec3 axis = (dir == Shift::CW) ? glm::vec3(0, 0, -1) : glm::vec3(0, 0, 1);
-
-	//m_faceFront->rotate(axis, 90);
-
-	int angle = 0;
-	glm::vec3 axis = (dir == Shift::CW) ? glm::vec3(0, 0, -1) : glm::vec3(0, 0, 1);
-
-	Engine::get()->getContext()->getActiveScene()->addCoroutine([&, angle, axis](float deltaTime) mutable
+	// Create X aligned axis faces
+	for (int i = 0; i < m_size; i++)
 	{
-		m_faceFront->rotate(axis, 1);
-
-		angle += 1;
-
-		if (angle > 90)
+		auto face = new RubiksCubeFace(Axis::X, i, m_size);
+		m_faces[{ Axis::X , i}] = face;
+		face->translate(i, m_size / 2, m_size / 2);
+		for (int j = 0; j < m_size; j++)
 		{
-			angle = 0;
-			return true;
+			for (int k = 0; k < m_size; k++)
+			{
+				face->addCube(j, k, getCube(i, j, k));
+			}
 		}
+	}
 
-		return false;
-	});
-}
+	// Create Y aligned axis faces
+	for (int i = 0; i < m_size; i++)
+	{
+		auto face = new RubiksCubeFace(Axis::Y, i, m_size);
+		m_faces[{ Axis::Y , i }] = face;
+		face->translate(m_size / 2, i , m_size / 2);
+		for (int j = 0; j < m_size; j++)
+		{
+			for (int k = 0; k < m_size; k++)
+			{
+				face->addCube(j, k, getCube(j, i, k));
+			}
+		}
+	}
 
-void RubiksCube::rotateRight(Shift dir)
-{
-	glm::vec3 axis = (dir == Shift::CW) ? glm::vec3(1, 0, 0) : glm::vec3(-1, 0, 0);
-
-	m_faceRight->rotate(axis, 1);
-}
-
-void RubiksCube::rotateTop(Shift dir)
-{
-	glm::vec3 axis = (dir == Shift::CW) ? glm::vec3(0, 1, 0) : glm::vec3(0, -1, 0);
-
-	m_faceTop->rotate(axis, 1);
-}
-
-void RubiksCube::rotateBack(Shift dir)
-{
-	glm::vec3 axis = (dir == Shift::CW) ? glm::vec3(0, 0, 1) : glm::vec3(0, 0, -1);
-
-	m_faceBack->rotate(axis, 1);
-}
-
-void RubiksCube::rotateLeft(Shift dir)
-{
-	glm::vec3 axis = (dir == Shift::CW) ? glm::vec3(-1, 0, 0) : glm::vec3(1, 0, 0);
-
-	m_faceLeft->rotate(axis, 1);
-}
-
-void RubiksCube::rotateBottom(Shift dir)
-{
-	glm::vec3 axis = (dir == Shift::CW) ? glm::vec3(0, -1, 0) : glm::vec3(0, 1, 0);
-
-	m_faceBottom->rotate(axis, 1);
+	// Create Z aligned axis faces
+	for (int i = 0; i < m_size; i++)
+	{
+		auto face = new RubiksCubeFace(Axis::Z, i, m_size);
+		m_faces[{ Axis::Z, i }] = face;
+		face->translate(m_size / 2, m_size / 2, i);
+		for (int j = 0; j < m_size; j++)
+		{
+			for (int k = 0; k < m_size; k++)
+			{
+				face->addCube(j, k, getCube(j, k, i));
+			}
+		}
+	}
 }

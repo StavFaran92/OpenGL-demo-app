@@ -115,8 +115,6 @@ void Scene::draw(float deltaTime)
 		auto model = m_drawQueue.front();
 		m_drawQueue.pop_front();
 
-		//model->update(deltaTime);
-
 		Shader* shader = model->getShader();
 		shader->use();
 
