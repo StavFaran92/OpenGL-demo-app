@@ -78,13 +78,13 @@ void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 	switch (axis)
 	{
 	case Axis::X:
-		dir = glm::vec3(-1, 0, 0);
+		dir = glm::vec3(1, 0, 0);
 		break;
 	case Axis::Y:
-		dir = glm::vec3(0, -1, 0);
+		dir = glm::vec3(0, 1, 0);
 		break;
 	case Axis::Z:
-		dir = glm::vec3(0, 0, -1);
+		dir = glm::vec3(0, 0, 1);
 		break;
 	}
 
@@ -92,6 +92,8 @@ void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 	dir = (shift == Shift::CW) ? dir : -dir;
 
 	auto face = m_faces.at({ axis, index });
+
+	//face->rotate(dir, 90);
 
 	//Rotate geometric representation of cubes
 	Engine::get()->getContext()->getActiveScene()->addCoroutine([face, index, angle, axis, dir](float deltaTime) mutable
@@ -161,7 +163,7 @@ void RubiksCube::init(size_t size)
 	{
 		auto face = new RubiksCubeFace(Axis::X, i, m_size);
 		m_faces[{ Axis::X , i}] = face;
-		face->translate(i, m_size / 2, m_size / 2);
+		face->translate(i, (float)(m_size-1) / 2, (float)(m_size - 1) / 2);
 		for (int j = 0; j < m_size; j++)
 		{
 			for (int k = 0; k < m_size; k++)
@@ -176,7 +178,7 @@ void RubiksCube::init(size_t size)
 	{
 		auto face = new RubiksCubeFace(Axis::Y, i, m_size);
 		m_faces[{ Axis::Y , i }] = face;
-		face->translate(m_size / 2, i , m_size / 2);
+		face->translate((float)(m_size - 1) / 2, i , (float)(m_size - 1) / 2);
 		for (int j = 0; j < m_size; j++)
 		{
 			for (int k = 0; k < m_size; k++)
@@ -191,7 +193,7 @@ void RubiksCube::init(size_t size)
 	{
 		auto face = new RubiksCubeFace(Axis::Z, i, m_size);
 		m_faces[{ Axis::Z, i }] = face;
-		face->translate(m_size / 2, m_size / 2, i);
+		face->translate((float)(m_size - 1) / 2, (float)(m_size - 1) / 2, i);
 		for (int j = 0; j < m_size; j++)
 		{
 			for (int k = 0; k < m_size; k++)
