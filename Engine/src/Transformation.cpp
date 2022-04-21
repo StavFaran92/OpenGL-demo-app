@@ -1,5 +1,5 @@
 #include "Transformation.h"
-#include<glm/gtc/quaternion.hpp>
+#include<glm/gtx/quaternion.hpp>
 #include "LinearAlgebraUtil.h"
 
 glm::mat4 Transformation::getTransformation() const
@@ -16,11 +16,11 @@ void Transformation::update(float deltaTime)
 
 		glm::mat4 identity(1.0f);
 		auto translate = glm::translate(glm::mat4(1.0f), m_translation);
-		auto rotateLocal = glm::mat4_cast(m_orientationLocal);
-		auto rotateWorld = glm::mat4_cast(m_orientationWorld);
 		auto scale = glm::scale(glm::mat4(1.0f), m_scale);
 
-		m_transformation = pivot * scale * rotateWorld * pivotInv * translate * rotateLocal * identity;
+		auto finalRotation = glm::mat4_cast(m_orientationLocal) * pivot * glm::mat4_cast(m_orientationWorld) * pivotInv * identity;
+
+		m_transformation = scale * finalRotation * translate * identity;
 
 		m_change = false;
 	}
@@ -73,21 +73,21 @@ void Transformation::translate(float x, float y, float z)
 
 void Transformation::rotate(glm::vec3 eulers)
 {
-	m_orientationLocal *= glm::quat(eulers);
+	m_orientationLocal = glm::quat(eulers) * m_orientationLocal;
 
 	m_change = true;
 }
 
 void Transformation::rotate(glm::vec3 axis, float angle)
 {
-	m_orientationLocal = glm::rotate(m_orientationLocal, degToRad(angle), axis);
+	m_orientationLocal = glm::angleAxis(degToRad(angle), axis) * m_orientationLocal;
 
 	m_change = true;
 }
 
 void Transformation::rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle)
 {
-	m_orientationWorld = glm::rotate(m_orientationWorld, degToRad(angle), axis);
+	m_orientationWorld = glm::angleAxis(degToRad(angle), axis) * m_orientationWorld;
 	m_pivot = pivot;
 
 	m_change = true;

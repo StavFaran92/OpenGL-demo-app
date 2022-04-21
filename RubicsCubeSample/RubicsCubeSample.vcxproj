@@ -147,7 +147,6 @@
     <ClCompile Include="RubiksCube.cpp" />
     <ClCompile Include="RubiksCubeEnt.cpp" />
     <ClCompile Include="RubiksCubeFace.cpp" />
-    <ClCompile Include="RubiksCubeUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">
@@ -159,7 +158,6 @@
     <ClInclude Include="RubiksCube.h" />
     <ClInclude Include="RubiksCubeEnt.h" />
     <ClInclude Include="RubiksCubeFace.h" />
-    <ClInclude Include="RubiksCubeUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
