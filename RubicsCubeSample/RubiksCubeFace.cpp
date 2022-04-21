@@ -22,7 +22,7 @@ void RubiksCubeFace::removeCube(int x, int y)
 	m_cubes[x * m_size + y] = nullptr;
 }
 
-RubiksCubeEnt** RubiksCubeFace::getCubes()
+std::vector<RubiksCubeEnt*> RubiksCubeFace::getCubes()
 {
 	return m_cubes;
 }

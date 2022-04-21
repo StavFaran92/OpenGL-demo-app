@@ -12,8 +12,10 @@ void RubiksCubeEnt::swapFaces(RubiksCubeEnt* a, RubiksCubeEnt* b)
 		faceData_a.face->removeCube(faceData_a.x, faceData_a.y);
 		faceData_b.face->removeCube(faceData_b.x, faceData_b.y);
 
-		faceData_a.face->addCube(faceData_b.x, faceData_b.y, b);
-		faceData_b.face->addCube(faceData_a.x, faceData_a.y, a);
+		faceData_a.face->addCube(faceData_a.x, faceData_a.y, b);
+		faceData_b.face->addCube(faceData_b.x, faceData_b.y, a);
+
+		std::cout << "kaki" << std::endl;
 	}
 
 	{
@@ -23,8 +25,10 @@ void RubiksCubeEnt::swapFaces(RubiksCubeEnt* a, RubiksCubeEnt* b)
 		faceData_a.face->removeCube(faceData_a.x, faceData_a.y);
 		faceData_b.face->removeCube(faceData_b.x, faceData_b.y);
 
-		faceData_a.face->addCube(faceData_b.x, faceData_b.y, b);
-		faceData_b.face->addCube(faceData_a.x, faceData_a.y, a);
+		faceData_a.face->addCube(faceData_a.x, faceData_a.y, b);
+		faceData_b.face->addCube(faceData_b.x, faceData_b.y, a);
+
+		std::cout << "kaki" << std::endl;
 	}
 
 	{
@@ -34,8 +38,10 @@ void RubiksCubeEnt::swapFaces(RubiksCubeEnt* a, RubiksCubeEnt* b)
 		faceData_a.face->removeCube(faceData_a.x, faceData_a.y);
 		faceData_b.face->removeCube(faceData_b.x, faceData_b.y);
 
-		faceData_a.face->addCube(faceData_b.x, faceData_b.y, b);
-		faceData_b.face->addCube(faceData_a.x, faceData_a.y, a);
+		faceData_a.face->addCube(faceData_a.x, faceData_a.y, b);
+		faceData_b.face->addCube(faceData_b.x, faceData_b.y, a);
+
+		std::cout << "kaki" << std::endl;
 	}
 }
 

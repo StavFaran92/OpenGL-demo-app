@@ -22,7 +22,7 @@ public:
 	RubiksCubeFace(Axis axis, int index, int size)
 		: m_axis(axis), m_index(index), m_size(size)
 	{
-		m_cubes = new RubiksCubeEnt*[size * size];
+		m_cubes = std::vector<RubiksCubeEnt*>(size*size, 0);
 	}
 
 	void rotateCubes();
@@ -30,10 +30,10 @@ public:
 
 	void addCube(int x, int y, RubiksCubeEnt* cube);
 	void removeCube(int x, int y);
-	RubiksCubeEnt** getCubes();
+	std::vector<RubiksCubeEnt*> getCubes();
 
 private:
-	RubiksCubeEnt** m_cubes = nullptr;
+	std::vector<RubiksCubeEnt*> m_cubes;
 
 	const Axis m_axis;
 	const int m_index = 0;
