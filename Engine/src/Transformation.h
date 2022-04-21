@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -11,11 +13,11 @@ class EngineAPI Transformation
 public:
 	Transformation() :
 		m_translation(0, 0, 0),
-		m_orientationLocal(1,0,0,0),
-		m_orientationWorld(1,0,0,0),
+		m_orientationLocal(1, 0, 0, 0),
+		m_orientationWorld(1, 0, 0, 0),
 		m_scale(1, 1, 1),
 		m_transformation(1.f),
-		m_pivot(0,0,0)
+		m_relativeRot(1.f)
 	{}
 
 	void update(float deltaTime);
@@ -42,7 +44,8 @@ private:
 
 	glm::quat m_orientationLocal;
 	glm::quat m_orientationWorld;
-	glm::vec3 m_pivot;
+
+	glm::mat4 m_relativeRot;
 
 	glm::vec3 m_scale;
 

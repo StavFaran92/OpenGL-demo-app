@@ -11,14 +11,12 @@ void Transformation::update(float deltaTime)
 {
 	if (m_change)
 	{
-		auto pivot = glm::translate(glm::mat4(1.0f), m_pivot);
-		auto pivotInv = glm::translate(glm::mat4(1.0f), -m_pivot);
 
 		glm::mat4 identity(1.0f);
 		auto translate = glm::translate(glm::mat4(1.0f), m_translation);
 		auto scale = glm::scale(glm::mat4(1.0f), m_scale);
 
-		auto finalRotation = glm::mat4_cast(m_orientationLocal) * pivot * glm::mat4_cast(m_orientationWorld) * pivotInv * identity;
+		auto finalRotation = glm::mat4_cast(m_orientationLocal) * m_relativeRot * identity;
 
 		m_transformation = scale * finalRotation * translate * identity;
 
@@ -87,8 +85,10 @@ void Transformation::rotate(glm::vec3 axis, float angle)
 
 void Transformation::rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle)
 {
-	m_orientationWorld = glm::angleAxis(degToRad(angle), axis) * m_orientationWorld;
-	m_pivot = pivot;
+	auto p = glm::translate(glm::mat4(1.0f), pivot);
+	auto pInv = glm::translate(glm::mat4(1.0f), -pivot);
+
+	m_relativeRot = p * glm::mat4_cast(glm::angleAxis(degToRad(angle), axis)) * pInv * m_relativeRot;
 
 	m_change = true;
 }
