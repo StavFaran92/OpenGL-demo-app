@@ -64,7 +64,7 @@ TEST(TestModelBuilder, setShader)
 
 	ASSERT_TRUE(model != nullptr);
 
-	int actualID = model->GetShader()->getID();
+	int actualID = model->getShader()->getID();
 
 	EXPECT_EQ(expectedID, actualID);
 
@@ -95,7 +95,7 @@ TEST(TestModelBuilder, setShaderWithCopy)
 
 	ASSERT_TRUE(model != nullptr);
 
-	int actualID = model->GetShader()->getID();
+	int actualID = model->getShader()->getID();
 
 	EXPECT_NE(0, actualID);
 

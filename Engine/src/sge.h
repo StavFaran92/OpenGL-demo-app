@@ -37,3 +37,4 @@
 #include "ModelBuilder.h"
 #include "MeshBuilder.h"
 #include "ModelImporter.h"
+#include "TextureHandler.h"

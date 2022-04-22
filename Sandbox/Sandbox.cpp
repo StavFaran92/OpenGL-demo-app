@@ -1,3 +1,4 @@
+#include "EntryPoint.h"
 #include "sge.h"
 
 float colors[108] = {
@@ -54,6 +55,7 @@ class Sandbox : public Application
 {
 public:
 	using Application::draw;
+	using Application::update;
 
 
 	Model* guitar;
@@ -81,6 +83,11 @@ public:
 		sphere1->addChildren(sphere2);
 
 		//postProcess(PostProcess::grayscale());
+	}
+
+	void update(float deltaTime) override
+	{
+
 	}
 
 	void draw() override

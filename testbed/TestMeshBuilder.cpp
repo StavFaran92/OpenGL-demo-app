@@ -366,19 +366,19 @@ TEST(TestMeshBuilder, addTexture)
 
 	// Test a addTexture call
 	{
-		Texture* tex = Texture::createEmptyTexture(100, 100);
+		TextureHandler* handler = Texture::createEmptyTexture(100, 100);
 
-		int expectedID = tex->getID();
+		int expectedID = handler->getID();
 
 		Mesh* mesh = MeshBuilder::builder()
 			.setPositions(positions, 1)
-			.addTexture(tex)
+			.addTextureHandler(handler)
 			.build();
 
 		EXPECT_TRUE(mesh != nullptr);
 
-		auto textures = mesh->getTextures();
-		int actualID = textures[0]->getID();
+		auto texturesHandlers = mesh->getTextureHandlers();
+		int actualID = texturesHandlers[0]->getID();
 
 		EXPECT_EQ(expectedID, actualID);
 
