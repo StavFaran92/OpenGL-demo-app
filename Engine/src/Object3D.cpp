@@ -36,6 +36,21 @@ void Object3D::translate(float x, float y, float z) const
 	}
 }
 
+void Object3D::translate(glm::vec3 translation) const
+{
+	m_transformation->translate(translation);
+}
+
+void Object3D::scale(float x, float y, float z) const
+{
+	m_transformation->scale(x, y, z);
+}
+
+void Object3D::scale(glm::vec3 scaleFactor) const
+{
+	m_transformation->scale(scaleFactor);
+}
+
 void Object3D::rotate(glm::vec3 eulers) const
 {
 	m_transformation->rotate(eulers);

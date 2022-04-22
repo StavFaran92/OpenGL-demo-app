@@ -19,6 +19,9 @@ public:
 	uint32_t getID() const;
 
 	void translate(float x, float y, float z) const;
+	void translate(glm::vec3 translation) const;
+	void scale(float x, float y, float z) const;
+	void scale(glm::vec3 scaleFactor) const;
 	void rotate(glm::vec3 eulers) const;
 	void rotate(glm::vec3 axis, float angle) const;
 	void rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle) const;

@@ -5,6 +5,7 @@
 namespace rubiksCube
 {
 	const std::string g_padding = "\t";
+	const std::string g_rubiksCubeTexture = "Resources\\Textures\\plane.png";
 
 	enum class Shift
 	{

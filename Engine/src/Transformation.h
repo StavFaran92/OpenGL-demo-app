@@ -22,9 +22,9 @@ public:
 
 	void update(float deltaTime);
 
-	void SetPosition(glm::vec3 pos);
-	void SetRotation(float angle, glm::vec3 axis);
-	void SetScale(glm::vec3 scale);
+	void setPosition(glm::vec3 pos);
+	void setRotation(float angle, glm::vec3 axis);
+	void setScale(glm::vec3 scale);
 
 	glm::mat4 getTransformation() const;
 	glm::vec3 getPosition() const;
@@ -33,6 +33,10 @@ public:
 	glm::vec3 getScale() const;
 
 	void translate(float x, float y, float z);
+	void translate(glm::vec3 translation);
+
+	void scale(float x, float y, float z);
+	void scale(glm::vec3 translation);
 
 	void rotate(glm::vec3 eulers);
 	void rotate(glm::vec3 axis, float angle);

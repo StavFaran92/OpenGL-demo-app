@@ -10,14 +10,13 @@ class RubiksCubeDemo : public Application
 public:
 	using Application::draw;
 	using Application::update;
-	RubiksCube* rubiksCube;
-	Box* box = nullptr;
+	std::shared_ptr<RubiksCube> rubiksCube;
 
 	void start() override
 	{
 		//skybox(Skybox::CreateSkybox());
 
-		rubiksCube = new RubiksCube();
+		rubiksCube = std::make_shared<RubiksCube>();
 		rubiksCube->init(3);
 
 		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_Scancode::SDL_SCANCODE_X, [&](SDL_Event e) 

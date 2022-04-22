@@ -40,5 +40,7 @@ private:
 	size_t m_size = 0;
 
 	std::vector<std::function<bool(float)>> m_asyncCallbacks;
+
+	bool m_isRotating = false;
 };
 

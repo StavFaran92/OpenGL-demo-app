@@ -169,8 +169,12 @@
     <ClCompile Include="src\CoroutineSystem.cpp">
       <Filter>src\Services</Filter>
     </ClCompile>
-    <ClCompile Include="src\MemoryManagement.cpp" />
-    <ClCompile Include="src\TextureHandler.cpp" />
+    <ClCompile Include="src\MemoryManagement.cpp">
+      <Filter>src\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TextureHandler.cpp">
+      <Filter>src\Graphics\Models</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -380,8 +384,12 @@
     <ClInclude Include="src\CoroutineSystem.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\MemoryManagement.h" />
-    <ClInclude Include="src\TextureHandler.h" />
+    <ClInclude Include="src\MemoryManagement.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TextureHandler.h">
+      <Filter>headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

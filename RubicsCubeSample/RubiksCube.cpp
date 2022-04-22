@@ -104,6 +104,13 @@ void RubiksCube::update(float deltaTime)
 
 void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 {
+	if (m_isRotating)
+	{
+		return;
+	}
+
+	m_isRotating = true;
+
 	if (index < 0 || index > m_size - 1)
 	{
 		std::cout << "index out of bounds specified: " << index << std::endl;
@@ -127,13 +134,10 @@ void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 	int angle = 0;
 	dir = (shift == Shift::CW) ? dir : -dir;
 
-
 	auto face = m_faces.at({ axis, index });
 
-	//face->rotate(dir, 90);
-
 	//Rotate geometric representation of cubes
-	Engine::get()->getContext()->getActiveScene()->addCoroutine([face, angle, dir, shift, axis](float deltaTime) mutable
+	Engine::get()->getContext()->getActiveScene()->addCoroutine([&, face, angle, dir, shift, axis](float deltaTime) mutable
 	{
 		face->rotate(dir, 1);
 
@@ -141,10 +145,16 @@ void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 
 		if (angle >= 90)
 		{
-			// Rotate cubes physically (i.e. replace the cube' attached face according to rotation)
+			// Hack to solve The Y axis reverse rotation
 			if (axis == Axis::Y)
-				shift = Shift::CCW;
+			{
+				shift = (shift == Shift::CW) ? Shift::CCW : Shift::CW;
+			}
+
+			// Rotate cubes physically (i.e. replace the cube' attached face according to rotation)
 			face->rotateCubes(shift);
+
+			m_isRotating = false;
 
 			return true;
 		}
@@ -158,17 +168,17 @@ void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 
 RubiksCubeEnt* RubiksCube::createRubiksCubeBox()
 {
-	auto texture1 = Texture::loadTextureFromFile("Resources\\Textures\\plane.png");
-	texture1->setType(Texture::Type::Diffuse);
+	TextureHandler* textureHandlerDiffse = Texture::loadTextureFromFile(g_rubiksCubeTexture);
+	textureHandlerDiffse->setType(Texture::Type::Diffuse);
 
-	auto texture2 = Texture::loadTextureFromFile("Resources\\Textures\\plane.png");
-	texture2->setType(Texture::Type::Specular);
+	TextureHandler* textureHandlerSpecular = Texture::loadTextureFromFile(g_rubiksCubeTexture);
+	textureHandlerSpecular->setType(Texture::Type::Specular);
 
 	return dynamic_cast<RubiksCubeEnt*>(ModelBuilder::builder<RubiksCubeEnt>()
 	.getMeshBuilder()
 	.setColors(colors, 36)
-	.addTextureHandler(texture1)
-	.addTextureHandler(texture2)
+	.addTextureHandler(textureHandlerDiffse)
+	.addTextureHandler(textureHandlerSpecular)
 	.getModelBuilder()
 	.build());
 }

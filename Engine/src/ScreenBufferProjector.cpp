@@ -49,15 +49,16 @@ void ScreenBufferProjector::RedirectToDefault()
 {
 	m_frameBuffer->Unbind();
 
-
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	m_screenShader->use();
-	//glBindVertexArray(quadVAO);
+
 	glDisable(GL_DEPTH_TEST);
+
+	//m_textureHandler->bind();
 	glBindTexture(GL_TEXTURE_2D, m_textureHandler->getID());
-	//glDrawArrays(GL_TRIANGLES, 0, 6);
+
 	m_quad->draw(*m_renderer.get(), m_screenShader.get());
 }
 

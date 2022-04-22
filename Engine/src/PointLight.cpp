@@ -9,7 +9,7 @@ PointLight::PointLight(glm::vec3 color, glm::vec3 pos, float aIntensity, float d
 {
 	m_name = "pointLights";
 
-	m_transform->SetPosition(pos);
+	m_transform->setPosition(pos);
 }
 
 void PointLight::SetAttenuation(Attenuation attenuation)

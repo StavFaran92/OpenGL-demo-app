@@ -23,17 +23,17 @@ void Transformation::update(float deltaTime)
 		m_change = false;
 	}
 }
-void Transformation::SetPosition(glm::vec3 pos)
+void Transformation::setPosition(glm::vec3 pos)
 {
 	m_translation = pos;
 
 	m_change = true;
 }
-void Transformation::SetRotation(float angle, glm::vec3 axis)
+void Transformation::setRotation(float angle, glm::vec3 axis)
 {
 	m_change = true;
 }
-void Transformation::SetScale(glm::vec3 scale)
+void Transformation::setScale(glm::vec3 scale)
 {
 	m_scale = scale;
 
@@ -67,6 +67,25 @@ void Transformation::translate(float x, float y, float z)
 	m_translation.z += z;
 
 	m_change = true;
+}
+
+void Transformation::translate(glm::vec3 translation)
+{
+	translate(translation.x, translation.y, translation.z);
+}
+
+void Transformation::scale(float x, float y, float z)
+{
+	m_scale.x *= x;
+	m_scale.y *= y;
+	m_scale.z *= z;
+
+	m_change = true;
+}
+
+void Transformation::scale(glm::vec3 scaleFactor)
+{
+	scale(scaleFactor.x, scaleFactor.y, scaleFactor.z);
 }
 
 void Transformation::rotate(glm::vec3 eulers)
