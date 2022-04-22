@@ -6,6 +6,8 @@
 
 #include "Logger.h"
 #include "Configurations.h"
+#include "MemoryManagement.h"
+#include "Engine.h"
 
 Texture::Texture()
 	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_slot(0)
@@ -37,8 +39,15 @@ Texture* Texture::createEmptyTexture(int width, int height)
 	return texture;
 }
 
-Texture* Texture::loadTextureFromFile(const std::string& fileLocation)
+std::shared_ptr<Texture> Texture::loadTextureFromFile(const std::string& fileLocation)
 {
+	// Check if texture is already cached to optimize the load process
+	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
+	if (memoryManagementSystem->isTextureInCache(fileLocation))
+	{
+		return memoryManagementSystem->getTextureFromCache(fileLocation);
+	}
+
 	auto texture = new Texture();
 
 	// Cache file location
@@ -83,7 +92,11 @@ Texture* Texture::loadTextureFromFile(const std::string& fileLocation)
 	glBindTexture(GL_TEXTURE_2D, 0);
 	stbi_image_free(data);
 
-	return texture;
+	// Cache texture
+	auto texturePtr = std::shared_ptr<Texture>(texture);
+	memoryManagementSystem->addTextureToCache(fileLocation, texturePtr);
+
+	return texturePtr;
 }
 
 Texture* Texture::loadCubemapTexture(std::vector<std::string> faces)

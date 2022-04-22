@@ -41,7 +41,7 @@ public:
 	 * \param isFlipped		Should flip the texture vertically
 	 * \return				A pointer to the loaded texture
 	 */
-	static Texture* loadTextureFromFile(const std::string& fileLocation);
+	static std::shared_ptr<Texture> loadTextureFromFile(const std::string& fileLocation);
 
 	/**
 	 * Load a cubemap texture using the specified faces file locations.

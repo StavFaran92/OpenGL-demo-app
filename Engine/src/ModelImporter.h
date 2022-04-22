@@ -52,7 +52,7 @@ private:
 	std::vector<std::shared_ptr<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImportSession& session);
 	static Texture::Type getTextureType(aiTextureType type);
 private:
-	std::unordered_map<std::string, std::weak_ptr<Texture>> m_texturesCache;
+	//std::unordered_map<std::string, std::weak_ptr<Texture>> m_texturesCache;
 	std::map<uint32_t, ModelImportSession> m_sessions;
 	std::shared_ptr<Assimp::Importer> m_importer = nullptr;
 };

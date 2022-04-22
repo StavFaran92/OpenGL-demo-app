@@ -16,6 +16,7 @@ union SDL_Event;
 class Input;
 class EventSystem;
 class ModelImporter;
+class MemoryManagement;
 
 class EngineAPI Engine
 {
@@ -31,6 +32,7 @@ public:
     Input* getInput() const;
     EventSystem* getEventSystem() const;
     ModelImporter* getModelImporter() const;
+    MemoryManagement* getMemoryManagementSystem() const;
 
     void pause();
     void resume();
@@ -71,6 +73,7 @@ protected:
     std::shared_ptr<Input> m_input;
     std::shared_ptr<EventSystem> m_eventSystem;
     std::shared_ptr<ModelImporter> m_modelImporter;
+    std::shared_ptr<MemoryManagement> m_memoryManagementSystem;
 
 
 };

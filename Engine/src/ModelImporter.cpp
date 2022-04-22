@@ -156,24 +156,26 @@ std::vector<std::shared_ptr<Texture>> ModelImporter::loadMaterialTextures(aiMate
 		mat->GetTexture(type, i, &str);
 		auto textureName = str.C_Str();
 
-		// Check if texture is in cache and is not expired
-		if(m_texturesCache.find(str.C_Str()) != m_texturesCache.end() && !m_texturesCache[textureName].expired())
+		// Texture not found in cache -> load it and add to cache
+		auto texture = Texture::loadTextureFromFile(session.fileDir + "\\" + textureName);
+		auto pType = getTextureType(type);
+		if (pType != Texture::Type::None)
 		{
-			textures.push_back(m_texturesCache[textureName].lock());
+			texture->setType(pType);
+			//auto sharedTexture = std::shared_ptr<Texture>(texture);
+			textures.push_back(texture);
+			//m_texturesCache[textureName] = sharedTexture;
 		}
-		else
-		{
-			// Texture not found in cache -> load it and add to cache
-			auto texture = Texture::loadTextureFromFile(session.fileDir + "\\" + textureName);
-			auto pType = getTextureType(type);
-			if (pType != Texture::Type::None)
-			{
-				texture->setType(pType);
-				auto sharedTexture = std::shared_ptr<Texture>(texture);
-				textures.push_back(sharedTexture);
-				m_texturesCache[textureName] = sharedTexture;
-			}
-		}
+
+		//// Check if texture is in cache and is not expired
+		//if(m_texturesCache.find(str.C_Str()) != m_texturesCache.end() && !m_texturesCache[textureName].expired())
+		//{
+		//	textures.push_back(m_texturesCache[textureName].lock());
+		//}
+		//else
+		//{
+		//	
+		//}
 	}
 	return textures;
 }

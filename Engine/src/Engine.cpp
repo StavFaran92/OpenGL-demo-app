@@ -14,6 +14,7 @@
 #include "EventSystem.h"
 #include "ModelImporter.h"
 #include "Logger.h"
+#include "MemoryManagement.h"
 
 #include "Application.h"
 #include "SDL.h"
@@ -32,6 +33,8 @@ bool Engine::init()
     glEnable(GL_DEPTH_TEST);
 
     m_eventSystem = std::make_shared<EventSystem>();
+
+    m_memoryManagementSystem = std::make_shared<MemoryManagement>();
 
     m_window = std::make_shared<Window>(1024, 768);
     if (!m_window->init())
@@ -63,6 +66,8 @@ bool Engine::init()
     }
 
     m_modelImporter = std::make_shared<ModelImporter>();
+
+    
 
     m_isInit = true;
 
@@ -204,6 +209,11 @@ EventSystem* Engine::getEventSystem() const
 ModelImporter* Engine::getModelImporter() const
 {
     return m_modelImporter.get();
+}
+
+MemoryManagement* Engine::getMemoryManagementSystem() const
+{
+    return m_memoryManagementSystem.get();
 }
 
 void Engine::pause()

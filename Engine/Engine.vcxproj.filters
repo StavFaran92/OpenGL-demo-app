@@ -169,6 +169,7 @@
     <ClCompile Include="src\CoroutineSystem.cpp">
       <Filter>src\Services</Filter>
     </ClCompile>
+    <ClCompile Include="src\MemoryManagement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -378,6 +379,7 @@
     <ClInclude Include="src\CoroutineSystem.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="src\MemoryManagement.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

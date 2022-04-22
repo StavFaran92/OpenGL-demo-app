@@ -101,6 +101,7 @@
     <ClCompile Include="src\configurations.cpp" />
     <ClCompile Include="src\EventSystem.cpp" />
     <ClCompile Include="src\IRenderer.cpp" />
+    <ClCompile Include="src\MemoryManagement.cpp" />
     <ClCompile Include="src\MeshBuilder.cpp" />
     <ClCompile Include="src\ModelBuilder.cpp" />
     <ClCompile Include="src\ModelImporter.cpp" />
@@ -156,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="src\CoroutineSystem.h" />
     <ClInclude Include="src\Configurations.h" />
+    <ClInclude Include="src\MemoryManagement.h" />
     <ClInclude Include="src\MeshBuilder.h" />
     <ClInclude Include="src\ModelBuilder.h" />
     <ClInclude Include="src\ModelImporter.h" />

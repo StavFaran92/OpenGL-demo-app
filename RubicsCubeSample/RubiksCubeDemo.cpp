@@ -18,7 +18,7 @@ public:
 		//skybox(Skybox::CreateSkybox());
 
 		rubiksCube = new RubiksCube();
-		rubiksCube->init(5);
+		rubiksCube->init(3);
 
 		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_Scancode::SDL_SCANCODE_X, [&](SDL_Event e) 
 		{
