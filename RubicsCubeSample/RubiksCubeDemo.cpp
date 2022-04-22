@@ -11,13 +11,14 @@ public:
 	using Application::draw;
 	using Application::update;
 	RubiksCube* rubiksCube;
+	Box* box = nullptr;
 
 	void start() override
 	{
 		//skybox(Skybox::CreateSkybox());
 
 		rubiksCube = new RubiksCube();
-		rubiksCube->init(2);
+		rubiksCube->init(5);
 
 		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_Scancode::SDL_SCANCODE_X, [&](SDL_Event e) 
 		{

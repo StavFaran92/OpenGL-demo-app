@@ -47,7 +47,7 @@ void RubiksCubeFace::rotateCubes(Shift shift)
 	for (int i = 0; i < m_size / 2; i++)
 		for (int j = 0; j < (m_size + 1) / 2; j++)
 		{
-			if(shift == Shift::CCW)
+			if(shift == Shift::CW)
 				cyclic_roll(m_cubes[i * m_size + j], m_cubes[(m_size - 1 - j) * m_size + i], m_cubes[(m_size - 1 - i) * m_size + m_size - 1 - j], m_cubes[j * m_size + m_size - 1 - i]);
 			else
 				cyclic_roll(m_cubes[j * m_size + m_size - 1 - i], m_cubes[(m_size - 1 - i) * m_size + m_size - 1 - j], m_cubes[(m_size - 1 - j) * m_size + i], m_cubes[i * m_size + j]);

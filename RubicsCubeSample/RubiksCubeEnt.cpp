@@ -58,7 +58,17 @@ void RubiksCubeEnt::removeFace(Axis axis)
 	m_faces[axis].y = 0;
 }
 
+void RubiksCubeEnt::setRCID(int rcid)
+{
+	m_RCID = rcid;
+}
+
+int RubiksCubeEnt::getRCID()
+{
+	return m_RCID;
+}
+
 void RubiksCubeEnt::print(const std::string& padding) const
 {
-	std::cout << padding << "Ent: " <<  this << std::endl;
+	std::cout << padding << "Ent: " <<  this << ", rcid: " << m_RCID << std::endl;
 }

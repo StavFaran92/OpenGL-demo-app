@@ -133,7 +133,7 @@ void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 	//face->rotate(dir, 90);
 
 	//Rotate geometric representation of cubes
-	Engine::get()->getContext()->getActiveScene()->addCoroutine([face, angle, dir, shift](float deltaTime) mutable
+	Engine::get()->getContext()->getActiveScene()->addCoroutine([face, angle, dir, shift, axis](float deltaTime) mutable
 	{
 		face->rotate(dir, 1);
 
@@ -142,6 +142,8 @@ void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 		if (angle >= 90)
 		{
 			// Rotate cubes physically (i.e. replace the cube' attached face according to rotation)
+			if (axis == Axis::Y)
+				shift = Shift::CCW;
 			face->rotateCubes(shift);
 
 			return true;
@@ -195,6 +197,7 @@ void RubiksCube::init(size_t size)
 			for (int k = 0; k < m_size; k++)
 			{
 				auto cube = createRubiksCubeBox();
+				cube->setRCID(i * size * size + j * size + k);
 				cube->translate(i, j, k);
 				m_cubes.push_back(cube);
 			}

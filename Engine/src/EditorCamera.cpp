@@ -45,16 +45,6 @@ void EditorCamera::keyControl(double deltaTime)
 		auto selected = objectSelection->GetSelectedObject();
 		Engine::get()->getContext()->getActiveScene()->removeModel(selected);
 	}
-	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_2))
-	{
-		Engine::get()->getContext()->setActiveScene(2);
-
-	}
-	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_1))
-	{
-		Engine::get()->getContext()->setActiveScene(1);
-
-	}
 }
 
 void EditorCamera::OnMouseMotion(float xChange, float yChange)
