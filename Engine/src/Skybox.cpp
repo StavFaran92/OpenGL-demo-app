@@ -7,6 +7,7 @@
 #include "Mesh.h"
 #include "Box.h"
 #include "ModelBuilder.h"
+#include "TextureHandler.h"
 
 #include "EditorCamera.h"
 #include "Resources/Primitives/cube.h"
@@ -24,12 +25,12 @@ Skybox* Skybox::CreateSkybox()
         "Resources\\Textures\\Skybox\\front.jpg",
         "Resources\\Textures\\Skybox\\back.jpg"
     };
-    auto texture = std::shared_ptr<Texture>(Texture::loadCubemapTexture(faces));
+    auto textureHandler = Texture::loadCubemapTexture(faces);
 
     auto model = (Skybox*)ModelBuilder::builder<Skybox>()
         .setShader(*shader)
         .getMeshBuilder()
-        .addTexture(texture)
+        .addTextureHandler(textureHandler)
         .getModelBuilder()
         .build();
 

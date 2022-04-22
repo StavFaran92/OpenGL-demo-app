@@ -12,7 +12,7 @@
 #include "VertexLayout.h"
 
 class ModelBuilder;
-class Texture;
+class TextureHandler;
 
 class EngineAPI MeshBuilder
 {
@@ -38,11 +38,8 @@ public:
 
 	MeshBuilder& setRawIndices(const unsigned int* indices, size_t size);
 
-	MeshBuilder& addTexture(std::shared_ptr<Texture>& texture, bool copy = false);
-	MeshBuilder& addTextures(std::vector<std::shared_ptr<Texture>>& textures, bool copy = false);
-
-	MeshBuilder& addTexture(Texture* texture, bool copy = false);
-	MeshBuilder& addTextures(std::vector<Texture*>& textures, bool copy = false);
+	MeshBuilder& addTextureHandler(TextureHandler* textureHandler, bool copy = false);
+	MeshBuilder& addTextureHandlers(std::vector<TextureHandler*>& textureHandlers, bool copy = false);
 
 	
 	
@@ -71,7 +68,7 @@ private:
 	std::shared_ptr<std::vector<glm::vec2>> m_texCoords = nullptr;
 	std::shared_ptr<std::vector<glm::vec3>> m_colors = nullptr;
 	std::shared_ptr<std::vector<unsigned int>> m_indices = nullptr;
-	std::shared_ptr<std::vector<std::shared_ptr<Texture>>> m_textures = nullptr;
+	std::shared_ptr<std::vector<TextureHandler*>> m_textureHandlers = nullptr;
 	VertexLayout m_layout;
 
 	ModelBuilder* m_modelBuilder = nullptr;

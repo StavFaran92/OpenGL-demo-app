@@ -10,16 +10,16 @@ Mesh::Mesh()
 	logInfo(__FUNCTION__);
 }
 
-std::vector<const Texture*> Mesh::getTextures() const
+std::vector<const TextureHandler*> Mesh::getTextureHandlers() const
 {
-	std::vector<const Texture*> textures;
+	std::vector<const TextureHandler*> textureHandlers;
 
-	for (auto texture : m_textures)
+	for (auto textureHandler : m_textureHandlers)
 	{
-		textures.emplace_back(texture.get());
+		textureHandlers.emplace_back(textureHandler.get());
 	}
 
-	return textures;
+	return textureHandlers;
 }
 
 void Mesh::render(Shader& shader, IRenderer& renderer)
@@ -33,35 +33,22 @@ void Mesh::render(Shader& shader, IRenderer& renderer)
 	glActiveTexture(GL_TEXTURE0);
 }
 
-void Mesh::addTexture(Texture* texture)
+void Mesh::addTextureHandler(TextureHandler* textureHandler)
 {
-	if (texture == nullptr)
+	if (textureHandler == nullptr)
 	{
-		logError("Cannot add a null texture to mesh.");
+		logError("Cannot add a null texture Handler to mesh.");
 		return;
 	}
 
-	m_textures.push_back(std::shared_ptr<Texture>(texture));
+	m_textureHandlers.push_back(std::shared_ptr<TextureHandler>(textureHandler));
 }
 
-void Mesh::addTextures(std::vector<Texture*>& textures)
+void Mesh::addTextureHandlers(std::vector<TextureHandler*>& texturesHandlers)
 {
-	for (auto texture : textures)
+	for (auto textureHandler : texturesHandlers)
 	{
-		addTexture(texture);
-	}
-}
-
-void Mesh::addTexture(const std::shared_ptr<Texture>& texture)
-{
-	m_textures.push_back(texture);
-}
-
-void Mesh::addTextures(const std::vector<std::shared_ptr<Texture>>& textures)
-{
-	for (auto texture : textures)
-	{
-		addTexture(texture);
+		addTextureHandler(textureHandler);
 	}
 }
 
@@ -72,11 +59,11 @@ void Mesh::SetTexturesInShader(Shader& shader)
 	uint32_t specularNr = 1;
 
 	// Iterate the mesh's textures
-	for (auto i = 0; i < m_textures.size(); i++)
+	for (auto i = 0; i < m_textureHandlers.size(); i++)
 	{
 		// get type count
 		std::string count;
-		auto type = m_textures[i]->getType();
+		auto type = m_textureHandlers[i]->getType();
 		if (type == Texture::Type::Diffuse)
 			count = std::to_string(diffuseNr++);
 		else if (type == Texture::Type::Specular)
@@ -89,7 +76,7 @@ void Mesh::SetTexturesInShader(Shader& shader)
 		glActiveTexture(GL_TEXTURE0 + i);
 
 		// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
-		glBindTexture(GL_TEXTURE_2D, m_textures[i]->getID());
+		glBindTexture(GL_TEXTURE_2D, m_textureHandlers[i]->getID());
 
 		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
 		shader.SetInt(("material." + typeStr + count).c_str(), i);
@@ -304,7 +291,7 @@ void Mesh::clearMesh()
 	m_normals = nullptr;
 	m_texcoords = nullptr;
 	m_indices = nullptr;
-	m_textures.clear();
+	m_textureHandlers.clear();
 	m_colors = nullptr;
 	m_vao = nullptr;
 	m_ibo = nullptr;

@@ -141,6 +141,7 @@
     <ClCompile Include="src\Skybox.cpp" />
     <ClCompile Include="src\SkyboxRenderer.cpp" />
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\TextureHandler.cpp" />
     <ClCompile Include="src\Transformation.cpp" />
     <ClCompile Include="src\Utils.cpp" />
     <ClCompile Include="src\VertexArrayObject.cpp" />
@@ -205,6 +206,7 @@
     <ClInclude Include="src\Skybox.h" />
     <ClInclude Include="src\SkyboxRenderer.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\TextureHandler.h" />
     <ClInclude Include="src\Transformation.h" />
     <ClInclude Include="src\Utils.h" />
     <ClInclude Include="src\VertexArrayObject.h" />

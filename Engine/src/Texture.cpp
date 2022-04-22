@@ -8,6 +8,7 @@
 #include "Configurations.h"
 #include "MemoryManagement.h"
 #include "Engine.h"
+#include "TextureHandler.h"
 
 Texture::Texture()
 	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_slot(0)
@@ -21,7 +22,7 @@ Texture::Texture(const Texture& other)
 	logInfo(__FUNCTION__);
 }
 
-Texture* Texture::createEmptyTexture(int width, int height)
+TextureHandler* Texture::createEmptyTexture(int width, int height)
 {
 	auto texture = new Texture();
 
@@ -36,16 +37,18 @@ Texture* Texture::createEmptyTexture(int width, int height)
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	return texture;
+	auto textureHandler = new TextureHandler(texture);
+
+	return textureHandler;
 }
 
-std::shared_ptr<Texture> Texture::loadTextureFromFile(const std::string& fileLocation)
+TextureHandler* Texture::loadTextureFromFile(const std::string& fileLocation)
 {
 	// Check if texture is already cached to optimize the load process
 	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
 	if (memoryManagementSystem->isTextureInCache(fileLocation))
 	{
-		return memoryManagementSystem->getTextureFromCache(fileLocation);
+		return new TextureHandler(memoryManagementSystem->getTextureFromCache(fileLocation));
 	}
 
 	auto texture = new Texture();
@@ -96,10 +99,12 @@ std::shared_ptr<Texture> Texture::loadTextureFromFile(const std::string& fileLoc
 	auto texturePtr = std::shared_ptr<Texture>(texture);
 	memoryManagementSystem->addTextureToCache(fileLocation, texturePtr);
 
-	return texturePtr;
+	auto textureHandler = new TextureHandler(texturePtr);
+
+	return textureHandler;
 }
 
-Texture* Texture::loadCubemapTexture(std::vector<std::string> faces)
+TextureHandler* Texture::loadCubemapTexture(std::vector<std::string> faces)
 {
 	auto texture = new Texture();
 
@@ -133,7 +138,9 @@ Texture* Texture::loadCubemapTexture(std::vector<std::string> faces)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-	return texture;
+	auto textureHandler = new TextureHandler(texture);
+
+	return textureHandler;
 }
 
 std::string Texture::textureTypeToString(Type type)
@@ -161,11 +168,6 @@ void Texture::unbind() const
 	glActiveTexture(0);
 }
 
-void Texture::setType(Type type)
-{
-	m_type = type;
-}
-
 void Texture::flip()
 {
 	m_flipped = !m_flipped;
@@ -179,11 +181,6 @@ bool Texture::isFlipped() const
 unsigned int Texture::getID() const
 {
 	return m_id;
-}
-
-Texture::Type Texture::getType() const
-{
-	return m_type;
 }
 
 std::string Texture::getFilepath() const

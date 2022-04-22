@@ -167,8 +167,8 @@ RubiksCubeEnt* RubiksCube::createRubiksCubeBox()
 	return dynamic_cast<RubiksCubeEnt*>(ModelBuilder::builder<RubiksCubeEnt>()
 	.getMeshBuilder()
 	.setColors(colors, 36)
-	.addTexture(texture1)
-	.addTexture(texture2)
+	.addTextureHandler(texture1)
+	.addTextureHandler(texture2)
 	.getModelBuilder()
 	.build());
 }

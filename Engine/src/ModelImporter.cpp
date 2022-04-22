@@ -7,6 +7,7 @@
 #include "Logger.h"
 #include <filesystem>
 #include "MeshBuilder.h"
+#include "TextureHandler.h"
 
 ModelImporter::ModelImporter()
 {
@@ -82,7 +83,7 @@ Mesh* ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImport
 	auto normals = new std::vector<glm::vec3>();
 	auto texcoords = new std::vector<glm::vec2>();
 	auto indices = new std::vector<unsigned int>();
-	auto textures = new std::vector<std::shared_ptr<Texture>>();
+	auto textureHandlers = new std::vector<TextureHandler*>();
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -130,24 +131,24 @@ Mesh* ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImport
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
 		auto diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, session);
-		textures->insert(textures->end(), diffuseMaps.begin(), diffuseMaps.end());
+		textureHandlers->insert(textureHandlers->end(), diffuseMaps.begin(), diffuseMaps.end());
 
 		auto specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, session);
-		textures->insert(textures->end(), specularMaps.begin(), specularMaps.end());
+		textureHandlers->insert(textureHandlers->end(), specularMaps.begin(), specularMaps.end());
 	}
 
 	return MeshBuilder::builder()
 		.setPositions(*positions)
 		.setNormals(*normals)
 		.setTexcoords(*texcoords)
-		.addTextures(*textures)
+		.addTextureHandlers(*textureHandlers)
 		.setIndices(*indices)
 		.build();
 }
 
-std::vector<std::shared_ptr<Texture>> ModelImporter::loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImporter::ModelImportSession& session)
+std::vector<TextureHandler*> ModelImporter::loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImporter::ModelImportSession& session)
 {
-	std::vector<std::shared_ptr<Texture>> textures;
+	std::vector<TextureHandler*> textureHandlers;
 
 	// Iterate material's textures
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
@@ -157,13 +158,13 @@ std::vector<std::shared_ptr<Texture>> ModelImporter::loadMaterialTextures(aiMate
 		auto textureName = str.C_Str();
 
 		// Texture not found in cache -> load it and add to cache
-		auto texture = Texture::loadTextureFromFile(session.fileDir + "\\" + textureName);
+		auto textureHandler = Texture::loadTextureFromFile(session.fileDir + "\\" + textureName);
 		auto pType = getTextureType(type);
 		if (pType != Texture::Type::None)
 		{
-			texture->setType(pType);
+			textureHandler->setType(pType);
 			//auto sharedTexture = std::shared_ptr<Texture>(texture);
-			textures.push_back(texture);
+			textureHandlers.push_back(textureHandler);
 			//m_texturesCache[textureName] = sharedTexture;
 		}
 
@@ -177,7 +178,7 @@ std::vector<std::shared_ptr<Texture>> ModelImporter::loadMaterialTextures(aiMate
 		//	
 		//}
 	}
-	return textures;
+	return textureHandlers;
 }
 
 Texture::Type ModelImporter::getTextureType(aiTextureType type)

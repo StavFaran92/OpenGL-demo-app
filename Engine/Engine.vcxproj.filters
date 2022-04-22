@@ -170,6 +170,7 @@
       <Filter>src\Services</Filter>
     </ClCompile>
     <ClCompile Include="src\MemoryManagement.cpp" />
+    <ClCompile Include="src\TextureHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -380,6 +381,7 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="src\MemoryManagement.h" />
+    <ClInclude Include="src\TextureHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

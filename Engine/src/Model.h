@@ -77,7 +77,7 @@ public:
 	 */
 	Shader* getShader();
 
-	std::vector<const Texture*> getTextures();
+	std::vector<const TextureHandler*> getTextureHandlers();
 
 	void setReflection(bool enable);
 	void setRefraction(bool enable);

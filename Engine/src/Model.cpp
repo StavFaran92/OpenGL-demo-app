@@ -52,7 +52,7 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 			currShader = context->GetReflectionShader();
 			currShader->use();
 			currShader->SetInt("skybox", 0);
-			auto textures = context->getActiveScene()->getSkybox()->getTextures();
+			auto textures = context->getActiveScene()->getSkybox()->getTextureHandlers();
 			if (textures.size() <= 0)
 			{
 				logError("Skybox does not contain cubemap texture.");
@@ -67,7 +67,7 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 			currShader->use();
 			currShader->SetInt("skybox", 0);
 			currShader->SetFloat("refractiveRatio", 1 / 1.52f);
-			auto textures = context->getActiveScene()->getSkybox()->getTextures();
+			auto textures = context->getActiveScene()->getSkybox()->getTextureHandlers();
 			if (textures.size() <= 0)
 			{
 				logError("Skybox does not contain cubemap texture.");
@@ -118,17 +118,17 @@ void Model::addMesh(Mesh* mesh)
 	m_meshes.push_back(std::shared_ptr<Mesh>(mesh));
 }
 
-std::vector<const Texture*> Model::getTextures()
+std::vector<const TextureHandler*> Model::getTextureHandlers()
 {
-	std::vector<const Texture*> result;
+	std::vector<const TextureHandler*> handlers;
 	
 	for (const auto &mesh : m_meshes)
 	{
-		auto textures = mesh->getTextures();
-		result.insert(result.end(), textures.begin(), textures.end());
+		auto textures = mesh->getTextureHandlers();
+		handlers.insert(handlers.end(), textures.begin(), textures.end());
 	}
 
-	return result;
+	return handlers;
 }
 
 Shader* Model::getShader()

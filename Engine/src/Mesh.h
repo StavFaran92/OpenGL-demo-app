@@ -5,7 +5,7 @@
 #include "Core.h"
 #include "Renderer.h"
 #include "Shader.h"
-#include "Texture.h"
+#include "TextureHandler.h"
 
 #include "VertexBufferObject.h"
 #include "ElementBufferObject.h"
@@ -127,37 +127,23 @@ public:
 	/**
 	 * Add a texture to the mesh.
 	 *
-	 * \param texture	 a shared pointer to a texture
-	 */
-	void addTexture(const std::shared_ptr<Texture>& texture);
-
-	/**
-	 * Add multiple textures to the mesh.
-	 *
-	 * \param textures
-	 */
-	void addTextures(const std::vector<std::shared_ptr<Texture>>& textures);
-
-	/**
-	 * Add a texture to the mesh.
-	 *
 	 * \param texture	a texture raw pointer
 	 */
-	void addTexture(Texture* texture);
+	void addTextureHandler(TextureHandler* texture);
 
 	/**
 	 * Add multiple textures to the mesh.
 	 *
 	 * \param textures
 	 */
-	void addTextures(std::vector<Texture*>& textures);
+	void addTextureHandlers(std::vector<TextureHandler*>& textures);
 
 	/**
 	 * Gets the mesh's Textures.
 	 *
 	 * \param colors
 	 */
-	std::vector<const Texture*> getTextures() const;
+	std::vector<const TextureHandler*> getTextureHandlers() const;
 
 	/**
 	 * Clear the Mesh entirely.
@@ -213,8 +199,8 @@ private:
 	/** Mesh Indices */
 	std::shared_ptr<std::vector<unsigned int>>    m_indices;
 
-	/** Mesh textures */
-	std::vector<std::shared_ptr<Texture>>         m_textures;
+	/** Mesh texture Handlers */
+	std::vector<std::shared_ptr<TextureHandler>>  m_textureHandlers;
 
 	/** Mesh colors */
 	std::shared_ptr<std::vector<glm::vec3>>       m_colors;

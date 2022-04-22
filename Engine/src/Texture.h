@@ -7,6 +7,7 @@
 #include "Core.h"
 #include "ApplicationConstants.h"
 
+class TextureHandler;
 
 class EngineAPI Texture
 {
@@ -32,7 +33,7 @@ public:
 	 * \param height	The generated texture height
 	 * \return			A pointer to the generated texture
 	 */
-	static Texture* createEmptyTexture(int width, int height);
+	static TextureHandler* createEmptyTexture(int width, int height);
 
 	/**
 	 * Load a texture from a given file path.
@@ -41,7 +42,7 @@ public:
 	 * \param isFlipped		Should flip the texture vertically
 	 * \return				A pointer to the loaded texture
 	 */
-	static std::shared_ptr<Texture> loadTextureFromFile(const std::string& fileLocation);
+	static TextureHandler* loadTextureFromFile(const std::string& fileLocation);
 
 	/**
 	 * Load a cubemap texture using the specified faces file locations.
@@ -49,7 +50,7 @@ public:
 	 * \param faces		the faces file locations to load the cubemap using
 	 * \return			A pointer to the loaded texture
 	 */
-	static Texture* loadCubemapTexture(std::vector<std::string> faces);
+	static TextureHandler* loadCubemapTexture(std::vector<std::string> faces);
 
 	/**
 	 * Converts a texture type to a string.
@@ -64,20 +65,6 @@ public:
 
 	/** Unbinds this texture from the GPU */
 	void unbind() const;
-
-	/**
-	 * Sets the texture type.
-	 * 
-	 * \param type	The texture type to set
-	 */
-	void setType(Type type);
-
-	/**
-	 * Get the texture type.
-	 * 
-	 * \return Type of this texture
-	 */
-	Type getType() const;
 
 	void flip();
 	bool isFlipped() const;

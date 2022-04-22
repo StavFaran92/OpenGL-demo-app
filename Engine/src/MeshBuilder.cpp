@@ -340,7 +340,7 @@ MeshBuilder& MeshBuilder::setRawIndices(const unsigned int* indices, size_t size
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::addTexture(std::shared_ptr<Texture>& texture, bool copy)
+MeshBuilder& MeshBuilder::addTextureHandler(TextureHandler* textureHandler, bool copy)
 {
 	if (copy)
 	{
@@ -348,47 +348,17 @@ MeshBuilder& MeshBuilder::addTexture(std::shared_ptr<Texture>& texture, bool cop
 	}
 	else
 	{
-		m_textures->push_back(texture);
+		m_textureHandlers->push_back(textureHandler);
 	}
 
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::addTexture(Texture* texture, bool copy)
-{
-	if (!texture)
-	{
-		logError("Speicifed ptr is null");
-		return *this;
-	}
-
-	if (copy)
-	{
-		throw std::exception("Not implemented yet.");
-	}
-	else
-	{
-		m_textures->push_back(std::shared_ptr<Texture>(texture));
-	}
-
-	return *this;
-}
-
-MeshBuilder& MeshBuilder::addTextures(std::vector<Texture*>& textures, bool copy)
+MeshBuilder& MeshBuilder::addTextureHandlers(std::vector<TextureHandler*>& textures, bool copy)
 {
 	for (auto texture : textures)
 	{
-		addTexture(texture, copy);
-	}
-
-	return *this;
-}
-
-MeshBuilder& MeshBuilder::addTextures(std::vector<std::shared_ptr<Texture>>& textures, bool copy)
-{
-	for (auto texture : textures)
-	{
-		addTexture(texture, copy);
+		addTextureHandler(texture, copy);
 	}
 
 	return *this;
@@ -414,9 +384,9 @@ Mesh* MeshBuilder::build()
 	if (m_indices)
 		mesh->setIndices(m_indices);
 
-	if (!m_textures->empty())
+	if (!m_textureHandlers->empty())
 	{
-		mesh->addTextures(*m_textures.get());
+		mesh->addTextureHandlers(*m_textureHandlers.get());
 	}
 	else
 	{
@@ -428,8 +398,8 @@ Mesh* MeshBuilder::build()
 		auto textureSpec = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
 		textureSpec->setType(Texture::Type::Specular);
 
-		mesh->addTexture(std::shared_ptr<Texture>(texturediff));
-		mesh->addTexture(std::shared_ptr<Texture>(textureSpec));
+		mesh->addTextureHandler(texturediff);
+		mesh->addTextureHandler(textureSpec);
 	}
 
 	std::sort(m_layout.attribs.begin(), m_layout.attribs.end(),
@@ -473,7 +443,7 @@ MeshBuilder& MeshBuilder::builder()
 
 MeshBuilder::MeshBuilder()
 {
-	m_textures = std::make_shared<std::vector<std::shared_ptr<Texture>>>();
+	m_textureHandlers = std::make_shared<std::vector<TextureHandler*>>();
 }
 
 void MeshBuilder::enableAttribute(LayoutAttribute attribute)

@@ -7,7 +7,7 @@ class RenderBufferObject;
 class Shader;
 class ScreenQuad;
 class IRenderer;
-class Texture;
+class TextureHandler;
 
 class ScreenBufferProjector
 {
@@ -22,6 +22,6 @@ private:
 	std::shared_ptr<Shader> m_screenShader = nullptr;
 	std::shared_ptr<ScreenQuad> m_quad = nullptr;
 	std::shared_ptr<IRenderer> m_renderer = nullptr;
-	std::shared_ptr<Texture> m_texture = nullptr;
+	std::shared_ptr<TextureHandler> m_textureHandler = nullptr;
 };
 
