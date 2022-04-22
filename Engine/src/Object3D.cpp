@@ -62,6 +62,19 @@ void Object3D::rotate(glm::vec3 axis, float angle) const
 	}
 }
 
+void Object3D::rotateLerp(glm::vec3 axis, float angle, float t) const
+{
+	m_transformation->rotateLerp(axis, angle, t);
+
+	for (const auto& child : m_childrens)
+	{
+		if (!child)
+			continue;
+
+		child->rotateAroundLerp(m_transformation->getPosition(), axis, angle, t);
+	}
+}
+
 void Object3D::rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle) const
 {
 	m_transformation->rotateAround(pivot, axis, angle);
@@ -72,6 +85,19 @@ void Object3D::rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle) const
 			continue;
 
 		child->rotateAround(pivot, axis, angle);
+	}
+}
+
+void Object3D::rotateAroundLerp(glm::vec3 pivot, glm::vec3 axis, float angle, float t) const
+{
+	m_transformation->rotateAroundLerp(pivot, axis, angle, t);
+
+	for (const auto& child : m_childrens)
+	{
+		if (!child)
+			continue;
+
+		child->rotateAroundLerp(pivot, axis, angle, t);
 	}
 }
 

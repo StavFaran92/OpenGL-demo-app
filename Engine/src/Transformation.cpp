@@ -76,6 +76,14 @@ void Transformation::rotate(glm::vec3 eulers)
 	m_change = true;
 }
 
+void Transformation::rotateLerp(glm::vec3 axis, float angle, float t)
+{
+	m_orientationLocal = glm::mix(m_orientationLocal, glm::angleAxis(degToRad(angle), axis) * m_orientationLocal, t);// *m_orientationLocal;
+
+	m_change = true;
+}
+
+
 void Transformation::rotate(glm::vec3 axis, float angle)
 {
 	m_orientationLocal = glm::angleAxis(degToRad(angle), axis) * m_orientationLocal;
@@ -89,6 +97,17 @@ void Transformation::rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle)
 	auto pInv = glm::translate(glm::mat4(1.0f), -pivot);
 
 	m_relativeRot = p * glm::mat4_cast(glm::angleAxis(degToRad(angle), axis)) * pInv * m_relativeRot;
+
+	m_change = true;
+}
+
+
+void Transformation::rotateAroundLerp(glm::vec3 pivot, glm::vec3 axis, float angle, float t)
+{
+	auto p = glm::translate(glm::mat4(1.0f), pivot);
+	auto pInv = glm::translate(glm::mat4(1.0f), -pivot);
+
+	m_relativeRot = p * glm::mat4_cast(glm::mix(glm::toQuat(m_relativeRot), glm::angleAxis(degToRad(angle), axis) * glm::toQuat(m_relativeRot), t)) * pInv;// *m_relativeRot;
 
 	m_change = true;
 }

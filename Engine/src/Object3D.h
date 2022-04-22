@@ -22,6 +22,8 @@ public:
 	void rotate(glm::vec3 eulers) const;
 	void rotate(glm::vec3 axis, float angle) const;
 	void rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle) const;
+	void rotateLerp(glm::vec3 axis, float angle, float t) const;
+	void rotateAroundLerp(glm::vec3 pivot, glm::vec3 axis, float angle, float t) const;
 
 	void addChildren(std::shared_ptr<Object3D> child);
 	void addChildren(Object3D* child);
