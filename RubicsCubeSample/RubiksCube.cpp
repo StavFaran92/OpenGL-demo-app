@@ -54,6 +54,43 @@ float colors[108] = {
 	1.0f,  1.0f,  1.0f,
 };
 
+void RubiksCube::print(const std::string& padding) const
+{
+	std::cout << padding << "Cube: " << this << std::endl;
+
+	std::cout << "Cube entitites" << std::endl;
+	for (int i = 0; i < m_cubes.size(); i++)
+	{
+		std::cout << "[" << std::to_string(i) << "]";
+		m_cubes[i]->print();
+		std::cout << std::endl;
+	}
+
+	std::cout << "Faces X" << std::endl;
+	for (int i = 0; i < m_size; i++)
+	{
+		auto face = m_faces.at({ Axis::X, i });
+		
+		face->print(padding + g_padding);
+	}
+
+	std::cout << "Faces Y" << std::endl;
+	for (int i = 0; i < m_size; i++)
+	{
+		auto face = m_faces.at({ Axis::Y, i });
+
+		face->print(padding + g_padding);
+	}
+
+	std::cout << "Faces Z" << std::endl;
+	for (int i = 0; i < m_size; i++)
+	{
+		auto face = m_faces.at({ Axis::Z, i });
+
+		face->print(padding + g_padding);
+	}
+}
+
 void RubiksCube::draw(IRenderer& renderer, Shader* shader)
 {
 	Model::draw(renderer, shader);
@@ -90,23 +127,28 @@ void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 	int angle = 0;
 	dir = (shift == Shift::CW) ? dir : -dir;
 
+
 	auto face = m_faces.at({ axis, index });
 
 	//face->rotate(dir, 90);
 
 	//Rotate geometric representation of cubes
-	Engine::get()->getContext()->getActiveScene()->addCoroutine([face, index, angle, axis, dir](float deltaTime) mutable
+	Engine::get()->getContext()->getActiveScene()->addCoroutine([face, index, angle, axis, dir, shift](float deltaTime) mutable
 	{
 		face->rotate(dir, 1);
 
 		if (angle++ > 90)
+		{
+			// Rotate cubes physically (i.e. replace the cube' attached face according to rotation)
+			face->rotateCubes(shift);
+
 			return true;
+		}
 
 		return false;
 	});
 
-	// Rotate cubes physically (i.e. replace the cube' attached face according to rotation)
-	face->rotateCubes();
+
 
 }
 

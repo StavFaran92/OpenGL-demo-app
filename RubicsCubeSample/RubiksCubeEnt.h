@@ -23,6 +23,8 @@ public:
 	FaceData getFaceData(Axis axis);
 	void removeFace(Axis axis);
 
+	void print(const std::string& padding = "") const;
+
 private:
 	std::map<Axis, FaceData> m_faces;
 };

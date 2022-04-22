@@ -14,8 +14,6 @@ void RubiksCubeEnt::swapFaces(RubiksCubeEnt* a, RubiksCubeEnt* b)
 
 		faceData_a.face->addCube(faceData_a.x, faceData_a.y, b);
 		faceData_b.face->addCube(faceData_b.x, faceData_b.y, a);
-
-		std::cout << "kaki" << std::endl;
 	}
 
 	{
@@ -28,7 +26,6 @@ void RubiksCubeEnt::swapFaces(RubiksCubeEnt* a, RubiksCubeEnt* b)
 		faceData_a.face->addCube(faceData_a.x, faceData_a.y, b);
 		faceData_b.face->addCube(faceData_b.x, faceData_b.y, a);
 
-		std::cout << "kaki" << std::endl;
 	}
 
 	{
@@ -40,8 +37,6 @@ void RubiksCubeEnt::swapFaces(RubiksCubeEnt* a, RubiksCubeEnt* b)
 
 		faceData_a.face->addCube(faceData_a.x, faceData_a.y, b);
 		faceData_b.face->addCube(faceData_b.x, faceData_b.y, a);
-
-		std::cout << "kaki" << std::endl;
 	}
 }
 
@@ -61,4 +56,9 @@ void RubiksCubeEnt::removeFace(Axis axis)
 	m_faces[axis].face = nullptr;
 	m_faces[axis].x = 0;
 	m_faces[axis].y = 0;
+}
+
+void RubiksCubeEnt::print(const std::string& padding) const
+{
+	std::cout << padding << "Ent: " <<  this << std::endl;
 }

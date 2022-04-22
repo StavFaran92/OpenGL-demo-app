@@ -17,7 +17,7 @@ public:
 		//skybox(Skybox::CreateSkybox());
 
 		rubiksCube = new RubiksCube();
-		rubiksCube->init(3);
+		rubiksCube->init(2);
 
 		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_Scancode::SDL_SCANCODE_X, [&](SDL_Event e) 
 		{
@@ -32,6 +32,11 @@ public:
 		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_Scancode::SDL_SCANCODE_Z, [&](SDL_Event e)
 		{
 			rubiksCube->rotateFace(Axis::Z, 0, Shift::CW);
+		});
+
+		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_Scancode::SDL_SCANCODE_I, [&](SDL_Event e)
+		{
+			rubiksCube->print();
 		});
 
 		//postProcess(PostProcess::grayscale());

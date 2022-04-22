@@ -25,12 +25,14 @@ public:
 		m_cubes = std::vector<RubiksCubeEnt*>(size*size, 0);
 	}
 
-	void rotateCubes();
+	void rotateCubes(Shift shift);
 	static void cyclic_roll(RubiksCubeEnt* a, RubiksCubeEnt* b, RubiksCubeEnt* c, RubiksCubeEnt* d);
 
 	void addCube(int x, int y, RubiksCubeEnt* cube);
 	void removeCube(int x, int y);
 	std::vector<RubiksCubeEnt*> getCubes();
+
+	void print(const std::string& padding = "") const;
 
 private:
 	std::vector<RubiksCubeEnt*> m_cubes;

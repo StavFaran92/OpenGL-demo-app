@@ -19,18 +19,13 @@ public:
 
 	void rotateFace(Axis axis, int index, Shift shift);
 
-	//void rotateFront(Shift dir);
-	//void rotateRight(Shift dir);
-	//void rotateTop(Shift dir);
-	//void rotateBack(Shift dir);
-	//void rotateLeft(Shift dir);
-	//void rotateBottom(Shift dir);
-
-	//Testing purposes
+	//Debug purposes
 	std::vector<RubiksCubeEnt*> getCubes()
 	{
 		return m_cubes;
 	}
+
+	void print(const std::string& padding = "") const;
 
 	
 protected:
@@ -40,13 +35,6 @@ private:
 	RubiksCubeEnt* getCube(int i, int j, int k) const;
 
 private:
-	//RubiksCubeFace* m_faceFront  = nullptr;
-	//RubiksCubeFace* m_faceRight  = nullptr;
-	//RubiksCubeFace* m_faceTop    = nullptr;
-	//RubiksCubeFace* m_faceBack   = nullptr;
-	//RubiksCubeFace* m_faceLeft   = nullptr;
-	//RubiksCubeFace* m_faceBottom = nullptr;
-
 	std::vector<RubiksCubeEnt*> m_cubes;
 	std::map<std::pair<Axis, int>, RubiksCubeFace*> m_faces;
 	size_t m_size = 0;

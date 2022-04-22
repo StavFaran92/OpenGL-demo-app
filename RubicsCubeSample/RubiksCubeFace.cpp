@@ -42,9 +42,24 @@ void RubiksCubeFace::cyclic_roll(RubiksCubeEnt* a, RubiksCubeEnt* b, RubiksCubeE
 	d->setFaceData(Axis::Z, temp_faceDataZ.face, temp_faceDataZ.x, temp_faceDataZ.y);
 }
 
-void RubiksCubeFace::rotateCubes()
+void RubiksCubeFace::rotateCubes(Shift shift)
 {
 	for (int i = 0; i < m_size / 2; i++)
 		for (int j = 0; j < (m_size + 1) / 2; j++)
-			cyclic_roll(m_cubes[i * m_size + j], m_cubes[(m_size - 1 - j) * m_size + i], m_cubes[(m_size - 1 - i) * m_size + m_size - 1 - j], m_cubes[j * m_size + m_size - 1 - i]);
+		{
+			if(shift == Shift::CCW)
+				cyclic_roll(m_cubes[i * m_size + j], m_cubes[(m_size - 1 - j) * m_size + i], m_cubes[(m_size - 1 - i) * m_size + m_size - 1 - j], m_cubes[j * m_size + m_size - 1 - i]);
+			else
+				cyclic_roll(m_cubes[j * m_size + m_size - 1 - i], m_cubes[(m_size - 1 - i) * m_size + m_size - 1 - j], m_cubes[(m_size - 1 - j) * m_size + i], m_cubes[i * m_size + j]);
+		}
+}
+
+void RubiksCubeFace::print(const std::string& padding) const
+{
+	std::cout << padding << "Face: " << this << std::endl;
+
+	for (auto cube : m_cubes)
+	{
+		cube->print(padding + g_padding);
+	}
 }
