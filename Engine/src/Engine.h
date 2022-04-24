@@ -10,7 +10,7 @@ class SkyboxRenderer;
 class Window;
 class ImguiHandler;
 class ObjectSelection;
-class ScreenBufferProjector;
+class PostProcessProjector;
 class Application;
 union SDL_Event;
 class Input;

@@ -9,12 +9,12 @@ class ScreenQuad;
 class IRenderer;
 class TextureHandler;
 
-class ScreenBufferProjector
+class PostProcessProjector
 {
 public:
 	bool init();
-	void RedirectToFrameBuffer();
-	void RedirectToDefault();
+	void enableWriting();
+	void disableWriting();
 	void setPostProcessShader(std::shared_ptr<Shader> shader);
 private:
 	std::shared_ptr<FrameBufferObject> m_frameBuffer = nullptr;

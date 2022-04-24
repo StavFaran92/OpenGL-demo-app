@@ -9,7 +9,7 @@
 #include "Model.h"
 #include "ObjectSelection.h"
 #include "SkyboxRenderer.h"
-#include "ScreenBufferProjector.h"
+#include "PostProcessProjector.h"
 #include "CoroutineSystem.h"
 #include "Logger.h"
 
@@ -21,8 +21,8 @@ void Scene::init()
 	m_objectSelection = std::make_shared<ObjectSelection>();
 	m_objectSelection->init();
 
-	m_screenBufferProjector = std::make_shared<ScreenBufferProjector>();
-	if (!m_screenBufferProjector->init())
+	m_postProcessProjector = std::make_shared<PostProcessProjector>();
+	if (!m_postProcessProjector->init())
 	{
 		logError("Screen buffer projector failed to init!");
 	}
@@ -69,9 +69,9 @@ void Scene::update(float deltaTime)
 
 void Scene::draw(float deltaTime)
 {
-	if (m_isPostProcessEnabled && m_screenBufferProjector)
+	if (m_isPostProcessEnabled && m_postProcessProjector)
 	{
-		m_screenBufferProjector->RedirectToFrameBuffer();
+		m_postProcessProjector->enableWriting();
 	}
 
 	// Draw Engine models
@@ -153,9 +153,9 @@ void Scene::draw(float deltaTime)
 		m_skybox->draw(*m_skyboxRenderer.get());
 	}
 
-	if (m_isPostProcessEnabled && m_screenBufferProjector)
+	if (m_isPostProcessEnabled && m_postProcessProjector)
 	{
-		m_screenBufferProjector->RedirectToDefault();
+		m_postProcessProjector->disableWriting();
 	}
 }
 
@@ -298,9 +298,9 @@ void Scene::draw(Model* model)
 
 bool Scene::setPostProcessShader(Shader* shader)
 {
-	if (m_screenBufferProjector)
+	if (m_postProcessProjector)
 	{
-		m_screenBufferProjector->setPostProcessShader(std::shared_ptr<Shader>(shader));
+		m_postProcessProjector->setPostProcessShader(std::shared_ptr<Shader>(shader));
 		return true;
 	}
 	return false;

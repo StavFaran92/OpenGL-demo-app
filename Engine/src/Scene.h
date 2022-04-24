@@ -18,7 +18,7 @@ class PointLight;
 class DirectionalLight;
 class Renderer;
 class ObjectSelection;
-class ScreenBufferProjector;
+class PostProcessProjector;
 class Shader;
 class CoroutineSystem;
 
@@ -95,7 +95,7 @@ private:
 
 	std::shared_ptr<Skybox> m_skybox = nullptr;
 	std::shared_ptr<ObjectSelection> m_objectSelection = nullptr;
-	std::shared_ptr<ScreenBufferProjector> m_screenBufferProjector = nullptr;
+	std::shared_ptr<PostProcessProjector> m_postProcessProjector = nullptr;
 	std::shared_ptr<CoroutineSystem> m_coroutineManager = nullptr;
 
 	std::deque<Model*> m_drawQueue;

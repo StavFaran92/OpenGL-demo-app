@@ -6,7 +6,7 @@
 #include "Window.h"
 #include "ImguiHandler.h"
 #include "ObjectSelection.h"
-#include "ScreenBufferProjector.h"
+#include "PostProcessProjector.h"
 #include "ICamera.h"
 #include "Scene.h"
 #include "Skybox.h"

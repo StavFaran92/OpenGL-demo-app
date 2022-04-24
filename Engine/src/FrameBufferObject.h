@@ -1,8 +1,6 @@
 #pragma once
 #include <cstdint>
 
-
-
 class FrameBufferObject
 {
 public:
@@ -15,15 +13,18 @@ public:
 	};
 public:
 	FrameBufferObject();
+	~FrameBufferObject();
 
-	void Bind();
-	void Unbind();
-	bool IsComplete();
+	void bind();
+	void unbind();
+	bool isComplete();
 
-	void AttachRenderBuffer(uint32_t renderBufferID, AttachmentType type);
-	void AttachTexture(uint32_t textureID);
+	void attachRenderBuffer(uint32_t renderBufferID, AttachmentType type);
+	void attachTexture(uint32_t textureID);
 
 private:
 	uint32_t m_id = 0;
+
+	static uint32_t s_boundFBO;
 };
 
