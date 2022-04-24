@@ -15,7 +15,9 @@ public:
 	bool init();
 	void enableWriting();
 	void disableWriting();
+	void draw();
 	void setPostProcessShader(std::shared_ptr<Shader> shader);
+
 private:
 	std::shared_ptr<FrameBufferObject> m_frameBuffer = nullptr;
 	std::shared_ptr<RenderBufferObject> m_renderBuffer = nullptr;

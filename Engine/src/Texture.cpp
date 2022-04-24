@@ -26,16 +26,18 @@ TextureHandler* Texture::createEmptyTexture(int width, int height)
 {
 	auto texture = new Texture();
 
+	texture->m_target = GL_TEXTURE_2D;
+
 	// generate texture
 	glGenTextures(1, &texture->m_id);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture->m_id);
+	texture->bind();
+
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	texture->unbind();
 
 	auto textureHandler = new TextureHandler(texture);
 
@@ -53,25 +55,23 @@ TextureHandler* Texture::loadTextureFromFile(const std::string& fileLocation)
 
 	auto texture = new Texture();
 
-	// Cache file location
-	texture->m_fileLocation = fileLocation;
+	texture->m_target = GL_TEXTURE_2D;
 
 	// flip the image
 	stbi_set_flip_vertically_on_load(FLIP_TEXTURE);
 
 	// load texture from file
-	unsigned char* data = stbi_load(texture->m_fileLocation.c_str(), &texture->m_width, &texture->m_height, &texture->m_bitDepth, 0);
+	unsigned char* data = stbi_load(fileLocation.c_str(), &texture->m_width, &texture->m_height, &texture->m_bitDepth, 0);
 
 	// load validation
 	if (!data) {
-		logError("Failed to find: {}", texture->m_fileLocation.c_str());
+		logError("Failed to find: {}", fileLocation.c_str());
 		return nullptr;
 	}
 
 	// generate texture and bind it
 	glGenTextures(1, &texture->m_id);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture->m_id);
+	texture->bind();
 
 	GLenum format = GL_RGB;
 	if (texture->m_bitDepth == 1)
@@ -92,7 +92,7 @@ TextureHandler* Texture::loadTextureFromFile(const std::string& fileLocation)
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	// unbind texture and release the image.
-	glBindTexture(GL_TEXTURE_2D, 0);
+	texture->unbind();
 	stbi_image_free(data);
 
 	// Cache texture
@@ -108,9 +108,10 @@ TextureHandler* Texture::loadCubemapTexture(std::vector<std::string> faces)
 {
 	auto texture = new Texture();
 
+	texture->m_target = GL_TEXTURE_CUBE_MAP;
+
 	glGenTextures(1, &texture->m_id);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, texture->m_id);
+	texture->bind();
 
 	// flip the image
 	stbi_set_flip_vertically_on_load(false);
@@ -119,24 +120,22 @@ TextureHandler* Texture::loadCubemapTexture(std::vector<std::string> faces)
 	for (unsigned int i = 0; i < faces.size(); i++)
 	{
 		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-		if (data)
-		{
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-				0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
-			);
-			stbi_image_free(data);
-		}
-		else
+		if (!data)
 		{
 			logError("Cubemap tex failed to load at path: {}", faces[i]);
 			stbi_image_free(data);
 		}
+
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		stbi_image_free(data);
 	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	texture->unbind();
 
 	auto textureHandler = new TextureHandler(texture);
 
@@ -165,7 +164,8 @@ void Texture::bind() const
 
 void Texture::unbind() const
 {
-	glActiveTexture(0);
+	glActiveTexture(GL_TEXTURE0 + m_slot);
+	glBindTexture(m_target, 0);
 }
 
 void Texture::flip()
@@ -181,11 +181,6 @@ bool Texture::isFlipped() const
 unsigned int Texture::getID() const
 {
 	return m_id;
-}
-
-std::string Texture::getFilepath() const
-{
-	return m_fileLocation;
 }
 
 void Texture::ClearTexture()

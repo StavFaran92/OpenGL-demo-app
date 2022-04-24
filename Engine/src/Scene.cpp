@@ -156,6 +156,7 @@ void Scene::draw(float deltaTime)
 	if (m_isPostProcessEnabled && m_postProcessProjector)
 	{
 		m_postProcessProjector->disableWriting();
+		m_postProcessProjector->draw();
 	}
 }
 

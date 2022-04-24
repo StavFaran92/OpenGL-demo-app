@@ -60,18 +60,22 @@ void PostProcessProjector::enableWriting()
 void PostProcessProjector::disableWriting()
 {
 	m_frameBuffer->unbind();
+	glDisable(GL_DEPTH_TEST);
+}
 
+void PostProcessProjector::draw()
+{
+	// Clean buffers
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	m_screenShader->use();
 
-	glDisable(GL_DEPTH_TEST);
-
-	//m_textureHandler->bind();
-	glBindTexture(GL_TEXTURE_2D, m_textureHandler->getID());
+	m_textureHandler->bind();
 
 	m_quad->draw(*m_renderer.get(), m_screenShader.get());
+
+	m_textureHandler->unbind();
 }
 
 void PostProcessProjector::setPostProcessShader(std::shared_ptr<Shader> shader)

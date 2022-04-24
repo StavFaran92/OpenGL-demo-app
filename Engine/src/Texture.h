@@ -79,10 +79,8 @@ private:
 private:
 	uint32_t m_id;
 	int m_width, m_height, m_bitDepth;
-	int m_slot;
+	int m_slot = 0;
 	Type m_type;
 	uint32_t m_target = 0;
 	bool m_flipped = false;
-
-	std::string m_fileLocation = Constants::N_A;
 };
