@@ -74,40 +74,40 @@ void Scene::draw(float deltaTime)
 		m_postProcessProjector->enableWriting();
 	}
 
-	// Draw Engine models
-	for (auto model = m_models.begin(); model != m_models.end(); ++model)
-	{
-		Shader* shader = model->second->getShader();
-		shader->use();
+	//// Draw Engine models
+	//for (auto model = m_models.begin(); model != m_models.end(); ++model)
+	//{
+	//	Shader* shader = model->second->getShader();
+	//	shader->use();
 
-		if (shader->IsLightsEnabled())
-		{
-			// Use all directional lights
-			{
-				int i = 0;
-				for (auto it = m_directionalLights.begin(); it != m_directionalLights.end(); ++it, ++i) {
-					it->second->useLight(*shader, i);
-				}
-				shader->SetInt("dirLightCount", m_directionalLights.size());
-			}
+	//	if (shader->IsLightsEnabled())
+	//	{
+	//		// Use all directional lights
+	//		{
+	//			int i = 0;
+	//			for (auto it = m_directionalLights.begin(); it != m_directionalLights.end(); ++it, ++i) {
+	//				it->second->useLight(*shader, i);
+	//			}
+	//			shader->SetInt("dirLightCount", m_directionalLights.size());
+	//		}
 
-			// Use all point lights
-			{
-				int i = 0;
-				for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++i, ++it) {
-					it->second->useLight(*shader, i);
-				}
-				shader->SetInt("pointLightCount", m_pointLights.size());
-			}
-		}
+	//		// Use all point lights
+	//		{
+	//			int i = 0;
+	//			for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++i, ++it) {
+	//				it->second->useLight(*shader, i);
+	//			}
+	//			shader->SetInt("pointLightCount", m_pointLights.size());
+	//		}
+	//	}
 
-		glStencilFunc(GL_ALWAYS, model->second->getID(), 0xff);
+	//	glStencilFunc(GL_ALWAYS, model->second->getID(), 0xff);
 
-		// Draw model
-		model->second->draw(*m_renderer.get(), shader);
+	//	// Draw model
+	//	model->second->draw(*m_renderer.get(), shader);
 
-		shader->release();
-	}
+	//	shader->release();
+	//}
 
 	// Draw Application models
 	while(!m_drawQueue.empty())

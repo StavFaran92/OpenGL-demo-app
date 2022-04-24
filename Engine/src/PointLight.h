@@ -6,7 +6,7 @@
 struct EngineAPI Attenuation {
 	float constant = 1;
 	float linear = .35f;
-	float quadratic = .44;
+	float quadratic = .44f;
 };
 
 class EngineAPI PointLight : public Light

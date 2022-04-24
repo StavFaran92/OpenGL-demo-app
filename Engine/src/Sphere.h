@@ -11,7 +11,7 @@ public:
 
 	MeshBuilder* createMeshBuilder() override;
 private:
-	const int m_radius = 0;
+	const float m_radius = 0;
 	const int m_sectors = 0;
 	const int m_stacks = 0;
 };

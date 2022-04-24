@@ -69,7 +69,6 @@ public:
 	void flip();
 	bool isFlipped() const;
 	unsigned int getID() const;
-	std::string getFilepath() const;
 
 	/**  Destructor */
 	~Texture();

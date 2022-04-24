@@ -5,7 +5,7 @@
 #include "VertexBufferElement.h"
 #include "ElementBufferObject.h"
 
-class VertexLayout;
+struct VertexLayout;
 
 class VertexArrayObject
 {

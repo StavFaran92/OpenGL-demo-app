@@ -46,6 +46,8 @@ bool PostProcessProjector::init()
 
 	// Generate screen renderer
 	m_renderer = std::make_shared<Renderer2D>();
+
+	return true;
 }
 
 void PostProcessProjector::enableWriting()
