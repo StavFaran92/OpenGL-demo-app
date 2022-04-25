@@ -4,6 +4,6 @@
 
 void SkyboxRenderer::SetMVP(Shader& shader) const
 {
-	shader.SetMat4("projection", m_projection);
-	shader.SetMat4("view", glm::mat4(glm::mat3(m_camera->getView())));
+	shader.setMat4("projection", m_projection);
+	shader.setMat4("view", glm::mat4(glm::mat3(m_camera->getView())));
 }

@@ -27,8 +27,8 @@ void PointLight::useLight(Shader& shader, int index)
 
 	Light::useLight(shader, index);
 
-	shader.SetFloat(m_name + "["+std::to_string(index) +"]"+ ".position", m_transform->getPosition());
-	shader.SetFloat(m_name + "["+std::to_string(index) +"]"+ ".constant", m_attenuation.constant);
-	shader.SetFloat(m_name + "["+std::to_string(index) +"]"+ ".linear", m_attenuation.linear);
-	shader.SetFloat(m_name + "["+std::to_string(index) +"]"+ ".quadratic", m_attenuation.quadratic);
+	shader.setFloat(m_name + "["+std::to_string(index) +"]"+ ".position", m_transform->getPosition());
+	shader.setFloat(m_name + "["+std::to_string(index) +"]"+ ".constant", m_attenuation.constant);
+	shader.setFloat(m_name + "["+std::to_string(index) +"]"+ ".linear", m_attenuation.linear);
+	shader.setFloat(m_name + "["+std::to_string(index) +"]"+ ".quadratic", m_attenuation.quadratic);
 }

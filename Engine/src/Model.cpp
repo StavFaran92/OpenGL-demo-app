@@ -51,7 +51,7 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 		{
 			currShader = context->GetReflectionShader();
 			currShader->use();
-			currShader->SetInt("skybox", 0);
+			currShader->setInt("skybox", 0);
 			auto textures = context->getActiveScene()->getSkybox()->getTextureHandlers();
 			if (textures.size() <= 0)
 			{
@@ -65,8 +65,8 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 		{
 			currShader = context->GetRefractiveShader();
 			currShader->use();
-			currShader->SetInt("skybox", 0);
-			currShader->SetFloat("refractiveRatio", 1 / 1.52f);
+			currShader->setInt("skybox", 0);
+			currShader->setFloat("refractiveRatio", 1 / 1.52f);
 			auto textures = context->getActiveScene()->getSkybox()->getTextureHandlers();
 			if (textures.size() <= 0)
 			{
@@ -77,7 +77,7 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 		}
 	}
 
-	currShader->SetMat4("model", m_transformation->getTransformation());
+	currShader->setMat4("model", m_transformation->getTransformation());
 
 	if (currShader->IsMaterialsEnabled() && m_material)
 	{

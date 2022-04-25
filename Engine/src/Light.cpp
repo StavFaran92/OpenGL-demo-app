@@ -25,10 +25,10 @@ void Light::useLight(Shader& shader, int index)
 		return;
 	}
 
-	shader.SetFloat(m_name + "[" +std::to_string(index) + "]" + ".color", m_color);
-	shader.SetFloat(m_name + "[" +std::to_string(index) + "]" + ".ambient", Constants::VEC3_ONE * m_ambientIntensity);
-	shader.SetFloat(m_name + "[" +std::to_string(index) + "]" + ".diffuse", Constants::VEC3_ONE * m_diffuseIntensity); // darken diffuse light a bit
-	shader.SetFloat(m_name + "[" +std::to_string(index) + "]" + ".specular", Constants::VEC3_ONE);
+	shader.setFloat(m_name + "[" +std::to_string(index) + "]" + ".color", m_color);
+	shader.setFloat(m_name + "[" +std::to_string(index) + "]" + ".ambient", Constants::VEC3_ONE * m_ambientIntensity);
+	shader.setFloat(m_name + "[" +std::to_string(index) + "]" + ".diffuse", Constants::VEC3_ONE * m_diffuseIntensity); // darken diffuse light a bit
+	shader.setFloat(m_name + "[" +std::to_string(index) + "]" + ".specular", Constants::VEC3_ONE);
 }
 
 void Light::SetAmbientIntensity(float intensity)

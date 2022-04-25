@@ -48,7 +48,7 @@ void Skybox::draw(IRenderer& renderer, Shader* shader)
         currShader = shader;
 
     //auto view = glm::mat4(glm::mat3(dynamic_cast<Renderer*>(renderer.get())->GetCamera()->getView())); // remove translation from the view matrix
-    currShader->SetMat4("model", m_transformation->getTransformation());
+    currShader->setMat4("model", m_transformation->getTransformation());
 
 
 

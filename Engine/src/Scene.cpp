@@ -12,6 +12,7 @@
 #include "PostProcessProjector.h"
 #include "CoroutineSystem.h"
 #include "Logger.h"
+#include "PhongShader.h"
 
 void Scene::init()
 {
@@ -109,6 +110,8 @@ void Scene::draw(float deltaTime)
 	//	shader->release();
 	//}
 
+	//PhongShader phongShader;
+
 	// Draw Application models
 	while(!m_drawQueue.empty())
 	{
@@ -126,7 +129,7 @@ void Scene::draw(float deltaTime)
 				for (auto it = m_directionalLights.begin(); it != m_directionalLights.end(); ++it, ++i) {
 					it->second->useLight(*shader, i);
 				}
-				shader->SetInt("dirLightCount", m_directionalLights.size());
+				shader->setInt("dirLightCount", m_directionalLights.size());
 			}
 
 			// Use all point lights
@@ -135,7 +138,7 @@ void Scene::draw(float deltaTime)
 				for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++i, ++it) {
 					it->second->useLight(*shader, i);
 				}
-				shader->SetInt("pointLightCount", m_pointLights.size());
+				shader->setInt("pointLightCount", m_pointLights.size());
 			}
 		}
 

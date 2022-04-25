@@ -13,5 +13,5 @@ void DirectionalLight::useLight(Shader& shader, int index)
 
 	Light::useLight(shader, index);
 
-	shader.SetFloat(m_name + "[" + std::to_string(index) + "]" + ".direction", m_direction);
+	shader.setFloat(m_name + "[" + std::to_string(index) + "]" + ".direction", m_direction);
 }

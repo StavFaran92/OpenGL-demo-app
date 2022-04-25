@@ -175,6 +175,7 @@
     <ClCompile Include="src\TextureHandler.cpp">
       <Filter>src\Graphics\Models</Filter>
     </ClCompile>
+    <ClCompile Include="src\PhongShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -390,6 +391,7 @@
     <ClInclude Include="src\TextureHandler.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="src\PhongShader.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

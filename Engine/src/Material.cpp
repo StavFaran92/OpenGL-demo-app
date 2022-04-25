@@ -21,7 +21,7 @@ void Material::UseMaterial(Shader& shader)
 		return;
 	}
 
-	shader.SetFloat("material.shininess", m_shininess);
+	shader.setFloat("material.shininess", m_shininess);
 }
 
 Material::~Material()

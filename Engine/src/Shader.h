@@ -25,19 +25,19 @@ public:
 
 	void use() const;
 	void release() const;
-	void ClearShader();
+	
 
-	inline unsigned int getID() const { return m_id; }
+	inline unsigned int getID() const;
 
-	void SetFloat(const std::string& name, float v);
-	void SetFloat(const std::string& name, glm::vec2 v);
-	void SetFloat(const std::string& name, glm::vec3 v);
-	void SetFloat(const std::string& name, glm::vec4 v);
-	void SetInt(const std::string& name, int v);
-	void SetMat3(const std::string& name, const glm::mat3& v);
-	void SetMat4(const std::string& name, const glm::mat4& v);
+	void setFloat(const std::string& name, float v);
+	void setFloat(const std::string& name, glm::vec2 v);
+	void setFloat(const std::string& name, glm::vec3 v);
+	void setFloat(const std::string& name, glm::vec4 v);
+	void setInt(const std::string& name, int v);
+	void setMat3(const std::string& name, const glm::mat3& v);
+	void setMat4(const std::string& name, const glm::mat4& v);
 
-	int GetUniformLocation(const std::string& name);
+	int getUniformLocation(const std::string& name);
 
 	inline bool IsLightsEnabled() { return m_enableLight; }
 	inline void SetEnableLights(bool value) { m_enableLight = value; }
@@ -51,6 +51,8 @@ public:
 
 	~Shader();
 
+protected:
+	void clear();
 private:
 	friend class Context;
 	inline void SetID(uint32_t id) { m_id = id; }

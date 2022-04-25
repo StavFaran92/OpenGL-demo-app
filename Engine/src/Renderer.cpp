@@ -45,9 +45,9 @@ void Renderer::draw(const VertexArrayObject& vao, Shader& shader) const
 
 void Renderer::SetMVP(Shader& shader) const
 {
-	shader.SetFloat("viewPos", m_camera->getPosition()); // TODO fix
-	shader.SetMat4("projection", m_projection);
-	shader.SetMat4("view", m_camera->getView());
+	shader.setFloat("viewPos", m_camera->getPosition()); // TODO fix
+	shader.setMat4("projection", m_projection);
+	shader.setMat4("view", m_camera->getView());
 }
 
 std::shared_ptr<Shader> Renderer::GetDefaultShader() const

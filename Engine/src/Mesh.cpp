@@ -79,7 +79,7 @@ void Mesh::SetTexturesInShader(Shader& shader)
 		glBindTexture(GL_TEXTURE_2D, m_textureHandlers[i]->getID());
 
 		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
-		shader.SetInt(("material." + typeStr + count).c_str(), i);
+		shader.setInt(("material." + typeStr + count).c_str(), i);
 	}
 }
 void Mesh::setPositions(std::shared_ptr<std::vector<glm::vec3>> positions)

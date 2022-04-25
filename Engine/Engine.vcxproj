@@ -96,6 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\PhongShader.cpp" />
     <ClCompile Include="src\CoroutineSystem.cpp" />
     <ClCompile Include="src\Box.cpp" />
     <ClCompile Include="src\configurations.cpp" />
@@ -156,6 +157,7 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\PhongShader.h" />
     <ClInclude Include="src\CoroutineSystem.h" />
     <ClInclude Include="src\Configurations.h" />
     <ClInclude Include="src\MemoryManagement.h" />
