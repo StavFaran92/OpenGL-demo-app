@@ -13,6 +13,7 @@ class Skybox;
 class Object3D;
 class Scene;
 class Engine;
+class PhongShader;
 
 
 class EngineAPI Context
@@ -29,16 +30,12 @@ public:
 	bool AddShader(std::shared_ptr<Shader> shader);
 	bool RemoveShader(std::shared_ptr<Shader> shader);
 
-	Shader* GetReflectionShader();
-	Shader* GetRefractiveShader();
+	Shader* GetReflectionShader() const;
+	Shader* GetRefractiveShader() const;
+	PhongShader* getPhongShader() const;
 
-	std::shared_ptr<Scene> getActiveScene() const
-	{
-		if (m_activeScene == -1)
-			return nullptr;
-
-		return m_scenes.at(m_activeScene);
-	}
+	std::shared_ptr<Scene> getActiveScene() const;
+	
 
 	void setActiveScene(uint32_t index);
 
@@ -61,6 +58,7 @@ private:
 
 	std::shared_ptr<Shader> m_reflectionShader = nullptr;
 	std::shared_ptr<Shader> m_refractiveShader = nullptr;
+	std::shared_ptr<PhongShader> m_phongShader = nullptr;
 };
 
 

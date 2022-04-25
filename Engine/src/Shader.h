@@ -63,7 +63,7 @@ private:
 	bool ValidateRenderer();
 	bool ValidateProgramLink();
 	bool validateCompilation(const unsigned int& theShader, const unsigned int& shaderType);
-private:
+protected:
 	unsigned int m_id;
 	std::unordered_map<std::string, int> m_uniformLocationCache;
 	bool m_enableLight = false;

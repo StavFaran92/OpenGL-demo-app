@@ -19,12 +19,6 @@ Light::Light(glm::vec3 color, float aIntensity, float dIntensity) :
 
 void Light::useLight(Shader& shader, int index)
 {
-	if (!shader.IsLightsEnabled())
-	{
-		logError("Shader does not support light");
-		return;
-	}
-
 	shader.setFloat(m_name + "[" +std::to_string(index) + "]" + ".color", m_color);
 	shader.setFloat(m_name + "[" +std::to_string(index) + "]" + ".ambient", Constants::VEC3_ONE * m_ambientIntensity);
 	shader.setFloat(m_name + "[" +std::to_string(index) + "]" + ".diffuse", Constants::VEC3_ONE * m_diffuseIntensity); // darken diffuse light a bit

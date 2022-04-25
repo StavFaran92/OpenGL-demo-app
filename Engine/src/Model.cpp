@@ -28,8 +28,6 @@ Model::Model()
 	: Object3D()
 {
 	logTrace(__FUNCTION__);
-
-	m_shader = std::make_shared<Shader>(*Shader::PhongShader());
 }
 
 Model::~Model()

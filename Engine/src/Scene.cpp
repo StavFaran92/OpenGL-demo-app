@@ -13,9 +13,12 @@
 #include "CoroutineSystem.h"
 #include "Logger.h"
 #include "PhongShader.h"
+#include "Context.h"
 
-void Scene::init()
+void Scene::init(Context* context)
 {
+	m_context = context;
+
 	m_renderer = std::make_shared<Renderer>();
 	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
 
@@ -110,50 +113,61 @@ void Scene::draw(float deltaTime)
 	//	shader->release();
 	//}
 
-	//PhongShader phongShader;
+	auto phongShader = m_context->getPhongShader();
 
 	// Draw Application models
-	while(!m_drawQueue.empty())
+	while (!m_drawQueue.empty())
 	{
 		auto model = m_drawQueue.front();
 		m_drawQueue.pop_front();
 
-		Shader* shader = model->getShader();
-		shader->use();
-
-		if (shader->IsLightsEnabled())
+		// Use custom model shader
+		if (model->getShader())
 		{
+			model->getShader()->use();
+
+			// Draw model
+			model->draw(*m_renderer.get(), phongShader);
+
+			model->getShader()->release();
+		}
+		else
+		{
+			// Use default phong shader
+			phongShader->use();
+
 			// Use all directional lights
 			{
 				int i = 0;
 				for (auto it = m_directionalLights.begin(); it != m_directionalLights.end(); ++it, ++i) {
-					it->second->useLight(*shader, i);
+					it->second->useLight(*phongShader, i);
 				}
-				shader->setInt("dirLightCount", m_directionalLights.size());
+				phongShader->setDirLightCount(m_directionalLights.size());
 			}
 
 			// Use all point lights
 			{
 				int i = 0;
 				for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++i, ++it) {
-					it->second->useLight(*shader, i);
+					it->second->useLight(*phongShader, i);
 				}
-				shader->setInt("pointLightCount", m_pointLights.size());
+				phongShader->setPointLightCount(m_pointLights.size());
 			}
+
+			glStencilFunc(GL_ALWAYS, model->getID(), 0xff);
+
+			// Draw model
+			model->draw(*m_renderer.get(), phongShader);
+
+			phongShader->release();
 		}
-
-		glStencilFunc(GL_ALWAYS, model->getID(), 0xff);
-
-		// Draw model
-		model->draw(*m_renderer.get(), shader);
-
-		shader->release();
 	}
 
 	if (m_skybox)
 	{
 		m_skybox->getShader()->use();
 		m_skybox->draw(*m_skyboxRenderer.get());
+		m_skybox->getShader()->release();
 	}
 
 	if (m_isPostProcessEnabled && m_postProcessProjector)
@@ -168,6 +182,11 @@ void Scene::clear()
 	m_models.clear();
 	m_pointLights.clear();
 	m_directionalLights.clear();
+}
+
+Scene::Scene(Context* context)
+{
+	init(context);
 }
 
 bool Scene::addModel(Model* model)

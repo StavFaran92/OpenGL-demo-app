@@ -21,16 +21,15 @@ class ObjectSelection;
 class PostProcessProjector;
 class Shader;
 class CoroutineSystem;
+class Context;
 
 class EngineAPI Scene
 {
 
 public:
 	// -------------------- Methods -------------------- //
-	Scene() 
-	{
-		init();
-	}
+	Scene(Context* context);
+	
 
 	bool addModel(Model* model);
 	bool removeModel(uint32_t id);
@@ -74,7 +73,7 @@ private:
 	inline void SetID(uint32_t id) { m_id = id; }
 	void draw(float deltaTime);
 
-	void init();
+	void init(Context* context);
 	void clear();
 	void close();
 
@@ -100,6 +99,8 @@ private:
 
 	std::deque<Model*> m_drawQueue;
 	std::deque<Model*> m_updateQueue;
+
+	Context* m_context;
 
 	bool m_isPostProcessEnabled = false;
 

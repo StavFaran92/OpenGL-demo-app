@@ -6,6 +6,7 @@
 #include "Skybox.h"
 #include "SkyboxRenderer.h"
 #include "ICamera.h"
+#include "PhongShader.h"
 
 #include "Object3D.h"
 #include "Scene.h"
@@ -23,6 +24,8 @@ Context::Context() : m_shaderCounter(0)
 	m_refractiveShader->SetEnableLights(false);
 	m_refractiveShader->SetEnableMaterials(false);
 	m_refractiveShader->SetEnableTextures(false);
+
+	m_phongShader = std::make_shared<PhongShader>();
 
 	//std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
 	//AddDirectionalLight(light);
@@ -99,14 +102,27 @@ bool Context::RemoveShader(std::shared_ptr<Shader> shader)
 	return true;
 }
 
-Shader* Context::GetReflectionShader()
+Shader* Context::GetReflectionShader() const
 {
 	return m_reflectionShader.get();
 }
 
-Shader* Context::GetRefractiveShader()
+Shader* Context::GetRefractiveShader() const
 {
 	return m_refractiveShader.get();
+}
+
+PhongShader* Context::getPhongShader() const
+{
+	return m_phongShader.get();
+}
+
+std::shared_ptr<Scene> Context::getActiveScene() const
+{
+	if (m_activeScene == -1)
+		return nullptr;
+
+	return m_scenes.at(m_activeScene);
 }
 
 void Context::setActiveScene(uint32_t index)
