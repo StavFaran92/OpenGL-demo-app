@@ -22,3 +22,8 @@ void Renderer2D::draw(const VertexArrayObject& vao, Shader& shader) const
 void Renderer2D::Clear() const
 {
 }
+
+glm::mat4 Renderer2D::getProjection() const
+{
+	return glm::mat4(1);
+}

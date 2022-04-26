@@ -39,12 +39,6 @@ EditorCamera::EditorCamera(glm::vec3 startPosition, float startMoveSpeed, float 
 
 void EditorCamera::keyControl(double deltaTime)
 {
-	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_DELETE))
-	{
-		auto objectSelection = Engine::get()->getContext()->getActiveScene()->GetObjectSelection();
-		auto selected = objectSelection->GetSelectedObject();
-		Engine::get()->getContext()->getActiveScene()->removeModel(selected);
-	}
 }
 
 void EditorCamera::OnMouseMotion(float xChange, float yChange)
@@ -76,15 +70,6 @@ void EditorCamera::OnMousePressed(SDL_MouseButtonEvent& e)
 	if (e.button == SDL_BUTTON_RIGHT)
 	{
 		m_isLocked = false;
-	}
-	if (e.button == SDL_BUTTON_LEFT)
-	{
-
-		auto objectSelection = Engine::get()->getContext()->getActiveScene()->GetObjectSelection();
-		objectSelection->OnMousePressed(e);
-
-		logInfo("Mouse pressed on x: {}, y: {}", e.x, e.y);
-		
 	}
 }
 

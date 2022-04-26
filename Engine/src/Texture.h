@@ -36,6 +36,15 @@ public:
 	static TextureHandler* createEmptyTexture(int width, int height);
 
 	/**
+	 * Create an empty texture.
+	 *
+	 * \param width		The generated texture width
+	 * \param height	The generated texture height
+	 * \return			A pointer to the generated texture
+	 */
+	static TextureHandler* createEmptyTexture(int width, int height, int internalFormat, int format, int type);
+
+	/**
 	 * Load a texture from a given file path.
 	 * 
 	 * \param fileLocation	The filepath location

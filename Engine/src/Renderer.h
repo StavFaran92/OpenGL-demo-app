@@ -19,6 +19,7 @@ public:
 	void draw(const VertexArrayObject& vao, Shader& shader) const override;
 	virtual void SetMVP(Shader& shader) const;
  	void Clear() const override;
+	glm::mat4 getProjection() const override;
 
 	//Methods
 	std::shared_ptr<Shader> GetDefaultShader() const;
@@ -27,4 +28,6 @@ protected:
 	std::shared_ptr<Shader> m_phongShader = nullptr;
 	std::shared_ptr<ICamera> m_camera = nullptr;
 	glm::mat4 m_projection;
+
+
 };

@@ -1,5 +1,8 @@
 #include "Mouse.h"
 
+#include "Engine.h"
+#include "EventSystem.h"
+
 const Mouse::MouseState& Mouse::getMouseState()
 {
 	int x, y;
@@ -26,7 +29,7 @@ void Mouse::getMousePosition(int& x, int& y)
 	y = state.y;
 }
 
-bool Mouse::getButtonPressed(MouseButtons button) 
+bool Mouse::getButtonPressed(MouseButton button) 
 {
 	bool result = false;
 
@@ -34,18 +37,62 @@ bool Mouse::getButtonPressed(MouseButtons button)
 
 	switch (button)
 	{
-	case MouseButtons::LeftMousebutton:
+	case MouseButton::LeftMousebutton:
 		result = state.lmb;
 		break;
-	case MouseButtons::RightMousebutton:
+	case MouseButton::RightMousebutton:
 		result = state.rmb;
 		break;
-	case MouseButtons::MiddleMousebutton:
+	case MouseButton::MiddleMousebutton:
 		result = state.mmb;
 		break;
 	default:
 		break;
 	}
 	
+	return result;
+}
+
+void Mouse::onMousePressed(MouseButton code, std::function<void(SDL_Event e)> callback) const
+{
+	Engine::get()->getEventSystem()->addEventListener(SDL_EventType::SDL_MOUSEBUTTONDOWN, [=](SDL_Event e)
+	{
+		if (e.button.button == mouseButtonToSDLCode(code))
+		{
+			callback(e);
+		}
+	});
+}
+
+void Mouse::onMouseReleased(MouseButton code, std::function<void(SDL_Event e)> callback) const
+{
+	Engine::get()->getEventSystem()->addEventListener(SDL_EventType::SDL_MOUSEBUTTONUP, [=](SDL_Event e)
+	{
+		if (e.button.button == mouseButtonToSDLCode(code))
+		{
+			callback(e);
+		}
+	});
+}
+
+int Mouse::mouseButtonToSDLCode(MouseButton button) const
+{
+	int result = -1;
+
+	switch (button)
+	{
+	case MouseButton::LeftMousebutton:
+		result = SDL_BUTTON_LEFT;
+		break;
+	case MouseButton::RightMousebutton:
+		result = SDL_BUTTON_RIGHT;
+		break;
+	case MouseButton::MiddleMousebutton:
+		result = SDL_BUTTON_MIDDLE;
+		break;
+	default:
+		break;
+	}
+
 	return result;
 }

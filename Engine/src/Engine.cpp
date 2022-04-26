@@ -19,6 +19,8 @@
 #include "Application.h"
 #include "SDL.h"
 
+#include "GL/glew.h"
+
 // Singleton
 Engine* Engine::instance = nullptr;
 

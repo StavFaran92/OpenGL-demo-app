@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "IProjector.h"
+
 class FrameBufferObject;
 class RenderBufferObject;
 class Shader;
@@ -9,7 +11,7 @@ class ScreenQuad;
 class IRenderer;
 class TextureHandler;
 
-class PostProcessProjector
+class PostProcessProjector : public IProjector
 {
 public:
 	bool init();

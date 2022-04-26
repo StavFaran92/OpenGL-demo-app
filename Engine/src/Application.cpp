@@ -38,15 +38,15 @@ void Application::draw(Model* model)
 
 bool Application::mouse_leftButtonPressed()
 {
-	return Engine::get()->getInput()->getMouse()->getButtonPressed(Mouse::MouseButtons::LeftMousebutton);
+	return Engine::get()->getInput()->getMouse()->getButtonPressed(Mouse::MouseButton::LeftMousebutton);
 }
 bool Application::mouse_rightButtonPressed()
 {
-	return Engine::get()->getInput()->getMouse()->getButtonPressed(Mouse::MouseButtons::RightMousebutton);
+	return Engine::get()->getInput()->getMouse()->getButtonPressed(Mouse::MouseButton::RightMousebutton);
 }
 bool Application::mouse_middleButtonPressed()
 {
-	return Engine::get()->getInput()->getMouse()->getButtonPressed(Mouse::MouseButtons::MiddleMousebutton);
+	return Engine::get()->getInput()->getMouse()->getButtonPressed(Mouse::MouseButton::MiddleMousebutton);
 }
 
 int Application::keyboard_getKeyState(SDL_Scancode code)

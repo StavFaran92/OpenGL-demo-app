@@ -24,6 +24,11 @@ Texture::Texture(const Texture& other)
 
 TextureHandler* Texture::createEmptyTexture(int width, int height)
 {
+	return createEmptyTexture(width, height, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
+}
+
+TextureHandler* Texture::createEmptyTexture(int width, int height, int internalFormat, int format, int type)
+{
 	auto texture = new Texture();
 
 	texture->m_target = GL_TEXTURE_2D;
@@ -32,7 +37,7 @@ TextureHandler* Texture::createEmptyTexture(int width, int height)
 	glGenTextures(1, &texture->m_id);
 	texture->bind();
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

@@ -26,7 +26,7 @@ public:
 	void setRotation(float angle, glm::vec3 axis);
 	void setScale(glm::vec3 scale);
 
-	glm::mat4 getTransformation() const;
+	glm::mat4 getMatrix() const;
 	glm::vec3 getPosition() const;
 	glm::quat getLocalOrientation() const;
 	glm::quat getWorldOrientation() const;

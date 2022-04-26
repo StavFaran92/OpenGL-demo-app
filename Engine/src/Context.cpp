@@ -7,6 +7,7 @@
 #include "SkyboxRenderer.h"
 #include "ICamera.h"
 #include "PhongShader.h"
+#include "PickingShader.h"
 
 #include "Object3D.h"
 #include "Scene.h"
@@ -26,6 +27,7 @@ Context::Context() : m_shaderCounter(0)
 	m_refractiveShader->SetEnableTextures(false);
 
 	m_phongShader = std::make_shared<PhongShader>();
+	m_pickingShader = std::make_shared<PickingShader>();
 
 	//std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
 	//AddDirectionalLight(light);
@@ -115,6 +117,11 @@ Shader* Context::GetRefractiveShader() const
 PhongShader* Context::getPhongShader() const
 {
 	return m_phongShader.get();
+}
+
+PickingShader* Context::getPickingShader() const
+{
+	return m_pickingShader.get();
 }
 
 std::shared_ptr<Scene> Context::getActiveScene() const

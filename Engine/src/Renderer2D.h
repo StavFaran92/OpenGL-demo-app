@@ -7,7 +7,10 @@ class Renderer2D : public IRenderer
 public:
 	Renderer2D() = default;
 	// Inherited via IRenderer
-	virtual void draw(const VertexArrayObject& vao, Shader& shader) const override;
-	virtual void Clear() const override;
+	void draw(const VertexArrayObject& vao, Shader& shader) const override;
+	void Clear() const override;
+
+	// Inherited via IRenderer
+	glm::mat4 getProjection() const override;
 };
 

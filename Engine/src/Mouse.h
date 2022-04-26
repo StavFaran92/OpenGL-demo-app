@@ -2,11 +2,13 @@
 #include "Core.h"
 #include "SDL.h"
 
+#include <functional>
+
 
 class EngineAPI Mouse
 {
 public:
-	enum class MouseButtons
+	enum class MouseButton
 	{
 		LeftMousebutton,
 		RightMousebutton,
@@ -23,9 +25,13 @@ public:
 
 	const MouseState& getMouseState();
 	void getMousePosition(int& x, int& y);
-	bool getButtonPressed(MouseButtons button);
+	bool getButtonPressed(MouseButton button);
+	void onMousePressed(MouseButton code, std::function<void(SDL_Event e)> callback) const;
+	void onMouseReleased(MouseButton code, std::function<void(SDL_Event e)> callback) const;
+
 
 
 private:
+	int mouseButtonToSDLCode(MouseButton button) const;
 	MouseState m_state;
 };

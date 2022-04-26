@@ -103,6 +103,7 @@ private:
 	Context* m_context;
 
 	bool m_isPostProcessEnabled = false;
+	bool m_enablePicking = false;
 
 
 };

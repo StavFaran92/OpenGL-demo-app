@@ -178,6 +178,7 @@
     <ClCompile Include="src\PhongShader.cpp">
       <Filter>src\Graphics\Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="src\PickingShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -396,6 +397,8 @@
     <ClInclude Include="src\PhongShader.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="src\PickingShader.h" />
+    <ClInclude Include="src\IProjector.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

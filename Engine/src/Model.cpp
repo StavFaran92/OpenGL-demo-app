@@ -90,7 +90,7 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 		}
 	}
 
-	shaderToUse->setMat4("model", m_transformation->getTransformation());
+	shaderToUse->setMat4("model", m_transformation->getMatrix());
 
 	if (shaderToUse->IsMaterialsEnabled() && m_material)
 	{

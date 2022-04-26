@@ -2,7 +2,7 @@
 #include<glm/gtx/quaternion.hpp>
 #include "LinearAlgebraUtil.h"
 
-glm::mat4 Transformation::getTransformation() const
+glm::mat4 Transformation::getMatrix() const
 {
 	return m_transformation;
 }

@@ -13,6 +13,7 @@
 #include "CoroutineSystem.h"
 #include "Logger.h"
 #include "PhongShader.h"
+#include "PickingShader.h"
 #include "Context.h"
 
 void Scene::init(Context* context)
@@ -35,6 +36,16 @@ void Scene::init(Context* context)
 
 	auto light = new DirectionalLight();
 	addDirectionalLight(light);
+
+	Engine::get()->getInput()->getMouse()->onMousePressed(Mouse::MouseButton::LeftMousebutton, [&](SDL_Event e)
+	{
+		m_enablePicking = true;
+	});
+
+	Engine::get()->getInput()->getMouse()->onMouseReleased(Mouse::MouseButton::LeftMousebutton, [&](SDL_Event e)
+	{
+		m_enablePicking = false;
+	});
 }
 
 void Scene::update(float deltaTime)
@@ -73,10 +84,7 @@ void Scene::update(float deltaTime)
 
 void Scene::draw(float deltaTime)
 {
-	if (m_isPostProcessEnabled && m_postProcessProjector)
-	{
-		m_postProcessProjector->enableWriting();
-	}
+
 
 	//// Draw Engine models
 	//for (auto model = m_models.begin(); model != m_models.end(); ++model)
@@ -113,12 +121,44 @@ void Scene::draw(float deltaTime)
 	//	shader->release();
 	//}
 
+	// Update phong shader
 	auto phongShader = m_context->getPhongShader();
-
 	phongShader->use();
 	phongShader->updateDirLights(m_directionalLights);
 	phongShader->updatePointLights(m_pointLights);
+	phongShader->setFloat("viewPos", m_renderer->GetCamera()->getPosition());
 	phongShader->release();
+
+	// Picking Phase
+	if (m_enablePicking)
+	{
+		m_objectSelection->enableWriting();
+
+		auto pickingShader = m_context->getPickingShader();
+		pickingShader->use();
+		pickingShader->setViewMatrix(m_renderer->GetCamera()->getView());
+		pickingShader->setProjectionMatrix(m_renderer->getProjection());
+
+		for (unsigned int i = 0; i < m_drawQueue.size(); i++)
+		{
+			pickingShader->setModelMatrix(m_drawQueue[i]->getTransformation()->getMatrix());
+			pickingShader->setObjectIndex(i + 1);
+			m_drawQueue[i]->draw(*m_renderer.get(), pickingShader);
+		}
+		pickingShader->release();
+
+		m_objectSelection->disableWriting();
+
+		int x, y;
+		Engine::get()->getInput()->getMouse()->getMousePosition(x, y);
+		std::cout << m_objectSelection->getSelectedObject(x, 768 - y) << std::endl;
+	}
+
+	// Render Phase
+	if (m_isPostProcessEnabled && m_postProcessProjector)
+	{
+		m_postProcessProjector->enableWriting();
+	}
 
 	// Draw Application models
 	while (!m_drawQueue.empty())

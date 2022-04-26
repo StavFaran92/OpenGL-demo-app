@@ -19,6 +19,8 @@ public:
 	void unbind();
 	bool isComplete();
 
+	uint32_t getID() const;
+
 	void attachRenderBuffer(uint32_t renderBufferID, AttachmentType type);
 	void attachTexture(uint32_t textureID);
 

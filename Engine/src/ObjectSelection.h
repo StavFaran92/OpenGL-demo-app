@@ -1,20 +1,39 @@
 #pragma once
-#include "SDL.h"
-#include <GL/glew.h>
-#include <cstdint>
+
+#include "IProjector.h"
+
+#include <memory>
+
+class FrameBufferObject;
+class RenderBufferObject;
+class TextureHandler;
 
 
-class ObjectSelection
+class ObjectSelection : public IProjector
 {
 public:
-	ObjectSelection();
+	struct PixelInfo {
+		unsigned int ObjectID = 0;
+		unsigned int DrawID = 0;
+		unsigned int PrimID = 0;
+	};
 
-	void init();
-	void OnMousePressed(SDL_MouseButtonEvent& e);
-	void SelectObject(uint32_t index);
-	uint32_t GetSelectedObject();
+	ObjectSelection();
+	~ObjectSelection();
+
+	unsigned int getSelectedObject(int x, int y) const;
+
+	// Inherited via IProjector
+	virtual bool init() override;
+	virtual void enableWriting() override;
+	virtual void disableWriting() override;
 
 private:
-	uint32_t m_selectedObject = 0;
+	int m_selectedObject = 0;
+
+	std::shared_ptr<FrameBufferObject> m_frameBuffer = nullptr;
+	std::shared_ptr<RenderBufferObject> m_renderBuffer = nullptr;
+	std::shared_ptr<TextureHandler> m_textureHandler = nullptr;
+
 };
 

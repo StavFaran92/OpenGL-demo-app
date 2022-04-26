@@ -43,6 +43,11 @@ bool FrameBufferObject::isComplete()
 
 }
 
+uint32_t FrameBufferObject::getID() const
+{
+	return m_id;
+}
+
 void FrameBufferObject::attachRenderBuffer(uint32_t renderBufferID, AttachmentType type)
 {
 	VALIDATE_BIND;
