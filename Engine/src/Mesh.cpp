@@ -30,7 +30,6 @@ void Mesh::render(Shader& shader, IRenderer& renderer)
 	}
 
 	renderer.draw(*m_vao, shader);
-	glActiveTexture(GL_TEXTURE0);
 }
 
 void Mesh::addTextureHandler(TextureHandler* textureHandler)

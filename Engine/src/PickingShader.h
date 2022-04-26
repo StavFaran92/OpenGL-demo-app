@@ -10,6 +10,6 @@ public:
 	void setProjectionMatrix(glm::mat4 projection);
 
 	void setObjectIndex(unsigned int index);
-	void setDrawIndex(uint32_t index);
+	void setDrawIndex(unsigned int index);
 };
 

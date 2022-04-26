@@ -87,7 +87,9 @@ public:
 
 	void update(float deltaTime) override
 	{
-
+		update(box);
+		update(sphere1);
+		update(sphere2);
 	}
 
 	void draw() override

@@ -253,6 +253,17 @@ void Shader::setInt(const std::string& name, int v)
 	glUniform1i(getUniformLocation(name), v);
 }
 
+void Shader::setUInt(const std::string& name, unsigned int v)
+{
+	if (s_activateShader != m_id)
+	{
+		logDebug("Shader: {} is not currently bound", m_id);
+		return;
+	}
+
+	glUniform1ui(getUniformLocation(name), v);
+}
+
 void Shader::setMat3(const std::string& name, const glm::mat3& v)
 {
 	if (s_activateShader != m_id)

@@ -21,10 +21,10 @@ void PickingShader::setProjectionMatrix(glm::mat4 projection)
 
 void PickingShader::setObjectIndex(unsigned int index)
 {
-	setInt("objectIndex", index);
+	setUInt("objectIndex", index);
 }
 
-void PickingShader::setDrawIndex(uint32_t index)
+void PickingShader::setDrawIndex(unsigned int index)
 {
-	setInt("drawIndex", index);
+	setUInt("drawIndex", index);
 }
