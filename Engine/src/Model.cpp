@@ -22,6 +22,7 @@
 #include "ModelBuilder.h"
 #include "Logger.h"
 #include "MeshBuilder.h"
+#include "PhongShader.h"
 
 
 Model::Model()
@@ -37,19 +38,33 @@ Model::~Model()
 
 void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 {
-	Shader* currShader = m_shader.get();
+	Shader* shaderToUse = nullptr;
 
 	if (shader)
-		currShader = shader;
+	{
+		shaderToUse = shader;
+	}
+	else if (m_shader)
+	{
+		shaderToUse = m_shader.get();
+	}
+	else
+	{
+		shaderToUse = Engine::get()->getContext()->getPhongShader();
+	}
+
+	assert(shaderToUse);
+
+	shaderToUse->use();
 
 	auto context = Engine::get()->getContext();
 	if (context->getActiveScene()->getSkybox())
 	{
 		if (m_isReflective)
 		{
-			currShader = context->GetReflectionShader();
-			currShader->use();
-			currShader->setInt("skybox", 0);
+			shaderToUse = context->GetReflectionShader();
+			shaderToUse->use();
+			shaderToUse->setInt("skybox", 0);
 			auto textures = context->getActiveScene()->getSkybox()->getTextureHandlers();
 			if (textures.size() <= 0)
 			{
@@ -61,10 +76,10 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 
 		if (m_isRefractive)
 		{
-			currShader = context->GetRefractiveShader();
-			currShader->use();
-			currShader->setInt("skybox", 0);
-			currShader->setFloat("refractiveRatio", 1 / 1.52f);
+			shaderToUse = context->GetRefractiveShader();
+			shaderToUse->use();
+			shaderToUse->setInt("skybox", 0);
+			shaderToUse->setFloat("refractiveRatio", 1 / 1.52f);
 			auto textures = context->getActiveScene()->getSkybox()->getTextureHandlers();
 			if (textures.size() <= 0)
 			{
@@ -75,19 +90,21 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 		}
 	}
 
-	currShader->setMat4("model", m_transformation->getTransformation());
+	shaderToUse->setMat4("model", m_transformation->getTransformation());
 
-	if (currShader->IsMaterialsEnabled() && m_material)
+	if (shaderToUse->IsMaterialsEnabled() && m_material)
 	{
-		m_material->UseMaterial(*currShader);
+		m_material->UseMaterial(*shaderToUse);
 	}
 
 	renderer.SetDrawType(Renderer::DrawType::Triangles);
 
 	for (auto i = 0; i < m_meshes.size(); i++)
 	{
-		m_meshes[i]->render(*currShader, renderer);
+		m_meshes[i]->render(*shaderToUse, renderer);
 	}
+
+	shaderToUse->release();
 }
 
 bool Model::attachShader(std::shared_ptr<Shader> shader)

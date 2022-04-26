@@ -115,52 +115,18 @@ void Scene::draw(float deltaTime)
 
 	auto phongShader = m_context->getPhongShader();
 
+	phongShader->use();
+	phongShader->updateDirLights(m_directionalLights);
+	phongShader->updatePointLights(m_pointLights);
+	phongShader->release();
+
 	// Draw Application models
 	while (!m_drawQueue.empty())
 	{
 		auto model = m_drawQueue.front();
 		m_drawQueue.pop_front();
 
-		// Use custom model shader
-		if (model->getShader())
-		{
-			model->getShader()->use();
-
-			// Draw model
-			model->draw(*m_renderer.get(), phongShader);
-
-			model->getShader()->release();
-		}
-		else
-		{
-			// Use default phong shader
-			phongShader->use();
-
-			// Use all directional lights
-			{
-				int i = 0;
-				for (auto it = m_directionalLights.begin(); it != m_directionalLights.end(); ++it, ++i) {
-					it->second->useLight(*phongShader, i);
-				}
-				phongShader->setDirLightCount(m_directionalLights.size());
-			}
-
-			// Use all point lights
-			{
-				int i = 0;
-				for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++i, ++it) {
-					it->second->useLight(*phongShader, i);
-				}
-				phongShader->setPointLightCount(m_pointLights.size());
-			}
-
-			glStencilFunc(GL_ALWAYS, model->getID(), 0xff);
-
-			// Draw model
-			model->draw(*m_renderer.get(), phongShader);
-
-			phongShader->release();
-		}
+		model->draw(*m_renderer.get());
 	}
 
 	if (m_skybox)
