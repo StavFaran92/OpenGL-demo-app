@@ -21,7 +21,8 @@ public:
 	ObjectSelection();
 	~ObjectSelection();
 
-	unsigned int getSelectedObject(int x, int y) const;
+	bool selectedObject(int x, int y);
+	int getSelectedObject() const;
 
 	// Inherited via IProjector
 	virtual bool init() override;
@@ -29,7 +30,7 @@ public:
 	virtual void disableWriting() override;
 
 private:
-	int m_selectedObject = 0;
+	int m_selectedObject = -1;
 
 	std::shared_ptr<FrameBufferObject> m_frameBuffer = nullptr;
 	std::shared_ptr<RenderBufferObject> m_renderBuffer = nullptr;

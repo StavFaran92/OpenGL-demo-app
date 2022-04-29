@@ -60,7 +60,7 @@ public:
 
 	uint32_t getID() const { return m_id; }
 
-	std::shared_ptr<ObjectSelection> GetObjectSelection() const;
+	int getSelectedObject() const;
 
 	void update(Model* model);
 	void draw(Model* model);

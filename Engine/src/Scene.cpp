@@ -44,7 +44,7 @@ void Scene::init(Context* context)
 
 	Engine::get()->getInput()->getMouse()->onMouseReleased(Mouse::MouseButton::LeftMousebutton, [&](SDL_Event e)
 	{
-		m_enablePicking = false;
+		//m_enablePicking = false;
 	});
 }
 
@@ -154,7 +154,9 @@ void Scene::draw(float deltaTime)
 
 		int x, y;
 		Engine::get()->getInput()->getMouse()->getMousePosition(x, y);
-		std::cout << m_objectSelection->getSelectedObject(x, 768 - y) << std::endl;
+		m_objectSelection->selectedObject(x, y);
+
+		m_enablePicking = false;
 	}
 
 	// Render Phase
@@ -313,9 +315,9 @@ void Scene::setPostProcess(bool value)
 	m_isPostProcessEnabled = value;
 }
 
-std::shared_ptr<ObjectSelection> Scene::GetObjectSelection() const
+int Scene::getSelectedObject() const
 {
-	return m_objectSelection;
+	return m_objectSelection->getSelectedObject();
 }
 
 void Scene::update(Model* model)
