@@ -32,7 +32,10 @@ bool ObjectSelection::selectedObject(int x, int y)
 
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 
-	m_selectedObject =  pixel.ObjectID - 1;
+	if (pixel.ObjectID == 0)
+		m_selectedObject = -1;
+	else
+		m_selectedObject =  pixel.ObjectID - 1;
 
 	logInfo("Selected Object: " + std::to_string(m_selectedObject));
 
@@ -82,6 +85,7 @@ void ObjectSelection::enableWriting()
 
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void ObjectSelection::disableWriting()
@@ -89,4 +93,5 @@ void ObjectSelection::disableWriting()
 	//m_frameBuffer->unbind();
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glDisable(GL_DEPTH_TEST);
 }
