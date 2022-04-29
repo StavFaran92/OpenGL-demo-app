@@ -32,6 +32,8 @@ TextureHandler* Texture::createEmptyTexture(int width, int height, int internalF
 	auto texture = new Texture();
 
 	texture->m_target = GL_TEXTURE_2D;
+	texture->m_width = width;
+	texture->m_height = height;
 
 	// generate texture
 	glGenTextures(1, &texture->m_id);

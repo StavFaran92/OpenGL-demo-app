@@ -184,7 +184,7 @@ int Shader::getUniformLocation(const std::string& name)
 	int location = glGetUniformLocation(m_id, name.c_str());
 
 	if (location == -1) {
-		logError("Warning: uniform {} doesn't exists!", name.c_str());
+		logWarning("Uniform {} doesn't exists!", name.c_str());
 		return -1;
 	}
 
@@ -202,7 +202,7 @@ void Shader::setFloat(const std::string& name, float v)
 {
 	if(s_activateShader != m_id)
 	{
-		logDebug("Shader: {} is not currently bound", m_id);
+		logWarning("Shader: {} is not currently bound", m_id);
 		return;
 	}
 
@@ -213,7 +213,7 @@ void Shader::setFloat(const std::string& name, glm::vec2 v)
 {
 	if (s_activateShader != m_id)
 	{
-		logDebug("Shader: {} is not currently bound", m_id);
+		logWarning("Shader: {} is not currently bound", m_id);
 		return;
 	}
 
@@ -224,7 +224,7 @@ void Shader::setFloat(const std::string& name, glm::vec3 v)
 {
 	if (s_activateShader != m_id)
 	{
-		logDebug("Shader: {} is not currently bound", m_id);
+		logWarning("Shader: {} is not currently bound", m_id);
 		return;
 	}
 
@@ -235,7 +235,7 @@ void Shader::setFloat(const std::string& name, glm::vec4 v)
 {
 	if (s_activateShader != m_id)
 	{
-		logDebug("Shader: {} is not currently bound", m_id);
+		logWarning("Shader: {} is not currently bound", m_id);
 		return;
 	}
 
@@ -246,7 +246,7 @@ void Shader::setInt(const std::string& name, int v)
 {
 	if (s_activateShader != m_id)
 	{
-		logDebug("Shader: {} is not currently bound", m_id);
+		logWarning("Shader: {} is not currently bound", m_id);
 		return;
 	}
 
@@ -257,7 +257,7 @@ void Shader::setUInt(const std::string& name, unsigned int v)
 {
 	if (s_activateShader != m_id)
 	{
-		logDebug("Shader: {} is not currently bound", m_id);
+		logWarning("Shader: {} is not currently bound", m_id);
 		return;
 	}
 
@@ -268,7 +268,7 @@ void Shader::setMat3(const std::string& name, const glm::mat3& v)
 {
 	if (s_activateShader != m_id)
 	{
-		logDebug("Shader: {} is not currently bound", m_id);
+		logWarning("Shader: {} is not currently bound", m_id);
 		return;
 	}
 
@@ -279,7 +279,7 @@ void Shader::setMat4(const std::string& name, const glm::mat4& v)
 {
 	if (s_activateShader != m_id)
 	{
-		logDebug("Shader: {} is not currently bound", m_id);
+		logWarning("Shader: {} is not currently bound", m_id);
 		return;
 	}
 

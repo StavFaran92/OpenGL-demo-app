@@ -141,8 +141,11 @@ void Scene::draw(float deltaTime)
 
 		for (unsigned int i = 0; i < m_drawQueue.size(); i++)
 		{
+			pickingShader->use();
 			pickingShader->setModelMatrix(m_drawQueue[i]->getTransformation()->getMatrix());
 			pickingShader->setObjectIndex(i + 1);
+			pickingShader->release();
+
 			m_drawQueue[i]->draw(*m_renderer.get(), pickingShader);
 		}
 		pickingShader->release();
