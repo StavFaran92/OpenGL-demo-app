@@ -61,6 +61,7 @@ public:
 	uint32_t getID() const { return m_id; }
 
 	int getSelectedObject() const;
+	void enableObjectSelection(bool isEnabled);
 
 	void update(Model* model);
 	void draw(Model* model);
@@ -103,7 +104,8 @@ private:
 	Context* m_context;
 
 	bool m_isPostProcessEnabled = false;
-	bool m_enablePicking = false;
+	bool m_pickObject = false;
+	bool m_isObjectSelectionEnabled = false;
 
 
 };

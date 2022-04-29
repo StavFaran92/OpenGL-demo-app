@@ -29,6 +29,11 @@ void Mesh::render(Shader& shader, IRenderer& renderer)
 		SetTexturesInShader(shader);
 	}
 
+	if (shader.isSupportColors())
+	{
+		shader.setInt("useColors", m_useColors);
+	}
+
 	renderer.draw(*m_vao, shader);
 }
 
@@ -133,6 +138,8 @@ const std::vector<unsigned int>* Mesh::getIndices() const
 
 void Mesh::setColors(std::shared_ptr<std::vector<glm::vec3>> colors)
 {
+	m_useColors = true;
+
 	m_colors = colors;
 }
 

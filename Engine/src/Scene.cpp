@@ -39,7 +39,7 @@ void Scene::init(Context* context)
 
 	Engine::get()->getInput()->getMouse()->onMousePressed(Mouse::MouseButton::LeftMousebutton, [&](SDL_Event e)
 	{
-		m_enablePicking = true;
+		m_pickObject = true;
 	});
 
 	Engine::get()->getInput()->getMouse()->onMouseReleased(Mouse::MouseButton::LeftMousebutton, [&](SDL_Event e)
@@ -130,7 +130,7 @@ void Scene::draw(float deltaTime)
 	phongShader->release();
 
 	// Picking Phase
-	if (m_enablePicking)
+	if (m_isObjectSelectionEnabled && m_pickObject)
 	{
 		m_objectSelection->enableWriting();
 
@@ -156,7 +156,7 @@ void Scene::draw(float deltaTime)
 		Engine::get()->getInput()->getMouse()->getMousePosition(x, y);
 		m_objectSelection->selectedObject(x, y);
 
-		m_enablePicking = false;
+		m_pickObject = false;
 	}
 
 	// Render Phase
@@ -317,7 +317,18 @@ void Scene::setPostProcess(bool value)
 
 int Scene::getSelectedObject() const
 {
+	if (!m_isObjectSelectionEnabled)
+	{
+		logWarning("Object selection isn't enabled for this scene.");
+		return -1;
+	}
+
 	return m_objectSelection->getSelectedObject();
+}
+
+void Scene::enableObjectSelection(bool isEnabled)
+{
+	m_isObjectSelectionEnabled = isEnabled;
 }
 
 void Scene::update(Model* model)

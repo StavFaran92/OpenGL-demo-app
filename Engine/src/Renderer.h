@@ -22,7 +22,6 @@ public:
 	glm::mat4 getProjection() const override;
 
 	//Methods
-	std::shared_ptr<Shader> GetDefaultShader() const;
 	std::shared_ptr<ICamera> GetCamera() const;
 protected:
 	std::shared_ptr<Shader> m_phongShader = nullptr;

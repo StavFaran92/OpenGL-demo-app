@@ -46,6 +46,8 @@ public:
 	inline void SetEnableTextures(bool value) { m_enableTexture = value; }
 	inline bool IsMaterialsEnabled() { return m_enableMaterial; }
 	inline void SetEnableMaterials(bool value) { m_enableMaterial = value; }
+	inline bool isSupportColors() { return m_enableColors; }
+	inline void setEnableColors(bool value) { m_enableColors = value; }
 
 	static Shader* PhongShader();
 	static Shader* SolidColorShader();
@@ -70,6 +72,7 @@ protected:
 	bool m_enableLight = false;
 	bool m_enableMaterial = false;
 	bool m_enableTexture = false;
+	bool m_enableColors = false;
 	std::string m_vertexShaderFilepath;
 	std::string m_FragmentShaderFilepath;
 

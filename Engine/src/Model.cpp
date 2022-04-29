@@ -123,7 +123,7 @@ bool Model::attachShader(Shader* shader)
 
 bool Model::detachShader()
 {
-	m_shader = Engine::get()->getRenderer()->GetDefaultShader();
+	m_shader = nullptr;
 
 	return true;
 }

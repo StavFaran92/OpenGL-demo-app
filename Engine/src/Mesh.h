@@ -213,4 +213,5 @@ private:
 	size_t m_numOfVertices = 0;
 	size_t m_indexCount = 0;
 	VertexLayout m_layout;
+	bool m_useColors = false;
 };

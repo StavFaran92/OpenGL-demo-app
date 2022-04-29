@@ -32,6 +32,7 @@ Shader::Shader(const Shader& other) :
 	m_enableLight = other.m_enableLight;
 	m_enableMaterial = other.m_enableMaterial;
 	m_enableTexture = other.m_enableTexture;
+	m_enableColors = other.m_enableColors;
 
 	init();
 }
@@ -44,6 +45,7 @@ Shader& Shader::operator=(const Shader& other)
 	m_enableLight = other.m_enableLight;
 	m_enableMaterial = other.m_enableMaterial;
 	m_enableTexture = other.m_enableTexture;
+	m_enableColors = other.m_enableColors;
 
 	init();
 
@@ -292,6 +294,7 @@ Shader* Shader::PhongShader()
 	shader->SetEnableLights(true);
 	shader->SetEnableMaterials(true);
 	shader->SetEnableTextures(true);
+	shader->setEnableColors(true);
 
 	return shader;
 }

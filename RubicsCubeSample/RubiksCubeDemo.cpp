@@ -19,6 +19,9 @@ public:
 		rubiksCube = std::make_shared<RubiksCube>();
 		rubiksCube->init(3);
 
+		auto scene = Engine::get()->getContext()->getActiveScene();
+		scene->enableObjectSelection(true);
+
 		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_Scancode::SDL_SCANCODE_X, [&](SDL_Event e) 
 		{
 			rubiksCube->rotateFace(Axis::X, 0, Shift::CW);

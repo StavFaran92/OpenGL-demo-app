@@ -13,7 +13,6 @@
 
 Renderer::Renderer()
 {
-	m_phongShader = std::shared_ptr<Shader>(Shader::PhongShader());
 	//m_camera = std::make_shared<FlyCamera>(glm::vec3(0.0f, 0.0f, 0.0f), -90.0f, 0.0f, 1.0f, .5f);
 	m_camera = std::make_shared<EditorCamera>(glm::vec3(5.0f, 5.0f, 5.0f), 1.0f, .5f);
 	m_projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
@@ -21,7 +20,6 @@ Renderer::Renderer()
 
 Renderer::Renderer(const Renderer& other)
 {
-	m_phongShader = other.m_phongShader;
 	m_camera = other.m_camera;
 	m_projection = other.m_projection;
 }
@@ -47,11 +45,6 @@ void Renderer::SetMVP(Shader& shader) const
 {
 	shader.setMat4("projection", m_projection);
 	shader.setMat4("view", m_camera->getView());
-}
-
-std::shared_ptr<Shader> Renderer::GetDefaultShader() const
-{
-	return m_phongShader;
 }
 
 std::shared_ptr<ICamera> Renderer::GetCamera() const

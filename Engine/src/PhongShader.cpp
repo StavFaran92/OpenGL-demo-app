@@ -8,6 +8,7 @@ PhongShader::PhongShader() : Shader("Resources\\Shaders\\shader.vert", "Resource
 	m_enableLight = true;
 	m_enableTexture = true;
 	m_enableMaterial = true;
+	m_enableColors = true;
 }
 
 void PhongShader::setDirLightCount(int count)
