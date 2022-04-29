@@ -126,7 +126,7 @@ void Scene::draw(float deltaTime)
 	phongShader->use();
 	phongShader->updateDirLights(m_directionalLights);
 	phongShader->updatePointLights(m_pointLights);
-	phongShader->setFloat("viewPos", m_renderer->GetCamera()->getPosition());
+	phongShader->setViewPos(m_renderer->GetCamera()->getPosition());
 	phongShader->release();
 
 	// Picking Phase

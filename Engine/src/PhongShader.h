@@ -14,6 +14,8 @@ public:
 
 	void setDirLightCount(int count);
 	void setPointLightCount(int count);
+	void setUseColors(bool enable);
+	void setViewPos(glm::vec3 viewPosition);
 	void updateDirLights(std::unordered_map<uint32_t, std::shared_ptr<DirectionalLight>>& dirLights);
 	void updatePointLights(std::unordered_map<uint32_t, std::shared_ptr<PointLight>>& pointLights);
 };

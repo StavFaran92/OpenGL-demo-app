@@ -21,6 +21,15 @@ void PhongShader::setPointLightCount(int count)
 	setInt("pointLightCount", count);
 }
 
+void PhongShader::setUseColors(bool enable)
+{
+	setInt("useColors", enable);
+}
+void PhongShader::setViewPos(glm::vec3 viewPosition)
+{
+	setFloat("viewPos", viewPosition);
+}
+
 void PhongShader::updateDirLights(std::unordered_map<uint32_t, std::shared_ptr<DirectionalLight>>& dirLights)
 {
 	// Use all point lights
