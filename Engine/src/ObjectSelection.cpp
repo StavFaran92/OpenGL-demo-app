@@ -34,6 +34,8 @@ bool ObjectSelection::selectedObject(int x, int y)
 
 	m_selectedObject =  pixel.ObjectID - 1;
 
+	logInfo("Selected Object: " + std::to_string(m_selectedObject));
+
 	return true;
 }
 

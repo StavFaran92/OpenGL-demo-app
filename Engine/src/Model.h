@@ -38,7 +38,7 @@ public:
 	/** Destructor */
 	~Model();	
 
-	/**
+	/**T
 	 * Attach a shader to the model.
 	 * 
 	 * The attached shader will be used to render the mesh with.

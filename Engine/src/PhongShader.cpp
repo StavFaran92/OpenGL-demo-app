@@ -30,6 +30,11 @@ void PhongShader::setViewPos(glm::vec3 viewPosition)
 	setFloat("viewPos", viewPosition);
 }
 
+void PhongShader::setColorMul(glm::vec4 colorMul)
+{
+	setFloat("colorMul", colorMul);
+}
+
 void PhongShader::updateDirLights(std::unordered_map<uint32_t, std::shared_ptr<DirectionalLight>>& dirLights)
 {
 	// Use all point lights

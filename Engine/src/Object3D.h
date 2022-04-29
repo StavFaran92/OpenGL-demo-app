@@ -36,13 +36,16 @@ public:
 
 protected:
 	friend class Scene;
-	void setID(uint32_t id);
+	void setSceneID(uint32_t id);
 	virtual void update(float deltatime);
 
 protected:
+	uint32_t m_sceneID = 0;
 	uint32_t m_id = 0;
 
 	std::shared_ptr<Transformation> m_transformation;
 
 	std::vector<Object3D*> m_childrens;
+
+	static uint32_t s_modelCounter;
 };

@@ -143,7 +143,7 @@ void Scene::draw(float deltaTime)
 		{
 			pickingShader->use();
 			pickingShader->setModelMatrix(m_drawQueue[i]->getTransformation()->getMatrix());
-			pickingShader->setObjectIndex(i + 1);
+			pickingShader->setObjectIndex(m_drawQueue[i]->getID() + 1);
 			pickingShader->release();
 
 			m_drawQueue[i]->draw(*m_renderer.get(), pickingShader);
@@ -170,6 +170,15 @@ void Scene::draw(float deltaTime)
 	{
 		auto model = m_drawQueue.front();
 		m_drawQueue.pop_front();
+
+		phongShader->use();
+
+		if (model->getID() == getSelectedObject())
+			phongShader->setColorMul({ 0.f, 1.f, 0.f, .7f });
+		else
+			phongShader->setColorMul({ 1.f, 1.f, 1.f, 1.f });
+
+		phongShader->release();
 
 		model->draw(*m_renderer.get());
 	}
@@ -203,7 +212,7 @@ Scene::Scene(Context* context)
 bool Scene::addModel(Model* model)
 {
 	m_modelCounter++;
-	model->setID(m_modelCounter);
+	model->setSceneID(m_modelCounter);
 	m_models.emplace(m_modelCounter, std::shared_ptr<Model>( model));
 
 	logInfo("Model {} Added successfully.", std::to_string(m_modelCounter));
@@ -213,7 +222,7 @@ bool Scene::addModel(Model* model)
 bool Scene::addPointLight(PointLight* pLight)
 {
 	m_pointLightCounter++;
-	pLight->setID(m_pointLightCounter);
+	pLight->setSceneID(m_pointLightCounter);
 	m_pointLights.emplace(m_pointLightCounter, std::shared_ptr<PointLight>(pLight));
 
 	logInfo("PointLight {} Added successfully.", std::to_string(m_pointLightCounter));
@@ -223,7 +232,7 @@ bool Scene::addPointLight(PointLight* pLight)
 bool Scene::addDirectionalLight(DirectionalLight* dLight)
 {
 	m_directionalLightCounter++;
-	dLight->setID(m_directionalLightCounter);
+	dLight->setSceneID(m_directionalLightCounter);
 	m_directionalLights.emplace(m_directionalLightCounter, std::shared_ptr<DirectionalLight>(dLight));
 
 	logInfo("DirectionalLight {} Added successfully.", std::to_string(m_directionalLightCounter));
