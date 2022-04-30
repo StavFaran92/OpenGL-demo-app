@@ -23,7 +23,7 @@ void ObjectSelection::deselectedObject(uint32_t id)
 	m_selectedObjects.erase(id);
 }
 
-void ObjectSelection::clearSelectedObjects()
+void ObjectSelection::clear()
 {
 	m_selectedObjects.clear();
 }

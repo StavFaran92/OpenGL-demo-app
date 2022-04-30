@@ -4,6 +4,8 @@
 #include "Logger.h"
 #include "Engine.h"
 #include "ObjectManager.h"
+#include "Context.h"
+#include "Scene.h"
 
 Object3D::Object3D()
 {
@@ -158,4 +160,17 @@ void Object3D::removeChildren(Object3D* child)
 void Object3D::setSceneID(uint32_t id)
 {
 	m_sceneID = id;
+}
+
+void Object3D::select()
+{
+	Engine::get()->getContext()->getActiveScene()->selectObject(m_id); // todo fix
+
+	for (const auto& child : m_childrens)
+	{
+		if (!child)
+			continue;
+
+		child->select();
+	}
 }

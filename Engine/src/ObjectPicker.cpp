@@ -45,7 +45,8 @@ bool ObjectPicker::init(int windowWidth, int windowHeight)
 
 int ObjectPicker::pickObject(int x, int y)
 {
-	m_frameBuffer->bind();
+	//m_frameBuffer->bind();
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_frameBuffer->getID());
 
 	glReadBuffer(GL_COLOR_ATTACHMENT0);
 

@@ -11,7 +11,7 @@ public:
 	//void selectObject(int x, int y);
 	bool selectObject(uint32_t id);
 	void deselectedObject(uint32_t id);
-	void clearSelectedObjects();
+	void clear();
 
 	bool isObjectSelected(uint32_t id) const;
 private:

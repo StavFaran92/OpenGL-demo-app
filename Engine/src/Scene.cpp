@@ -168,7 +168,7 @@ void Scene::draw(float deltaTime)
 		auto objectID = m_objectPicker->pickObject(x, y);
 		if (objectID != -1)
 		{
-			m_objectSelection->clearSelectedObjects();
+			m_objectSelection->clear();
 			auto obj = Engine::get()->getObjectManager()->getObjectById(objectID);
 			obj->onPicked();
 			m_objectSelection->selectObject(objectID);
@@ -362,6 +362,11 @@ void Scene::enableObjectSelection(bool isEnabled)
 void Scene::selectObject(uint32_t id)
 {
 	m_objectSelection->selectObject(id);
+}
+
+void Scene::clearObjectSelection()
+{
+	m_objectSelection->clear();
 }
 
 void Scene::update(Model* model)

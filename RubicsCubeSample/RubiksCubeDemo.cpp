@@ -27,28 +27,6 @@ public:
 		auto scene = Engine::get()->getContext()->getActiveScene();
 		scene->enableObjectSelection(true);
 
-		//Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_Scancode::SDL_SCANCODE_X, [=](SDL_Event e) 
-		//{
-		//	std::cout << *a << std::endl;
-
-		//	rubiksCube->rotateFace(Axis::X, 0, Shift::CW);
-		//});
-
-		//Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_Scancode::SDL_SCANCODE_Y, [&](SDL_Event e)
-		//{
-		//	rubiksCube->rotateFace(Axis::Y, 0, Shift::CW);
-		//});
-
-		//Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_Scancode::SDL_SCANCODE_Z, [&](SDL_Event e)
-		//{
-		//	rubiksCube->rotateFace(Axis::Z, 0, Shift::CW);
-		//});
-
-		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_Scancode::SDL_SCANCODE_I, [&](SDL_Event e)
-		{
-			rubiksCube->print();
-		});
-
 		//postProcess(PostProcess::grayscale());
 	}
 

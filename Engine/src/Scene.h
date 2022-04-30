@@ -64,6 +64,7 @@ public:
 	bool isSelected(uint32_t id) const;
 	void enableObjectSelection(bool isEnabled);
 	void selectObject(uint32_t id);
+	void clearObjectSelection();
 
 	void update(Model* model);
 	void draw(Model* model);
