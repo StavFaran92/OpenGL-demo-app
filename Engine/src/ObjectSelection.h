@@ -1,8 +1,9 @@
 #pragma once
+#include <memory>
+#include <unordered_set>
 
 #include "IProjector.h"
 
-#include <memory>
 
 class FrameBufferObject;
 class RenderBufferObject;
@@ -21,16 +22,21 @@ public:
 	ObjectSelection();
 	~ObjectSelection();
 
-	bool selectedObject(int x, int y);
-	int getSelectedObject() const;
+	void selectObject(int x, int y);
+	void deselectedObject(uint32_t id);
+
+	void clearSelectedObjects();
+
+	bool isObjectSelected(uint32_t id) const;
 
 	// Inherited via IProjector
 	virtual bool init() override;
 	virtual void enableWriting() override;
 	virtual void disableWriting() override;
-
 private:
-	int m_selectedObject = -1;
+	bool selectObject(uint32_t id);
+private:
+	std::unordered_set<uint32_t> m_selectedObjects;
 
 	std::shared_ptr<FrameBufferObject> m_frameBuffer = nullptr;
 	std::shared_ptr<RenderBufferObject> m_renderBuffer = nullptr;

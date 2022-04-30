@@ -154,7 +154,7 @@ void Scene::draw(float deltaTime)
 
 		int x, y;
 		Engine::get()->getInput()->getMouse()->getMousePosition(x, y);
-		m_objectSelection->selectedObject(x, y);
+		m_objectSelection->selectObject(x, y);
 
 		m_pickObject = false;
 	}
@@ -173,10 +173,10 @@ void Scene::draw(float deltaTime)
 
 		phongShader->use();
 
-		if (model->getID() == getSelectedObject())
-			phongShader->setColorMul({ 0.f, 1.f, 0.f, .7f });
-		else
+		if (isSelected(model->getID()))
 			phongShader->setColorMul({ 1.f, 1.f, 1.f, 1.f });
+		else
+			phongShader->setColorMul({ .6f, .6f, .6f, .6f });
 
 		phongShader->release();
 
@@ -324,7 +324,7 @@ void Scene::setPostProcess(bool value)
 	m_isPostProcessEnabled = value;
 }
 
-int Scene::getSelectedObject() const
+bool Scene::isSelected(uint32_t id) const
 {
 	if (!m_isObjectSelectionEnabled)
 	{
@@ -332,7 +332,7 @@ int Scene::getSelectedObject() const
 		return -1;
 	}
 
-	return m_objectSelection->getSelectedObject();
+	return m_objectSelection->isObjectSelected(id);
 }
 
 void Scene::enableObjectSelection(bool isEnabled)

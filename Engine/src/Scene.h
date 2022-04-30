@@ -60,7 +60,7 @@ public:
 
 	uint32_t getID() const { return m_id; }
 
-	int getSelectedObject() const;
+	bool isSelected(uint32_t id) const;
 	void enableObjectSelection(bool isEnabled);
 
 	void update(Model* model);

@@ -10,8 +10,7 @@
 
 #include "Logger.h"
 
-ObjectSelection::ObjectSelection() :
-	m_selectedObject(0)
+ObjectSelection::ObjectSelection()
 {
 }
 
@@ -19,7 +18,7 @@ ObjectSelection::~ObjectSelection()
 {
 }
 
-bool ObjectSelection::selectedObject(int x, int y)
+void ObjectSelection::selectObject(int x, int y)
 {
 	m_frameBuffer->bind();
 
@@ -32,19 +31,27 @@ bool ObjectSelection::selectedObject(int x, int y)
 
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 
-	if (pixel.ObjectID == 0)
-		m_selectedObject = -1;
-	else
-		m_selectedObject =  pixel.ObjectID - 1;
+	if (pixel.ObjectID != 0)
+	{
+		selectObject(pixel.ObjectID - 1);
 
-	logInfo("Selected Object: " + std::to_string(m_selectedObject));
-
-	return true;
+		logInfo("Selected Object: " + std::to_string(pixel.ObjectID - 1));
+	}
 }
 
-int ObjectSelection::getSelectedObject() const
+void ObjectSelection::deselectedObject(uint32_t id)
 {
-	return m_selectedObject;
+	m_selectedObjects.erase(id);
+}
+
+void ObjectSelection::clearSelectedObjects()
+{
+	m_selectedObjects.clear();
+}
+
+bool ObjectSelection::isObjectSelected(uint32_t id) const
+{
+	return m_selectedObjects.find(id) != m_selectedObjects.end();
 }
 
 bool ObjectSelection::init()
@@ -94,4 +101,11 @@ void ObjectSelection::disableWriting()
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST);
+}
+
+bool ObjectSelection::selectObject(uint32_t id)
+{
+	m_selectedObjects.insert(id);
+
+	return true;
 }
