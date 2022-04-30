@@ -96,6 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ObjectPicker.cpp" />
     <ClCompile Include="src\PickingShader.cpp" />
     <ClCompile Include="src\PhongShader.cpp" />
     <ClCompile Include="src\CoroutineSystem.cpp" />
@@ -158,6 +159,8 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ObjectPicker.h" />
+    <ClInclude Include="src\IPickable.h" />
     <ClInclude Include="src\IProjector.h" />
     <ClInclude Include="src\PickingShader.h" />
     <ClInclude Include="src\PhongShader.h" />
@@ -169,6 +172,7 @@
     <ClInclude Include="src\ModelImporter.h" />
     <ClInclude Include="src\Box.h" />
     <ClInclude Include="src\Quad.h" />
+    <ClInclude Include="src\ISelectable.h" />
     <ClInclude Include="src\Sphere.h" />
     <ClInclude Include="src\Core.h" />
     <ClInclude Include="src\ApplicationConstants.h" />

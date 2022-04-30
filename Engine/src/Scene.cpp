@@ -15,21 +15,31 @@
 #include "PhongShader.h"
 #include "PickingShader.h"
 #include "Context.h"
+#include "Window.h"
+#include "ObjectPicker.h"
 
 void Scene::init(Context* context)
 {
 	m_context = context;
 
+	auto width = Engine::get()->getWindow()->getWidth();
+	auto height = Engine::get()->getWindow()->getHeight();
+
 	m_renderer = std::make_shared<Renderer>();
 	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
 
 	m_objectSelection = std::make_shared<ObjectSelection>();
-	m_objectSelection->init();
+
+	m_objectPicker = std::make_shared<ObjectPicker>();
+	if(!m_objectPicker->init(width, height))
+	{
+		logError("Object picker failed to init!");
+	}
 
 	m_postProcessProjector = std::make_shared<PostProcessProjector>();
-	if (!m_postProcessProjector->init())
+	if (!m_postProcessProjector->init(width, height))
 	{
-		logError("Screen buffer projector failed to init!");
+		logError("Post process projector failed to init!");
 	}
 
 	m_coroutineManager = std::make_shared<CoroutineSystem>();
@@ -132,7 +142,7 @@ void Scene::draw(float deltaTime)
 	// Picking Phase
 	if (m_isObjectSelectionEnabled && m_pickObject)
 	{
-		m_objectSelection->enableWriting();
+		m_objectPicker->enableWriting();
 
 		auto pickingShader = m_context->getPickingShader();
 		pickingShader->use();
@@ -150,11 +160,12 @@ void Scene::draw(float deltaTime)
 		}
 		pickingShader->release();
 
-		m_objectSelection->disableWriting();
+		m_objectPicker->disableWriting();
 
 		int x, y;
 		Engine::get()->getInput()->getMouse()->getMousePosition(x, y);
-		m_objectSelection->selectObject(x, y);
+		auto objectID = m_objectPicker->pickObject(x, y);
+		m_objectSelection->selectObject(objectID);
 
 		m_pickObject = false;
 	}
@@ -329,7 +340,7 @@ bool Scene::isSelected(uint32_t id) const
 	if (!m_isObjectSelectionEnabled)
 	{
 		logWarning("Object selection isn't enabled for this scene.");
-		return -1;
+		return false;
 	}
 
 	return m_objectSelection->isObjectSelected(id);
@@ -338,6 +349,11 @@ bool Scene::isSelected(uint32_t id) const
 void Scene::enableObjectSelection(bool isEnabled)
 {
 	m_isObjectSelectionEnabled = isEnabled;
+}
+
+void Scene::selectObject(uint32_t id)
+{
+	m_objectSelection->selectObject(id);
 }
 
 void Scene::update(Model* model)

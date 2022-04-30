@@ -14,9 +14,9 @@ class TextureHandler;
 class PostProcessProjector : public IProjector
 {
 public:
-	bool init();
-	void enableWriting();
-	void disableWriting();
+	bool init(int windowWidth, int windowHeight) override;
+	void enableWriting() override;
+	void disableWriting() override;
 	void draw();
 	void setPostProcessShader(std::shared_ptr<Shader> shader);
 

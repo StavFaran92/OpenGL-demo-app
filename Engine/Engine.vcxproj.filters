@@ -179,6 +179,7 @@
       <Filter>src\Graphics\Shaders</Filter>
     </ClCompile>
     <ClCompile Include="src\PickingShader.cpp" />
+    <ClCompile Include="src\ObjectPicker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -399,6 +400,9 @@
     </ClInclude>
     <ClInclude Include="src\PickingShader.h" />
     <ClInclude Include="src\IProjector.h" />
+    <ClInclude Include="src\IPickable.h" />
+    <ClInclude Include="src\ISelectable.h" />
+    <ClInclude Include="src\ObjectPicker.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

@@ -19,6 +19,14 @@ void Object3D::update(float deltatime)
 	m_transformation->update(deltatime);
 }
 
+void Object3D::onSelected()
+{
+}
+
+void Object3D::onPicked()
+{
+}
+
 Transformation* Object3D::getTransformation() const
 { 
 	return m_transformation.get(); 

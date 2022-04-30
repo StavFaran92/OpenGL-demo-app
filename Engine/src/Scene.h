@@ -22,6 +22,7 @@ class PostProcessProjector;
 class Shader;
 class CoroutineSystem;
 class Context;
+class ObjectPicker;
 
 class EngineAPI Scene
 {
@@ -62,6 +63,7 @@ public:
 
 	bool isSelected(uint32_t id) const;
 	void enableObjectSelection(bool isEnabled);
+	void selectObject(uint32_t id);
 
 	void update(Model* model);
 	void draw(Model* model);
@@ -97,6 +99,7 @@ private:
 	std::shared_ptr<ObjectSelection> m_objectSelection = nullptr;
 	std::shared_ptr<PostProcessProjector> m_postProcessProjector = nullptr;
 	std::shared_ptr<CoroutineSystem> m_coroutineManager = nullptr;
+	std::shared_ptr<ObjectPicker> m_objectPicker = nullptr;
 
 	std::deque<Model*> m_drawQueue;
 	std::deque<Model*> m_updateQueue;

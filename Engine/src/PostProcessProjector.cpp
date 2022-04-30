@@ -10,15 +10,15 @@
 #include "Logger.h"
 #include "TextureHandler.h"
 
-bool PostProcessProjector::init()
+bool PostProcessProjector::init(int windowWidth, int windowHeight)
 {
 	// Create FBO
 	m_frameBuffer = std::make_shared<FrameBufferObject>();
 	m_frameBuffer->bind();
 
 	// Get window width and height
-	auto width = Engine::get()->getWindow()->getWidth();
-	auto height = Engine::get()->getWindow()->getHeight();
+	auto width = windowWidth;
+	auto height = windowHeight;
 
 	// Create a empty texture and attach to FBO
 	m_textureHandler = std::shared_ptr<TextureHandler>(Texture::createEmptyTexture(width, height));

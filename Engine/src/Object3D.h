@@ -5,11 +5,14 @@
 #include "Core.h"
 #include "glm/glm.hpp"
 
+#include "ISelectable.h"
+#include "IPickable.h"
+
 
 class Transformation;
 class Scene;
 
-class EngineAPI Object3D
+class EngineAPI Object3D : public ISelectable, public IPickable
 {
 public:
 	Object3D();
@@ -33,6 +36,9 @@ public:
 
 	void removeChildren(std::shared_ptr<Object3D> child);
 	void removeChildren(Object3D* child);
+
+	void onSelected() override;
+	void onPicked() override;
 
 protected:
 	friend class Scene;
