@@ -32,6 +32,9 @@ public:
 	void removeCube(int x, int y);
 	std::vector<RubiksCubeEnt*> getCubes();
 
+	int getIndex() const;
+	Axis getAxis() const;
+
 	void print(const std::string& padding = "") const;
 
 private:

@@ -15,6 +15,7 @@
 #include "ModelImporter.h"
 #include "Logger.h"
 #include "MemoryManagement.h"
+#include "ObjectManager.h"
 
 #include "Application.h"
 #include "SDL.h"
@@ -37,6 +38,8 @@ bool Engine::init()
     m_eventSystem = std::make_shared<EventSystem>();
 
     m_memoryManagementSystem = std::make_shared<MemoryManagement>();
+
+    m_objectManager = std::make_shared<ObjectManager>();
 
     m_window = std::make_shared<Window>(1024, 768);
     if (!m_window->init())
@@ -216,6 +219,11 @@ ModelImporter* Engine::getModelImporter() const
 MemoryManagement* Engine::getMemoryManagementSystem() const
 {
     return m_memoryManagementSystem.get();
+}
+
+ObjectManager* Engine::getObjectManager() const
+{
+    return m_objectManager.get();
 }
 
 void Engine::pause()

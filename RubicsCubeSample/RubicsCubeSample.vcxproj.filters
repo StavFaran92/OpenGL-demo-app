@@ -27,6 +27,9 @@
     <ClCompile Include="RubiksCubeEnt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RubiksCubeController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RubiksCube.h">
@@ -39,6 +42,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RubiksCubeConfigurations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RubiksCubeController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

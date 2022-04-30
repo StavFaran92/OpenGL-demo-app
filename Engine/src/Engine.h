@@ -17,6 +17,7 @@ class Input;
 class EventSystem;
 class ModelImporter;
 class MemoryManagement;
+class ObjectManager;
 
 class EngineAPI Engine
 {
@@ -33,6 +34,7 @@ public:
     EventSystem* getEventSystem() const;
     ModelImporter* getModelImporter() const;
     MemoryManagement* getMemoryManagementSystem() const;
+    ObjectManager* getObjectManager() const;
 
     void pause();
     void resume();
@@ -74,6 +76,7 @@ protected:
     std::shared_ptr<EventSystem> m_eventSystem;
     std::shared_ptr<ModelImporter> m_modelImporter;
     std::shared_ptr<MemoryManagement> m_memoryManagementSystem;
+    std::shared_ptr<ObjectManager> m_objectManager;
 
 
 };

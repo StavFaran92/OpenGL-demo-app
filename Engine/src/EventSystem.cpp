@@ -1,6 +1,6 @@
 #include "EventSystem.h"
 
-void EventSystem::addEventListener(SDL_EventType eventType, std::function<void(SDL_Event e)> callback)
+void EventSystem::addEventListener(SDL_EventType eventType, const std::function<void(SDL_Event e)>& callback)
 {
 	if (m_listeners.find(eventType) == m_listeners.end())
 		m_listeners[eventType] = std::vector<std::function<void(SDL_Event e)>>();

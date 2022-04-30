@@ -96,6 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ObjectManager.cpp" />
     <ClCompile Include="src\ObjectPicker.cpp" />
     <ClCompile Include="src\PickingShader.cpp" />
     <ClCompile Include="src\PhongShader.cpp" />
@@ -159,6 +160,7 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ObjectManager.h" />
     <ClInclude Include="src\ObjectPicker.h" />
     <ClInclude Include="src\IPickable.h" />
     <ClInclude Include="src\IProjector.h" />

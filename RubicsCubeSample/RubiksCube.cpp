@@ -1,6 +1,7 @@
 #include "RubiksCube.h"
 #include "RubiksCubeFace.h"
 #include "RubiksCubeEnt.h"
+#include "RubiksCubeController.h"
 
 using namespace rubiksCube;
 
@@ -91,6 +92,19 @@ void RubiksCube::print(const std::string& padding) const
 	}
 }
 
+void RubiksCube::onEntityPicked(RubiksCubeEnt* ent)
+{
+	if (!m_controller)
+		return;
+
+	m_controller->setPickedEnt(ent);
+}
+
+void RubiksCube::setController(RubiksCubeController* controller)
+{
+	m_controller = controller;
+}
+
 void RubiksCube::draw(IRenderer& renderer, Shader* shader)
 {
 	Model::draw(renderer, shader);
@@ -166,7 +180,7 @@ void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 
 }
 
-RubiksCubeEnt* RubiksCube::createRubiksCubeBox()
+RubiksCubeEnt* RubiksCube::createRubiksCubeBox(RubiksCube* rubiksCube)
 {
 	TextureHandler* textureHandlerDiffse = Texture::loadTextureFromFile(g_rubiksCubeTexture);
 	textureHandlerDiffse->setType(Texture::Type::Diffuse);
@@ -174,7 +188,7 @@ RubiksCubeEnt* RubiksCube::createRubiksCubeBox()
 	TextureHandler* textureHandlerSpecular = Texture::loadTextureFromFile(g_rubiksCubeTexture);
 	textureHandlerSpecular->setType(Texture::Type::Specular);
 
-	return dynamic_cast<RubiksCubeEnt*>(ModelBuilder::builder<RubiksCubeEnt>()
+	return dynamic_cast<RubiksCubeEnt*>(ModelBuilder::builder<RubiksCubeEnt>(rubiksCube)
 	.getMeshBuilder()
 	.setColors(colors, 36)
 	.addTextureHandler(textureHandlerDiffse)
@@ -206,7 +220,7 @@ void RubiksCube::init(size_t size)
 		{
 			for (int k = 0; k < m_size; k++)
 			{
-				auto cube = createRubiksCubeBox();
+				auto cube = createRubiksCubeBox(this);
 				cube->setRCID(i * size * size + j * size + k);
 				cube->translate(i, j, k);
 				m_cubes.push_back(cube);

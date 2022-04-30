@@ -17,6 +17,7 @@
 #include "Context.h"
 #include "Window.h"
 #include "ObjectPicker.h"
+#include "ObjectManager.h"
 
 void Scene::init(Context* context)
 {
@@ -165,7 +166,14 @@ void Scene::draw(float deltaTime)
 		int x, y;
 		Engine::get()->getInput()->getMouse()->getMousePosition(x, y);
 		auto objectID = m_objectPicker->pickObject(x, y);
-		m_objectSelection->selectObject(objectID);
+		if (objectID != -1)
+		{
+			m_objectSelection->clearSelectedObjects();
+			auto obj = Engine::get()->getObjectManager()->getObjectById(objectID);
+			obj->onPicked();
+			m_objectSelection->selectObject(objectID);
+			obj->onSelected();
+		}
 
 		m_pickObject = false;
 	}

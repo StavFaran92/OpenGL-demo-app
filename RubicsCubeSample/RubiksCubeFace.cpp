@@ -27,6 +27,16 @@ std::vector<RubiksCubeEnt*> RubiksCubeFace::getCubes()
 	return m_cubes;
 }
 
+int RubiksCubeFace::getIndex() const
+{
+	return m_index;
+}
+
+Axis RubiksCubeFace::getAxis() const
+{
+	return m_axis;
+}
+
 void RubiksCubeFace::cyclic_roll(RubiksCubeEnt* a, RubiksCubeEnt* b, RubiksCubeEnt* c, RubiksCubeEnt* d)
 {
 	auto temp_faceDataX = a->getFaceData(Axis::X);

@@ -10,7 +10,7 @@
 class EngineAPI EventSystem
 {
 public:
-	void addEventListener(SDL_EventType eventType, std::function<void(SDL_Event e)> callback);
+	void addEventListener(SDL_EventType eventType, const std::function<void(SDL_Event e)>& callback);
 	void removeEventListener(std::function<void(SDL_Event e)> callback);
 	void pushEvent(SDL_Event e);
 private:

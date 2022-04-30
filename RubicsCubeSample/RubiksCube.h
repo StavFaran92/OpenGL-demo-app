@@ -8,6 +8,7 @@ using namespace rubiksCube;
 
 class RubiksCubeFace;
 class RubiksCubeEnt;
+class RubiksCubeController;
 
 class RubiksCube : public Model
 {
@@ -27,11 +28,16 @@ public:
 
 	void print(const std::string& padding = "") const;
 
+	void onEntityPicked(RubiksCubeEnt* ent);
+
+	void setController(RubiksCubeController* controller);
+	
+
 	
 protected:
 	void draw(IRenderer& renderer, Shader* shader = nullptr) override;
 private:
-	static RubiksCubeEnt* createRubiksCubeBox();
+	static RubiksCubeEnt* createRubiksCubeBox(RubiksCube* rubiksCube);
 	RubiksCubeEnt* getCube(int i, int j, int k) const;
 
 private:
@@ -42,6 +48,8 @@ private:
 	std::vector<std::function<bool(float)>> m_asyncCallbacks;
 
 	bool m_isRotating = false;
+
+	RubiksCubeController* m_controller = nullptr;
 };
 
 

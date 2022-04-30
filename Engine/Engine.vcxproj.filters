@@ -180,6 +180,7 @@
     </ClCompile>
     <ClCompile Include="src\PickingShader.cpp" />
     <ClCompile Include="src\ObjectPicker.cpp" />
+    <ClCompile Include="src\ObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -403,6 +404,7 @@
     <ClInclude Include="src\IPickable.h" />
     <ClInclude Include="src\ISelectable.h" />
     <ClInclude Include="src\ObjectPicker.h" />
+    <ClInclude Include="src\ObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

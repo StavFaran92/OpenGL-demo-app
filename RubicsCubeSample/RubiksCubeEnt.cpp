@@ -1,6 +1,12 @@
 #include "RubiksCubeEnt.h"
 
 #include "RubiksCubeFace.h"
+#include "RubiksCube.h"
+
+RubiksCubeEnt::RubiksCubeEnt(RubiksCube* rubiksCube)
+	: m_rubiksCube(rubiksCube), Box()
+{
+}
 
 void RubiksCubeEnt::swapFaces(RubiksCubeEnt* a, RubiksCubeEnt* b)
 {
@@ -66,6 +72,14 @@ void RubiksCubeEnt::setRCID(int rcid)
 int RubiksCubeEnt::getRCID()
 {
 	return m_RCID;
+}
+
+#include "Engine.h"
+#include "EventSystem.h"
+
+void RubiksCubeEnt::onPicked()
+{
+	m_rubiksCube->onEntityPicked(this);
 }
 
 void RubiksCubeEnt::print(const std::string& padding) const

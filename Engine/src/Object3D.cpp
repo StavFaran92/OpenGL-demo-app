@@ -2,16 +2,14 @@
 
 #include "Transformation.h"
 #include "Logger.h"
-
-uint32_t Object3D::s_modelCounter = 0;
+#include "Engine.h"
+#include "ObjectManager.h"
 
 Object3D::Object3D()
 {
 	m_transformation = std::make_shared<Transformation>();
 
-	m_id = s_modelCounter;
-
-	s_modelCounter++;
+	Engine::get()->getObjectManager()->addObject(this);
 }
 
 void Object3D::update(float deltatime)

@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="RubiksCubeController.cpp" />
     <ClCompile Include="RubiksCubeDemo.cpp" />
     <ClCompile Include="RubiksCube.cpp" />
     <ClCompile Include="RubiksCubeEnt.cpp" />
@@ -156,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="RubiksCubeConfigurations.h" />
     <ClInclude Include="RubiksCube.h" />
+    <ClInclude Include="RubiksCubeController.h" />
     <ClInclude Include="RubiksCubeEnt.h" />
     <ClInclude Include="RubiksCubeFace.h" />
   </ItemGroup>
