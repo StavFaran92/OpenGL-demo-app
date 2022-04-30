@@ -37,7 +37,8 @@ public:
 	void removeChildren(std::shared_ptr<Object3D> child);
 	void removeChildren(Object3D* child);
 
-	void select();
+	void select() override;
+	void pick() override;
 
 	void onSelected() override;
 	void onPicked() override;

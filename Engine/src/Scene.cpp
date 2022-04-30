@@ -165,9 +165,12 @@ void Scene::draw(float deltaTime)
 		{
 			m_objectSelection->clear();
 			auto obj = Engine::get()->getObjectManager()->getObjectById(objectID);
-			obj->onPicked();
-			m_objectSelection->selectObject(objectID);
-			obj->onSelected();
+			if (obj)
+			{
+				obj->pick();
+				obj->select();
+
+			}
 		}
 
 		m_pickObject = false;

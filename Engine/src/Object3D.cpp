@@ -164,6 +164,8 @@ void Object3D::setSceneID(uint32_t id)
 
 void Object3D::select()
 {
+	onSelected();
+
 	Engine::get()->getContext()->getActiveScene()->selectObject(m_id); // todo fix
 
 	for (const auto& child : m_childrens)
@@ -173,4 +175,9 @@ void Object3D::select()
 
 		child->select();
 	}
+}
+
+void Object3D::pick()
+{
+	onPicked();
 }
