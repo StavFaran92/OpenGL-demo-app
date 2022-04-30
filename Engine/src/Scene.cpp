@@ -52,11 +52,6 @@ void Scene::init(Context* context)
 	{
 		m_pickObject = true;
 	});
-
-	Engine::get()->getInput()->getMouse()->onMouseReleased(Mouse::MouseButton::LeftMousebutton, [&](SDL_Event e)
-	{
-		//m_enablePicking = false;
-	});
 }
 
 void Scene::update(float deltaTime)
