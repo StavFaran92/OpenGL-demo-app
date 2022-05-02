@@ -38,3 +38,4 @@
 #include "MeshBuilder.h"
 #include "ModelImporter.h"
 #include "TextureHandler.h"
+#include "ObjectFactory.h"

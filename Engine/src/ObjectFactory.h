@@ -19,7 +19,6 @@ public:
 	{
 		static_assert(std::is_base_of<Object3D, T>::value, "T must inherit from Object3D");
 
-		//auto obj = std::make_shared<T>(std::forward<_Types>(_Args)...);
 		auto obj = std::shared_ptr<T>(new T(std::forward<_Types>(_Args)...));
 
 		m_objectManager->addObject(obj);

@@ -105,16 +105,6 @@ void RubiksCube::setController(RubiksCubeController* controller)
 	m_controller = controller;
 }
 
-void RubiksCube::draw(IRenderer& renderer, Shader* shader)
-{
-	Model::draw(renderer, shader);
-}
-
-void RubiksCube::update(float deltaTime)
-{
-	Model::update(deltaTime);
-}
-
 
 void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 {
@@ -231,7 +221,7 @@ void RubiksCube::init(size_t size)
 	// Create X aligned axis faces
 	for (int i = 0; i < m_size; i++)
 	{
-		auto face = new RubiksCubeFace(Axis::X, i, m_size);
+		auto face = ObjectFactory::create<RubiksCubeFace>(Axis::X, i, m_size);
 		m_faces[{ Axis::X , i}] = face;
 		face->translate(i, (float)(m_size-1) / 2, (float)(m_size - 1) / 2);
 		for (int j = 0; j < m_size; j++)
@@ -246,7 +236,7 @@ void RubiksCube::init(size_t size)
 	// Create Y aligned axis faces
 	for (int i = 0; i < m_size; i++)
 	{
-		auto face = new RubiksCubeFace(Axis::Y, i, m_size);
+		auto face = ObjectFactory::create<RubiksCubeFace>(Axis::Y, i, m_size);
 		m_faces[{ Axis::Y , i }] = face;
 		face->translate((float)(m_size - 1) / 2, i , (float)(m_size - 1) / 2);
 		for (int j = 0; j < m_size; j++)
@@ -261,7 +251,7 @@ void RubiksCube::init(size_t size)
 	// Create Z aligned axis faces
 	for (int i = 0; i < m_size; i++)
 	{
-		auto face = new RubiksCubeFace(Axis::Z, i, m_size);
+		auto face = ObjectFactory::create<RubiksCubeFace>(Axis::Z, i, m_size);
 		m_faces[{ Axis::Z, i }] = face;
 		face->translate((float)(m_size - 1) / 2, (float)(m_size - 1) / 2, i);
 		for (int j = 0; j < m_size; j++)

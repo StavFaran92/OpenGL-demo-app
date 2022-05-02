@@ -84,7 +84,7 @@ void main()
     if(useColors)
         result *= Color;
 
-    colour = vec4(result, 1.0) * colorMul;
+    colour = vec4(result, 1.0) + colorMul;
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec2 aTexCoord)

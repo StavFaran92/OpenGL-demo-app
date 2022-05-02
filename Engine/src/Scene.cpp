@@ -191,9 +191,9 @@ void Scene::draw(float deltaTime)
 		phongShader->use();
 
 		if (isSelected(model->getID()))
-			phongShader->setColorMul({ 1.f, 1.f, 1.f, 1.f });
+			phongShader->setColorMul({ 0.3f, 0.3f, 0.3f, 0.3f });
 		else
-			phongShader->setColorMul({ .6f, .6f, .6f, .6f });
+			phongShader->setColorMul({ 0.f, 0.f, 0.f, 0.f });
 
 		phongShader->release();
 

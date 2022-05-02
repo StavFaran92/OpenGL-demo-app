@@ -9,13 +9,13 @@
 #include "IPickable.h"
 
 class ObjectManager;
+class ObjectFactory;
 class Transformation;
 class Scene;
 
 class EngineAPI Object3D : public ISelectable, public IPickable
 {
 public:
-	Object3D();
 	virtual ~Object3D() = default;
 
 	Transformation* getTransformation() const;
@@ -49,12 +49,16 @@ protected:
 	virtual void update(float deltatime);
 
 protected:
+	friend class ObjectFactory;
+	Object3D();
+
 	std::shared_ptr<Transformation> m_transformation;
 
 	std::vector<Object3D*> m_childrens;
 
 private:
 	friend class ObjectManager;
+
 	uint32_t m_sceneID = 0;
 	uint32_t m_id = 0;
 };
