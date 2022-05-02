@@ -45,7 +45,7 @@ public:
 	bool addObject(Object3D* object);
 	void removeObject(Object3D* object);
 
-	void setSkybox(Skybox* skybox);
+	void setSkybox(std::shared_ptr<Skybox> skybox);
 	void removeSkybox();
 
 	void setPostProcess(bool value);

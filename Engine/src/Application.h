@@ -26,7 +26,7 @@ protected:
 	Box* createBox();
 	Quad* createQuad();
 	void postProcess(Shader*);
-	void skybox(Skybox*);
+	void skybox(std::shared_ptr<Skybox> skybox);
 
 	// Input
 	int keyboard_getKeyState(SDL_Scancode code);

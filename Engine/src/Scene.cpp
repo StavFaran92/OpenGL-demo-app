@@ -311,9 +311,9 @@ bool Scene::removeDirectionalLight(DirectionalLight* dLight)
 }
 
 
-void Scene::setSkybox(Skybox* skybox)
+void Scene::setSkybox(std::shared_ptr<Skybox> skybox)
 {
-	m_skybox = std::shared_ptr<Skybox>(skybox);
+	m_skybox = skybox;
 }
 
 void Scene::removeSkybox()

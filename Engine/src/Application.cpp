@@ -12,10 +12,10 @@
 #include "Box.h"
 #include "Quad.h"
 
-void Application::skybox(Skybox*)
+void Application::skybox(std::shared_ptr<Skybox> skybox)
 {
 	auto context = Engine::get()->getContext();
-	context->getActiveScene()->setSkybox(Skybox::CreateSkybox().get());
+	context->getActiveScene()->setSkybox(skybox);
 }
 
 void Application::postProcess(Shader* shader)

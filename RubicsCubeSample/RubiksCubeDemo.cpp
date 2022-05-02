@@ -16,7 +16,7 @@ public:
 
 	void start() override
 	{
-		//skybox(Skybox::CreateSkybox());
+		skybox(Skybox::CreateSkybox());
 
 		rubiksCube = std::make_shared<RubiksCube>();
 		rubiksCube->init(10);
