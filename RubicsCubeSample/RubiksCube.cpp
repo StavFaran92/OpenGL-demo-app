@@ -180,7 +180,7 @@ void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 
 }
 
-RubiksCubeEnt* RubiksCube::createRubiksCubeBox(RubiksCube* rubiksCube)
+std::shared_ptr<RubiksCubeEnt> RubiksCube::createRubiksCubeBox(RubiksCube* rubiksCube)
 {
 	TextureHandler* textureHandlerDiffse = Texture::loadTextureFromFile(g_rubiksCubeTexture);
 	textureHandlerDiffse->setType(Texture::Type::Diffuse);
@@ -188,7 +188,7 @@ RubiksCubeEnt* RubiksCube::createRubiksCubeBox(RubiksCube* rubiksCube)
 	TextureHandler* textureHandlerSpecular = Texture::loadTextureFromFile(g_rubiksCubeTexture);
 	textureHandlerSpecular->setType(Texture::Type::Specular);
 
-	return dynamic_cast<RubiksCubeEnt*>(ModelBuilder::builder<RubiksCubeEnt>(rubiksCube)
+	return std::dynamic_pointer_cast<RubiksCubeEnt>(ModelBuilder::builder<RubiksCubeEnt>(rubiksCube)
 	.getMeshBuilder()
 	.setColors(colors, 36)
 	.addTextureHandler(textureHandlerDiffse)
@@ -199,7 +199,7 @@ RubiksCubeEnt* RubiksCube::createRubiksCubeBox(RubiksCube* rubiksCube)
 
 RubiksCubeEnt* RubiksCube::getCube(int x, int y, int z) const
 {
-	return m_cubes[x * m_size * m_size + y * m_size + z];
+	return m_cubes[x * m_size * m_size + y * m_size + z].get();
 }
 
 RubiksCube::RubiksCube()

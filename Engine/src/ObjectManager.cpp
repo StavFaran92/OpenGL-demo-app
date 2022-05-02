@@ -4,7 +4,7 @@
 
 #include "Logger.h"
 
-Object3D* ObjectManager::getObjectById(uint32_t id) const
+std::shared_ptr<Object3D> ObjectManager::getObjectById(uint32_t id) const
 {
     if (id > m_objectCounter)
     {
@@ -12,20 +12,20 @@ Object3D* ObjectManager::getObjectById(uint32_t id) const
         return nullptr;
     }
 
-    if (m_objects.at(id) == nullptr)
+    if (m_objects.at(id).expired())
     {
         logError("Object " + std::to_string(id) + " no longer avaiable.");
         return nullptr;
     }
 
-    return m_objects.at(id).get();
+    return m_objects.at(id).lock();
 }
 
-void ObjectManager::addObject(Object3D* obj)
+void ObjectManager::addObject(const std::shared_ptr<Object3D>& obj)
 {
     obj->m_id = m_objectCounter;
 
-    m_objects.insert({m_objectCounter, std::shared_ptr<Object3D>(obj)});
+    m_objects.insert({m_objectCounter, obj});
 
     m_objectCounter++;
 }

@@ -21,7 +21,7 @@ public:
 	void rotateFace(Axis axis, int index, Shift shift);
 
 	//Debug purposes
-	std::vector<RubiksCubeEnt*> getCubes()
+	std::vector<std::shared_ptr<RubiksCubeEnt>> getCubes()
 	{
 		return m_cubes;
 	}
@@ -37,11 +37,11 @@ public:
 protected:
 	void draw(IRenderer& renderer, Shader* shader = nullptr) override;
 private:
-	static RubiksCubeEnt* createRubiksCubeBox(RubiksCube* rubiksCube);
+	static std::shared_ptr<RubiksCubeEnt> createRubiksCubeBox(RubiksCube* rubiksCube);
 	RubiksCubeEnt* getCube(int i, int j, int k) const;
 
 private:
-	std::vector<RubiksCubeEnt*> m_cubes;
+	std::vector<std::shared_ptr<RubiksCubeEnt>> m_cubes;
 	std::map<std::pair<Axis, int>, RubiksCubeFace*> m_faces;
 	size_t m_size = 0;
 

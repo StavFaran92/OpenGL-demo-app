@@ -408,7 +408,7 @@ void ShowPrimitiveCreatorWindow()
 
             //auto texture = Texture::loadTextureFromFile(texturePath.c_str(), flipTexture);
 
-            Model* model = nullptr;
+            std::shared_ptr<Model> model = nullptr;
             if (shape == PrimitiveType::Quad)
             {
                 model = ModelBuilder::builder<Quad>().build();
@@ -424,7 +424,7 @@ void ShowPrimitiveCreatorWindow()
                 model->getTransformation()->setPosition(pos);
                 model->getTransformation()->setScale(scale);
 
-                Engine::get()->getContext()->getActiveScene()->addModel(model);
+                //Engine::get()->getContext()->getActiveScene()->addModel(model);
 
                 logInfo("Added Model successfully.");
             }

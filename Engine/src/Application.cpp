@@ -15,7 +15,7 @@
 void Application::skybox(Skybox*)
 {
 	auto context = Engine::get()->getContext();
-	context->getActiveScene()->setSkybox(Skybox::CreateSkybox());
+	context->getActiveScene()->setSkybox(Skybox::CreateSkybox().get());
 }
 
 void Application::postProcess(Shader* shader)

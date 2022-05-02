@@ -10,8 +10,6 @@
 Object3D::Object3D()
 {
 	m_transformation = std::make_shared<Transformation>();
-
-	Engine::get()->getObjectManager()->addObject(this);
 }
 
 void Object3D::update(float deltatime)

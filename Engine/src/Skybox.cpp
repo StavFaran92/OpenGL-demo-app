@@ -12,7 +12,7 @@
 #include "EditorCamera.h"
 #include "Resources/Primitives/cube.h"
 
-Skybox* Skybox::CreateSkybox()
+std::shared_ptr<Skybox> Skybox::CreateSkybox()
 {
     auto shader = new Shader("Resources\\Shaders\\SkyboxShader.vert", "Resources\\Shaders\\SkyboxShader.frag");
 
@@ -27,14 +27,12 @@ Skybox* Skybox::CreateSkybox()
     };
     auto textureHandler = Texture::loadCubemapTexture(faces);
 
-    auto model = (Skybox*)ModelBuilder::builder<Skybox>()
+    return std::dynamic_pointer_cast<Skybox>(ModelBuilder::builder<Skybox>()
         .setShader(*shader)
         .getMeshBuilder()
         .addTextureHandler(textureHandler)
         .getModelBuilder()
-        .build();
-
-    return model;
+        .build());
 }
 
 void Skybox::draw(IRenderer& renderer, Shader* shader)

@@ -10,7 +10,7 @@
 
 std::shared_ptr<ScreenQuad> ScreenQuad::GenerateScreenQuad()
 {
-	return std::shared_ptr<ScreenQuad>((ScreenQuad*)ModelBuilder::builder<ScreenQuad>().build());
+	return std::dynamic_pointer_cast<ScreenQuad>(ModelBuilder::builder<ScreenQuad>().build());
 }
 
 void ScreenQuad::draw(IRenderer& renderer, Shader* shader)

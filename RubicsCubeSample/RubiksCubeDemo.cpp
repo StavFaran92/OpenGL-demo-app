@@ -19,7 +19,7 @@ public:
 		//skybox(Skybox::CreateSkybox());
 
 		rubiksCube = std::make_shared<RubiksCube>();
-		rubiksCube->init(6);
+		rubiksCube->init(10);
 
 		controller = std::make_shared<RubiksCubeController>();
 		controller->init(rubiksCube.get());
@@ -34,7 +34,7 @@ public:
 	{
 		for (const auto cube : rubiksCube->getCubes())
 		{
-			update(cube);
+			update(cube.get());
 		}
 	}
 
@@ -42,7 +42,7 @@ public:
 	{
 		for (const auto cube : rubiksCube->getCubes())
 		{
-			draw(cube);
+			draw(cube.get());
 		}
 	}
 

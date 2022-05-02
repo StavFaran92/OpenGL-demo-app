@@ -5,7 +5,7 @@
 #include "Model.h"
 #include "Logger.h"
 
-Model* ModelBuilder::build()
+std::shared_ptr<Model> ModelBuilder::build()
 {
 	auto mesh = m_meshBuilder->build();
 

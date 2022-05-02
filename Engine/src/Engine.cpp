@@ -16,6 +16,7 @@
 #include "Logger.h"
 #include "MemoryManagement.h"
 #include "ObjectManager.h"
+#include "ObjectFactory.h"
 
 #include "Application.h"
 #include "SDL.h"
@@ -40,6 +41,8 @@ bool Engine::init()
     m_memoryManagementSystem = std::make_shared<MemoryManagement>();
 
     m_objectManager = std::make_shared<ObjectManager>();
+
+    ObjectFactory::init(m_objectManager.get());
 
     m_window = std::make_shared<Window>(1024, 768);
     if (!m_window->init())
