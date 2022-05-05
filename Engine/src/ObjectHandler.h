@@ -29,8 +29,9 @@ public:
 
 private:
 	friend class ObjectFactory;
+	template<typename K> friend class ObjectHandler;
 	ObjectHandler(ObjectManager* objManager, unsigned int modelID);
-public: //todo fix
+private:
 	unsigned int m_objID = 0;
 	ObjectManager* m_objManager = nullptr;
 };
@@ -59,6 +60,7 @@ T* ObjectHandler<T>::object() const
 template<typename T>
 void ObjectHandler<T>::release()
 {
+	m_objManager->releaseObject(m_objID);
 }
 
 template<typename T>

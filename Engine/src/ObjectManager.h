@@ -12,11 +12,12 @@ class EngineAPI ObjectManager
 {
 public:
 	Object3D* getObjectById(uint32_t id) const;
-
+	void releaseObject(uint32_t id);
 private:
 	friend class ObjectFactory;
 
 	uint32_t addObject(Object3D* obj);
+	
 private:
 	uint32_t m_objectCounter = 1;
 

@@ -13,13 +13,18 @@ Object3D* ObjectManager::getObjectById(uint32_t id) const
         return nullptr;
     }
 
-    //if (m_objects.at(id).expired())
-    //{
-    //    logError("Object " + std::to_string(id) + " no longer avaiable.");
-    //    return nullptr;
-    //}
-
     return m_objects.at(id).get();
+}
+
+void ObjectManager::releaseObject(uint32_t id)
+{
+    if (id > m_objectCounter)
+    {
+        logError("Illegal index specified: " + std::to_string(id));
+        return;
+    }
+
+    m_objects.erase(id);
 }
 
 uint32_t ObjectManager::addObject(Object3D* obj)
