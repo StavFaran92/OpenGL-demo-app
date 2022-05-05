@@ -39,3 +39,4 @@
 #include "ModelImporter.h"
 #include "TextureHandler.h"
 #include "ObjectFactory.h"
+#include "ObjectHandler.h"

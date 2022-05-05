@@ -11,15 +11,15 @@ class ObjectFactory;
 class EngineAPI ObjectManager
 {
 public:
-	std::shared_ptr<Object3D> getObjectById(uint32_t id) const;
+	Object3D* getObjectById(uint32_t id) const;
 
 private:
 	friend class ObjectFactory;
 
-	void addObject(const std::shared_ptr<Object3D>& obj);
+	uint32_t addObject(Object3D* obj);
 private:
-	uint32_t m_objectCounter = 0;
+	uint32_t m_objectCounter = 1;
 
-	std::unordered_map<uint32_t, std::weak_ptr<Object3D>> m_objects;
+	std::unordered_map<uint32_t, std::shared_ptr<Object3D>> m_objects;
 };
 

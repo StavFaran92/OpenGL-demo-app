@@ -161,6 +161,7 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ObjectHandler.h" />
     <ClInclude Include="src\ObjectFactory.h" />
     <ClInclude Include="src\ObjectManager.h" />
     <ClInclude Include="src\ObjectPicker.h" />

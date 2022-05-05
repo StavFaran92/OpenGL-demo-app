@@ -19,7 +19,7 @@ public:
 	void rotateFace(Axis axis, int index, Shift shift);
 
 	//Debug purposes
-	std::vector<std::shared_ptr<RubiksCubeEnt>> getCubes()
+	std::vector<ObjectHandler<RubiksCubeEnt>> getCubes()
 	{
 		return m_cubes;
 	}
@@ -30,12 +30,12 @@ public:
 
 	void setController(RubiksCubeController* controller);
 private:
-	static std::shared_ptr<RubiksCubeEnt> createRubiksCubeBox(RubiksCube* rubiksCube);
+	static ObjectHandler<RubiksCubeEnt> createRubiksCubeBox(RubiksCube* rubiksCube);
 	RubiksCubeEnt* getCube(int i, int j, int k) const;
 
 private:
-	std::vector<std::shared_ptr<RubiksCubeEnt>> m_cubes;
-	std::map<std::pair<Axis, int>, std::shared_ptr<RubiksCubeFace>> m_faces;
+	std::vector<ObjectHandler<RubiksCubeEnt>> m_cubes;
+	std::map<std::pair<Axis, int>, ObjectHandler<RubiksCubeFace>> m_faces;
 	size_t m_size = 0;
 
 	bool m_isRotating = false;

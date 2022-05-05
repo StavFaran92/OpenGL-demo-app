@@ -6,6 +6,7 @@
 #include "Box.h"
 #include "ModelImporter.h"
 #include "ModelBuilder.h"
+#include "ObjectHandler.h"
 
 enum class PrimitiveType
 {
@@ -408,21 +409,24 @@ void ShowPrimitiveCreatorWindow()
 
             //auto texture = Texture::loadTextureFromFile(texturePath.c_str(), flipTexture);
 
-            std::shared_ptr<Model> model = nullptr;
+            ObjectHandler<Model> modelHandler;
             if (shape == PrimitiveType::Quad)
             {
-                model = ModelBuilder::builder<Quad>().build();
+                modelHandler = ModelBuilder::builder<Quad>().build();
             }
             else if (shape == PrimitiveType::Cube)
             {
-                model = ModelBuilder::builder<Box>().build();
+                modelHandler = ModelBuilder::builder<Box>().build();
             }
-            if (model != nullptr)
+
+            assert(modelHandler);
+
+            if (modelHandler.isValid())
             {
                 std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-                model->useMaterial(material);
-                model->getTransformation()->setPosition(pos);
-                model->getTransformation()->setScale(scale);
+                modelHandler.object()->useMaterial(material);
+                modelHandler.object()->getTransformation()->setPosition(pos);
+                modelHandler.object()->getTransformation()->setScale(scale);
 
                 //Engine::get()->getContext()->getActiveScene()->addModel(model);
 

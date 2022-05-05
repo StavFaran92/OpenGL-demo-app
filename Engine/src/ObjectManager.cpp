@@ -3,8 +3,9 @@
 #include "Object3D.h"
 
 #include "Logger.h"
+#include "ObjectHandler.h"
 
-std::shared_ptr<Object3D> ObjectManager::getObjectById(uint32_t id) const
+Object3D* ObjectManager::getObjectById(uint32_t id) const
 {
     if (id > m_objectCounter)
     {
@@ -12,20 +13,22 @@ std::shared_ptr<Object3D> ObjectManager::getObjectById(uint32_t id) const
         return nullptr;
     }
 
-    if (m_objects.at(id).expired())
-    {
-        logError("Object " + std::to_string(id) + " no longer avaiable.");
-        return nullptr;
-    }
+    //if (m_objects.at(id).expired())
+    //{
+    //    logError("Object " + std::to_string(id) + " no longer avaiable.");
+    //    return nullptr;
+    //}
 
-    return m_objects.at(id).lock();
+    return m_objects.at(id).get();
 }
 
-void ObjectManager::addObject(const std::shared_ptr<Object3D>& obj)
+uint32_t ObjectManager::addObject(Object3D* obj)
 {
     obj->m_id = m_objectCounter;
 
-    m_objects.insert({m_objectCounter, obj});
+    m_objects.insert({m_objectCounter, std::shared_ptr<Object3D>(obj)});
 
     m_objectCounter++;
+
+    return obj->m_id;
 }

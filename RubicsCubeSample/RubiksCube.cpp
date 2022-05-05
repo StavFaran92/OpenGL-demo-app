@@ -63,7 +63,7 @@ void RubiksCube::print(const std::string& padding) const
 	for (int i = 0; i < m_cubes.size(); i++)
 	{
 		std::cout << "[" << std::to_string(i) << "]";
-		m_cubes[i]->print();
+		m_cubes[i].object()->print();
 		std::cout << std::endl;
 	}
 
@@ -72,7 +72,7 @@ void RubiksCube::print(const std::string& padding) const
 	{
 		auto face = m_faces.at({ Axis::X, i });
 		
-		face->print(padding + g_padding);
+		face.object()->print(padding + g_padding);
 	}
 
 	std::cout << "Faces Y" << std::endl;
@@ -80,7 +80,7 @@ void RubiksCube::print(const std::string& padding) const
 	{
 		auto face = m_faces.at({ Axis::Y, i });
 
-		face->print(padding + g_padding);
+		face.object()->print(padding + g_padding);
 	}
 
 	std::cout << "Faces Z" << std::endl;
@@ -88,7 +88,7 @@ void RubiksCube::print(const std::string& padding) const
 	{
 		auto face = m_faces.at({ Axis::Z, i });
 
-		face->print(padding + g_padding);
+		face.object()->print(padding + g_padding);
 	}
 }
 
@@ -143,7 +143,7 @@ void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 	//Rotate geometric representation of cubes
 	Engine::get()->getContext()->getActiveScene()->addCoroutine([&, face, angle, dir, shift, axis](float deltaTime) mutable
 	{
-		face->rotate(dir, 1);
+		face.object()->rotate(dir, 1);
 
 		angle += 1;
 
@@ -156,7 +156,7 @@ void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 			}
 
 			// Rotate cubes physically (i.e. replace the cube' attached face according to rotation)
-			face->rotateCubes(shift);
+			face.object()->rotateCubes(shift);
 
 			m_isRotating = false;
 
@@ -170,7 +170,7 @@ void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 
 }
 
-std::shared_ptr<RubiksCubeEnt> RubiksCube::createRubiksCubeBox(RubiksCube* rubiksCube)
+ObjectHandler<RubiksCubeEnt> RubiksCube::createRubiksCubeBox(RubiksCube* rubiksCube)
 {
 	TextureHandler* textureHandlerDiffse = Texture::loadTextureFromFile(g_rubiksCubeTexture);
 	textureHandlerDiffse->setType(Texture::Type::Diffuse);
@@ -178,18 +178,18 @@ std::shared_ptr<RubiksCubeEnt> RubiksCube::createRubiksCubeBox(RubiksCube* rubik
 	TextureHandler* textureHandlerSpecular = Texture::loadTextureFromFile(g_rubiksCubeTexture);
 	textureHandlerSpecular->setType(Texture::Type::Specular);
 
-	return std::dynamic_pointer_cast<RubiksCubeEnt>(ModelBuilder::builder<RubiksCubeEnt>(rubiksCube)
+	return ModelBuilder::builder<RubiksCubeEnt>(rubiksCube)
 	.getMeshBuilder()
 	.setColors(colors, 36)
 	.addTextureHandler(textureHandlerDiffse)
 	.addTextureHandler(textureHandlerSpecular)
 	.getModelBuilder()
-	.build());
+	.build();
 }
 
 RubiksCubeEnt* RubiksCube::getCube(int x, int y, int z) const
 {
-	return m_cubes[x * m_size * m_size + y * m_size + z].get();
+	return m_cubes[x * m_size * m_size + y * m_size + z].object();
 }
 
 RubiksCube::RubiksCube()
@@ -211,8 +211,8 @@ void RubiksCube::init(size_t size)
 			for (int k = 0; k < m_size; k++)
 			{
 				auto cube = createRubiksCubeBox(this);
-				cube->setRCID(i * size * size + j * size + k);
-				cube->translate(i, j, k);
+				cube.object()->setRCID(i * size * size + j * size + k);
+				cube.object()->translate(i, j, k);
 				m_cubes.push_back(cube);
 			}
 		}
@@ -223,12 +223,12 @@ void RubiksCube::init(size_t size)
 	{
 		auto face = ObjectFactory::create<RubiksCubeFace>(Axis::X, i, m_size);
 		m_faces[{ Axis::X , i}] = face;
-		face->translate(i, (float)(m_size-1) / 2, (float)(m_size - 1) / 2);
+		face.object()->translate(i, (float)(m_size-1) / 2, (float)(m_size - 1) / 2);
 		for (int j = 0; j < m_size; j++)
 		{
 			for (int k = 0; k < m_size; k++)
 			{
-				face->addCube(j, k, getCube(i, j, k));
+				face.object()->addCube(j, k, getCube(i, j, k));
 			}
 		}
 	}
@@ -238,12 +238,12 @@ void RubiksCube::init(size_t size)
 	{
 		auto face = ObjectFactory::create<RubiksCubeFace>(Axis::Y, i, m_size);
 		m_faces[{ Axis::Y , i }] = face;
-		face->translate((float)(m_size - 1) / 2, i , (float)(m_size - 1) / 2);
+		face.object()->translate((float)(m_size - 1) / 2, i , (float)(m_size - 1) / 2);
 		for (int j = 0; j < m_size; j++)
 		{
 			for (int k = 0; k < m_size; k++)
 			{
-				face->addCube(j, k, getCube(j, i, k));
+				face.object()->addCube(j, k, getCube(j, i, k));
 			}
 		}
 	}
@@ -253,12 +253,12 @@ void RubiksCube::init(size_t size)
 	{
 		auto face = ObjectFactory::create<RubiksCubeFace>(Axis::Z, i, m_size);
 		m_faces[{ Axis::Z, i }] = face;
-		face->translate((float)(m_size - 1) / 2, (float)(m_size - 1) / 2, i);
+		face.object()->translate((float)(m_size - 1) / 2, (float)(m_size - 1) / 2, i);
 		for (int j = 0; j < m_size; j++)
 		{
 			for (int k = 0; k < m_size; k++)
 			{
-				face->addCube(j, k, getCube(j, k, i));
+				face.object()->addCube(j, k, getCube(j, k, i));
 			}
 		}
 	}

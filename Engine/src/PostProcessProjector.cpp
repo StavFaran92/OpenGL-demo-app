@@ -9,6 +9,7 @@
 #include "Window.h"
 #include "Logger.h"
 #include "TextureHandler.h"
+#include "ObjectHandler.h"
 
 bool PostProcessProjector::init(int windowWidth, int windowHeight)
 {
@@ -75,7 +76,7 @@ void PostProcessProjector::draw()
 
 	m_textureHandler->bind();
 
-	m_quad->draw(*m_renderer.get(), m_screenShader.get());
+	m_quad.object()->draw(*m_renderer.get(), m_screenShader.get());
 
 	m_textureHandler->unbind();
 }

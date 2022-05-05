@@ -407,6 +407,7 @@
     <ClInclude Include="src\ObjectPicker.h" />
     <ClInclude Include="src\ObjectManager.h" />
     <ClInclude Include="src\ObjectFactory.h" />
+    <ClInclude Include="src\ObjectHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

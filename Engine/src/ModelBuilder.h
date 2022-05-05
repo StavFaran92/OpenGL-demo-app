@@ -12,6 +12,7 @@
 #include "MeshBuilder.h"
 #include "Texture.h"
 #include "ObjectFactory.h"
+#include "ObjectHandler.h"
 
 // 
 // Create a default Box -> Build
@@ -71,14 +72,14 @@ public:
 
 	MeshBuilder& getMeshBuilder();
 	
-	std::shared_ptr<Model> build();
+	ObjectHandler<Model> build();
 private:
 	template<typename T, typename... _Types>
 	void init(_Types&&... _Args);
 private:
 	std::shared_ptr<Shader> m_shader = nullptr;
 	MeshBuilder* m_meshBuilder = nullptr;
-	std::shared_ptr<Model> m_model = nullptr;
+	ObjectHandler<Model> m_modelHandler;
 
 	bool isBuilt = false;
 
@@ -87,9 +88,9 @@ private:
 template<typename T, typename... _Types>
 void ModelBuilder::init(_Types&&... _Args)
 {
-	m_model = std::dynamic_pointer_cast<Model>(ObjectFactory::create<T>(std::forward<_Types>(_Args)...));
+	m_modelHandler = ObjectFactory::create<T>(std::forward<_Types>(_Args)...);
 
-	m_meshBuilder = m_model->createMeshBuilder();
+	m_meshBuilder = m_modelHandler.object()->createMeshBuilder();
 	m_meshBuilder->setModelBuilder(this);
 }
 

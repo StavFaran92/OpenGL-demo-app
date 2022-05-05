@@ -16,7 +16,7 @@ public:
 
 	void start() override
 	{
-		skybox(Skybox::CreateSkybox());
+		//skybox(Skybox::CreateSkybox());
 
 		rubiksCube = std::make_shared<RubiksCube>();
 		rubiksCube->init(10);
@@ -34,7 +34,7 @@ public:
 	{
 		for (const auto cube : rubiksCube->getCubes())
 		{
-			update(cube.get());
+			update(cube.object());
 		}
 	}
 
@@ -42,7 +42,7 @@ public:
 	{
 		for (const auto cube : rubiksCube->getCubes())
 		{
-			draw(cube.get());
+			draw(cube.object());
 		}
 	}
 

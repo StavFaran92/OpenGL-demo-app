@@ -5,12 +5,13 @@
 #include "Mesh.h"
 #include "Quad.h"
 #include "ModelBuilder.h"
+#include "ObjectHandler.h"
 
 #include "Resources/Primitives/quad.h"
 
-std::shared_ptr<ScreenQuad> ScreenQuad::GenerateScreenQuad()
+ObjectHandler<ScreenQuad> ScreenQuad::GenerateScreenQuad()
 {
-	return std::dynamic_pointer_cast<ScreenQuad>(ModelBuilder::builder<ScreenQuad>().build());
+	return ModelBuilder::builder<ScreenQuad>().build();
 }
 
 void ScreenQuad::draw(IRenderer& renderer, Shader* shader)

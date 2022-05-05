@@ -5,7 +5,7 @@
 #include "Model.h"
 #include "Logger.h"
 
-std::shared_ptr<Model> ModelBuilder::build()
+ObjectHandler<Model> ModelBuilder::build()
 {
 	auto mesh = m_meshBuilder->build();
 
@@ -15,23 +15,23 @@ std::shared_ptr<Model> ModelBuilder::build()
 
 		delete this;
 
-		return nullptr;
+		return {};
 	}
 
 	std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-	m_model->useMaterial(material);
+	m_modelHandler.object()->useMaterial(material);
 
-	m_model->addMesh(mesh);
+	m_modelHandler.object()->addMesh(mesh);
 
 	if (m_shader)
-		m_model->attachShader(m_shader);
+		m_modelHandler.object()->attachShader(m_shader);
 
-	auto tempModel = m_model;
+	auto tempModelHandler = m_modelHandler;
 
 	// We are finished with the builder and it can now be erased.
 	delete this;
 
-	return tempModel;
+	return tempModelHandler;
 }
 
 ModelBuilder& ModelBuilder::setShader(Shader& shader, bool copy)

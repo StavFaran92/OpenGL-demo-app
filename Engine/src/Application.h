@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+
 #include "Core.h"
 #include "SDL_scancode.h"
 

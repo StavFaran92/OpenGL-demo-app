@@ -3,13 +3,14 @@
 #include "Box.h"
 #include "Core.h"
 
+template<typename T> class ObjectHandler;
 class ObjectFactory;
 
 
 class EngineAPI Skybox : public Box
 {
 public:
-    static std::shared_ptr<Skybox> CreateSkybox();
+    static ObjectHandler<Skybox> CreateSkybox();
 
     void draw(IRenderer& renderer, Shader* shader = nullptr) override;
     
