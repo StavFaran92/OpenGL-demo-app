@@ -18,7 +18,7 @@ public:
 	/** Copy Assignment Operator */
 	ObjectHandler& operator=(const ObjectHandler& other);
 
-	template <typename T2/*, typename std::enable_if_t<std::is_convertible_v<T2*, T*>, int> = 0*/>
+	template <typename T2, typename std::enable_if_t<std::is_base_of_v<T2, T> || std::is_base_of_v<T, T2>, int> = 0>
 	ObjectHandler(const ObjectHandler<T2>& other) 
 		: m_objManager(other.m_objManager), m_objID(other.m_objID)
 	{}
