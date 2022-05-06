@@ -16,7 +16,7 @@ public:
 	void OnMousePressed(SDL_MouseButtonEvent& e) override;
 	void OnMouseReleased(SDL_MouseButtonEvent& e) override;
 	void OnMouseScroll(Sint32& y) override;
-	void lookAt(int x, int y, int z);
+	void lookAt(float x, float y, float z);
 	void setPosition(float distance, float angleX, float angleY);
 private:
 	void calculateOrientation();

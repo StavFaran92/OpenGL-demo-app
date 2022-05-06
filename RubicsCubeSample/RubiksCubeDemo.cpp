@@ -16,19 +16,22 @@ public:
 	std::shared_ptr<RubiksCubeController> controller;
 	std::shared_ptr<RubiksCubeGui> gui;
 
+	ObjectHandler<Skybox> skybox;
+
 	void start() override
 	{
-		//skybox(Skybox::CreateSkybox());
-
-		auto camera = std::dynamic_pointer_cast<EditorCamera>(Engine::get()->getContext()->getActiveScene()->getRenderer()->getCamera());
-		camera->lookAt(1, 1, 1);
-		camera->setPosition(13, 225, 35);
+		//skybox = Skybox::CreateSkybox();
 
 		rubiksCube = std::make_shared<RubiksCube>();
 		rubiksCube->init(3);
 
 		controller = std::make_shared<RubiksCubeController>();
 		controller->init(rubiksCube.get());
+
+		auto camera = std::dynamic_pointer_cast<EditorCamera>(Engine::get()->getContext()->getActiveScene()->getRenderer()->getCamera());
+		float center = (rubiksCube->getSize() - 1) / 2;
+		camera->lookAt(center, center, center);
+		camera->setPosition(13, 225, 35);
 
 		gui = std::make_shared<RubiksCubeGui>(rubiksCube.get());
 
@@ -54,6 +57,8 @@ public:
 		}
 
 		Engine::get()->getImguiHandler()->draw(gui.get());
+
+		//Engine::get()->getContext()->getActiveScene()->drawSkybox(skybox);
 	}
 
 };

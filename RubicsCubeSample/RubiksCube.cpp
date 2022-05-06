@@ -140,6 +140,11 @@ void RubiksCube::shuffle()
 	
 }
 
+size_t RubiksCube::getSize() const
+{
+	return m_size;
+}
+
 
 void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 {

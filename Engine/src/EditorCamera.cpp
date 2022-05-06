@@ -49,7 +49,7 @@ void EditorCamera::OnMouseMotion(float xChange, float yChange)
 		m_angleX += xChange * m_turnSpeed;
 		m_angleY += yChange * m_turnSpeed;
 
-		m_angleY = std::clamp(m_angleY, -90.f, 90.f);
+		m_angleY = std::clamp(m_angleY, -89.f, 89.f);
 
 		calculateOrientation();
 	}
@@ -93,7 +93,7 @@ void EditorCamera::OnMouseScroll(Sint32& y)
 	calculateOrientation();
 }
 
-void EditorCamera::lookAt(int x, int y, int z)
+void EditorCamera::lookAt(float x, float y, float z)
 {
 	m_center = { x, y, z };
 }
@@ -114,9 +114,9 @@ void EditorCamera::calculateOrientation()
 	float x = t * cos(m_angleX * Constants::toRadians);
 	float z = t * sin(m_angleX * Constants::toRadians);
 
-	m_position = glm::vec3(x, y, z);
+	m_position = glm::vec3(x, y, z) + m_center;
 
-	m_front = glm::normalize(-m_position);
+	m_front = glm::normalize(-m_position + m_center);
 
 	m_right = glm::normalize(glm::cross(m_front, m_worldUp));
 	m_up = glm::normalize(glm::cross(m_right, m_front));

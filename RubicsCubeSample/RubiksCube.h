@@ -33,6 +33,8 @@ public:
 	void setController(RubiksCubeController* controller);
 
 	void shuffle();
+
+	size_t getSize() const;
 private:
 	static ObjectHandler<RubiksCubeEnt> createRubiksCubeBox(RubiksCube* rubiksCube);
 	RubiksCubeEnt* getCube(int i, int j, int k) const;
