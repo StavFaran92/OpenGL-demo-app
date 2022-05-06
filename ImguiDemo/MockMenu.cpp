@@ -1,14 +1,38 @@
 #include "MockMenu.h"
 
-// Helper to wire demo markers located in code to a interactive browser
-typedef void (*ImGuiDemoMarkerCallback)(const char* file, int line, const char* section, void* user_data);
-extern ImGuiDemoMarkerCallback  GImGuiDemoMarkerCallback;
-extern void* GImGuiDemoMarkerCallbackUserData;
-ImGuiDemoMarkerCallback         GImGuiDemoMarkerCallback = NULL;
-void* GImGuiDemoMarkerCallbackUserData = NULL;
-#define IMGUI_DEMO_MARKER(section)  do { if (GImGuiDemoMarkerCallback != NULL) GImGuiDemoMarkerCallback(__FILE__, __LINE__, section, GImGuiDemoMarkerCallbackUserData); } while (0)
+MockMenu::MockMenu()
+    : GuiMenu()
+{
+    auto ctx = ImGui::GetCurrentContext();
+
+    ImGui::SetCurrentContext(ctx);
+
+    //void** p_alloc_func;
+    //void* p_free_func;
+    //void** p_user_data;
+    //ImGui::GetAllocatorFunctions(p_alloc_func, p_free_func, p_user_data);
+
+    //ImGui::SetAllocatorFunctions(p_alloc_func, p_free_func, p_user_data);
+}
 
 void MockMenu::display()
 {
-	if (ImGui::MenuItem("New")) {}
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("New")) {}
+            if (ImGui::MenuItem("Open...", "Ctrl+O"))
+            {
+                //OpenFile();
+            }
+            if (ImGui::MenuItem("Save As..", "Ctrl+S"))
+            {
+                //SaveFile();
+            }
+
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
 }

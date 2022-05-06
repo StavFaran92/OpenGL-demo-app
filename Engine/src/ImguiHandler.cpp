@@ -57,14 +57,14 @@ void ImguiHandler::render()
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-	//while (m_guiQueue.empty())
-	//{
-	//	auto gui = m_guiQueue.front();
-	//	m_guiQueue.pop_front();
+	while (!m_guiQueue.empty())
+	{
+		auto gui = m_guiQueue.front();
+		m_guiQueue.pop_front();
 
-	//	gui->display();
-	//}
-	displayGUI();
+		gui->display();
+	}
+	//displayGUI();
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
