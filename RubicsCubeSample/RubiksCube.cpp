@@ -2,6 +2,7 @@
 #include "RubiksCubeFace.h"
 #include "RubiksCubeEnt.h"
 #include "RubiksCubeController.h"
+#include <time.h>
 
 using namespace rubiksCube;
 
@@ -105,6 +106,40 @@ void RubiksCube::setController(RubiksCubeController* controller)
 	m_controller = controller;
 }
 
+void RubiksCube::shuffle()
+{
+
+	int times;
+	times = rand() % 100 + 40;
+
+	for (int i = 0; i < times; i++)
+	{
+
+		int axisRand;
+		axisRand = rand() % 3;
+
+		Axis axis;
+		switch (axisRand)
+		{
+		case 0:
+			axis = Axis::X;
+			break;
+		case 1:
+			axis = Axis::Y;
+			break;
+		case 2:
+			axis = Axis::Z;
+			break;
+		}
+
+		int indexRand;
+		indexRand = rand() % m_size;
+
+		rotateFaceFast(m_faces.at({ axis, indexRand }), axis, Shift::CCW);
+	}
+	
+}
+
 
 void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 {
@@ -121,29 +156,14 @@ void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 
 	m_isRotating = true;
 
-	glm::vec3 dir(1);
-	switch (axis)
-	{
-	case Axis::X:
-		dir = glm::vec3(1, 0, 0);
-		break;
-	case Axis::Y:
-		dir = glm::vec3(0, 1, 0);
-		break;
-	case Axis::Z:
-		dir = glm::vec3(0, 0, 1);
-		break;
-	}
-
 	int angle = 0;
-	dir = (shift == Shift::CW) ? dir : -dir;
 
 	auto face = m_faces.at({ axis, index });
 
 	//Rotate geometric representation of cubes
-	Engine::get()->getContext()->getActiveScene()->addCoroutine([&, face, angle, dir, shift, axis](float deltaTime) mutable
+	Engine::get()->getContext()->getActiveScene()->addCoroutine([&, face, angle, shift, axis](float deltaTime) mutable
 	{
-		face.object()->rotate(dir, 1);
+		face.object()->rotate(shift, 1);
 
 		angle += 1;
 
@@ -192,8 +212,23 @@ RubiksCubeEnt* RubiksCube::getCube(int x, int y, int z) const
 	return m_cubes[x * m_size * m_size + y * m_size + z].object();
 }
 
+void RubiksCube::rotateFaceFast(ObjectHandler<RubiksCubeFace> face, Axis axis, Shift shift)
+{
+	face.object()->rotate(shift, 90);
+
+	// Hack to solve The Y axis reverse rotation
+	if (axis == Axis::Y)
+	{
+		shift = (shift == Shift::CW) ? Shift::CCW : Shift::CW;
+	}
+
+	// Rotate cubes physically (i.e. replace the cube' attached face according to rotation)
+	face.object()->rotateCubes(shift);
+}
+
 RubiksCube::RubiksCube()
 {
+	srand(time(NULL));
 }
 
 RubiksCube::~RubiksCube()

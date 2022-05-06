@@ -20,6 +20,10 @@ public:
 	{
 		//skybox(Skybox::CreateSkybox());
 
+		auto camera = std::dynamic_pointer_cast<EditorCamera>(Engine::get()->getContext()->getActiveScene()->getRenderer()->getCamera());
+		camera->lookAt(1, 1, 1);
+		camera->setPosition(13, 225, 35);
+
 		rubiksCube = std::make_shared<RubiksCube>();
 		rubiksCube->init(3);
 

@@ -37,6 +37,7 @@
 #include "Mouse.h"
 #include "EventSystem.h"
 #include "Quad.h"
+#include "Renderer.h"
 #include "Box.h"
 #include "Sphere.h"
 #include "Configurations.h"

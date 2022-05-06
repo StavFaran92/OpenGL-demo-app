@@ -16,7 +16,7 @@ EditorCamera::EditorCamera(glm::vec3 startPosition, float startMoveSpeed, float 
 	m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
 	m_movementSpeed(startMoveSpeed),
 	m_turnSpeed(startTurnSpeed),
-	distance(5)
+	m_distance(5)
 {
 	calculateOrientation();
 
@@ -55,6 +55,11 @@ void EditorCamera::OnMouseMotion(float xChange, float yChange)
 	}
 }
 
+glm::mat4 EditorCamera::getView()
+{
+	return glm::lookAt(m_position, m_center, m_up);
+};
+
 glm::vec3 EditorCamera::getPosition()
 {
 	return m_position;
@@ -83,15 +88,29 @@ void EditorCamera::OnMouseReleased(SDL_MouseButtonEvent& e)
 
 void EditorCamera::OnMouseScroll(Sint32& y)
 {
-	distance = std::clamp(distance-y, 1.f, 50.f);
+	m_distance = std::clamp(m_distance-y, 1.f, 50.f);
+
+	calculateOrientation();
+}
+
+void EditorCamera::lookAt(int x, int y, int z)
+{
+	m_center = { x, y, z };
+}
+
+void EditorCamera::setPosition(float distance, float angleX, float angleY)
+{
+	m_distance = distance;
+	m_angleX = angleX;
+	m_angleY = angleY;
 
 	calculateOrientation();
 }
 
 void EditorCamera::calculateOrientation()
 {
-	float t = distance * cos(m_angleY * Constants::toRadians);
-	float y = distance * sin(m_angleY * Constants::toRadians);
+	float t = m_distance * cos(m_angleY * Constants::toRadians);
+	float y = m_distance * sin(m_angleY * Constants::toRadians);
 	float x = t * cos(m_angleX * Constants::toRadians);
 	float z = t * sin(m_angleX * Constants::toRadians);
 

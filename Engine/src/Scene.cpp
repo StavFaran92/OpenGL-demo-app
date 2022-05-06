@@ -58,7 +58,7 @@ void Scene::update(float deltaTime)
 {
 	m_renderer->Clear();
 
-	m_renderer->GetCamera()->update(deltaTime);
+	m_renderer->getCamera()->update(deltaTime);
 
 	// Advance all coroutines
 	auto coroutines = m_coroutineManager->getAllCoroutines();
@@ -132,7 +132,7 @@ void Scene::draw(float deltaTime)
 	phongShader->use();
 	phongShader->updateDirLights(m_directionalLights);
 	phongShader->updatePointLights(m_pointLights);
-	phongShader->setViewPos(m_renderer->GetCamera()->getPosition());
+	phongShader->setViewPos(m_renderer->getCamera()->getPosition());
 	phongShader->release();
 
 	// Picking Phase
@@ -142,7 +142,7 @@ void Scene::draw(float deltaTime)
 
 		auto pickingShader = m_context->getPickingShader();
 		pickingShader->use();
-		pickingShader->setViewMatrix(m_renderer->GetCamera()->getView());
+		pickingShader->setViewMatrix(m_renderer->getCamera()->getView());
 		pickingShader->setProjectionMatrix(m_renderer->getProjection());
 
 		for (unsigned int i = 0; i < m_drawQueue.size(); i++)

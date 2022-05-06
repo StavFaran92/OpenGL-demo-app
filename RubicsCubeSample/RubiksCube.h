@@ -31,10 +31,12 @@ public:
 	void onEntityPicked(RubiksCubeEnt* ent);
 
 	void setController(RubiksCubeController* controller);
+
+	void shuffle();
 private:
 	static ObjectHandler<RubiksCubeEnt> createRubiksCubeBox(RubiksCube* rubiksCube);
 	RubiksCubeEnt* getCube(int i, int j, int k) const;
-
+	void rotateFaceFast(ObjectHandler<RubiksCubeFace> face, Axis axis, Shift shift);
 private:
 	std::vector<ObjectHandler<RubiksCubeEnt>> m_cubes;
 	std::map<std::pair<Axis, int>, ObjectHandler<RubiksCubeFace>> m_faces;

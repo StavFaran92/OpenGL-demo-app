@@ -5,12 +5,12 @@
 #include <memory>
 
 #include "glm/glm.hpp"
-
+#include "Core.h"
 
 class Shader;
 class VertexArrayObject;
 
-class IRenderer {
+class EngineAPI IRenderer {
 public:
 	enum class DrawType {
 		Lines,

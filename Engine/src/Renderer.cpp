@@ -47,9 +47,14 @@ void Renderer::SetMVP(Shader& shader) const
 	shader.setMat4("view", m_camera->getView());
 }
 
-std::shared_ptr<ICamera> Renderer::GetCamera() const
+std::shared_ptr<ICamera> Renderer::getCamera() const
 {
 	return m_camera;
+}
+
+void Renderer::setCamera(std::shared_ptr<ICamera> camera)
+{
+	m_camera = camera;
 }
 
 glm::mat4 Renderer::getProjection() const

@@ -27,6 +27,13 @@ std::vector<RubiksCubeEnt*> RubiksCubeFace::getCubes()
 	return m_cubes;
 }
 
+void RubiksCubeFace::rotate(Shift shift, float angle)
+{
+	auto dir = (shift == Shift::CW) ? m_dir : -m_dir;
+
+	Object3D::rotate(dir, angle);
+}
+
 int RubiksCubeFace::getIndex() const
 {
 	return m_index;
