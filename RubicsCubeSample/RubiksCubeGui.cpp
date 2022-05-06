@@ -1,10 +1,6 @@
 #include "RubiksCubeGui.h"
 #include "RubiksCubeConfigurations.h"
 
-
-
-
-
 RubiksCubeGui::RubiksCubeGui(RubiksCube* rubiksCube)
     : GuiMenu()
 {
@@ -28,8 +24,8 @@ void RubiksCubeGui::display()
     ImGui::Begin("Rubiks Cube Controller");
 
     const char* axis[] = { "X", "Y", "Z"};
-    static int axis_current = 0;
-    ImGui::ListBox("", &axis_current, axis, IM_ARRAYSIZE(axis), 3);
+    static Axis axis_current = Axis::X;
+    ImGui::ListBox("", (int*)&axis_current, axis, IM_ARRAYSIZE(axis), 3);
 
     static int index = 0;
     ImGui::InputInt("", &index);
@@ -40,21 +36,7 @@ void RubiksCubeGui::display()
 
     if (ImGui::Button("Rotate"))
     {
-        Axis actualAxis = Axis::X;
-        switch (axis_current)
-        {
-        case 0:
-            actualAxis = Axis::X;
-            break;
-        case 1:
-            actualAxis = Axis::Y;
-            break;
-        case 2:
-            actualAxis = Axis::Z;
-            break;
-        }
-
-        m_rubiksCube->rotateFace(actualAxis, index, shift);
+        m_rubiksCube->rotateFace(axis_current, index, shift);
     }
 
     ImGui::End();
