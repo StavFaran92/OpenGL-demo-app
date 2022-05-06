@@ -14,8 +14,8 @@
 
 void Application::skybox(std::shared_ptr<Skybox> skybox)
 {
-	auto context = Engine::get()->getContext();
-	context->getActiveScene()->setSkybox(skybox);
+	//auto context = Engine::get()->getContext();
+	//context->getActiveScene()->setSkybox(skybox);
 }
 
 void Application::postProcess(Shader* shader)

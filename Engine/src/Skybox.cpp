@@ -41,22 +41,21 @@ void Skybox::draw(IRenderer& renderer, Shader* shader)
     glDepthMask(GL_FALSE);
     glDepthFunc(GL_LEQUAL);
 
-    Shader* currShader = m_shader.get();
-
-    if (shader)
-        currShader = shader;
+    m_shader->use();
+    getTextureHandlers()[0]->bind();
 
     //auto view = glm::mat4(glm::mat3(dynamic_cast<Renderer*>(renderer.get())->GetCamera()->getView())); // remove translation from the view matrix
-    currShader->setMat4("model", m_transformation->getMatrix());
-
-
+    m_shader->setMat4("model", m_transformation->getMatrix());
 
     renderer.SetDrawType(Renderer::DrawType::Triangles);
 
     for (auto i = 0; i < m_meshes.size(); i++)
     {
-        m_meshes[i]->render(*currShader, renderer);
+        m_meshes[i]->render(*m_shader, renderer);
     }
+
+    getTextureHandlers()[0]->unbind();
+    m_shader->release();
 
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LESS);

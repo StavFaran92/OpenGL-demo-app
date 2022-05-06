@@ -182,7 +182,6 @@
     <ClCompile Include="src\ObjectPicker.cpp" />
     <ClCompile Include="src\ObjectManager.cpp" />
     <ClCompile Include="src\ObjectFactory.cpp" />
-    <ClCompile Include="src\GuiMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">

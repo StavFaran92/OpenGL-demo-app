@@ -20,7 +20,7 @@ public:
 
 	void start() override
 	{
-		//skybox = Skybox::CreateSkybox();
+		skybox = Skybox::CreateSkybox();
 
 		rubiksCube = std::make_shared<RubiksCube>();
 		rubiksCube->init(3);
@@ -58,7 +58,7 @@ public:
 
 		Engine::get()->getImguiHandler()->draw(gui.get());
 
-		//Engine::get()->getContext()->getActiveScene()->drawSkybox(skybox);
+		Engine::get()->getContext()->getActiveScene()->drawSkybox(skybox.object());
 	}
 
 };

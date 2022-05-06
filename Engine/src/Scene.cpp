@@ -202,9 +202,8 @@ void Scene::draw(float deltaTime)
 
 	if (m_skybox)
 	{
-		m_skybox->getShader()->use();
 		m_skybox->draw(*m_skyboxRenderer.get());
-		m_skybox->getShader()->release();
+		m_skybox = nullptr;
 	}
 
 	if (m_isPostProcessEnabled && m_postProcessProjector)
@@ -311,14 +310,9 @@ bool Scene::removeDirectionalLight(DirectionalLight* dLight)
 }
 
 
-void Scene::setSkybox(std::shared_ptr<Skybox> skybox)
+void Scene::drawSkybox(Skybox* skybox)
 {
 	m_skybox = skybox;
-}
-
-void Scene::removeSkybox()
-{
-	m_skybox = nullptr;
 }
 
 std::shared_ptr<Renderer> Scene::getRenderer() const
@@ -397,7 +391,7 @@ void Scene::addCoroutine(const std::function<bool(float)>& coroutine)
 //	m_coroutineManager->removeCoroutine(coroutine);
 //}
 
-std::shared_ptr<Skybox> Scene::getSkybox()
+Skybox* Scene::getSkybox()
 {
 	return m_skybox;
 }

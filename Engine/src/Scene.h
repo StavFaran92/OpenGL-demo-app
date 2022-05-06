@@ -45,8 +45,7 @@ public:
 	bool addObject(Object3D* object);
 	void removeObject(Object3D* object);
 
-	void setSkybox(std::shared_ptr<Skybox> skybox);
-	void removeSkybox();
+	void drawSkybox(Skybox* skybox);
 
 	void setPostProcess(bool value);
 	bool setPostProcessShader(Shader* shader);
@@ -57,7 +56,7 @@ public:
 	std::shared_ptr<Renderer> getRenderer() const;
 	std::shared_ptr<Renderer> getSkyboxRenderer();
 
-	std::shared_ptr<Skybox> getSkybox();
+	Skybox* getSkybox();
 
 	uint32_t getID() const { return m_id; }
 
@@ -95,8 +94,6 @@ private:
 
 	uint32_t m_id = 0;
 
-
-	std::shared_ptr<Skybox> m_skybox = nullptr;
 	std::shared_ptr<ObjectSelection> m_objectSelection = nullptr;
 	std::shared_ptr<PostProcessProjector> m_postProcessProjector = nullptr;
 	std::shared_ptr<CoroutineSystem> m_coroutineManager = nullptr;
@@ -104,6 +101,7 @@ private:
 
 	std::deque<Model*> m_drawQueue;
 	std::deque<Model*> m_updateQueue;
+	Skybox* m_skybox = nullptr;
 
 	Context* m_context;
 
