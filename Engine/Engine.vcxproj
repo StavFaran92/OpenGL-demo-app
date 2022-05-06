@@ -96,6 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\GuiMenu.cpp" />
     <ClCompile Include="src\ObjectFactory.cpp" />
     <ClCompile Include="src\ObjectManager.cpp" />
     <ClCompile Include="src\ObjectPicker.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\GuiMenu.h" />
     <ClInclude Include="src\ObjectHandler.h" />
     <ClInclude Include="src\ObjectFactory.h" />
     <ClInclude Include="src\ObjectManager.h" />

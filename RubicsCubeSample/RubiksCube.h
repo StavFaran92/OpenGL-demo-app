@@ -14,6 +14,8 @@ class RubiksCube
 {
 public:
 	RubiksCube();
+	~RubiksCube();
+
 	void init(size_t size = 3);
 
 	void rotateFace(Axis axis, int index, Shift shift);

@@ -196,6 +196,19 @@ RubiksCube::RubiksCube()
 {
 }
 
+RubiksCube::~RubiksCube()
+{
+	for (auto cube : m_cubes)
+	{
+		cube.release();
+	}
+
+	for (auto face : m_faces)
+	{
+		face.second.release();
+	}
+}
+
 void RubiksCube::init(size_t size)
 {
 	if (size < 2)

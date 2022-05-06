@@ -7,6 +7,12 @@
 //#include "EntryPoint.h"
 #endif
 
+//external
+#ifdef GUI
+#include "ImguiHandler.h"
+#include "imgui.h"
+#endif
+
 //sge
 #include "Context.h"
 #include "Window.h"
@@ -40,3 +46,4 @@
 #include "TextureHandler.h"
 #include "ObjectFactory.h"
 #include "ObjectHandler.h"
+#include "GuiMenu.h"

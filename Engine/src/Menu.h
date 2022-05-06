@@ -13,7 +13,7 @@
 
 using namespace Constants;
 
-void DisplayMenu();
+void displayGUI();
 void ShowMenuFile();
 void ShowAppMainMenuBar();
 void LoadModel();

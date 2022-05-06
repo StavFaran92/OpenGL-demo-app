@@ -32,7 +32,7 @@ ImGuiDemoMarkerCallback         GImGuiDemoMarkerCallback = NULL;
 void* GImGuiDemoMarkerCallbackUserData = NULL;
 #define IMGUI_DEMO_MARKER(section)  do { if (GImGuiDemoMarkerCallback != NULL) GImGuiDemoMarkerCallback(__FILE__, __LINE__, section, GImGuiDemoMarkerCallbackUserData); } while (0)
 
-void DisplayMenu()
+void displayGUI()
 {
     
 

@@ -128,7 +128,7 @@ void Engine::draw(float deltaTime)
 
     m_context->draw(deltaTime);
 
-    m_imguiHandler->Render();
+    m_imguiHandler->render();
 
     m_window->SwapBuffer();
 }
@@ -237,7 +237,7 @@ void Engine::handleEvents(SDL_Event& e, bool& quit)
 {
     while (SDL_PollEvent(&e) != 0)
     {
-        m_imguiHandler->ProccessEvents(e);
+        m_imguiHandler->proccessEvents(e);
 
         //User requests quit
         if (e.type == SDL_QUIT)

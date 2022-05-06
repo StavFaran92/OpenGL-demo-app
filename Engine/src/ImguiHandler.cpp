@@ -4,6 +4,12 @@
 
 #include "Logger.h"
 
+#include "imgui.h"
+#include "imgui_impl_sdl.h"
+#include "imgui_impl_opengl3.h"
+
+#include "GuiMenu.h"
+
 bool ImguiHandler::init(SDL_Window* window, const SDL_GLContext& context)
 {
 	const char* glsl_version = "#version 140";
@@ -39,21 +45,27 @@ bool ImguiHandler::init(SDL_Window* window, const SDL_GLContext& context)
     return true;
 }
 
-void ImguiHandler::ProccessEvents(SDL_Event& e)
+void ImguiHandler::proccessEvents(SDL_Event& e)
 {
 	ImGui_ImplSDL2_ProcessEvent(&e);
 }
 
-void ImguiHandler::Render()
+void ImguiHandler::render()
 {
-	bool show_demo_window = true;
-
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-	DisplayMenu();
+	//while (m_guiQueue.empty())
+	//{
+	//	auto gui = m_guiQueue.front();
+	//	m_guiQueue.pop_front();
+
+	//	gui->display();
+	//}
+	displayGUI();
+
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -64,5 +76,11 @@ bool ImguiHandler::close()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
+
     return true;
+}
+
+void ImguiHandler::draw(GuiMenu* menu)
+{
+	m_guiQueue.push_back(menu);
 }

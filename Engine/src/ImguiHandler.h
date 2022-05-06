@@ -1,19 +1,23 @@
 #pragma once
 
 #include "SDL.h"
+#include "Core.h"
 
-#include "imgui.h"
-#include "imgui_impl_sdl.h"
-#include "imgui_impl_opengl3.h"
+#include <deque>
 
+class GuiMenu;
 
-
-class ImguiHandler
+class EngineAPI ImguiHandler
 {
 public:
 	bool init(SDL_Window* window, const SDL_GLContext& context);
-	void ProccessEvents(SDL_Event& e);
-	void Render();
+	void proccessEvents(SDL_Event& e);
+	void render();
 	bool close();
+
+	void draw(GuiMenu* menu);
+
+private:
+	std::deque<GuiMenu*> m_guiQueue;
 };
 
