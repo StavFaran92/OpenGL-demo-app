@@ -128,9 +128,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GUI;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Engine\src;$(SolutionDir)Engine\extern\GLM;$(SolutionDir)Engine\extern\SDL2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\src;$(SolutionDir)Engine\extern\GLM;$(SolutionDir)Engine\extern\SDL2\include;$(SolutionDir)Engine\extern\imgui;</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="RubiksCubeGui.cpp" />
     <ClCompile Include="RubiksCubeController.cpp" />
     <ClCompile Include="RubiksCubeDemo.cpp" />
     <ClCompile Include="RubiksCube.cpp" />
@@ -155,6 +156,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="RubiksCubeGui.h" />
     <ClInclude Include="RubiksCubeConfigurations.h" />
     <ClInclude Include="RubiksCube.h" />
     <ClInclude Include="RubiksCubeController.h" />

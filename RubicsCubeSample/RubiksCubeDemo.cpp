@@ -5,6 +5,7 @@
 #include "RubiksCubeEnt.h"
 #include "RubiksCubeConfigurations.h"
 #include "RubiksCubeController.h"
+#include "RubiksCubeGui.h"
 
 class RubiksCubeDemo : public Application
 {
@@ -13,6 +14,7 @@ public:
 	using Application::update;
 	std::shared_ptr<RubiksCube> rubiksCube;
 	std::shared_ptr<RubiksCubeController> controller;
+	std::shared_ptr<RubiksCubeGui> gui;
 
 	void start() override
 	{
@@ -23,6 +25,8 @@ public:
 
 		controller = std::make_shared<RubiksCubeController>();
 		controller->init(rubiksCube.get());
+
+		gui = std::make_shared<RubiksCubeGui>(rubiksCube.get());
 
 		auto scene = Engine::get()->getContext()->getActiveScene();
 		scene->enableObjectSelection(true);
@@ -44,6 +48,8 @@ public:
 		{
 			draw(cube.object());
 		}
+
+		Engine::get()->getImguiHandler()->draw(gui.get());
 	}
 
 };

@@ -113,13 +113,13 @@ void RubiksCube::rotateFace(Axis axis, int index, Shift shift)
 		return;
 	}
 
-	m_isRotating = true;
-
 	if (index < 0 || index > m_size - 1)
 	{
 		std::cout << "index out of bounds specified: " << index << std::endl;
 		return;
 	}
+
+	m_isRotating = true;
 
 	glm::vec3 dir(1);
 	switch (axis)
