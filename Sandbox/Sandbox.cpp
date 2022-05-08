@@ -62,10 +62,11 @@ public:
 	ObjectHandler<Box> box;
 	Sphere* sphere1;
 	Sphere* sphere2;
+	ObjectHandler<Skybox> skybox;
 
 	void start() override
 	{
-		//skybox(Skybox::CreateSkybox());
+		skybox = Skybox::CreateSkybox();
 
 		box = ModelBuilder::builder<Box>()
 			.build();
@@ -107,6 +108,7 @@ public:
 		draw(box.object());
 		//draw(sphere1);
 		//draw(sphere2);
+		Engine::get()->getContext()->getActiveScene()->drawSkybox(skybox.object());
 	}
 
 };
