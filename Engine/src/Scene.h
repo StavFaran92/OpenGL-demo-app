@@ -23,6 +23,7 @@ class Shader;
 class CoroutineSystem;
 class Context;
 class ObjectPicker;
+template<typename T> class ObjectHandler;
 
 class EngineAPI Scene
 {
@@ -65,8 +66,8 @@ public:
 	void selectObject(uint32_t id);
 	void clearObjectSelection();
 
-	void update(Model* model);
-	void draw(Model* model);
+	void update(ObjectHandler<Object3D> handler);
+	void draw(ObjectHandler<Model> handler);
 
 
 private:
@@ -100,7 +101,7 @@ private:
 	std::shared_ptr<ObjectPicker> m_objectPicker = nullptr;
 
 	std::deque<Model*> m_drawQueue;
-	std::deque<Model*> m_updateQueue;
+	std::deque<Object3D*> m_updateQueue;
 	Skybox* m_skybox = nullptr;
 
 	Context* m_context;

@@ -10,6 +10,8 @@ class Skybox;
 class Box;
 class Quad;
 class Sphere;
+class Object3D;
+template<typename> class ObjectHandler;
 
 class EngineAPI Application
 {
@@ -23,8 +25,8 @@ protected:
 	/** API */
 
 
-	void update(Model* model);
-	void draw(Model* model);
+	void update(ObjectHandler<Object3D> handler);
+	void draw(ObjectHandler<Model> handler);
 	Box* createBox();
 	Quad* createQuad();
 	void postProcess(Shader*);

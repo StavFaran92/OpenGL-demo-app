@@ -45,7 +45,7 @@ public:
 	{
 		for (const auto cube : rubiksCube->getCubes())
 		{
-			update(cube.object());
+			update(cube);
 		}
 	}
 
@@ -53,7 +53,7 @@ public:
 	{
 		for (const auto cube : rubiksCube->getCubes())
 		{
-			draw(cube.object());
+			draw(cube);
 		}
 
 		Engine::get()->getImguiHandler()->draw(gui.get());

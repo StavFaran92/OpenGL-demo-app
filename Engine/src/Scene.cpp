@@ -18,6 +18,7 @@
 #include "Window.h"
 #include "ObjectPicker.h"
 #include "ObjectManager.h"
+#include "ObjectHandler.h"
 
 void Scene::init(Context* context)
 {
@@ -78,10 +79,10 @@ void Scene::update(float deltaTime)
 
 	while (!m_updateQueue.empty())
 	{
-		auto model = m_updateQueue.front();
+		auto object = m_updateQueue.front();
 		m_updateQueue.pop_front();
 
-		model->update(deltaTime);
+		object->update(deltaTime);
 	}
 
 	if (m_skybox)
@@ -147,12 +148,13 @@ void Scene::draw(float deltaTime)
 
 		for (unsigned int i = 0; i < m_drawQueue.size(); i++)
 		{
+			auto model = m_drawQueue[i];
 			pickingShader->use();
-			pickingShader->setModelMatrix(m_drawQueue[i]->getTransformation()->getMatrix());
-			pickingShader->setObjectIndex(m_drawQueue[i]->getID() + 1);
+			pickingShader->setModelMatrix(model->getTransformation()->getMatrix());
+			pickingShader->setObjectIndex(model->getID() + 1);
 			pickingShader->release();
 
-			m_drawQueue[i]->draw(*m_renderer.get(), pickingShader);
+			model->draw(*m_renderer.get(), pickingShader);
 		}
 		pickingShader->release();
 
@@ -361,14 +363,14 @@ void Scene::clearObjectSelection()
 	m_objectSelection->clear();
 }
 
-void Scene::update(Model* model)
+void Scene::update(ObjectHandler<Object3D> handler)
 {
-	m_updateQueue.push_back(model);
+	m_updateQueue.push_back(handler.object());
 }
 
-void Scene::draw(Model* model)
+void Scene::draw(ObjectHandler<Model> handler)
 {
-	m_drawQueue.push_back(model);
+	m_drawQueue.push_back(handler.object());
 }
 
 bool Scene::setPostProcessShader(Shader* shader)
