@@ -51,7 +51,7 @@ void Scene::init(Context* context)
 
 	Engine::get()->getInput()->getMouse()->onMousePressed(Mouse::MouseButton::LeftMousebutton, [&](SDL_Event e)
 	{
-		m_pickObject = true;
+		m_pickingPhaseActive = true;
 	});
 }
 
@@ -137,35 +137,48 @@ void Scene::draw(float deltaTime)
 	phongShader->release();
 
 	// Picking Phase
-	if (m_isObjectSelectionEnabled && m_pickObject)
+	if (m_isObjectSelectionEnabled && m_pickingPhaseActive)
 	{
+		// Enable writing to picking frame buffer
 		m_objectPicker->enableWriting();
 
+		// Set uniforms in picking shader
 		auto pickingShader = m_context->getPickingShader();
 		pickingShader->use();
 		pickingShader->setViewMatrix(m_renderer->getCamera()->getView());
 		pickingShader->setProjectionMatrix(m_renderer->getProjection());
 
+		// iterate models queue
 		for (unsigned int i = 0; i < m_drawQueue.size(); i++)
 		{
+			// Set Model related uniforms in picking shader  
 			auto model = m_drawQueue[i];
 			pickingShader->use();
 			pickingShader->setModelMatrix(model->getTransformation()->getMatrix());
 			pickingShader->setObjectIndex(model->getID() + 1);
 			pickingShader->release();
 
+			// Draw model
 			model->draw(*m_renderer.get(), pickingShader);
 		}
-		pickingShader->release();
 
+		// Release picking shader and stop writing to frame buffer
+		pickingShader->release();
 		m_objectPicker->disableWriting();
 
+		// Get mouse X & Y
 		int x, y;
 		Engine::get()->getInput()->getMouse()->getMousePosition(x, y);
+
+		// Pick object in scene according to X & Y
 		auto objectID = m_objectPicker->pickObject(x, y);
+
+		// Clears previous object selection
+		m_objectSelection->clear();
+
+		// If object returned != -1 then an object has been picked (-1 means background)
 		if (objectID != -1)
 		{
-			m_objectSelection->clear();
 			auto obj = Engine::get()->getObjectManager()->getObjectById(objectID);
 			if (obj)
 			{
@@ -175,10 +188,12 @@ void Scene::draw(float deltaTime)
 			}
 		}
 
-		m_pickObject = false;
+		// Turn picking phase flag off
+		m_pickingPhaseActive = false;
 	}
 
 	// Render Phase
+	// Post process Enable writing
 	if (m_isPostProcessEnabled && m_postProcessProjector)
 	{
 		m_postProcessProjector->enableWriting();
@@ -202,12 +217,14 @@ void Scene::draw(float deltaTime)
 		model->draw(*m_renderer.get());
 	}
 
+	// Draw skybox
 	if (m_skybox)
 	{
 		m_skybox->draw(*m_skyboxRenderer.get());
 		m_skybox = nullptr;
 	}
 
+	// Post process disable writing and draw if required
 	if (m_isPostProcessEnabled && m_postProcessProjector)
 	{
 		m_postProcessProjector->disableWriting();
@@ -312,9 +329,9 @@ bool Scene::removeDirectionalLight(DirectionalLight* dLight)
 }
 
 
-void Scene::drawSkybox(Skybox* skybox)
+void Scene::drawSkybox(ObjectHandler<Skybox> skybox)
 {
-	m_skybox = skybox;
+	m_skybox = skybox.object();
 }
 
 std::shared_ptr<Renderer> Scene::getRenderer() const

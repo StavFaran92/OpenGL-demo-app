@@ -15,10 +15,10 @@ TEST(TestModelBuilder, basic)
 	TestEngine testEngine;
 	testEngine.startEngine();
 
-	Model* model = ModelBuilder::builder<Box>()
+	auto model = ModelBuilder::builder<Box>()
 		.build();
 
-	ASSERT_TRUE(model != nullptr);
+	ASSERT_TRUE(model.isValid());
 
 	testEngine.stopEngine();
 }
@@ -35,10 +35,10 @@ TEST(TestModelBuilder, invalidModel)
 	TestEngine testEngine;
 	testEngine.startEngine();
 
-	Model* model = ModelBuilder::builder<Model>()
+	auto model = ModelBuilder::builder<Model>()
 		.build();
 
-	ASSERT_TRUE(model == nullptr);
+	ASSERT_TRUE(!model.isValid());
 
 	testEngine.stopEngine();
 }
@@ -58,13 +58,13 @@ TEST(TestModelBuilder, setShader)
 	Shader* shader = Shader::PhongShader();
 	int expectedID = shader->getID();
 
-	Model* model = ModelBuilder::builder<Box>()
+	auto model = ModelBuilder::builder<Box>()
 		.setShader(*shader)
 		.build();
 
-	ASSERT_TRUE(model != nullptr);
+	ASSERT_TRUE(model.isValid());
 
-	int actualID = model->getShader()->getID();
+	int actualID = model.object()->getShader()->getID();
 
 	EXPECT_EQ(expectedID, actualID);
 
@@ -86,16 +86,16 @@ TEST(TestModelBuilder, setShaderWithCopy)
 
 	Shader* shader = Shader::PhongShader();
 
-	Model* model = ModelBuilder::builder<Box>()
+	auto model = ModelBuilder::builder<Box>()
 		.setShader(*shader, true)
 		.build();
 
 	// We delete the original Shader to check if a copy was succesflly made
 	delete shader;
 
-	ASSERT_TRUE(model != nullptr);
+	ASSERT_TRUE(model.isValid());
 
-	int actualID = model->getShader()->getID();
+	int actualID = model.object()->getShader()->getID();
 
 	EXPECT_NE(0, actualID);
 

@@ -88,7 +88,7 @@ public:
 
 	void update(float deltaTime) override
 	{
-		update(box.object());
+		update(box);
 		//update(sphere1);
 		//update(sphere2);
 	}
@@ -105,10 +105,10 @@ public:
 		//	sphere1->rotate({ 0,0,1 }, 1);
 		//}
 
-		draw(box.object());
+		draw(box);
 		//draw(sphere1);
 		//draw(sphere2);
-		Engine::get()->getContext()->getActiveScene()->drawSkybox(skybox.object());
+		Engine::get()->getContext()->getActiveScene()->drawSkybox(skybox);
 	}
 
 };

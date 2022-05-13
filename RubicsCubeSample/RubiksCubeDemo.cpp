@@ -58,7 +58,7 @@ public:
 
 		Engine::get()->getImguiHandler()->draw(gui.get());
 
-		Engine::get()->getContext()->getActiveScene()->drawSkybox(skybox.object());
+		Engine::get()->getContext()->getActiveScene()->drawSkybox(skybox);
 	}
 
 	void close() override

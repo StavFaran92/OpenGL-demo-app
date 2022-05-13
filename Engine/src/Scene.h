@@ -46,7 +46,7 @@ public:
 	bool addObject(Object3D* object);
 	void removeObject(Object3D* object);
 
-	void drawSkybox(Skybox* skybox);
+	void drawSkybox(ObjectHandler<Skybox> skybox);
 
 	void setPostProcess(bool value);
 	bool setPostProcessShader(Shader* shader);
@@ -107,7 +107,7 @@ private:
 	Context* m_context;
 
 	bool m_isPostProcessEnabled = false;
-	bool m_pickObject = false;
+	bool m_pickingPhaseActive = false;
 	bool m_isObjectSelectionEnabled = false;
 
 
