@@ -16,10 +16,11 @@ Shader::Shader()
 {
 }
 
-Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath) :
-	m_id(0), 
+Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath, const std::string& geometryShader) : 
+	m_id(0),
 	m_vertexShaderFilepath(vertexFilePath), 
-	m_FragmentShaderFilepath(fragmentFilePath)
+	m_FragmentShaderFilepath(fragmentFilePath),
+	m_geometryShaderFilepath(geometryShader)
 {
 	init();
 }
@@ -27,7 +28,8 @@ Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFil
 Shader::Shader(const Shader& other) :
 	m_id(0),
 	m_vertexShaderFilepath(other.m_vertexShaderFilepath),
-	m_FragmentShaderFilepath(other.m_FragmentShaderFilepath)
+	m_FragmentShaderFilepath(other.m_FragmentShaderFilepath),
+	m_geometryShaderFilepath(other.m_geometryShaderFilepath)
 {
 	m_enableLight = other.m_enableLight;
 	m_enableMaterial = other.m_enableMaterial;
@@ -41,6 +43,7 @@ Shader& Shader::operator=(const Shader& other)
 {
 	m_vertexShaderFilepath = other.m_vertexShaderFilepath;
 	m_FragmentShaderFilepath = other.m_FragmentShaderFilepath;
+	m_geometryShaderFilepath = other.m_geometryShaderFilepath;
 
 	m_enableLight = other.m_enableLight;
 	m_enableMaterial = other.m_enableMaterial;
@@ -59,11 +62,18 @@ void Shader::init()
 	std::string vertexCode = Utils::ReadFile(m_vertexShaderFilepath);
 	std::string fragmentCode = Utils::ReadFile(m_FragmentShaderFilepath);
 
+	std::string geometryCode;
+
+	if (!m_geometryShaderFilepath.empty())
+	{
+		geometryCode = Utils::ReadFile(m_geometryShaderFilepath);
+	}
+
 	// Build shaders
-	BuildShaders(vertexCode, fragmentCode);
+	BuildShaders(vertexCode, fragmentCode, geometryCode);
 }
 
-void Shader::BuildShaders(const std::string& vertexCode, const std::string& fragmentCode)
+void Shader::BuildShaders(const std::string& vertexCode, const std::string& fragmentCode, const std::string& geometryCode) 
 {
 	//Create a new shader program
 	m_id = glCreateProgram();
@@ -75,6 +85,14 @@ void Shader::BuildShaders(const std::string& vertexCode, const std::string& frag
 	// Create and attach vertex shader to program
 	GLuint vertexShader = AddShader(vertexCode, GL_VERTEX_SHADER);
 	glAttachShader(m_id, vertexShader);
+
+	GLuint geometryShader = 0;
+	if (!geometryCode.empty())
+	{
+		// Create and attach geometry shader to program
+		geometryShader = AddShader(geometryCode, GL_GEOMETRY_SHADER);
+		glAttachShader(m_id, geometryShader);
+	}
 
 	// Create and attach fragment shader to program
 	GLuint fragShader = AddShader(fragmentCode, GL_FRAGMENT_SHADER);
@@ -89,6 +107,9 @@ void Shader::BuildShaders(const std::string& vertexCode, const std::string& frag
 	// Delete shaders
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragShader);
+
+	if (geometryShader)
+		glDeleteShader(geometryShader);
 }
 
 bool Shader::ValidateRenderer()

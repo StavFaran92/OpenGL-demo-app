@@ -18,6 +18,7 @@ struct aiMaterial;
 enum aiTextureType;
 class Engine;
 class TextureHandler;
+template<typename T>class ObjectHandler;
 
 namespace Assimp
 {
@@ -43,7 +44,7 @@ public:
 	 * \param flipTexture	should flip loaded texture
 	 * \return A poitner to the newly created model
 	 */
-	Model* loadModelFromFile(const std::string& path);
+	ObjectHandler<Model> loadModelFromFile(const std::string& path);
 private:
 	friend class Engine;
 	/** Init the model loader module */

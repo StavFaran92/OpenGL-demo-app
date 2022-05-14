@@ -35,6 +35,7 @@ public:
 	Shader* GetRefractiveShader() const;
 	PhongShader* getPhongShader() const;
 	PickingShader* getPickingShader() const;
+	Shader* getNormalDisplayShader() const;
 
 	std::shared_ptr<Scene> getActiveScene() const;
 	
@@ -62,6 +63,7 @@ private:
 	std::shared_ptr<Shader> m_refractiveShader = nullptr;
 	std::shared_ptr<PhongShader> m_phongShader = nullptr;
 	std::shared_ptr<PickingShader> m_pickingShader = nullptr;
+	std::shared_ptr<Shader> m_normalDisplayShader = nullptr;
 };
 
 

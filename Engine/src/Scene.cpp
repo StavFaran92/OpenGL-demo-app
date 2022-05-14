@@ -19,6 +19,7 @@
 #include "ObjectPicker.h"
 #include "ObjectManager.h"
 #include "ObjectHandler.h"
+#include "Configurations.h"
 
 void Scene::init(Context* context)
 {
@@ -33,7 +34,7 @@ void Scene::init(Context* context)
 	m_objectSelection = std::make_shared<ObjectSelection>();
 
 	m_objectPicker = std::make_shared<ObjectPicker>();
-	if(!m_objectPicker->init(width, height))
+	if (!m_objectPicker->init(width, height))
 	{
 		logError("Object picker failed to init!");
 	}
@@ -63,7 +64,7 @@ void Scene::update(float deltaTime)
 
 	// Advance all coroutines
 	auto coroutines = m_coroutineManager->getAllCoroutines();
-	for (int i=0; i < coroutines.size(); i++)
+	for (int i = 0; i < coroutines.size(); i++)
 	{
 		if ((*coroutines[i])(deltaTime))
 		{
@@ -199,21 +200,29 @@ void Scene::draw(float deltaTime)
 		m_postProcessProjector->enableWriting();
 	}
 
-	// Draw Application models
+	// Iterate Application models
 	while (!m_drawQueue.empty())
 	{
 		auto model = m_drawQueue.front();
 		m_drawQueue.pop_front();
 
+		// If in debug MODE -> put model in displayNormalsQueue
+		if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
+		{
+			m_debugModelDeque.push_back(model);
+		}
+
 		phongShader->use();
 
-		if (isSelected(model->getID()))
+		// If model is selected highlight it's color
+		if (m_isObjectSelectionEnabled && isSelected(model->getID()))
 			phongShader->setColorMul({ 0.3f, 0.3f, 0.3f, 0.3f });
 		else
 			phongShader->setColorMul({ 0.f, 0.f, 0.f, 0.f });
 
 		phongShader->release();
 
+		// draw model
 		model->draw(*m_renderer.get());
 	}
 
@@ -222,6 +231,21 @@ void Scene::draw(float deltaTime)
 	{
 		m_skybox->draw(*m_skyboxRenderer.get());
 		m_skybox = nullptr;
+	}
+
+	if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
+	{
+		// Use normal display shader
+		auto normalDisplayShader = m_context->getNormalDisplayShader();
+
+		// draw scene
+		while (!m_debugModelDeque.empty())
+		{
+			auto model = m_debugModelDeque.front();
+			m_debugModelDeque.pop_front();
+
+			model->draw(*m_renderer.get(), normalDisplayShader);
+		}
 	}
 
 	// Post process disable writing and draw if required
@@ -248,7 +272,7 @@ bool Scene::addModel(Model* model)
 {
 	m_modelCounter++;
 	model->setSceneID(m_modelCounter);
-	m_models.emplace(m_modelCounter, std::shared_ptr<Model>( model));
+	m_models.emplace(m_modelCounter, std::shared_ptr<Model>(model));
 
 	logInfo("Model {} Added successfully.", std::to_string(m_modelCounter));
 	return true;
@@ -291,9 +315,9 @@ bool Scene::removeModel(uint32_t id)
 
 bool Scene::removeModel(Model* model)
 {
-		uint32_t id = model->getID();
-		
-		return removeModel(id);
+	uint32_t id = model->getID();
+
+	return removeModel(id);
 }
 
 bool Scene::removePointLight(PointLight* pLight)

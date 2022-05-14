@@ -8,6 +8,9 @@
 #include <filesystem>
 #include "MeshBuilder.h"
 #include "TextureHandler.h"
+#include "ObjectFactory.h"
+#include "Model.h"
+#include "ObjectHandler.h"
 
 ModelImporter::ModelImporter()
 {
@@ -21,19 +24,19 @@ void ModelImporter::init()
 	logInfo("Model importer init successfully.");
 }
 
-Model* ModelImporter::loadModelFromFile(const std::string& path)
+ObjectHandler<Model> ModelImporter::loadModelFromFile(const std::string& path)
 {
 	// validate init
 	if (m_importer == nullptr)
 	{
 		logError("Importer not initialized.");
-		return nullptr;
+		return ObjectHandler<Model>::EmptyHandler;
 	}
 
 	if (!std::filesystem::exists(path))
 	{
 		logError("File doesn't exists: " + path);
-		return nullptr;
+		return ObjectHandler<Model>::EmptyHandler;
 	}
 
 	// read scene from file
@@ -43,11 +46,15 @@ Model* ModelImporter::loadModelFromFile(const std::string& path)
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
 		logError("ERROR::ASSIMP::{}", m_importer->GetErrorString());
-		return nullptr;
+		return ObjectHandler<Model>::EmptyHandler;
 	}
 
 	//create new model
-	auto model = new Model();
+	//auto model = new Model();
+	auto modelHandler = ObjectFactory::create<Model>();
+
+	std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
+	modelHandler.object()->useMaterial(material);
 
 	// create new model session
 	ModelImportSession session;
@@ -55,11 +62,11 @@ Model* ModelImporter::loadModelFromFile(const std::string& path)
 	session.fileDir = path.substr(0, path.find_last_of('\\'));
 
 	// place session in session map
-	m_sessions[model->getID()] = session;
+	m_sessions[modelHandler.getID()] = session;
 
-	processNode(scene->mRootNode, scene, session, *model);
+	processNode(scene->mRootNode, scene, session, *modelHandler.object());
 
-	return model;
+	return modelHandler;
 }
 
 void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporter::ModelImportSession& session, Model& model)

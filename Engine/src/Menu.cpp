@@ -302,11 +302,11 @@ void ShowModelCreatorWindow()
 
             auto model = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str());
             std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-            model->useMaterial(material);
-            model->getTransformation()->setPosition(pos);
-            model->getTransformation()->setScale(scale);
+            model.object()->useMaterial(material);
+            model.object()->getTransformation()->setPosition(pos);
+            model.object()->getTransformation()->setScale(scale);
 
-            Engine::get()->getContext()->getActiveScene()->addModel(model);
+            Engine::get()->getContext()->getActiveScene()->addModel(model.object());
 
             showModelCreatorWindow = false;
 

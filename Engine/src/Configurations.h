@@ -4,6 +4,8 @@
 #include <vector>
 
 constexpr bool FLIP_TEXTURE = true;
+constexpr bool DEBUG_MODE_ENABLED = false;
+constexpr bool DEBUG_DISPLAY_NORMALS = false;
 
 enum class LayoutAttribute
 {

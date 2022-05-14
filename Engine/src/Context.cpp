@@ -28,6 +28,7 @@ Context::Context() : m_shaderCounter(0)
 
 	m_phongShader = std::make_shared<PhongShader>();
 	m_pickingShader = std::make_shared<PickingShader>();
+	//m_normalDisplayShader = std::make_shared<Shader>("Resources\\Shaders\\normalDisplayShader.vert", "Resources\\Shaders\\normalDisplayShader.frag", "Resources\\Shaders\\normalDisplayShader.geom");
 
 	//std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
 	//AddDirectionalLight(light);
@@ -157,4 +158,9 @@ void Context::draw(float deltaTime)
 		return;
 
 	m_scenes[m_activeScene]->draw(deltaTime);
+}
+
+Shader* Context::getNormalDisplayShader() const
+{
+	return m_normalDisplayShader.get();
 }

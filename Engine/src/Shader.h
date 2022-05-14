@@ -15,7 +15,7 @@ public:
 	Shader();
 
 	/** Constructor */
-	Shader(const std::string& vertexfilePath, const std::string& fragmentFilePath);
+	Shader(const std::string& vertexfilePath, const std::string& fragmentFilePath, const std::string& geometryShader = "");
 
 	/** Copy Constructor */
 	Shader(const Shader& other);
@@ -60,7 +60,7 @@ private:
 	friend class Context;
 	inline void SetID(uint32_t id) { m_id = id; }
 	void init();
-	void BuildShaders(const std::string& vertexCode, const std::string& fragmentCode);
+	void BuildShaders(const std::string& vertexCode, const std::string& fragmentCode, const std::string& geometryShader);
 	uint32_t AddShader(const std::string& shaderCode, unsigned int shaderType);
 
 	bool ValidateRenderer();
@@ -75,6 +75,7 @@ protected:
 	bool m_enableColors = false;
 	std::string m_vertexShaderFilepath;
 	std::string m_FragmentShaderFilepath;
+	std::string m_geometryShaderFilepath;
 
 	static uint32_t s_activateShader;
 };

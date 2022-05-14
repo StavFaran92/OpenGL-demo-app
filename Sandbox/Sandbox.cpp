@@ -58,7 +58,7 @@ public:
 	using Application::update;
 
 
-	Model* guitar;
+	ObjectHandler<Model> guitar;
 	ObjectHandler<Box> box;
 	Sphere* sphere1;
 	Sphere* sphere2;
@@ -70,6 +70,9 @@ public:
 
 		box = ModelBuilder::builder<Box>()
 			.build();
+
+		auto importer = Engine::get()->getModelImporter();
+		guitar = importer->loadModelFromFile("D:\\program files\\downloads\\backpack\\backpack.obj");
 
 		//sphere1 = (Sphere*)ModelBuilder::builder<Sphere>(1, 36, 18)
 		//	.build();
@@ -88,7 +91,8 @@ public:
 
 	void update(float deltaTime) override
 	{
-		update(box);
+		//update(box);
+		update(guitar);
 		//update(sphere1);
 		//update(sphere2);
 	}
@@ -105,7 +109,8 @@ public:
 		//	sphere1->rotate({ 0,0,1 }, 1);
 		//}
 
-		draw(box);
+		//draw(box);
+		draw(guitar);
 		//draw(sphere1);
 		//draw(sphere2);
 		Engine::get()->getContext()->getActiveScene()->drawSkybox(skybox);

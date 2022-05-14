@@ -104,6 +104,8 @@ private:
 	std::deque<Object3D*> m_updateQueue;
 	Skybox* m_skybox = nullptr;
 
+	std::deque<Model*> m_debugModelDeque;
+
 	Context* m_context;
 
 	bool m_isPostProcessEnabled = false;
