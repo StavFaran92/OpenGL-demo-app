@@ -15,6 +15,12 @@ class Scene;
 class Engine;
 class PhongShader;
 class PickingShader;
+class Window;
+class ImguiHandler;
+class Input;
+class EventSystem;
+class ModelImporter;
+
 
 
 class EngineAPI Context
@@ -36,6 +42,13 @@ public:
 	PhongShader* getPhongShader() const;
 	PickingShader* getPickingShader() const;
 	Shader* getNormalDisplayShader() const;
+
+	Window* getWindow() const;
+	Renderer* getRenderer() const;
+	ImguiHandler* getImguiHandler() const;
+	Input* getInput() const;
+	EventSystem* getEventSystem() const;
+	ModelImporter* getModelImporter() const;
 
 	std::shared_ptr<Scene> getActiveScene() const;
 	

@@ -11,6 +11,7 @@ class Box;
 class Quad;
 class Sphere;
 class Object3D;
+class Context;
 template<typename> class ObjectHandler;
 
 class EngineAPI Application
@@ -31,6 +32,8 @@ protected:
 	Quad* createQuad();
 	void postProcess(Shader*);
 	void skybox(std::shared_ptr<Skybox> skybox);
+
+	Context* getContext() const;
 
 	// Input
 	int keyboard_getKeyState(SDL_Scancode code);

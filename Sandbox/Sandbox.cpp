@@ -71,7 +71,7 @@ public:
 		box = ModelBuilder::builder<Box>()
 			.build();
 
-		auto importer = Engine::get()->getModelImporter();
+		auto importer = getContext()->getModelImporter();
 		guitar = importer->loadModelFromFile("D:\\program files\\downloads\\backpack\\backpack.obj");
 
 		//sphere1 = (Sphere*)ModelBuilder::builder<Sphere>(1, 36, 18)
@@ -113,7 +113,7 @@ public:
 		draw(guitar);
 		//draw(sphere1);
 		//draw(sphere2);
-		Engine::get()->getContext()->getActiveScene()->drawSkybox(skybox);
+		getContext()->getActiveScene()->drawSkybox(skybox);
 	}
 
 };

@@ -13,6 +13,11 @@
 #include "Quad.h"
 #include "ObjectHandler.h"
 
+Context* Application::getContext() const
+{
+	return Engine::get()->getContext();
+}
+
 void Application::skybox(std::shared_ptr<Skybox> skybox)
 {
 	//auto context = Engine::get()->getContext();

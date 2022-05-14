@@ -164,3 +164,33 @@ Shader* Context::getNormalDisplayShader() const
 {
 	return m_normalDisplayShader.get();
 }
+
+Window* Context::getWindow() const
+{
+	return Engine::get()->getWindow();
+}
+
+Renderer* Context::getRenderer() const
+{
+	return Engine::get()->getRenderer();
+}
+
+ImguiHandler* Context::getImguiHandler() const
+{
+	return Engine::get()->getImguiHandler();
+}
+
+Input* Context::getInput() const
+{
+	return Engine::get()->getInput();
+}
+
+EventSystem* Context::getEventSystem() const
+{
+	return Engine::get()->getEventSystem();
+}
+
+ModelImporter* Context::getModelImporter() const
+{
+	return Engine::get()->getModelImporter();
+}
