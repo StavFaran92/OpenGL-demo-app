@@ -24,6 +24,7 @@ class CoroutineSystem;
 class Context;
 class ObjectPicker;
 class Transformation;
+class GpuInstancingRenderer;
 template<typename T> class ObjectHandler;
 
 class EngineAPI Scene
@@ -94,6 +95,7 @@ private:
 	uint32_t m_directionalLightCounter = 0;
 
 	std::shared_ptr<Renderer> m_renderer = nullptr;
+	std::shared_ptr<GpuInstancingRenderer> m_gpuInstancingRenderer = nullptr;
 	std::shared_ptr<Renderer> m_skyboxRenderer = nullptr;
 
 	uint32_t m_id = 0;
@@ -108,7 +110,7 @@ private:
 	Skybox* m_skybox = nullptr;
 
 	std::deque<Model*> m_debugModelDeque;
-	std::deque<Model*, std::vector<Transformation*>*> m_drawMultipleQueue;
+	std::deque<std::pair<Model*, std::vector<Transformation*>*>> m_drawMultipleQueue;
 
 	Context* m_context;
 

@@ -74,6 +74,10 @@ public:
 		auto importer = getContext()->getModelImporter();
 		guitar = importer->loadModelFromFile("D:\\program files\\downloads\\backpack\\backpack.obj");
 
+		std::vector<Transformation*> transformations;
+
+		getContext()->getActiveScene()->drawMultiple(guitar, &transformations);
+
 		//sphere1 = (Sphere*)ModelBuilder::builder<Sphere>(1, 36, 18)
 		//	.build();
 

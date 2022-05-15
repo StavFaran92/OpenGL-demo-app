@@ -20,6 +20,7 @@
 #include "ObjectManager.h"
 #include "ObjectHandler.h"
 #include "Configurations.h"
+#include "GpuInstancingRenderer.h"
 
 void Scene::init(Context* context)
 {
@@ -30,6 +31,7 @@ void Scene::init(Context* context)
 
 	m_renderer = std::make_shared<Renderer>();
 	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
+	m_gpuInstancingRenderer = std::make_shared<GpuInstancingRenderer>();
 
 	m_objectSelection = std::make_shared<ObjectSelection>();
 
@@ -160,7 +162,8 @@ void Scene::draw(float deltaTime)
 			pickingShader->release();
 
 			// Draw model
-			model->draw(*m_renderer.get(), pickingShader);
+			m_renderer->render(model, pickingShader);
+			//model->draw(*m_renderer.get(), pickingShader);
 		}
 
 		// Release picking shader and stop writing to frame buffer
@@ -223,7 +226,18 @@ void Scene::draw(float deltaTime)
 		phongShader->release();
 
 		// draw model
-		model->draw(*m_renderer.get());
+		m_renderer->render(model);
+		//model->draw(*m_renderer.get());
+	}
+
+	// Iterate Application models
+	while (!m_drawMultipleQueue.empty())
+	{
+		auto model = m_drawMultipleQueue.front();
+		m_drawMultipleQueue.pop_front();
+
+		// draw model
+		m_gpuInstancingRenderer->render(model.first, model.second);
 	}
 
 	// Draw skybox
@@ -244,7 +258,8 @@ void Scene::draw(float deltaTime)
 			auto model = m_debugModelDeque.front();
 			m_debugModelDeque.pop_front();
 
-			model->draw(*m_renderer.get(), normalDisplayShader);
+			m_renderer->render(model, normalDisplayShader);
+			//model->draw(*m_renderer.get(), normalDisplayShader);
 		}
 	}
 

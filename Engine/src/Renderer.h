@@ -6,6 +6,7 @@
 // forward declerations
 class ICamera;
 class SkyboxRenderer;
+class Model;
 
 
 class EngineAPI Renderer : public IRenderer
@@ -19,6 +20,7 @@ public:
 
 	//Overrides
 	void draw(const VertexArrayObject& vao, Shader& shader) const override;
+	void render(Model* model, Shader* shader = nullptr);
 	virtual void SetMVP(Shader& shader) const;
  	void Clear() const override;
 	glm::mat4 getProjection() const override;

@@ -182,6 +182,7 @@
     <ClCompile Include="src\ObjectPicker.cpp" />
     <ClCompile Include="src\ObjectManager.cpp" />
     <ClCompile Include="src\ObjectFactory.cpp" />
+    <ClCompile Include="src\GpuInstancingRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -409,6 +410,7 @@
     <ClInclude Include="src\ObjectFactory.h" />
     <ClInclude Include="src\ObjectHandler.h" />
     <ClInclude Include="src\GuiMenu.h" />
+    <ClInclude Include="src\GpuInstancingRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
