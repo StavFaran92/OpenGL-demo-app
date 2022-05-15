@@ -50,7 +50,6 @@ ObjectHandler<Model> ModelImporter::loadModelFromFile(const std::string& path)
 	}
 
 	//create new model
-	//auto model = new Model();
 	auto modelHandler = ObjectFactory::create<Model>();
 
 	std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
@@ -170,20 +169,8 @@ std::vector<TextureHandler*> ModelImporter::loadMaterialTextures(aiMaterial* mat
 		if (pType != Texture::Type::None)
 		{
 			textureHandler->setType(pType);
-			//auto sharedTexture = std::shared_ptr<Texture>(texture);
 			textureHandlers.push_back(textureHandler);
-			//m_texturesCache[textureName] = sharedTexture;
 		}
-
-		//// Check if texture is in cache and is not expired
-		//if(m_texturesCache.find(str.C_Str()) != m_texturesCache.end() && !m_texturesCache[textureName].expired())
-		//{
-		//	textures.push_back(m_texturesCache[textureName].lock());
-		//}
-		//else
-		//{
-		//	
-		//}
 	}
 	return textureHandlers;
 }

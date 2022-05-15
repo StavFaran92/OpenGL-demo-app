@@ -256,6 +256,11 @@ void Scene::draw(float deltaTime)
 	}
 }
 
+void Scene::drawMultiple(ObjectHandler<Model> handler, std::vector<Transformation*>* transformations)
+{
+	m_drawMultipleQueue.push_back({ handler.object(), transformations });
+}
+
 void Scene::clear()
 {
 	m_models.clear();

@@ -23,6 +23,7 @@ class Shader;
 class CoroutineSystem;
 class Context;
 class ObjectPicker;
+class Transformation;
 template<typename T> class ObjectHandler;
 
 class EngineAPI Scene
@@ -69,6 +70,8 @@ public:
 	void update(ObjectHandler<Object3D> handler);
 	void draw(ObjectHandler<Model> handler);
 
+	void drawMultiple(ObjectHandler<Model> handler, std::vector<Transformation*>* transformations);
+
 
 private:
 	// -------------------- Methods -------------------- //
@@ -105,6 +108,7 @@ private:
 	Skybox* m_skybox = nullptr;
 
 	std::deque<Model*> m_debugModelDeque;
+	std::deque<Model*, std::vector<Transformation*>*> m_drawMultipleQueue;
 
 	Context* m_context;
 
