@@ -63,6 +63,12 @@ public:
 	Sphere* sphere1;
 	Sphere* sphere2;
 	ObjectHandler<Skybox> skybox;
+	Transformation trans1{ { 1,1,1 } };
+	Transformation trans2{ { 2,2,2 } };
+
+	
+	std::vector<Transformation*> transformations;
+
 
 	void start() override
 	{
@@ -74,9 +80,10 @@ public:
 		auto importer = getContext()->getModelImporter();
 		guitar = importer->loadModelFromFile("D:\\program files\\downloads\\backpack\\backpack.obj");
 
-		std::vector<Transformation*> transformations;
+		transformations.push_back(&trans1);
+		transformations.push_back(&trans2);
 
-		getContext()->getActiveScene()->drawMultiple(guitar, &transformations);
+		
 
 		//sphere1 = (Sphere*)ModelBuilder::builder<Sphere>(1, 36, 18)
 		//	.build();
@@ -96,7 +103,7 @@ public:
 	void update(float deltaTime) override
 	{
 		//update(box);
-		update(guitar);
+		//update(guitar);
 		//update(sphere1);
 		//update(sphere2);
 	}
@@ -113,11 +120,14 @@ public:
 		//	sphere1->rotate({ 0,0,1 }, 1);
 		//}
 
+		getContext()->getActiveScene()->drawMultiple(guitar, &transformations);
+
 		//draw(box);
-		draw(guitar);
+		//draw(guitar);
 		//draw(sphere1);
 		//draw(sphere2);
 		getContext()->getActiveScene()->drawSkybox(skybox);
+
 	}
 
 };

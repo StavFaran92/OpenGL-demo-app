@@ -20,6 +20,15 @@ public:
 		m_relativeRot(1.f)
 	{}
 
+	Transformation(glm::vec3 translation) :
+		m_translation(translation),
+		m_orientationLocal(1, 0, 0, 0),
+		m_orientationWorld(1, 0, 0, 0),
+		m_scale(1, 1, 1),
+		m_transformation(1.f),
+		m_relativeRot(1.f)
+	{}
+
 	void update(float deltaTime);
 
 	void setPosition(glm::vec3 pos);
