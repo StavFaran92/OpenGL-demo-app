@@ -237,7 +237,7 @@ void Scene::draw(float deltaTime)
 		m_drawMultipleQueue.pop_front();
 
 		// draw model
-		m_gpuInstancingRenderer->render(model.first, model.second);
+		m_gpuInstancingRenderer->render(model.first, model.second, phongShader);
 	}
 
 	// Draw skybox

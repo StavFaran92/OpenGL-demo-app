@@ -23,7 +23,7 @@ void GpuInstancingRenderer::render(Model* model, std::vector<Transformation*>* t
 	for (int i = 0; i < m_amount; i++)
 	{
 		transformations->at(i)->update(0);
-		*modelMatrices = transformations->at(i)->getMatrix();
+		modelMatrices[i] = transformations->at(i)->getMatrix();
 	}
 
 	

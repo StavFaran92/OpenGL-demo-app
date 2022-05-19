@@ -63,7 +63,7 @@ public:
 	Sphere* sphere1;
 	Sphere* sphere2;
 	ObjectHandler<Skybox> skybox;
-	Transformation trans1{ { 1,1,1 } };
+	Transformation trans1{ { 5,5,5 } };
 	Transformation trans2{ { 2,2,2 } };
 
 	
