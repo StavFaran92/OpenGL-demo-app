@@ -7,6 +7,11 @@ glm::mat4 Transformation::getMatrix() const
 	return m_transformation;
 }
 
+void Transformation::getMatrix(glm::mat4& mat)
+{
+	mat = m_transformation;
+}
+
 void Transformation::update(float deltaTime)
 {
 	if (m_change)

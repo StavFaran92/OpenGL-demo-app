@@ -9,6 +9,8 @@
 
 #include "Core.h"
 
+#include "glm/glm.hpp"
+
 
 class Model;
 class Skybox;
@@ -71,7 +73,7 @@ public:
 	void update(ObjectHandler<Object3D> handler);
 	void draw(ObjectHandler<Model> handler);
 
-	void drawMultiple(ObjectHandler<Model> handler, std::vector<Transformation*>* transformations);
+	void drawMultiple(ObjectHandler<Model> handler, glm::mat4* transformations, size_t amount);
 
 
 private:
@@ -110,7 +112,7 @@ private:
 	Skybox* m_skybox = nullptr;
 
 	std::deque<Model*> m_debugModelDeque;
-	std::deque<std::pair<Model*, std::vector<Transformation*>*>> m_drawMultipleQueue;
+	std::deque<std::tuple<Model*, glm::mat4*, size_t>> m_drawMultipleQueue;
 
 	Context* m_context;
 

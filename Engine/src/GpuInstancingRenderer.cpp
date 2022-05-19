@@ -25,22 +25,24 @@ GpuInstancingRenderer::GpuInstancingRenderer()
 	//glBufferData(GL_ARRAY_BUFFER, 100 * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
 }
 
-void GpuInstancingRenderer::render(Model* model, std::vector<Transformation*>* transformations, Shader* shader)
+void GpuInstancingRenderer::render(Model* model, glm::mat4* transformations, size_t amount, Shader* shader)
 {
-	m_amount = transformations->size();
+	m_amount = amount;
 
 	// TODO OPTIMIZE, VERY SLOW. 
-	glm::mat4* modelMatrices = new glm::mat4[m_amount];
+	//glm::mat4* modelMatrices = new glm::mat4[m_amount];
 
-	for (int i = 0; i < m_amount; i++)
-	{
-		transformations->at(i)->update(0);
-		modelMatrices[i] = transformations->at(i)->getMatrix();
-	}
+	//for (int i = 0; i < m_amount; i++)
+	//{
+	//	//modelMatrices[i] = transformations->at(i)->getMatrix();
+	//	transformations->at(i)->getMatrix(modelMatrices[i]);
+	//}
 
 	
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, m_amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_amount * sizeof(glm::mat4), &transformations[0], GL_STATIC_DRAW);
+
+	//delete[] modelMatrices;
 
 	model->draw(*this, shader);
 }

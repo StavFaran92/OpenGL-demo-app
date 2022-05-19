@@ -237,7 +237,7 @@ void Scene::draw(float deltaTime)
 		m_drawMultipleQueue.pop_front();
 
 		// draw model
-		m_gpuInstancingRenderer->render(model.first, model.second, phongShader);
+		m_gpuInstancingRenderer->render(std::get<0>(model), std::get<1>(model), std::get<2>(model));
 	}
 
 	// Draw skybox
@@ -271,9 +271,9 @@ void Scene::draw(float deltaTime)
 	}
 }
 
-void Scene::drawMultiple(ObjectHandler<Model> handler, std::vector<Transformation*>* transformations)
+void Scene::drawMultiple(ObjectHandler<Model> handler, glm::mat4* transformations, size_t amount)
 {
-	m_drawMultipleQueue.push_back({ handler.object(), transformations });
+	m_drawMultipleQueue.push_back({ handler.object(), transformations, amount});
 }
 
 void Scene::clear()

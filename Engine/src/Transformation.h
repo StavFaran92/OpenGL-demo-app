@@ -55,6 +55,7 @@ public:
 	void rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle);
 	void rotateLerp(glm::vec3 axis, float angle, float t);
 	void rotateAroundLerp(glm::vec3 pivot, glm::vec3 axis, float angle, float t);
+	void getMatrix(glm::mat4& mat);
 
 
 private:

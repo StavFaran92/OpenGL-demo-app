@@ -66,7 +66,7 @@ public:
 	//Transformation trans1{ { 5,5,5 } };
 	//Transformation trans2{ { 2,2,2 } };
 	
-	std::vector<Transformation*> transformations;
+	glm::mat4* modelMatrices = new glm::mat4[1000000];
 
 
 	void start() override
@@ -82,9 +82,14 @@ public:
 		//transformations.push_back(&trans1);
 		//transformations.push_back(&trans2);
 
-		for(int i=0; i<100; i++)
-			for (int j = 0; j < 100; j++)
-				transformations.push_back(new Transformation{ { i * 2,0,j * 2 } });
+		for (int i = 0; i < 1000; i++)
+		{
+			for (int j = 0; j < 1000; j++)
+			{
+				Transformation trans{ { i * 2, 0, j * 2 } };
+				modelMatrices[i * 1000 + j] = trans.getMatrix();
+			}
+		}
 
 		
 
@@ -123,7 +128,7 @@ public:
 		//	sphere1->rotate({ 0,0,1 }, 1);
 		//}
 
-		getContext()->getActiveScene()->drawMultiple(box, &transformations);
+		getContext()->getActiveScene()->drawMultiple(box, modelMatrices, 1000000);
 
 		//draw(box);
 		//draw(guitar);
