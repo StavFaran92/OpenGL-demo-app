@@ -9,7 +9,7 @@ glm::mat4 Transformation::getMatrix() const
 
 void Transformation::update(float deltaTime)
 {
-	if (true) //todo fix
+	if (m_change)
 	{
 
 		glm::mat4 identity(1.0f);

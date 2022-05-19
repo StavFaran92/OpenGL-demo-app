@@ -7,9 +7,22 @@
 #include "Transformation.h"
 #include "VertexArrayObject.h"
 
+//glm::mat4* modelMatrices = new glm::mat4[100];
+
 GpuInstancingRenderer::GpuInstancingRenderer()
 {
 	glGenBuffers(1, &buffer);
+
+
+	//Transformation t{  };
+	//t.update(0);
+	//for (int i = 0; i < 100; i++)
+	//{
+	//	modelMatrices[i] = t.getMatrix();
+	//}
+
+	//glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	//glBufferData(GL_ARRAY_BUFFER, 100 * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
 }
 
 void GpuInstancingRenderer::render(Model* model, std::vector<Transformation*>* transformations, Shader* shader)
@@ -17,8 +30,7 @@ void GpuInstancingRenderer::render(Model* model, std::vector<Transformation*>* t
 	m_amount = transformations->size();
 
 	// TODO OPTIMIZE, VERY SLOW. 
-	glm::mat4* modelMatrices;
-	modelMatrices = new glm::mat4[m_amount];
+	glm::mat4* modelMatrices = new glm::mat4[m_amount];
 
 	for (int i = 0; i < m_amount; i++)
 	{

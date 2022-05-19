@@ -27,7 +27,10 @@ public:
 		m_scale(1, 1, 1),
 		m_transformation(1.f),
 		m_relativeRot(1.f)
-	{}
+	{
+		m_change = true;
+		update(0);
+	}
 
 	void update(float deltaTime);
 
