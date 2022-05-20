@@ -183,6 +183,7 @@
     <ClCompile Include="src\ObjectManager.cpp" />
     <ClCompile Include="src\ObjectFactory.cpp" />
     <ClCompile Include="src\GpuInstancingRenderer.cpp" />
+    <ClCompile Include="src\InstanceBatch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -411,6 +412,7 @@
     <ClInclude Include="src\ObjectHandler.h" />
     <ClInclude Include="src\GuiMenu.h" />
     <ClInclude Include="src\GpuInstancingRenderer.h" />
+    <ClInclude Include="src\InstanceBatch.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

@@ -9,6 +9,8 @@
 
 #include "Core.h"
 
+#include "InstanceBatch.h"
+
 #include "glm/glm.hpp"
 
 
@@ -73,7 +75,7 @@ public:
 	void update(ObjectHandler<Object3D> handler);
 	void draw(ObjectHandler<Model> handler);
 
-	void drawMultiple(ObjectHandler<Model> handler, glm::mat4* transformations, size_t amount);
+	void drawMultiple(const InstanceBatch& batch);
 
 
 private:
@@ -112,7 +114,7 @@ private:
 	Skybox* m_skybox = nullptr;
 
 	std::deque<Model*> m_debugModelDeque;
-	std::deque<std::tuple<Model*, glm::mat4*, size_t>> m_drawMultipleQueue;
+	std::deque<std::shared_ptr<InstanceBatch>> m_instanceBatchQueue;
 
 	Context* m_context;
 

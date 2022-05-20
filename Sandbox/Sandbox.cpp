@@ -51,6 +51,8 @@ float colors[108] = {
 	1.0f,  1.0f,  1.0f,
 };
 
+constexpr int TRANS_COUNT = 1000000;
+
 class Sandbox : public Application
 {
 public:
@@ -66,8 +68,9 @@ public:
 	//Transformation trans1{ { 5,5,5 } };
 	//Transformation trans2{ { 2,2,2 } };
 	
-	glm::mat4* modelMatrices = new glm::mat4[1000000];
 
+	std::vector<Transformation> transformations;
+	
 
 	void start() override
 	{
@@ -82,12 +85,14 @@ public:
 		//transformations.push_back(&trans1);
 		//transformations.push_back(&trans2);
 
-		for (int i = 0; i < 1000; i++)
+		const int gridLength = 1000;
+
+		for (int i = 0; i < gridLength; i++)
 		{
-			for (int j = 0; j < 1000; j++)
+			for (int j = 0; j < gridLength; j++)
 			{
-				Transformation trans{ { i * 2, 0, j * 2 } };
-				modelMatrices[i * 1000 + j] = trans.getMatrix();
+				Transformation trans({(i - gridLength / 2) * 2, 0, (j - gridLength / 2) * 2});
+				transformations.push_back(trans);
 			}
 		}
 
@@ -128,7 +133,7 @@ public:
 		//	sphere1->rotate({ 0,0,1 }, 1);
 		//}
 
-		getContext()->getActiveScene()->drawMultiple(box, modelMatrices, 1000000);
+		getContext()->getActiveScene()->drawMultiple({box, transformations});
 
 		//draw(box);
 		//draw(guitar);

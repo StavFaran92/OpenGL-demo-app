@@ -96,6 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\InstanceBatch.cpp" />
     <ClCompile Include="src\GpuInstancingRenderer.cpp" />
     <ClCompile Include="src\ObjectFactory.cpp" />
     <ClCompile Include="src\ObjectManager.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\InstanceBatch.h" />
     <ClInclude Include="src\GpuInstancingRenderer.h" />
     <ClInclude Include="src\GuiMenu.h" />
     <ClInclude Include="src\ObjectHandler.h" />

@@ -21,6 +21,7 @@
 #include "ObjectHandler.h"
 #include "Configurations.h"
 #include "GpuInstancingRenderer.h"
+#include "InstanceBatch.h"
 
 void Scene::init(Context* context)
 {
@@ -230,14 +231,14 @@ void Scene::draw(float deltaTime)
 		//model->draw(*m_renderer.get());
 	}
 
-	// Iterate Application models
-	while (!m_drawMultipleQueue.empty())
+	// Iterate GPU instancing batches
+	while (!m_instanceBatchQueue.empty())
 	{
-		auto model = m_drawMultipleQueue.front();
-		m_drawMultipleQueue.pop_front();
+		auto batch = m_instanceBatchQueue.front();
+		m_instanceBatchQueue.pop_front();
 
 		// draw model
-		m_gpuInstancingRenderer->render(std::get<0>(model), std::get<1>(model), std::get<2>(model));
+		m_gpuInstancingRenderer->render(batch);
 	}
 
 	// Draw skybox
@@ -271,9 +272,9 @@ void Scene::draw(float deltaTime)
 	}
 }
 
-void Scene::drawMultiple(ObjectHandler<Model> handler, glm::mat4* transformations, size_t amount)
+void Scene::drawMultiple(const InstanceBatch& batch)
 {
-	m_drawMultipleQueue.push_back({ handler.object(), transformations, amount});
+	m_instanceBatchQueue.push_back(std::make_shared<InstanceBatch>(batch));
 }
 
 void Scene::clear()

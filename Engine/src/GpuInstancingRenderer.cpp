@@ -6,6 +6,7 @@
 #include "Shader.h"
 #include "Transformation.h"
 #include "VertexArrayObject.h"
+#include "InstanceBatch.h"
 
 //glm::mat4* modelMatrices = new glm::mat4[100];
 
@@ -23,6 +24,28 @@ GpuInstancingRenderer::GpuInstancingRenderer()
 
 	//glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	//glBufferData(GL_ARRAY_BUFFER, 100 * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
+}
+
+void GpuInstancingRenderer::render(const std::shared_ptr<InstanceBatch>& batch, Shader* shader)
+{
+	m_amount = batch->getAmount();
+
+	// TODO OPTIMIZE, VERY SLOW. 
+	//glm::mat4* modelMatrices = new glm::mat4[m_amount];
+
+	//for (int i = 0; i < m_amount; i++)
+	//{
+	//	//modelMatrices[i] = transformations->at(i)->getMatrix();
+	//	transformations->at(i)->getMatrix(modelMatrices[i]);
+	//}
+
+
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, m_amount * sizeof(glm::mat4), &batch->getTransformations()[0], GL_STATIC_DRAW);
+
+	//delete[] modelMatrices;
+
+	batch->getModelHandler().object()->draw(*this, shader);
 }
 
 void GpuInstancingRenderer::render(Model* model, glm::mat4* transformations, size_t amount, Shader* shader)
