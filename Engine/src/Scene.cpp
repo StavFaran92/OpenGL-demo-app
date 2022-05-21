@@ -260,7 +260,6 @@ void Scene::draw(float deltaTime)
 			m_debugModelDeque.pop_front();
 
 			m_renderer->render(model, normalDisplayShader);
-			//model->draw(*m_renderer.get(), normalDisplayShader);
 		}
 	}
 

@@ -12,7 +12,7 @@ InstanceBatch::InstanceBatch(ObjectHandler<Model> modelHandler, std::vector<Tran
 	{
 		transformations[i].getMatrix(m_transformationMatrices[i]);
 	}
-}
+} 
 
 InstanceBatch::InstanceBatch(const InstanceBatch& other)
 	: m_modelHandler(other.m_modelHandler), 

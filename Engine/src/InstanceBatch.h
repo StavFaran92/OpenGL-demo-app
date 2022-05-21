@@ -30,7 +30,7 @@ public:
 	~InstanceBatch();
 private:
 	ObjectHandler<Model> m_modelHandler;
-	std::shared_ptr<glm::mat4[]> m_transformationMatrices = nullptr;
+	std::shared_ptr<glm::mat4[]> m_transformationMatrices;
 	int m_amount = 0;
 };
 

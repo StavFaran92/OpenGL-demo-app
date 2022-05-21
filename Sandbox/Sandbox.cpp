@@ -51,8 +51,6 @@ float colors[108] = {
 	1.0f,  1.0f,  1.0f,
 };
 
-constexpr int TRANS_COUNT = 1000000;
-
 class Sandbox : public Application
 {
 public:
@@ -85,7 +83,7 @@ public:
 		//transformations.push_back(&trans1);
 		//transformations.push_back(&trans2);
 
-		const int gridLength = 1000;
+		const int gridLength = 100;
 
 		for (int i = 0; i < gridLength; i++)
 		{
