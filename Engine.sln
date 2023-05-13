@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RubiksCubeTester", "RubiksC
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImguiDemo", "ImguiDemo\ImguiDemo.vcxproj", "{C6EDADD7-B36C-4375-B624-851656C2CBFB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OceanSample", "OceanSample\OceanSample.vcxproj", "{CC16D50C-B83E-4B47-8089-5EFAFF74415C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -69,6 +71,14 @@ Global
 		{C6EDADD7-B36C-4375-B624-851656C2CBFB}.Release|x64.Build.0 = Release|x64
 		{C6EDADD7-B36C-4375-B624-851656C2CBFB}.Release|x86.ActiveCfg = Release|Win32
 		{C6EDADD7-B36C-4375-B624-851656C2CBFB}.Release|x86.Build.0 = Release|Win32
+		{CC16D50C-B83E-4B47-8089-5EFAFF74415C}.Debug|x64.ActiveCfg = Debug|x64
+		{CC16D50C-B83E-4B47-8089-5EFAFF74415C}.Debug|x64.Build.0 = Debug|x64
+		{CC16D50C-B83E-4B47-8089-5EFAFF74415C}.Debug|x86.ActiveCfg = Debug|Win32
+		{CC16D50C-B83E-4B47-8089-5EFAFF74415C}.Debug|x86.Build.0 = Debug|Win32
+		{CC16D50C-B83E-4B47-8089-5EFAFF74415C}.Release|x64.ActiveCfg = Release|x64
+		{CC16D50C-B83E-4B47-8089-5EFAFF74415C}.Release|x64.Build.0 = Release|x64
+		{CC16D50C-B83E-4B47-8089-5EFAFF74415C}.Release|x86.ActiveCfg = Release|Win32
+		{CC16D50C-B83E-4B47-8089-5EFAFF74415C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
