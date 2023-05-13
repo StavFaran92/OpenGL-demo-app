@@ -26,6 +26,19 @@ public:
 	void scale(float x, float y, float z) const;
 	void scale(glm::vec3 scaleFactor) const;
 	void rotate(glm::vec3 eulers) const;
+
+	/**
+	 * @brief Rotates a 3D vector around a given axis.
+	 *
+	 * This function rotates the current 3D vector around the specified axis.
+	 * The rotation is performed in a right-hand rule manner,
+	 * i.e., if you curl the fingers of your right hand in the direction of rotation,
+	 * your thumb points in the direction of the axis.
+	 *
+	 * @param axis The axis around which the vector will be rotated. This should be a normalized vector.
+	 * @param angle The angle by which the vector will be rotated, in degrees. Positive values denote
+	 *              counterclockwise rotation when looking from the origin towards the positive end of the axis.
+	 */
 	void rotate(glm::vec3 axis, float angle) const;
 	void rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle) const;
 	void rotateLerp(glm::vec3 axis, float angle, float t) const;
