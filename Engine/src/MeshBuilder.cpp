@@ -393,9 +393,19 @@ Mesh* MeshBuilder::build()
 		//TODO refactor
 		//TODO optimize: can load textuer on startup and simply assign texture Ptr / ID
 		auto texturediff = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
+		if (!texturediff)
+		{
+			logError("Failed to load resource");
+			return nullptr;
+		}
 		texturediff->setType(Texture::Type::Diffuse);
 
 		auto textureSpec = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
+		if (!textureSpec)
+		{
+			logError("Failed to load resource");
+			return nullptr;
+		}
 		textureSpec->setType(Texture::Type::Specular);
 
 		mesh->addTextureHandler(texturediff);

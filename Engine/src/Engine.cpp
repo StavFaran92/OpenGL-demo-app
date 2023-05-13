@@ -17,6 +17,7 @@
 #include "MemoryManagement.h"
 #include "ObjectManager.h"
 #include "ObjectFactory.h"
+#include "TimeManager.h"
 
 #include "Application.h"
 #include "SDL.h"
@@ -75,7 +76,7 @@ bool Engine::init()
 
     m_modelImporter = std::make_shared<ModelImporter>();
 
-    
+    m_timeManager = std::make_shared<TimeManager>();
 
     m_isInit = true;
 
@@ -227,6 +228,11 @@ MemoryManagement* Engine::getMemoryManagementSystem() const
 ObjectManager* Engine::getObjectManager() const
 {
     return m_objectManager.get();
+}
+
+TimeManager* Engine::getTimeManager() const
+{
+    return m_timeManager.get();
 }
 
 void Engine::pause()

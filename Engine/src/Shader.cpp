@@ -16,7 +16,7 @@ Shader::Shader()
 {
 }
 
-Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath, const std::string& geometryShader) : 
+Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath, const std::string& geometryShader /*= ""*/) :
 	m_id(0),
 	m_vertexShaderFilepath(vertexFilePath), 
 	m_FragmentShaderFilepath(fragmentFilePath),
@@ -328,6 +328,26 @@ Shader* Shader::SolidColorShader()
 	shader->SetEnableTextures(true);
 
 	return shader;
+}
+
+void Shader::setModelMatrix(glm::mat4 model)
+{
+	setMat4("model", model);
+}
+
+void Shader::setViewMatrix(glm::mat4 view)
+{
+	setMat4("view", view);
+}
+
+void Shader::setProjectionMatrix(glm::mat4 projection)
+{
+	setMat4("projection", projection);
+}
+
+void Shader::setTime(float time)
+{
+	setFloat("time", time);
 }
 
 Shader::~Shader() {

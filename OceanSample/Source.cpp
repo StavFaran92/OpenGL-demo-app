@@ -8,25 +8,16 @@ public:
 	using Application::update;
 
 
-	ObjectHandler<Model> guitar;
-	ObjectHandler<Quad> quad;
-	//Transformation trans1{ { 5,5,5 } };
-	//Transformation trans2{ { 2,2,2 } };
-
-
-	std::vector<Transformation> transformations;
+	ObjectHandler<Model> plane;
 
 
 	void start() override
 	{
-		quad = ModelBuilder::builder<Quad>()
-			.build();
+		auto importer = getContext()->getModelImporter();
+		plane = importer->loadModelFromFile("C:/Users/Stav/Documents/blender/plane_v2.fbx");
 
-		//auto importer = getContext()->getModelImporter();
-		//guitar = importer->loadModelFromFile("D:\\program files\\downloads\\backpack\\backpack.obj");
-
-		//transformations.push_back(&trans1);
-		//transformations.push_back(&trans2);
+		Shader* shader = new Shader("Resources/Shaders/OceanVertexShader.vert", "Resources/Shaders/OceanFragmentShader.frag");
+		plane.object()->attachShader(shader);
 	}
 
 	void update(float deltaTime) override
@@ -49,7 +40,7 @@ public:
 		//	sphere1->rotate({ 0,0,1 }, 1);
 		//}
 
-		getContext()->getActiveScene()->draw(quad);
+		getContext()->getActiveScene()->draw(plane);
 
 		//draw(box);
 		//draw(guitar);

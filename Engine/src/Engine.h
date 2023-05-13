@@ -18,6 +18,7 @@ class EventSystem;
 class ModelImporter;
 class MemoryManagement;
 class ObjectManager;
+class TimeManager;
 
 class EngineAPI Engine
 {
@@ -35,6 +36,7 @@ public:
     ModelImporter* getModelImporter() const;
     MemoryManagement* getMemoryManagementSystem() const;
     ObjectManager* getObjectManager() const;
+    TimeManager* getTimeManager() const;
 
     void pause();
     void resume();
@@ -77,6 +79,7 @@ protected:
     std::shared_ptr<ModelImporter> m_modelImporter;
     std::shared_ptr<MemoryManagement> m_memoryManagementSystem;
     std::shared_ptr<ObjectManager> m_objectManager;
+    std::shared_ptr<TimeManager> m_timeManager;
 
 
 };

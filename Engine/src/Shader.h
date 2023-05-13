@@ -49,6 +49,11 @@ public:
 	inline bool isSupportColors() { return m_enableColors; }
 	inline void setEnableColors(bool value) { m_enableColors = value; }
 
+	void setModelMatrix(glm::mat4 model);
+	void setViewMatrix(glm::mat4 view);
+	void setProjectionMatrix(glm::mat4 projection);
+	void setTime(float time);
+
 	static Shader* PhongShader();
 	static Shader* SolidColorShader();
 

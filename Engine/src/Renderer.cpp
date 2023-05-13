@@ -49,8 +49,8 @@ void Renderer::draw(const VertexArrayObject& vao, Shader& shader) const
 
 void Renderer::SetMVP(Shader& shader) const
 {
-	shader.setMat4("projection", m_projection);
-	shader.setMat4("view", m_camera->getView());
+	shader.setProjectionMatrix(m_projection);
+	shader.setViewMatrix(m_camera->getView());
 }
 
 std::shared_ptr<ICamera> Renderer::getCamera() const

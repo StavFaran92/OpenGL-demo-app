@@ -23,6 +23,7 @@
 #include "Logger.h"
 #include "MeshBuilder.h"
 #include "PhongShader.h"
+#include "TimeManager.h"
 
 
 Model::Model()
@@ -91,6 +92,8 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 	}
 
 	shaderToUse->setMat4("model", m_transformation->getMatrix());
+	auto elasped = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
+	shaderToUse->setTime(elasped);
 
 	if (shaderToUse->IsMaterialsEnabled() && m_material)
 	{
