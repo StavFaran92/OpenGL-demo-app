@@ -91,9 +91,9 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 		}
 	}
 
-	shaderToUse->setMat4("model", m_transformation->getMatrix());
-	auto elasped = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
-	shaderToUse->setTime(elasped);
+	shaderToUse->setModelMatrix(m_transformation->getMatrix());
+	auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
+	shaderToUse->setTime(elapsed);
 
 	if (shaderToUse->IsMaterialsEnabled() && m_material)
 	{
