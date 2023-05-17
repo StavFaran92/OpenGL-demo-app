@@ -6,6 +6,7 @@
 
 #include "Utils.h"
 #include "Logger.h"
+#include "ShaderExtender.h"
 
 Shader PhongShader;
 Shader SolidColorShader;
@@ -84,6 +85,10 @@ void Shader::BuildShaders(const std::string& vertexCode, const std::string& frag
 
 	// Create and attach vertex shader to program
 	GLuint vertexShader = AddShader(vertexCode, GL_VERTEX_SHADER);
+
+	//ShaderExtender::ExtensionParams eParams{};
+	//std::string extendedVertexCode = ShaderExtender::ExtendVertexShader(vertexCode, eParams);
+	//GLuint extendedVertexShader = AddShader(vertexCode, GL_VERTEX_SHADER);
 	glAttachShader(m_id, vertexShader);
 
 	GLuint geometryShader = 0;

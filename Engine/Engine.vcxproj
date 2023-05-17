@@ -161,9 +161,12 @@
     <ClCompile Include="extern\imgui\imgui_tables.cpp" />
     <ClCompile Include="extern\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Window.cpp" />
-    <ClCompile Include="TimeManager.cpp" />
+    <ClCompile Include="src\StandardShader.cpp" />
+    <ClCompile Include="src\TimeManager.cpp" />
+    <ClCompile Include="src\ShaderExtender.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ShaderExtender.h" />
     <ClInclude Include="src\InstanceBatch.h" />
     <ClInclude Include="src\GpuInstancingRenderer.h" />
     <ClInclude Include="src\GuiMenu.h" />
@@ -247,7 +250,8 @@
     <ClInclude Include="src\VertexLayout.h" />
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\Vertex.h" />
-    <ClInclude Include="TimeManager.h" />
+    <ClInclude Include="src\TimeManager.h" />
+    <ClInclude Include="src\StandardShader.h" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="extern\imgui\imgui.natvis" />

@@ -24,6 +24,7 @@
 #include "MeshBuilder.h"
 #include "PhongShader.h"
 #include "TimeManager.h"
+#include "StandardShader.h"
 
 
 Model::Model()
@@ -110,16 +111,16 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 	shaderToUse->release();
 }
 
-bool Model::attachShader(std::shared_ptr<Shader> shader)
+bool Model::attachShader(std::shared_ptr<StandardShader> shader)
 {
 	m_shader = shader;
 
 	return true;
 }
 
-bool Model::attachShader(Shader* shader)
+bool Model::attachShader(StandardShader* shader)
 {
-	m_shader = std::shared_ptr<Shader>(shader);
+	m_shader = std::shared_ptr<StandardShader>(shader);
 
 	return true;
 }
@@ -149,7 +150,7 @@ std::vector<const TextureHandler*> Model::getTextureHandlers()
 	return handlers;
 }
 
-Shader* Model::getShader()
+StandardShader* Model::getShader()
 {
 	return m_shader.get();
 }

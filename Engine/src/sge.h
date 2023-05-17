@@ -49,3 +49,4 @@
 #include "ObjectHandler.h"
 #include "GuiMenu.h"
 #include "InstanceBatch.h"
+#include "StandardShader.h"

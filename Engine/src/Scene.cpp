@@ -22,6 +22,7 @@
 #include "Configurations.h"
 #include "GpuInstancingRenderer.h"
 #include "InstanceBatch.h"
+#include "StandardShader.h"
 
 void Scene::init(Context* context)
 {
@@ -132,13 +133,13 @@ void Scene::draw(float deltaTime)
 	//	shader->release();
 	//}
 
-	// Update phong shader
+	//// Update phong shader
 	auto phongShader = m_context->getPhongShader();
-	phongShader->use();
-	phongShader->updateDirLights(m_directionalLights);
-	phongShader->updatePointLights(m_pointLights);
-	phongShader->setViewPos(m_renderer->getCamera()->getPosition());
-	phongShader->release();
+	//phongShader->use();
+	//phongShader->updateDirLights(m_directionalLights);
+	//phongShader->updatePointLights(m_pointLights);
+	//phongShader->setViewPos(m_renderer->getCamera()->getPosition());
+	//phongShader->release();
 
 	// Picking Phase
 	if (m_isObjectSelectionEnabled && m_pickingPhaseActive)
@@ -214,6 +215,16 @@ void Scene::draw(float deltaTime)
 		if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
 		{
 			m_debugModelDeque.push_back(model);
+		}
+
+		auto shader = model->getShader();
+		if (shader)
+		{
+			shader->use();
+			shader->updateDirLights(m_directionalLights);
+			shader->updatePointLights(m_pointLights);
+			shader->setViewPos(m_renderer->getCamera()->getPosition());
+			shader->release();
 		}
 
 		phongShader->use();

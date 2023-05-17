@@ -9,13 +9,14 @@
 #include "ModelBuilder.h"
 #include "TextureHandler.h"
 #include "ObjectHandler.h"
+#include "StandardShader.h"
 
 #include "EditorCamera.h"
 #include "Resources/Primitives/cube.h"
 
 ObjectHandler<Skybox> Skybox::CreateSkybox()
 {
-    auto shader = new Shader("Resources\\Shaders\\SkyboxShader.vert", "Resources\\Shaders\\SkyboxShader.frag");
+    auto shader = new StandardShader("Resources\\Shaders\\SkyboxShader.vert", "Resources\\Shaders\\SkyboxShader.frag");
 
     std::vector<std::string> faces
     {
@@ -29,7 +30,7 @@ ObjectHandler<Skybox> Skybox::CreateSkybox()
     auto textureHandler = Texture::loadCubemapTexture(faces);
 
     return ModelBuilder::builder<Skybox>()
-        .setShader(*shader)
+        .setShader(shader)
         .getMeshBuilder()
         .addTextureHandler(textureHandler)
         .getModelBuilder()

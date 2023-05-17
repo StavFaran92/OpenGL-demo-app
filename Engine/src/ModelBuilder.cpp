@@ -4,6 +4,7 @@
 
 #include "Model.h"
 #include "Logger.h"
+#include "StandardShader.h"
 
 ObjectHandler<Model> ModelBuilder::build()
 {
@@ -34,15 +35,15 @@ ObjectHandler<Model> ModelBuilder::build()
 	return tempModelHandler;
 }
 
-ModelBuilder& ModelBuilder::setShader(Shader& shader, bool copy)
+ModelBuilder& ModelBuilder::setShader(StandardShader* shader, bool copy)
 {
 	if (copy)
 	{
-		m_shader = std::make_shared<Shader>(shader);
+		m_shader = std::make_shared<StandardShader>(*shader);
 	}
 	else
 	{
-		m_shader = std::shared_ptr<Shader>(&shader);
+		m_shader = std::shared_ptr<StandardShader>(shader);
 	}
 
 	return *this;

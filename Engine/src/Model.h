@@ -27,6 +27,7 @@ class Scene;
 class ModelImporter;
 class MeshBuilder;
 class ModelBuilder;
+class StandardShader;
 
 class EngineAPI Model : public Object3D
 {
@@ -46,7 +47,7 @@ public:
 	 * \param shader	A pointer to the shader to be attached
 	 * \return			True if the attach was succesfull, False otherwise
 	 */
-	bool attachShader(Shader* shader);
+	bool attachShader(StandardShader* shader);
 
 	/**
 	 * Attach a shader to the model.
@@ -56,7 +57,7 @@ public:
 	 * \param shader	A pointer to the shader to be attached
 	 * \return			True if the attach was succesful, False otherwise
 	 */
-	bool attachShader(std::shared_ptr<Shader> shader);
+	bool attachShader(std::shared_ptr<StandardShader> shader);
 
 	/**
 	 * Detach a shader from the model.
@@ -75,7 +76,7 @@ public:
 	 *
 	 * \return	The currently attached shader
 	 */
-	Shader* getShader();
+	StandardShader* getShader();
 
 	std::vector<const TextureHandler*> getTextureHandlers();
 
@@ -99,7 +100,7 @@ protected:
 	
 	// -------------------- Attributes -------------------- //
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
-	std::shared_ptr<Shader> m_shader = nullptr;
+	std::shared_ptr<StandardShader> m_shader = nullptr;
 	std::shared_ptr<Material> m_material = nullptr;
 
 	bool m_isReflective = false;

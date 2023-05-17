@@ -16,7 +16,7 @@ ObjectHandler<ScreenQuad> ScreenQuad::GenerateScreenQuad()
 
 void ScreenQuad::draw(IRenderer& renderer, Shader* shader)
 {
-	Shader* currShader = m_shader.get();
+	Shader* currShader = (Shader*)m_shader.get();
 
 	if (shader)
 		currShader = shader;

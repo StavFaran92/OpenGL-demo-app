@@ -187,6 +187,9 @@
     <ClCompile Include="TimeManager.cpp">
       <Filter>src\Utils\IO</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderExtender.cpp">
+      <Filter>src\Graphics\Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -417,6 +420,9 @@
     <ClInclude Include="src\GpuInstancingRenderer.h" />
     <ClInclude Include="src\InstanceBatch.h" />
     <ClInclude Include="TimeManager.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderExtender.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

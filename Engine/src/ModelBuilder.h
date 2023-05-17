@@ -14,6 +14,8 @@
 #include "ObjectFactory.h"
 #include "ObjectHandler.h"
 
+class StandardShader;
+
 // 
 // Create a default Box -> Build
 // ```
@@ -68,7 +70,7 @@ public:
 	template<typename T, typename... _Types>
 	static ModelBuilder& builder(_Types&&... _Args);
 
-	ModelBuilder& setShader(Shader& shader, bool copy = false);
+	ModelBuilder& setShader(StandardShader* shader, bool copy = false);
 
 	MeshBuilder& getMeshBuilder();
 	
@@ -77,7 +79,7 @@ private:
 	template<typename T, typename... _Types>
 	void init(_Types&&... _Args);
 private:
-	std::shared_ptr<Shader> m_shader = nullptr;
+	std::shared_ptr<StandardShader> m_shader = nullptr;
 	MeshBuilder* m_meshBuilder = nullptr;
 	ObjectHandler<Model> m_modelHandler;
 
