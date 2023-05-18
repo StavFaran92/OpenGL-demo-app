@@ -66,7 +66,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, v
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec2 aTexCoord);
 
 //--------- Source ---------
-vec4 main()
+void main()
 {
     // properties
     vec3 norm = normalize(Normal);
