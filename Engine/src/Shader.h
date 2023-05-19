@@ -6,12 +6,15 @@
 #include <unordered_map>
 
 #include "Core.h"
+#include "ShaderBuilder.h"
 
 #include "glm/glm.hpp"
 
 class EngineAPI Shader
 {
 public:
+	void use() const;
+	void release() const;
 	Shader();
 
 	/** Constructor */
@@ -22,10 +25,6 @@ public:
 
 	/** Copy Assignemnt operator */
 	Shader& operator=(const Shader& other);
-
-	void use() const;
-	void release() const;
-	
 
 	inline unsigned int getID() const;
 
@@ -53,6 +52,7 @@ public:
 	void setViewMatrix(glm::mat4 view);
 	void setProjectionMatrix(glm::mat4 projection);
 	void setTime(float time);
+	void init();
 
 	static Shader* PhongShader();
 	static Shader* SolidColorShader();
@@ -60,17 +60,22 @@ public:
 	~Shader();
 
 protected:
-	void clear();
-private:
-	friend class Context;
-	inline void SetID(uint32_t id) { m_id = id; }
-	void init();
-	void BuildShaders(const std::string& vertexCode, const std::string& fragmentCode, const std::string& geometryShader);
-	uint32_t AddShader(const std::string& shaderCode, unsigned int shaderType);
 
+
+	void clear();
+	virtual void BuildShaders(const std::string& vertexCode, const std::string& fragmentCode, const std::string& geometryShader);
+	uint32_t AddShader(const std::string& shaderCode, unsigned int shaderType);
 	bool ValidateRenderer();
 	bool ValidateProgramLink();
 	bool validateCompilation(const unsigned int& theShader, const unsigned int& shaderType);
+private:
+	friend class Context;
+	inline void SetID(uint32_t id) { m_id = id; }
+
+
+
+	friend class ShaderBuilder;
+
 protected:
 	unsigned int m_id;
 	std::unordered_map<std::string, int> m_uniformLocationCache;

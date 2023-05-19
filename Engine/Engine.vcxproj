@@ -165,6 +165,7 @@
     <ClCompile Include="src\TimeManager.cpp" />
     <ClCompile Include="src\ShaderExtender.cpp" />
     <ClCompile Include="src\DefaultMaterial.cpp" />
+    <ClCompile Include="src\ShaderBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ShaderExtender.h" />
@@ -254,6 +255,7 @@
     <ClInclude Include="src\TimeManager.h" />
     <ClInclude Include="src\StandardShader.h" />
     <ClInclude Include="src\DefaultMaterial.h" />
+    <ClInclude Include="src\ShaderBuilder.h" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="extern\imgui\imgui.natvis" />

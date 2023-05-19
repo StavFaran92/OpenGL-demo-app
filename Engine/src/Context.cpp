@@ -8,6 +8,7 @@
 #include "ICamera.h"
 #include "PhongShader.h"
 #include "PickingShader.h"
+#include "ShaderBuilder.h"
 
 #include "Object3D.h"
 #include "Scene.h"
@@ -16,12 +17,12 @@
 
 Context::Context() : m_shaderCounter(0)
 {
-	m_reflectionShader = std::make_shared<Shader>("Resources\\Shaders\\ReflectionShader.vert", "Resources\\Shaders\\ReflectionShader.frag");
+	m_reflectionShader = ShaderBuilder::buildShaderShared<Shader>("Resources\\Shaders\\ReflectionShader.vert", "Resources\\Shaders\\ReflectionShader.frag");
 	m_reflectionShader->SetEnableLights(false);
 	m_reflectionShader->SetEnableMaterials(false);
 	m_reflectionShader->SetEnableTextures(false);
 
-	m_refractiveShader = std::make_shared<Shader>("Resources\\Shaders\\RefractionShader.vert", "Resources\\Shaders\\RefractionShader.frag");
+	m_refractiveShader = ShaderBuilder::buildShaderShared<Shader>("Resources\\Shaders\\RefractionShader.vert", "Resources\\Shaders\\RefractionShader.frag");
 	m_refractiveShader->SetEnableLights(false);
 	m_refractiveShader->SetEnableMaterials(false);
 	m_refractiveShader->SetEnableTextures(false);

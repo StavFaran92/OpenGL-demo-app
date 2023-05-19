@@ -22,9 +22,7 @@ Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFil
 	m_vertexShaderFilepath(vertexFilePath), 
 	m_FragmentShaderFilepath(fragmentFilePath),
 	m_geometryShaderFilepath(geometryShader)
-{
-	init();
-}
+{}
 
 Shader::Shader(const Shader& other) :
 	m_id(0),
@@ -36,8 +34,6 @@ Shader::Shader(const Shader& other) :
 	m_enableMaterial = other.m_enableMaterial;
 	m_enableTexture = other.m_enableTexture;
 	m_enableColors = other.m_enableColors;
-
-	init();
 }
 
 Shader& Shader::operator=(const Shader& other)

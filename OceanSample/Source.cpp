@@ -21,6 +21,7 @@ public:
 		plane.object()->rotate({0,1,0}, 90);
 
 		StandardShader* shader = new StandardShader("Resources/Shaders/OceanVertexShader.vert", "Resources/Shaders/OceanFragmentShader.frag");
+		shader->init();
 		shader->SetEnableLights(true);
 		shader->SetEnableMaterials(true);
 		shader->SetEnableTextures(true);

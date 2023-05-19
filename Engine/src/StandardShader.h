@@ -19,4 +19,6 @@ public:
 	void setColorMul(glm::vec4 colorMul);
 	void updateDirLights(std::unordered_map<uint32_t, std::shared_ptr<DirectionalLight>>& dirLights);
 	void updatePointLights(std::unordered_map<uint32_t, std::shared_ptr<PointLight>>& pointLights);
+
+	void BuildShaders(const std::string& vertexCode, const std::string& fragmentCode, const std::string& geometryCode) override;
 };
