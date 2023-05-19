@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "Logger.h"
 #include "StandardShader.h"
+#include "DefaultMaterial.h"
 
 ObjectHandler<Model> ModelBuilder::build()
 {
@@ -19,7 +20,7 @@ ObjectHandler<Model> ModelBuilder::build()
 		return {};
 	}
 
-	std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
+	std::shared_ptr<Material> material = std::make_shared<DefaultMaterial>(32.0f);
 	m_modelHandler.object()->setMaterial(material);
 
 	m_modelHandler.object()->addMesh(mesh);

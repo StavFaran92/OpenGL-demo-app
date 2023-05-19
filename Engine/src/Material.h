@@ -12,7 +12,7 @@ public:
 	Material();
 	Material(float shine);
 
-	void UseMaterial(Shader& shader);
+	virtual void UseMaterial(Shader& shader);
 
 	/**
 	 * Add a texture to the mesh.

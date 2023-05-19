@@ -10,7 +10,7 @@ public:
 	DefaultMaterial();
 	DefaultMaterial(float shine);
 
-	void UseMaterial(Shader& shader);
+	void UseMaterial(Shader& shader) override;
 
 	~DefaultMaterial();
 
