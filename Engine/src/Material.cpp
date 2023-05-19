@@ -20,10 +20,7 @@ void Material::UseMaterial(Shader& shader)
 		logError("Shader does not support material");
 		return;
 	}
-
-	shader.setFloat("material.shininess", m_shininess);
 }
 
 Material::~Material()
-{
-}
+{}

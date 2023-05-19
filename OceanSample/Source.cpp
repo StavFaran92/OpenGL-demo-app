@@ -30,8 +30,7 @@ public:
 		//shader->setFloat("waveSpeed", 10);
 		plane.object()->attachShader(shader);
 
-		Attenuation att;
-		auto dLight = new PointLight(glm::vec3{ 1,1,1 }, glm::vec3{ 0,0,-1 }, 1, 1, att);
+		auto dLight = new PointLight(glm::vec3{ 1,3,1 }, glm::vec3{ 0,1,-1 }, 1, 1, Attenuation());
 		getContext()->getActiveScene()->addPointLight(dLight);
 
 	}

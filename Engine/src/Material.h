@@ -13,9 +13,9 @@ public:
 
 	void UseMaterial(Shader& shader);
 
-	~Material();
+	virtual ~Material();
 
-private:
+protected:
 	float m_specularIntensity;
 	float m_shininess;
 };
