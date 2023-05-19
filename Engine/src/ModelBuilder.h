@@ -62,7 +62,7 @@ class EngineAPI ModelBuilder
 {
 public:
 	/** Constructor */
-	ModelBuilder() = default;
+	ModelBuilder();
 
 	/** Destructor */
 	~ModelBuilder() = default;
@@ -72,6 +72,9 @@ public:
 
 	ModelBuilder& setShader(StandardShader* shader, bool copy = false);
 
+	ModelBuilder& addTextureHandler(TextureHandler* textureHandler, bool copy = false);
+	ModelBuilder& addTextureHandlers(std::vector<TextureHandler*>& textureHandlers, bool copy = false);
+
 	MeshBuilder& getMeshBuilder();
 	
 	ObjectHandler<Model> build();
@@ -80,6 +83,8 @@ private:
 	void init(_Types&&... _Args);
 private:
 	std::shared_ptr<StandardShader> m_shader = nullptr;
+	std::shared_ptr<std::vector<TextureHandler*>> m_textureHandlers = nullptr;
+
 	MeshBuilder* m_meshBuilder = nullptr;
 	ObjectHandler<Model> m_modelHandler;
 

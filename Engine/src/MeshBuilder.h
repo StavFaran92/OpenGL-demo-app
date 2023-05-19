@@ -38,9 +38,6 @@ public:
 
 	MeshBuilder& setRawIndices(const unsigned int* indices, size_t size);
 
-	MeshBuilder& addTextureHandler(TextureHandler* textureHandler, bool copy = false);
-	MeshBuilder& addTextureHandlers(std::vector<TextureHandler*>& textureHandlers, bool copy = false);
-
 	
 	
 
@@ -68,7 +65,6 @@ private:
 	std::shared_ptr<std::vector<glm::vec2>> m_texCoords = nullptr;
 	std::shared_ptr<std::vector<glm::vec3>> m_colors = nullptr;
 	std::shared_ptr<std::vector<unsigned int>> m_indices = nullptr;
-	std::shared_ptr<std::vector<TextureHandler*>> m_textureHandlers = nullptr;
 	VertexLayout m_layout;
 
 	ModelBuilder* m_modelBuilder = nullptr;

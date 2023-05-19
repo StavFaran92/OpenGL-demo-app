@@ -125,27 +125,6 @@ public:
 	const std::vector<glm::vec3>* getColors() const;
 
 	/**
-	 * Add a texture to the mesh.
-	 *
-	 * \param texture	a texture raw pointer
-	 */
-	void addTextureHandler(TextureHandler* texture);
-
-	/**
-	 * Add multiple textures to the mesh.
-	 *
-	 * \param textures
-	 */
-	void addTextureHandlers(std::vector<TextureHandler*>& textures);
-
-	/**
-	 * Gets the mesh's Textures.
-	 *
-	 * \param colors
-	 */
-	std::vector<const TextureHandler*> getTextureHandlers() const;
-
-	/**
 	 * Clear the Mesh entirely.
 	 *
 	 */
@@ -182,9 +161,6 @@ private:
 private:
 	// -------------------- Methods -------------------- //
 	void calculateNormals();
-
-	void SetTexturesInShader(Shader& shader);
-
 private:
 	// -------------------- Attributes -------------------- //
 	/** Mesh positions */
@@ -199,8 +175,7 @@ private:
 	/** Mesh Indices */
 	std::shared_ptr<std::vector<unsigned int>>    m_indices;
 
-	/** Mesh texture Handlers */
-	std::vector<std::shared_ptr<TextureHandler>>  m_textureHandlers;
+	
 
 	/** Mesh colors */
 	std::shared_ptr<std::vector<glm::vec3>>       m_colors;

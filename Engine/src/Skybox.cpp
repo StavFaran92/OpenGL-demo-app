@@ -31,8 +31,8 @@ ObjectHandler<Skybox> Skybox::CreateSkybox()
 
     return ModelBuilder::builder<Skybox>()
         .setShader(shader)
-        .getMeshBuilder()
         .addTextureHandler(textureHandler)
+        .getMeshBuilder()
         .getModelBuilder()
         .build();
 }

@@ -302,7 +302,7 @@ void ShowModelCreatorWindow()
 
             auto model = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str());
             std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-            model.object()->useMaterial(material);
+            model.object()->setMaterial(material);
             model.object()->getTransformation()->setPosition(pos);
             model.object()->getTransformation()->setScale(scale);
 
@@ -424,7 +424,7 @@ void ShowPrimitiveCreatorWindow()
             if (modelHandler.isValid())
             {
                 std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-                modelHandler.object()->useMaterial(material);
+                modelHandler.object()->setMaterial(material);
                 modelHandler.object()->getTransformation()->setPosition(pos);
                 modelHandler.object()->getTransformation()->setScale(scale);
 

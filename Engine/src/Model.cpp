@@ -139,15 +139,7 @@ void Model::addMesh(Mesh* mesh)
 
 std::vector<const TextureHandler*> Model::getTextureHandlers()
 {
-	std::vector<const TextureHandler*> handlers;
-	
-	for (const auto &mesh : m_meshes)
-	{
-		auto textures = mesh->getTextureHandlers();
-		handlers.insert(handlers.end(), textures.begin(), textures.end());
-	}
-
-	return handlers;
+	return m_material->getTextureHandlers();
 }
 
 StandardShader* Model::getShader()
@@ -155,11 +147,16 @@ StandardShader* Model::getShader()
 	return m_shader.get();
 }
 
-bool Model::useMaterial(std::shared_ptr<Material> material)
+bool Model::setMaterial(std::shared_ptr<Material> material)
 {
 	m_material = material;
 
 	return true;
+}
+
+std::shared_ptr<Material> Model::getMaterial()
+{
+	return m_material;
 }
 
 void Model::setReflection(bool enable)

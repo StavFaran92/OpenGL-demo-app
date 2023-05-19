@@ -4,8 +4,6 @@
 #include "Core.h"
 #include "Material.h"
 
-class Shader;
-
 class EngineAPI DefaultMaterial : public Material
 {
 public:

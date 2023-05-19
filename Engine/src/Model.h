@@ -69,7 +69,8 @@ public:
 	 */
 	bool detachShader();
 
-	bool useMaterial(std::shared_ptr<Material> material);
+	bool setMaterial(std::shared_ptr<Material> material);
+	std::shared_ptr<Material> getMaterial();
 
 	/**
 	 * Get the currently attached shader.

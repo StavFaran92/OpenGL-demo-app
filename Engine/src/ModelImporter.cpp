@@ -53,7 +53,7 @@ ObjectHandler<Model> ModelImporter::loadModelFromFile(const std::string& path)
 	auto modelHandler = ObjectFactory::create<Model>();
 
 	std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-	modelHandler.object()->useMaterial(material);
+	modelHandler.object()->setMaterial(material);
 
 	// create new model session
 	ModelImportSession session;
@@ -75,6 +75,21 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		model.addMesh(processMesh(mesh, scene, session));
+		auto textureHandlers = new std::vector<TextureHandler*>();
+
+		auto material = model.getMaterial();
+		// process material
+		if (mesh->mMaterialIndex >= 0)
+		{
+			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+
+			auto diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, session);
+			textureHandlers->insert(textureHandlers->end(), diffuseMaps.begin(), diffuseMaps.end());
+
+			auto specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, session);
+			textureHandlers->insert(textureHandlers->end(), specularMaps.begin(), specularMaps.end());
+		}
+		material->addTextureHandlers(*textureHandlers);
 	}
 	// then do the same for each of its children
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -89,7 +104,6 @@ Mesh* ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImport
 	auto normals = new std::vector<glm::vec3>();
 	auto texcoords = new std::vector<glm::vec2>();
 	auto indices = new std::vector<unsigned int>();
-	auto textureHandlers = new std::vector<TextureHandler*>();
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -131,23 +145,11 @@ Mesh* ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImport
 		for (unsigned int j = 0; j < face.mNumIndices; j++)
 			indices->push_back(face.mIndices[j]);
 	}
-	// process material
-	if (mesh->mMaterialIndex >= 0)
-	{
-		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-
-		auto diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, session);
-		textureHandlers->insert(textureHandlers->end(), diffuseMaps.begin(), diffuseMaps.end());
-
-		auto specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, session);
-		textureHandlers->insert(textureHandlers->end(), specularMaps.begin(), specularMaps.end());
-	}
 
 	return MeshBuilder::builder()
 		.setPositions(*positions)
 		.setNormals(*normals)
 		.setTexcoords(*texcoords)
-		.addTextureHandlers(*textureHandlers)
 		.setIndices(*indices)
 		.build();
 }

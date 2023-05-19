@@ -340,29 +340,7 @@ MeshBuilder& MeshBuilder::setRawIndices(const unsigned int* indices, size_t size
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::addTextureHandler(TextureHandler* textureHandler, bool copy)
-{
-	if (copy)
-	{
-		throw std::exception("Not implemented yet.");
-	}
-	else
-	{
-		m_textureHandlers->push_back(textureHandler);
-	}
 
-	return *this;
-}
-
-MeshBuilder& MeshBuilder::addTextureHandlers(std::vector<TextureHandler*>& textures, bool copy)
-{
-	for (auto texture : textures)
-	{
-		addTextureHandler(texture, copy);
-	}
-
-	return *this;
-}
 
 
 Mesh* MeshBuilder::build()
@@ -383,34 +361,6 @@ Mesh* MeshBuilder::build()
 
 	if (m_indices)
 		mesh->setIndices(m_indices);
-
-	if (!m_textureHandlers->empty())
-	{
-		mesh->addTextureHandlers(*m_textureHandlers.get());
-	}
-	else
-	{
-		//TODO refactor
-		//TODO optimize: can load textuer on startup and simply assign texture Ptr / ID
-		auto texturediff = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
-		if (!texturediff)
-		{
-			logError("Failed to load resource");
-			return nullptr;
-		}
-		texturediff->setType(Texture::Type::Diffuse);
-
-		auto textureSpec = Texture::loadTextureFromFile("Resources\\Textures\\template.png");
-		if (!textureSpec)
-		{
-			logError("Failed to load resource");
-			return nullptr;
-		}
-		textureSpec->setType(Texture::Type::Specular);
-
-		mesh->addTextureHandler(texturediff);
-		mesh->addTextureHandler(textureSpec);
-	}
 
 	std::sort(m_layout.attribs.begin(), m_layout.attribs.end(),
 		[](LayoutAttribute l1, LayoutAttribute l2)
@@ -453,7 +403,7 @@ MeshBuilder& MeshBuilder::builder()
 
 MeshBuilder::MeshBuilder()
 {
-	m_textureHandlers = std::make_shared<std::vector<TextureHandler*>>();
+	
 }
 
 void MeshBuilder::enableAttribute(LayoutAttribute attribute)

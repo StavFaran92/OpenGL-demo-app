@@ -10,25 +10,8 @@ Mesh::Mesh()
 	logInfo(__FUNCTION__);
 }
 
-std::vector<const TextureHandler*> Mesh::getTextureHandlers() const
-{
-	std::vector<const TextureHandler*> textureHandlers;
-
-	for (auto textureHandler : m_textureHandlers)
-	{
-		textureHandlers.emplace_back(textureHandler.get());
-	}
-
-	return textureHandlers;
-}
-
 void Mesh::render(Shader& shader, IRenderer& renderer)
 {
-	if (shader.IsTexturesEnabled())
-	{
-		SetTexturesInShader(shader);
-	}
-
 	if (shader.isSupportColors())
 	{
 		shader.setInt("useColors", m_useColors);
@@ -37,55 +20,6 @@ void Mesh::render(Shader& shader, IRenderer& renderer)
 	renderer.draw(*m_vao, shader);
 }
 
-void Mesh::addTextureHandler(TextureHandler* textureHandler)
-{
-	if (textureHandler == nullptr)
-	{
-		logError("Cannot add a null texture Handler to mesh.");
-		return;
-	}
-
-	m_textureHandlers.push_back(std::shared_ptr<TextureHandler>(textureHandler));
-}
-
-void Mesh::addTextureHandlers(std::vector<TextureHandler*>& texturesHandlers)
-{
-	for (auto textureHandler : texturesHandlers)
-	{
-		addTextureHandler(textureHandler);
-	}
-}
-
-void Mesh::SetTexturesInShader(Shader& shader)
-{
-	// Initialized counters
-	uint32_t diffuseNr = 1;
-	uint32_t specularNr = 1;
-
-	// Iterate the mesh's textures
-	for (auto i = 0; i < m_textureHandlers.size(); i++)
-	{
-		// get type count
-		std::string count;
-		auto type = m_textureHandlers[i]->getType();
-		if (type == Texture::Type::Diffuse)
-			count = std::to_string(diffuseNr++);
-		else if (type == Texture::Type::Specular)
-			count = std::to_string(specularNr++);
-
-		// Get type as string
-		auto typeStr = Texture::textureTypeToString(type);
-
-		// Activate texture unit i
-		glActiveTexture(GL_TEXTURE0 + i);
-
-		// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
-		glBindTexture(GL_TEXTURE_2D, m_textureHandlers[i]->getID());
-
-		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
-		shader.setInt(("material." + typeStr + count).c_str(), i);
-	}
-}
 void Mesh::setPositions(std::shared_ptr<std::vector<glm::vec3>> positions)
 {
 	m_positions = positions;
@@ -297,7 +231,6 @@ void Mesh::clearMesh()
 	m_normals = nullptr;
 	m_texcoords = nullptr;
 	m_indices = nullptr;
-	m_textureHandlers.clear();
 	m_colors = nullptr;
 	m_vao = nullptr;
 	m_ibo = nullptr;

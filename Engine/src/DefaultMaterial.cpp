@@ -1,7 +1,5 @@
 #include "DefaultMaterial.h"
 
-#include "Shader.h"
-
 DefaultMaterial::DefaultMaterial() : Material()
 {
 }
