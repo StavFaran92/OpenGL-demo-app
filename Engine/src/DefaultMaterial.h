@@ -7,12 +7,12 @@
 class EngineAPI DefaultMaterial : public Material
 {
 public:
-	DefaultMaterial();
 	DefaultMaterial(float shine);
 
 	void UseMaterial(Shader& shader) override;
 
 	~DefaultMaterial();
 
+private:
 
 };

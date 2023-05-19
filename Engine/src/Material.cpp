@@ -3,11 +3,6 @@
 #include "Logger.h"
 #include <GL\glew.h>
 
-Material::Material()
-	:m_shininess(0)
-{
-}
-
 Material::Material(float shine)
 : m_shininess(shine)
 {
@@ -43,7 +38,7 @@ void Material::addTextureHandler(TextureHandler* textureHandler)
 {
 	if (textureHandler == nullptr)
 	{
-		logError("Cannot add a null texture Handler to mesh.");
+		logError("Cannot add a null texture Handler to material.");
 		return;
 	}
 
@@ -67,12 +62,19 @@ void Material::SetTexturesInShader(Shader & shader)
 	uint32_t diffuseNr = 1;
 	uint32_t specularNr = 1;
 
+	auto textures = m_textureHandlers;
+
+	if (textures.size() == 0)
+	{
+		textures = m_defaultTextureHandlers;
+	}
+
 	// Iterate the mesh's textures
-	for (auto i = 0; i < m_textureHandlers.size(); i++)
+	for (auto i = 0; i < textures.size(); i++)
 	{
 		// get type count
 		std::string count;
-		auto type = m_textureHandlers[i]->getType();
+		auto type = textures[i]->getType();
 		if (type == Texture::Type::Diffuse)
 			count = std::to_string(diffuseNr++);
 		else if (type == Texture::Type::Specular)
@@ -85,7 +87,7 @@ void Material::SetTexturesInShader(Shader & shader)
 		glActiveTexture(GL_TEXTURE0 + i);
 
 		// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
-		glBindTexture(GL_TEXTURE_2D, m_textureHandlers[i]->getID());
+		glBindTexture(GL_TEXTURE_2D, textures[i]->getID());
 
 		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
 		shader.setInt(("material." + typeStr + count).c_str(), i);

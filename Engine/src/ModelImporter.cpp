@@ -11,6 +11,7 @@
 #include "ObjectFactory.h"
 #include "Model.h"
 #include "ObjectHandler.h"
+#include "DefaultMaterial.h"
 
 ModelImporter::ModelImporter()
 {
@@ -52,7 +53,7 @@ ObjectHandler<Model> ModelImporter::loadModelFromFile(const std::string& path)
 	//create new model
 	auto modelHandler = ObjectFactory::create<Model>();
 
-	std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
+	std::shared_ptr<Material> material = std::make_shared<DefaultMaterial>(32.0f);
 	modelHandler.object()->setMaterial(material);
 
 	// create new model session

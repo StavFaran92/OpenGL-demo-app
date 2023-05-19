@@ -9,8 +9,7 @@
 class EngineAPI Material
 {
 public:
-	Material();
-	Material(float shine);
+	Material(float shine = 0);
 
 	virtual void UseMaterial(Shader& shader);
 
@@ -44,5 +43,6 @@ protected:
 	float m_shininess;
 
 	/** Material texture Handlers */
+	std::vector<std::shared_ptr<TextureHandler>>  m_defaultTextureHandlers;
 	std::vector<std::shared_ptr<TextureHandler>>  m_textureHandlers;
 };
