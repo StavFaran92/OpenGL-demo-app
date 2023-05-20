@@ -8,7 +8,6 @@
 #include "ICamera.h"
 #include "PhongShader.h"
 #include "PickingShader.h"
-#include "ShaderBuilder.h"
 
 #include "Object3D.h"
 #include "Scene.h"
@@ -17,18 +16,18 @@
 
 Context::Context() : m_shaderCounter(0)
 {
-	m_reflectionShader = ShaderBuilder::buildShaderShared<Shader>("Resources\\Shaders\\ReflectionShader.vert", "Resources\\Shaders\\ReflectionShader.frag");
+	m_reflectionShader = Shader::createShared<Shader>("Resources\\Shaders\\ReflectionShader.vert", "Resources\\Shaders\\ReflectionShader.frag");
 	m_reflectionShader->SetEnableLights(false);
 	m_reflectionShader->SetEnableMaterials(false);
 	m_reflectionShader->SetEnableTextures(false);
 
-	m_refractiveShader = ShaderBuilder::buildShaderShared<Shader>("Resources\\Shaders\\RefractionShader.vert", "Resources\\Shaders\\RefractionShader.frag");
+	m_refractiveShader = Shader::createShared<Shader>("Resources\\Shaders\\RefractionShader.vert", "Resources\\Shaders\\RefractionShader.frag");
 	m_refractiveShader->SetEnableLights(false);
 	m_refractiveShader->SetEnableMaterials(false);
 	m_refractiveShader->SetEnableTextures(false);
 
-	m_phongShader = ShaderBuilder::buildShaderShared<PhongShader>();
-	m_pickingShader = ShaderBuilder::buildShaderShared<PickingShader>();
+	m_phongShader = Shader::createShared<PhongShader>();
+	m_pickingShader = Shader::createShared<PickingShader>();
 	//m_normalDisplayShader = std::make_shared<Shader>("Resources\\Shaders\\normalDisplayShader.vert", "Resources\\Shaders\\normalDisplayShader.frag", "Resources\\Shaders\\normalDisplayShader.geom");
 
 	//std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();

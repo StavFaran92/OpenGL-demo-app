@@ -8,9 +8,6 @@
 #include "Logger.h"
 #include "ShaderExtender.h"
 
-Shader PhongShader;
-Shader SolidColorShader;
-
 uint32_t Shader::s_activateShader = 0;
 
 Shader::Shader()

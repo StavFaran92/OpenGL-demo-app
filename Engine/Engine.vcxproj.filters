@@ -184,12 +184,10 @@
     <ClCompile Include="src\ObjectFactory.cpp" />
     <ClCompile Include="src\GpuInstancingRenderer.cpp" />
     <ClCompile Include="src\InstanceBatch.cpp" />
-    <ClCompile Include="TimeManager.cpp">
-      <Filter>src\Utils\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderExtender.cpp">
-      <Filter>src\Graphics\Shaders</Filter>
-    </ClCompile>
+    <ClCompile Include="src\StandardShader.cpp" />
+    <ClCompile Include="src\TimeManager.cpp" />
+    <ClCompile Include="src\ShaderExtender.cpp" />
+    <ClCompile Include="src\DefaultMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -419,12 +417,10 @@
     <ClInclude Include="src\GuiMenu.h" />
     <ClInclude Include="src\GpuInstancingRenderer.h" />
     <ClInclude Include="src\InstanceBatch.h" />
-    <ClInclude Include="TimeManager.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderExtender.h">
-      <Filter>headers</Filter>
-    </ClInclude>
+    <ClInclude Include="src\ShaderExtender.h" />
+    <ClInclude Include="src\TimeManager.h" />
+    <ClInclude Include="src\StandardShader.h" />
+    <ClInclude Include="src\DefaultMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

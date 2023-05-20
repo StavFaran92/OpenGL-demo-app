@@ -4,27 +4,34 @@
 #include <string>
 #include <stdexcept>
 #include <unordered_map>
+#include <memory>
 
 #include "Core.h"
-#include "ShaderBuilder.h"
 
 #include "glm/glm.hpp"
 
-class EngineAPI Shader
+class EngineAPI Shader : public std::enable_shared_from_this<Shader>
 {
 public:
+	template<typename T, typename... _Types>
+	static T* create(_Types&&... _Args)
+	{
+		static_assert(std::is_base_of<Shader, T>::value, "T must be a type derived from Shader");
+
+		auto shader = new T(std::forward<_Types>(_Args)...);
+		shader->init();
+
+		return shader;
+	}
+
+	template<typename T, typename... _Types>
+	static std::shared_ptr<T> createShared(_Types&&... _Args)
+	{
+		return std::shared_ptr<T>(create<T>(std::forward<_Types>(_Args)...));
+	}
+
 	void use() const;
 	void release() const;
-	Shader();
-
-	/** Constructor */
-	Shader(const std::string& vertexfilePath, const std::string& fragmentFilePath, const std::string& geometryShader = "");
-
-	/** Copy Constructor */
-	Shader(const Shader& other);
-
-	/** Copy Assignemnt operator */
-	Shader& operator=(const Shader& other);
 
 	inline unsigned int getID() const;
 
@@ -60,7 +67,16 @@ public:
 	~Shader();
 
 protected:
+	Shader();
 
+	/** Constructor */
+	Shader(const std::string& vertexfilePath, const std::string& fragmentFilePath, const std::string& geometryShader = "");
+
+	/** Copy Constructor */
+	Shader(const Shader& other);
+
+	/** Copy Assignemnt operator */
+	Shader& operator=(const Shader& other);
 
 	void clear();
 	virtual void BuildShaders(const std::string& vertexCode, const std::string& fragmentCode, const std::string& geometryShader);

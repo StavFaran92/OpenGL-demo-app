@@ -20,7 +20,7 @@ public:
 		plane.object()->rotate({1,0,0}, 90);
 		plane.object()->rotate({0,1,0}, 90);
 
-		StandardShader* shader = ShaderBuilder::buildShader<StandardShader>("Resources/Shaders/OceanVertexShader.vert", "Resources/Shaders/OceanFragmentShader.frag");
+		StandardShader* shader = Shader::create<StandardShader>("Resources/Shaders/OceanVertexShader.vert", "Resources/Shaders/OceanFragmentShader.frag");
 		shader->SetEnableLights(true);
 		shader->SetEnableMaterials(true);
 		shader->SetEnableTextures(true);
