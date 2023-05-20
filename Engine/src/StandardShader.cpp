@@ -99,8 +99,13 @@ void StandardShader::BuildShaders(const std::string& vertexCode, const std::stri
 		glAttachShader(m_id, geometryShader);
 	}
 
+	ShaderExtender::ExtensionParams eParams{};
+	eParams.enableLight = true;
+	eParams.enableMaterial = true;
+	std::string extendedFragmentCode = ShaderExtender::ExtendFragmentShader(fragmentCode, eParams);
+
 	// Create and attach fragment shader to program
-	GLuint fragShader = AddShader(fragmentCode, GL_FRAGMENT_SHADER);
+	GLuint fragShader = AddShader(extendedFragmentCode, GL_FRAGMENT_SHADER);
 	glAttachShader(m_id, fragShader);
 
 	// Link shader program
