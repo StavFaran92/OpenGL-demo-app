@@ -21,16 +21,13 @@ public:
 		plane.object()->rotate({0,1,0}, 90);
 
 		StandardShader* shader = Shader::create<StandardShader>("Resources/Shaders/OceanVertexShader.vert", "Resources/Shaders/OceanFragmentShader.frag");
-		shader->SetEnableLights(true);
-		shader->SetEnableMaterials(true);
-		shader->SetEnableTextures(true);
-		//shader->setFloat("amplitude", 1);
-		//shader->setFloat("waveDirection", glm::vec2(1,1));
-		//shader->setFloat("waveLength", 128);
-		//shader->setFloat("waveSpeed", 10);
+		shader->setValue("amplitude", .5f);
+		shader->setValue("waveDirection", glm::vec2(1,0));
+		shader->setValue("waveLength", 2.f);
+		shader->setValue("waveSpeed", 5.0f);
 		plane.object()->attachShader(shader);
 
-		auto dLight = new PointLight(glm::vec3{ 1,3,1 }, glm::vec3{ 0,1,-1 }, 1, 1, Attenuation());
+		auto dLight = new PointLight(glm::vec3{ 1,1,1 }, glm::vec3{ 0,1,-1 }, 1, 1, Attenuation());
 		getContext()->getActiveScene()->addPointLight(dLight);
 
 	}

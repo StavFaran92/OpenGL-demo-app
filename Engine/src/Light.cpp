@@ -19,10 +19,10 @@ Light::Light(glm::vec3 color, float aIntensity, float dIntensity) :
 
 void Light::useLight(Shader& shader, int index)
 {
-	shader.setFloat(m_name + "[" +std::to_string(index) + "]" + ".color", m_color);
-	shader.setFloat(m_name + "[" +std::to_string(index) + "]" + ".ambient", Constants::VEC3_ONE * m_ambientIntensity);
-	shader.setFloat(m_name + "[" +std::to_string(index) + "]" + ".diffuse", Constants::VEC3_ONE * m_diffuseIntensity); // darken diffuse light a bit
-	shader.setFloat(m_name + "[" +std::to_string(index) + "]" + ".specular", Constants::VEC3_ONE);
+	shader.setValue(m_name + "[" +std::to_string(index) + "]" + ".color", m_color);
+	shader.setValue(m_name + "[" +std::to_string(index) + "]" + ".ambient", Constants::VEC3_ONE * m_ambientIntensity);
+	shader.setValue(m_name + "[" +std::to_string(index) + "]" + ".diffuse", Constants::VEC3_ONE * m_diffuseIntensity); // darken diffuse light a bit
+	shader.setValue(m_name + "[" +std::to_string(index) + "]" + ".specular", Constants::VEC3_ONE);
 }
 
 void Light::SetAmbientIntensity(float intensity)

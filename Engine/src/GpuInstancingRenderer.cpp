@@ -27,7 +27,7 @@ void GpuInstancingRenderer::draw(const VertexArrayObject& vao, Shader& shader) c
 {
 	SetMVP(shader);
 
-	shader.setInt("isGpuInstanced", 1);
+	shader.setValue("isGpuInstanced", 1);
 
 	vao.Bind();
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);

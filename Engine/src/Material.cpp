@@ -90,6 +90,6 @@ void Material::SetTexturesInShader(Shader & shader)
 		glBindTexture(GL_TEXTURE_2D, textures[i]->getID());
 
 		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
-		shader.setInt(("material." + typeStr + count).c_str(), i);
+		shader.setValue(("material." + typeStr + count).c_str(), i);
 	}
 }

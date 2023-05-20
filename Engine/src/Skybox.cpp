@@ -46,7 +46,7 @@ void Skybox::draw(IRenderer& renderer, Shader* shader)
     getTextureHandlers()[0]->bind();
 
     //auto view = glm::mat4(glm::mat3(dynamic_cast<Renderer*>(renderer.get())->GetCamera()->getView())); // remove translation from the view matrix
-    m_shader->setMat4("model", m_transformation->getMatrix());
+    m_shader->setValue("model", m_transformation->getMatrix());
 
     renderer.SetDrawType(Renderer::DrawType::Triangles);
 

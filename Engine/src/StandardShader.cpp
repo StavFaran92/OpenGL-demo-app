@@ -12,6 +12,9 @@
 StandardShader::StandardShader(const std::string& vertexfilePath, const std::string& fragmentFilePath, const std::string& geometryShader/* = ""*/)
 	: Shader(vertexfilePath, fragmentFilePath, geometryShader)
 {
+	m_enableMaterial = true;
+	m_enableTexture = true;
+	m_enableLight = true;
 }
 
 
@@ -19,7 +22,7 @@ void StandardShader::setDirLightCount(int count)
 {
 	if (m_enableLight)
 	{
-		setInt("dirLightCount", count);
+		setValue("dirLightCount", count);
 	}
 }
 
@@ -27,7 +30,7 @@ void StandardShader::setPointLightCount(int count)
 {
 	if (m_enableLight)
 	{
-		setInt("pointLightCount", count);
+		setValue("pointLightCount", count);
 	}
 }
 
@@ -35,17 +38,17 @@ void StandardShader::setUseColors(bool enable)
 {
 	if (m_enableColors)
 	{
-		setInt("useColors", enable);
+		setValue("useColors", enable);
 	}
 }
 void StandardShader::setViewPos(glm::vec3 viewPosition)
 {
-	setFloat("viewPos", viewPosition);
+	setValue("viewPos", viewPosition);
 }
 
 void StandardShader::setColorMul(glm::vec4 colorMul)
 {
-	setFloat("colorMul", colorMul);
+	setValue("colorMul", colorMul);
 }
 
 void StandardShader::updateDirLights(std::unordered_map<uint32_t, std::shared_ptr<DirectionalLight>>& dirLights)

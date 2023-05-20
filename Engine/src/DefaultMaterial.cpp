@@ -33,7 +33,7 @@ void DefaultMaterial::UseMaterial(Shader& shader)
 {
 	Material::UseMaterial(shader);
 
-	shader.setFloat("material.shininess", m_shininess);
+	shader.setValue("material.shininess", m_shininess);
 }
 
 DefaultMaterial::~DefaultMaterial()

@@ -66,7 +66,7 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 		{
 			shaderToUse = context->GetReflectionShader();
 			shaderToUse->use();
-			shaderToUse->setInt("skybox", 0);
+			shaderToUse->setValue("skybox", 0);
 			auto textures = context->getActiveScene()->getSkybox()->getTextureHandlers();
 			if (textures.size() <= 0)
 			{
@@ -80,8 +80,8 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 		{
 			shaderToUse = context->GetRefractiveShader();
 			shaderToUse->use();
-			shaderToUse->setInt("skybox", 0);
-			shaderToUse->setFloat("refractiveRatio", 1 / 1.52f);
+			shaderToUse->setValue("skybox", 0);
+			shaderToUse->setValue("refractiveRatio", 1 / 1.52f);
 			auto textures = context->getActiveScene()->getSkybox()->getTextureHandlers();
 			if (textures.size() <= 0)
 			{

@@ -13,26 +13,26 @@ PhongShader::PhongShader() : Shader("Resources\\Shaders\\shader.vert", "Resource
 
 void PhongShader::setDirLightCount(int count)
 {
-	setInt("dirLightCount", count);
+	setValue("dirLightCount", count);
 }
 
 void PhongShader::setPointLightCount(int count)
 {
-	setInt("pointLightCount", count);
+	setValue("pointLightCount", count);
 }
 
 void PhongShader::setUseColors(bool enable)
 {
-	setInt("useColors", enable);
+	setValue("useColors", enable);
 }
 void PhongShader::setViewPos(glm::vec3 viewPosition)
 {
-	setFloat("viewPos", viewPosition);
+	setValue("viewPos", viewPosition);
 }
 
 void PhongShader::setColorMul(glm::vec4 colorMul)
 {
-	setFloat("colorMul", colorMul);
+	setValue("colorMul", colorMul);
 }
 
 void PhongShader::updateDirLights(std::unordered_map<uint32_t, std::shared_ptr<DirectionalLight>>& dirLights)

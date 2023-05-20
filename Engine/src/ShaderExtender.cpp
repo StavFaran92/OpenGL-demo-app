@@ -18,6 +18,12 @@ std::string outValues =
 out vec4 colour;                    \n\
 ";
 
+std::string globalUniforms = 
+"                                   \n\
+// camera                           \n\
+uniform vec3 viewPos;               \n\
+";
+
 std::string materialStruct =
 "                                   \n\
 struct Material {                   \n\
@@ -151,6 +157,7 @@ std::string ShaderExtender::ExtendFragmentShader(const std::string& code, Extens
     aditionalCode += version;
     aditionalCode += inValues;
     aditionalCode += outValues;
+    aditionalCode += globalUniforms;
 
     if (eParams.enableMaterial)
     {

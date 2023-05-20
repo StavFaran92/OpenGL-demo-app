@@ -6,10 +6,10 @@ PickingShader::PickingShader() : Shader("Resources\\Shaders\\PickingShader.vert"
 
 void PickingShader::setObjectIndex(unsigned int index)
 {
-	setUInt("objectIndex", index);
+	setValue("objectIndex", index);
 }
 
 void PickingShader::setDrawIndex(unsigned int index)
 {
-	setUInt("drawIndex", index);
+	setValue("drawIndex", index);
 }

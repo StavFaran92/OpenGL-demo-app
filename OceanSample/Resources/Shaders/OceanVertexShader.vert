@@ -15,20 +15,16 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform float time;
 
-//uniform float amplitude;
-//uniform vec2 waveDirection;
-//uniform float waveLength;
-//uniform float waveSpeed;
+uniform float amplitude;
+uniform vec2 waveDirection;
+uniform float waveLength;
+uniform float waveSpeed;
 
 void main()
 {
 	float PI = 3.14159265359;
 	float PI2 = 6.28318530718;
-	float amplitude = .5f;
-	float waveLength = 2;
-	float waveSpeed = 5;
 	float steepness = .5f;
-	vec2 waveDirection = vec2(1,0);
 
 	mat4 modelMatrix =  model;
 

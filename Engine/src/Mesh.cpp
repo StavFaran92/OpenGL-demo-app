@@ -14,7 +14,7 @@ void Mesh::render(Shader& shader, IRenderer& renderer)
 {
 	if (shader.isSupportColors())
 	{
-		shader.setInt("useColors", m_useColors);
+		shader.setValue("useColors", m_useColors);
 	}
 
 	renderer.draw(*m_vao, shader);
