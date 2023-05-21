@@ -1,6 +1,5 @@
 #include "PostProcess.h"
 
-#include "ShaderBuilder.h"
 #include "Shader.h"
 
 Shader* PostProcess::inversion()

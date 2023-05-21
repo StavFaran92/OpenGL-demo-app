@@ -1,6 +1,8 @@
 #include "EntryPoint.h"
 #include "sge.h"
 
+#include "GUIHandler.h"
+
 class Sandbox : public Application
 {
 public:
@@ -10,6 +12,7 @@ public:
 
 	ObjectHandler<Model> plane;
 	ObjectHandler<Model> light;
+	std::shared_ptr<GUIHandler> gui;
 
 
 	void start() override
@@ -29,6 +32,8 @@ public:
 
 		auto dLight = new PointLight(glm::vec3{ 1,1,1 }, glm::vec3{ 0,1,-1 }, 1, 1, Attenuation());
 		getContext()->getActiveScene()->addPointLight(dLight);
+
+		gui = std::make_shared<GUIHandler>(shader);
 
 	}
 
@@ -53,6 +58,8 @@ public:
 		//}
 
 		getContext()->getActiveScene()->draw(plane);
+
+		Engine::get()->getImguiHandler()->draw(gui.get());
 
 		//draw(box);
 		//draw(guitar);
