@@ -28,6 +28,7 @@ public:
 		shader->setValue("waveDirection", glm::vec2(1,0));
 		shader->setValue("waveLength", 2.f);
 		shader->setValue("waveSpeed", 5.0f);
+		shader->setValue("steepness", .5f);
 		plane.object()->attachShader(shader);
 
 		auto dLight = new PointLight(glm::vec3{ 1,1,1 }, glm::vec3{ 0,1,-1 }, 1, 1, Attenuation());

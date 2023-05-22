@@ -19,12 +19,12 @@ uniform float amplitude;
 uniform vec2 waveDirection;
 uniform float waveLength;
 uniform float waveSpeed;
+uniform float steepness;
 
 void main()
 {
 	float PI = 3.14159265359;
 	float PI2 = 6.28318530718;
-	float steepness = .5f;
 
 	mat4 modelMatrix =  model;
 

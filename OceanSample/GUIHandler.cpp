@@ -17,10 +17,6 @@ void GUIHandler::display()
     ImGui::SetNextWindowSize({ 300, 250 }, ImGuiCond_Once);
     ImGui::Begin("Gretsner wave Controller", 0, ImGuiWindowFlags_NoResize);
 
-
-    //m_shader->setValue("waveLength", 2.f);
-    //m_shader->setValue("waveSpeed", 5.0f);
-
     ImGui::PushItemWidth(100);
 
     static float amplitude = 0.5f;
@@ -43,12 +39,12 @@ void GUIHandler::display()
     if (ImGui::InputFloat("wave Speed", &waveSpeed))
         m_shader->setValue("waveSpeed", waveSpeed);
 
-    ImGui::PopItemWidth();
-    //static Shift shift = Shift::CW;
-    //ImGui::RadioButton("CW", (int*)&shift, 0);
-    //ImGui::RadioButton("CCW", (int*)&shift, 1);
+    static float steepness = .5f;
 
-    ImGui::Spacing();
+    if (ImGui::SliderFloat("Steepness", &steepness, 0, 1))
+        m_shader->setValue("steepness", steepness);
+
+    ImGui::PopItemWidth();
 
 
     ImGui::End();
