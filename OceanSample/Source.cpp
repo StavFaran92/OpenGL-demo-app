@@ -31,7 +31,7 @@ public:
 		shader->setValue("steepness", .5f);
 		plane.object()->attachShader(shader);
 
-		auto dLight = new PointLight(glm::vec3{ 1,1,1 }, glm::vec3{ 0,1,-1 }, 1, 1, Attenuation());
+		auto dLight = new PointLight(glm::vec3{ 1,1,1 }, glm::vec3{ 0, 0, 2 }, 1, 1, Attenuation());
 		getContext()->getActiveScene()->addPointLight(dLight);
 
 		gui = std::make_shared<GUIHandler>(shader);

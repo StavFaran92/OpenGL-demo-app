@@ -29,22 +29,26 @@ void main()
 	mat4 modelMatrix =  model;
 
 	vec3 vPos = pos;
-	float w = 2 * PI2 / waveLength;
+	float w = PI2 / waveLength;
 	float pSpeed = 2 * waveSpeed / waveLength;
 	float q = steepness / (w * amplitude);
 
 	float a = dot(vec2(pos.x, pos.y),waveDirection) * w + time * pSpeed;
 
-	vPos.x = pos.x - q * amplitude * waveDirection.x * cos(a);
+	vPos.x = pos.x + q * amplitude * waveDirection.x * cos(a);
 	vPos.y = pos.y + q * amplitude * waveDirection.y * cos(a);
-	vPos.z = amplitude * sin(a);
+	vPos.z = - amplitude * sin(a);
 
 	gl_Position = projection * view * modelMatrix * vec4(vPos, 1.0);
 	Color = color;
 	
 	texCoord = tex;
 
-	Normal = mat3(transpose(inverse(modelMatrix))) * norm;
+	// Normal = mat3(transpose(inverse(modelMatrix))) * norm;
+	
+	Normal.x = - waveDirection.x * w * amplitude * cos(a);
+	Normal.y = - waveDirection.y * w * amplitude * cos(a);
+	Normal.z = 1 - q * w * amplitude * sin(a);
 
 	FragPos = (modelMatrix * vec4(vPos, 1.0)).xyz;
 }
