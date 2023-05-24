@@ -32,11 +32,13 @@ void main()
 	float w = PI2 / waveLength;
 	float pSpeed = 2 * waveSpeed / waveLength;
 	float q = steepness / (w * amplitude);
+	
+	vec2 dir = normalize(waveDirection);
 
-	float a = dot(vec2(pos.x, pos.y),waveDirection) * w + time * pSpeed;
+	float a = dot(vec2(pos.x, pos.y),dir) * w + time * pSpeed;
 
-	vPos.x = pos.x + q * amplitude * waveDirection.x * cos(a);
-	vPos.y = pos.y + q * amplitude * waveDirection.y * cos(a);
+	vPos.x = pos.x + q * amplitude * dir.x * cos(a);
+	vPos.y = pos.y + q * amplitude * dir.y * cos(a);
 	vPos.z = - amplitude * sin(a);
 
 	gl_Position = projection * view * modelMatrix * vec4(vPos, 1.0);
@@ -46,8 +48,8 @@ void main()
 
 	// Normal = mat3(transpose(inverse(modelMatrix))) * norm;
 	
-	Normal.x = - waveDirection.x * w * amplitude * cos(a);
-	Normal.y = - waveDirection.y * w * amplitude * cos(a);
+	Normal.x = - dir.x * w * amplitude * cos(a);
+	Normal.y = - dir.y * w * amplitude * cos(a);
 	Normal.z = 1 - q * w * amplitude * sin(a);
 
 	FragPos = (modelMatrix * vec4(vPos, 1.0)).xyz;
