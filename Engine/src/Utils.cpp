@@ -25,6 +25,8 @@ std::string Utils::ReadFile(const std::string& filePath)
 	catch (std::ifstream::failure e)
 	{
 		logError( "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" );
+
+		throw std::runtime_error("File not found: " + filePath);
 	}
 
 	return content;

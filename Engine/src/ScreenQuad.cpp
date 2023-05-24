@@ -7,7 +7,7 @@
 #include "ModelBuilder.h"
 #include "ObjectHandler.h"
 
-#include "Resources/Primitives/quad.h"
+#include "Resources/Engine/Primitives/quad.h"
 
 ObjectHandler<ScreenQuad> ScreenQuad::GenerateScreenQuad()
 {

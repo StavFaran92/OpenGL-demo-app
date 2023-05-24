@@ -16,12 +16,12 @@
 
 Context::Context() : m_shaderCounter(0)
 {
-	m_reflectionShader = Shader::createShared<Shader>("Resources\\Shaders\\ReflectionShader.vert", "Resources\\Shaders\\ReflectionShader.frag");
+	m_reflectionShader = Shader::createShared<Shader>("Resources/Engine/Shaders/ReflectionShader.vert", "Resources/Engine/Shaders/ReflectionShader.frag");
 	m_reflectionShader->SetEnableLights(false);
 	m_reflectionShader->SetEnableMaterials(false);
 	m_reflectionShader->SetEnableTextures(false);
 
-	m_refractiveShader = Shader::createShared<Shader>("Resources\\Shaders\\RefractionShader.vert", "Resources\\Shaders\\RefractionShader.frag");
+	m_refractiveShader = Shader::createShared<Shader>("Resources/Engine/Shaders/RefractionShader.vert", "Resources/Engine/Shaders/RefractionShader.frag");
 	m_refractiveShader->SetEnableLights(false);
 	m_refractiveShader->SetEnableMaterials(false);
 	m_refractiveShader->SetEnableTextures(false);

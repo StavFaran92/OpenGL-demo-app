@@ -3,7 +3,7 @@
 #include "PointLight.h"
 #include "DirectionalLight.h"
 
-PhongShader::PhongShader() : Shader("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag")
+PhongShader::PhongShader() : Shader("Resources/Engine/Shaders/shader.vert", "Resources/Engine/Shaders/shader.frag")
 {
 	m_enableLight = true;
 	m_enableTexture = true;

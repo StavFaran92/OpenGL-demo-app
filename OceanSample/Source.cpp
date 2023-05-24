@@ -24,7 +24,7 @@ public:
 		plane.object()->rotate({0,1,0}, 90);
 		//plane.object()->scale(10, 1, 10);
 
-		StandardShader* shader = Shader::create<StandardShader>("Resources/Shaders/OceanVertexShader.vert", "Resources/Shaders/OceanFragmentShader.frag");
+		StandardShader* shader = Shader::create<StandardShader>("Resources/Content/Shaders/OceanVertexShader.vert", "Resources/Content/Shaders/OceanFragmentShader.frag");
 		shader->setValue("amplitude", .5f);
 		shader->setValue("waveDirection", glm::vec2(1,0));
 		shader->setValue("waveLength", 2.f);

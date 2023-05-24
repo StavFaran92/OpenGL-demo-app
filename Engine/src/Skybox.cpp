@@ -12,20 +12,20 @@
 #include "StandardShader.h"
 
 #include "EditorCamera.h"
-#include "Resources/Primitives/cube.h"
+#include "Resources/Engine/Primitives/cube.h"
 
 ObjectHandler<Skybox> Skybox::CreateSkybox()
 {
-    auto shader = new StandardShader("Resources\\Shaders\\SkyboxShader.vert", "Resources\\Shaders\\SkyboxShader.frag");
+    auto shader = new StandardShader("Resources/Engine/Shaders/SkyboxShader.vert", "Resources/Engine/Shaders/SkyboxShader.frag");
 
     std::vector<std::string> faces
     {
-        "Resources\\Textures\\Skybox\\right.jpg",
-        "Resources\\Textures\\Skybox\\left.jpg",
-        "Resources\\Textures\\Skybox\\top.jpg",
-        "Resources\\Textures\\Skybox\\bottom.jpg",
-        "Resources\\Textures\\Skybox\\front.jpg",
-        "Resources\\Textures\\Skybox\\back.jpg"
+        "Resources/Engine/Textures/Skybox/right.jpg",
+        "Resources/Engine/Textures/Skybox/left.jpg",
+        "Resources/Engine/Textures/Skybox/top.jpg",
+        "Resources/Engine/Textures/Skybox/bottom.jpg",
+        "Resources/Engine/Textures/Skybox/front.jpg",
+        "Resources/Engine/Textures/Skybox/back.jpg"
     };
     auto textureHandler = Texture::loadCubemapTexture(faces);
 

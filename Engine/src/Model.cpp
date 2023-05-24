@@ -4,8 +4,8 @@
 
 #include "PointLight.h"
 
-#include "Resources/Primitives/quad.h"
-#include "Resources/Primitives/cube.h"
+#include "Resources/Engine/Primitives/quad.h"
+#include "Resources/Engine/Primitives/cube.h"
 
 #include "Context.h"
 #include "Scene.h"

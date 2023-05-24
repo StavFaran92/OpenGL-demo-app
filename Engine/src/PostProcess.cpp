@@ -4,9 +4,9 @@
 
 Shader* PostProcess::inversion()
 {
-	return Shader::create<Shader>("Resources\\Shaders\\PostProcess\\PostProcessShader_inversion.vert", "Resources\\Shaders\\PostProcess\\PostProcessShader_inversion.frag");
+	return Shader::create<Shader>("Resources/Engine/Shaders/PostProcess/PostProcessShader_inversion.vert", "Resources/Engine/Shaders/PostProcess/PostProcessShader_inversion.frag");
 }
 Shader* PostProcess::grayscale()
 {
-	return Shader::create<Shader>("Resources\\Shaders\\PostProcess\\PostProcessShader_grayscale.vert", "Resources\\Shaders\\PostProcess\\PostProcessShader_grayscale.frag");
+	return Shader::create<Shader>("Resources/Engine/Shaders/PostProcess/PostProcessShader_grayscale.vert", "Resources/Engine/Shaders/PostProcess/PostProcessShader_grayscale.frag");
 }

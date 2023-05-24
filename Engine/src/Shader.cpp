@@ -297,7 +297,7 @@ void Shader::setMat4(const std::string& name, const glm::mat4& v)
 
 Shader* Shader::PhongShader()
 {
-	Shader* shader = Shader::create<Shader>("Resources\\Shaders\\shader.vert", "Resources\\Shaders\\shader.frag");
+	Shader* shader = Shader::create<Shader>("Resources/Engine/Shaders/shader.vert", "Resources/Engine/Shaders/shader.frag");
 	shader->SetEnableLights(true);
 	shader->SetEnableMaterials(true);
 	shader->SetEnableTextures(true);
@@ -308,7 +308,7 @@ Shader* Shader::PhongShader()
 
 Shader* Shader::SolidColorShader()
 {
-	Shader* shader = Shader::create<Shader>("Resources\\Shaders\\LightShader.vert", "Resources\\Shaders\\LightShader.frag");
+	Shader* shader = Shader::create<Shader>("Resources/Engine/Shaders/LightShader.vert", "Resources/Engine/Shaders/LightShader.frag");
 	shader->SetEnableLights(true);
 	shader->SetEnableMaterials(true);
 	shader->SetEnableTextures(true);

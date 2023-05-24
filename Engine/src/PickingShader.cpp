@@ -1,6 +1,6 @@
 #include "PickingShader.h"
 
-PickingShader::PickingShader() : Shader("Resources\\Shaders\\PickingShader.vert", "Resources\\Shaders\\PickingShader.frag")
+PickingShader::PickingShader() : Shader("Resources/Engine/Shaders/PickingShader.vert", "Resources/Engine/Shaders/PickingShader.frag")
 {
 }
 
