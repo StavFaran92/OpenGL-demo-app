@@ -7,6 +7,7 @@
 
 #include "ISelectable.h"
 #include "IPickable.h"
+#include "entt/entt.hpp"
 
 class ObjectManager;
 class ObjectFactory;
@@ -56,6 +57,35 @@ public:
 	void onSelected() override;
 	void onPicked() override;
 
+	template<typename T, typename... Args>
+	T& addComponent(Args&&... args)
+	{
+		//HZ_CORE_ASSERT(!HasComponent<T>(), "Entity already has component!");
+		
+		m_registry.emplace<T>(entity, std::forward<Args>(args)...);
+		return entity;
+	}
+
+	template<typename T>
+	T& getComponent()
+	{
+		//HZ_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
+		return m_registry.get<T>(m_EntityHandle);
+	}
+
+	template<typename T>
+	bool HasComponent()
+	{
+		return m_Scene->m_Registry.has<T>(m_EntityHandle);
+	}
+
+	template<typename T>
+	void RemoveComponent()
+	{
+		HZ_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
+		m_Scene->m_Registry.remove<T>(m_EntityHandle);
+	}
+
 protected:
 	friend class Scene;
 	void setSceneID(uint32_t id);
@@ -74,4 +104,7 @@ private:
 
 	uint32_t m_sceneID = 0;
 	uint32_t m_id = 0;
+
+	
+	entt::entity m_entity;
 };

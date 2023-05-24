@@ -122,5 +122,5 @@ private:
 	bool m_pickingPhaseActive = false;
 	bool m_isObjectSelectionEnabled = false;
 
-
+	entt::registry m_registry;
 };
