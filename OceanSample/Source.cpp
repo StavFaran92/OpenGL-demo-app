@@ -35,18 +35,20 @@ public:
 		auto dLight = new PointLight(glm::vec3{ 1,1,1 }, glm::vec3{ 0, 0, 2 }, 1, 1, Attenuation());
 		getContext()->getActiveScene()->addPointLight(dLight);
 
+		getContext()->getActiveScene()->addModel(plane.object());
+
 		gui = std::make_shared<GUIHandler>(shader);
 
 	}
 
 	void update(float deltaTime) override
 	{
-		update(plane);
+		//update(plane);
 	}
 
 	void draw() override
 	{
-		getContext()->getActiveScene()->draw(plane);
+		//getContext()->getActiveScene()->draw(plane);
 
 		Engine::get()->getImguiHandler()->draw(gui.get());
 	}

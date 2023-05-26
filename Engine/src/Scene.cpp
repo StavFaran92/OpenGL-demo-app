@@ -205,6 +205,22 @@ void Scene::draw(float deltaTime)
 		m_postProcessProjector->enableWriting();
 	}
 
+	for (auto& model : m_models)
+	{
+		auto shader = model.second->getShader();
+		if (shader)
+		{
+			shader->use();
+			shader->updateDirLights(m_directionalLights);
+			shader->updatePointLights(m_pointLights);
+			shader->setViewPos(m_renderer->getCamera()->getPosition());
+			shader->release();
+		}
+
+		// draw model
+		m_renderer->render(model.second.get());
+	}
+
 	// Iterate Application models
 	while (!m_drawQueue.empty())
 	{
@@ -362,6 +378,7 @@ Scene::Scene(Context* context)
 
 bool Scene::addModel(Model* model)
 {
+	auto entity = m_registry.create();
 	m_modelCounter++;
 	model->setSceneID(m_modelCounter);
 	m_models.emplace(m_modelCounter, std::shared_ptr<Model>(model));

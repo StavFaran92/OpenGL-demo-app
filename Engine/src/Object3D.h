@@ -57,34 +57,34 @@ public:
 	void onSelected() override;
 	void onPicked() override;
 
-	template<typename T, typename... Args>
-	T& addComponent(Args&&... args)
-	{
-		//HZ_CORE_ASSERT(!HasComponent<T>(), "Entity already has component!");
-		
-		m_registry.emplace<T>(m_entity, std::forward<Args>(args)...);
-		return entity;
-	}
+	//template<typename T, typename... Args>
+	//T& addComponent(Args&&... args)
+	//{
+	//	//HZ_CORE_ASSERT(!HasComponent<T>(), "Entity already has component!");
+	//	
+	//	m_registry.emplace<T>(m_entity, std::forward<Args>(args)...);
+	//	return entity;
+	//}
 
-	template<typename T>
-	T& getComponent()
-	{
-		//HZ_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
-		return m_registry.get<T>(m_entity);
-	}
+	//template<typename T>
+	//T& getComponent()
+	//{
+	//	//HZ_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
+	//	return m_registry.get<T>(m_entity);
+	//}
 
-	template<typename T>
-	bool HasComponent()
-	{
-		return m_Scene->m_Registry.has<T>(m_entity);
-	}
+	//template<typename T>
+	//bool HasComponent()
+	//{
+	//	return m_Scene->m_Registry.has<T>(m_entity);
+	//}
 
-	template<typename T>
-	void RemoveComponent()
-	{
-		//HZ_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
-		m_Scene->m_Registry.remove<T>(m_entity);
-	}
+	//template<typename T>
+	//void RemoveComponent()
+	//{
+	//	//HZ_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
+	//	m_Scene->m_Registry.remove<T>(m_entity);
+	//}
 
 protected:
 	friend class Scene;
