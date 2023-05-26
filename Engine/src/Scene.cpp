@@ -217,6 +217,34 @@ void Scene::draw(float deltaTime)
 			m_debugModelDeque.push_back(model);
 		}
 
+		{
+			DrawQueuePreRenderParams params;
+			params.scene = this;
+			params.model = model;
+
+			//// This will be optimized using Entt
+			//std::vector<const DirectionalLight*> dirLight;
+			//dirLight.reserve(m_directionalLights.size());
+
+			//for (auto& pair : m_directionalLights) {
+			//	dirLight.push_back(pair.second.get());
+			//}
+			//params.directionalLights = dirLight;
+
+			//// This will be optimized using Entt
+			//std::vector<const PointLight*> pLight;
+			//pLight.reserve(m_pointLights.size());
+
+			//for (auto& pair : m_pointLights) {
+			//	pLight.push_back(pair.second.get());
+			//}
+			//params.pointLights = pLight;
+			for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_PRE_RENDER])
+			{
+				cb(&params);
+			}
+		}
+
 		auto shader = model->getShader();
 		if (shader)
 		{
@@ -239,7 +267,16 @@ void Scene::draw(float deltaTime)
 
 		// draw model
 		m_renderer->render(model);
-		//model->draw(*m_renderer.get());
+
+		{
+			DrawQueuePreRenderParams params;
+			params.scene = this;
+			params.model = model;
+			for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_POST_RENDER])
+			{
+				cb(&params);
+			}
+		}
 	}
 
 	// Iterate GPU instancing batches
@@ -285,6 +322,30 @@ void Scene::draw(float deltaTime)
 void Scene::drawMultiple(const InstanceBatch& batch)
 {
 	m_instanceBatchQueue.push_back(std::make_shared<InstanceBatch>(batch));
+}
+
+Scene::RenderCallback* Scene::addRenderCallback(RenderPhase renderPhase, RenderCallback renderCallback)
+{
+	if (!renderCallback)
+	{
+		logError("render callback cannot be null.");
+		return 0;
+	}
+
+	m_renderCallbacks[renderPhase].push_back(std::move(renderCallback));
+	return &m_renderCallbacks[renderPhase].back();
+}
+
+void Scene::removeRenderCallback(RenderCallback* callback)
+{
+	for (auto& pair : m_renderCallbacks) {
+		auto& vector = pair.second;
+		vector.erase(
+			std::remove_if(vector.begin(), vector.end(),
+				[callback](const auto& existingCallback) { return &existingCallback == callback; }),
+			vector.end()
+		);
+	}
 }
 
 void Scene::clear()

@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <deque>
+#include <map>
 #include <functional>
 
 #include "Core.h"
@@ -33,7 +34,26 @@ template<typename T> class ObjectHandler;
 
 class EngineAPI Scene
 {
+public:
+	struct Params
+	{
+		const Scene* scene;
+	};
 
+	struct DrawQueuePreRenderParams : public Scene::Params
+	{
+		const Model* model;
+		std::vector<const DirectionalLight*> directionalLights;
+		std::vector<const PointLight*> pointLights;
+	};
+
+	enum class RenderPhase
+	{
+		DRAW_QUEUE_PRE_RENDER,
+		DRAW_QUEUE_POST_RENDER,
+	};
+
+	using RenderCallback = std::function<void(const Params*)>;
 public:
 	// -------------------- Methods -------------------- //
 	Scene(Context* context);
@@ -76,6 +96,10 @@ public:
 	void draw(ObjectHandler<Model> handler);
 
 	void drawMultiple(const InstanceBatch& batch);
+
+	RenderCallback* addRenderCallback(RenderPhase renderPhase, RenderCallback renderCallback);
+	void removeRenderCallback(RenderCallback* callback);
+	
 
 
 private:
@@ -122,5 +146,5 @@ private:
 	bool m_pickingPhaseActive = false;
 	bool m_isObjectSelectionEnabled = false;
 
-
+	std::map<RenderPhase, std::vector<RenderCallback>> m_renderCallbacks;
 };
