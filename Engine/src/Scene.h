@@ -30,6 +30,7 @@ class Context;
 class ObjectPicker;
 class Transformation;
 class GpuInstancingRenderer;
+class Entity;
 template<typename T> class ObjectHandler;
 
 class EngineAPI Scene
@@ -99,6 +100,11 @@ public:
 
 	RenderCallback* addRenderCallback(RenderPhase renderPhase, RenderCallback renderCallback);
 	void removeRenderCallback(RenderCallback* callback);
+
+	entt::registry& getRegistry();
+
+	//std::shared_ptr<Entity> createEntity();
+	//void removeEntity(std::shared_ptr<Entity> e);
 	
 
 
@@ -140,7 +146,7 @@ private:
 	std::deque<Model*> m_debugModelDeque;
 	std::deque<std::shared_ptr<InstanceBatch>> m_instanceBatchQueue;
 
-	Context* m_context;
+	Context* m_context = nullptr;
 
 	bool m_isPostProcessEnabled = false;
 	bool m_pickingPhaseActive = false;

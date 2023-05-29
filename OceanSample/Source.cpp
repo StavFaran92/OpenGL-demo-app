@@ -35,7 +35,11 @@ public:
 		auto dLight = new PointLight(glm::vec3{ 1,1,1 }, glm::vec3{ 0, 0, 2 }, 1, 1, Attenuation());
 		getContext()->getActiveScene()->addPointLight(dLight);
 
-		getContext()->getActiveScene()->addModel(plane.object());
+		auto scene = getContext()->getActiveScene();
+		Entity e ( scene.get() );
+		e.addComponent<Model>(plane.object());
+
+		//getContext()->getActiveScene()->addModel(plane.object());
 
 		gui = std::make_shared<GUIHandler>(shader);
 
