@@ -36,8 +36,8 @@ public:
 		getContext()->getActiveScene()->addPointLight(dLight);
 
 		auto scene = getContext()->getActiveScene();
-		Entity e ( scene.get() );
-		e.addComponent<Model>(plane.object());
+		auto e = scene->createEntity();
+		e->addComponent<Model>(plane.object());
 
 		//getContext()->getActiveScene()->addModel(plane.object());
 

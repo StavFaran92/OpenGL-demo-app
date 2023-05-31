@@ -15,20 +15,17 @@ class EngineAPI Entity
 {
 public:
     /// Default constructor
-    Entity() {};
+    Entity() = delete;
 
     /**
      * @brief Constructs an entity belonging to a scene
      * @param scene Pointer to the scene the entity belongs to
      */
-    Entity(Scene* scene)
-        : m_scene(scene), m_entity(scene->getRegistry().create())
+    Entity(entt::entity e, Scene* scene)
+        : m_entity(e), m_scene(scene)
     {}
 
-    virtual ~Entity()
-    {
-        m_scene->getRegistry().destroy(m_entity);
-    }
+    ~Entity() {};
 
     /**
      * @brief Adds a component to the entity by moving an existing instance
@@ -42,7 +39,7 @@ public:
     {
         assert(valid() && "Invalid entity.");
         assert(!m_scene->getRegistry().has<T>(m_entity) && "Component already exists.");
-        T& component = m_scene->getRegistry().emplace<T>(m_entity, componentInstance);
+        T& component = m_scene->getRegistry().emplace<T>(m_entity, *componentInstance);
         return component;
     }
 
@@ -113,6 +110,8 @@ private:
     {
         return m_entity;
     }
+
+
 
     friend class Scene;
 private:

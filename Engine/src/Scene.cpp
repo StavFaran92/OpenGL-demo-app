@@ -365,22 +365,22 @@ void Scene::removeRenderCallback(RenderCallback* callback)
 	}
 }
 
-//entt::registry& Scene::getRegistry()
-//{
-//	return m_registry;
-//}
-//
-//std::shared_ptr<Entity> Scene::createEntity()
-//{
-//	entt::entity e = m_registry.create();
-//	auto entityHandler = std::make_shared<Entity>(e, this);
-//	return entityHandler;
-//}
-//
-//void Scene::removeEntity(std::shared_ptr<Entity> e)
-//{
-//	m_registry.destroy(e->handler());
-//}
+entt::registry& Scene::getRegistry()
+{
+	return m_registry;
+}
+
+std::shared_ptr<Entity> Scene::createEntity()
+{
+	entt::entity e = m_registry.create();
+	auto entityHandler = std::make_shared<Entity>(e, this);
+	return entityHandler;
+}
+
+void Scene::removeEntity(std::shared_ptr<Entity> e)
+{
+	m_registry.destroy(e->handler());
+}
 
 
 void Scene::clear()
