@@ -222,6 +222,78 @@ void Scene::draw(float deltaTime)
 		m_renderer->render(model.second.get());
 	}
 
+	auto view = m_registry.view<Model>();
+
+	for (auto [entity, model] : view.each()) 
+	{
+		// If in debug MODE -> put model in displayNormalsQueue
+		//if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
+		//{
+		//	m_debugModelDeque.push_back(model);
+		//}
+
+		{
+			DrawQueuePreRenderParams params;
+			params.scene = this;
+			params.model = &model;
+
+			//// This will be optimized using Entt
+			//std::vector<const DirectionalLight*> dirLight;
+			//dirLight.reserve(m_directionalLights.size());
+
+			//for (auto& pair : m_directionalLights) {
+			//	dirLight.push_back(pair.second.get());
+			//}
+			//params.directionalLights = dirLight;
+
+			//// This will be optimized using Entt
+			//std::vector<const PointLight*> pLight;
+			//pLight.reserve(m_pointLights.size());
+
+			//for (auto& pair : m_pointLights) {
+			//	pLight.push_back(pair.second.get());
+			//}
+			//params.pointLights = pLight;
+			for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_PRE_RENDER])
+			{
+				cb(&params);
+			}
+		}
+
+		auto shader = model.getShader();
+		if (shader)
+		{
+			shader->use();
+			shader->updateDirLights(m_directionalLights);
+			shader->updatePointLights(m_pointLights);
+			shader->setViewPos(m_renderer->getCamera()->getPosition());
+			shader->release();
+		}
+
+		phongShader->use();
+
+		// If model is selected highlight it's color
+		if (m_isObjectSelectionEnabled && isSelected(model.getID()))
+			phongShader->setColorMul({ 0.3f, 0.3f, 0.3f, 0.3f });
+		else
+			phongShader->setColorMul({ 0.f, 0.f, 0.f, 0.f });
+
+		phongShader->release();
+
+		// draw model
+		m_renderer->render(&model);
+
+		{
+			DrawQueuePreRenderParams params;
+			params.scene = this;
+			params.model = &model;
+			for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_POST_RENDER])
+			{
+				cb(&params);
+			}
+		}
+	};
+
 	// Iterate Application models
 	while (!m_drawQueue.empty())
 	{

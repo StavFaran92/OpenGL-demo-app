@@ -35,8 +35,7 @@ public:
 		auto dLight = new PointLight(glm::vec3{ 1,1,1 }, glm::vec3{ 0, 0, 2 }, 1, 1, Attenuation());
 		getContext()->getActiveScene()->addPointLight(dLight);
 
-		auto scene = getContext()->getActiveScene();
-		auto e = scene->createEntity();
+		auto e = getContext()->getActiveScene()->createEntity();
 		e->addComponent<Model>(plane.object());
 
 		//getContext()->getActiveScene()->addModel(plane.object());
