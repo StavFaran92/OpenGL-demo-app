@@ -16,7 +16,8 @@
 
 ObjectHandler<Skybox> Skybox::CreateSkybox()
 {
-    auto shader = new StandardShader("Resources/Engine/Shaders/SkyboxShader.vert", "Resources/Engine/Shaders/SkyboxShader.frag");
+    //auto shader = new StandardShader("Resources/Engine/Shaders/SkyboxShader.vert", "Resources/Engine/Shaders/SkyboxShader.frag");
+    auto shader = Shader::create<StandardShader>("Resources/Engine/Shaders/SkyboxShader.vert", "Resources/Engine/Shaders/SkyboxShader.frag");
 
     std::vector<std::string> faces
     {
