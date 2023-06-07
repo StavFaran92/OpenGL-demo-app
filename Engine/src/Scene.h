@@ -44,8 +44,7 @@ public:
 	struct DrawQueuePreRenderParams : public Scene::Params
 	{
 		const Model* model;
-		std::vector<const DirectionalLight*> directionalLights;
-		std::vector<const PointLight*> pointLights;
+		const entt::registry* registry;
 	};
 
 	enum class RenderPhase

@@ -89,45 +89,7 @@ void Scene::update(float deltaTime)
 }
 
 void Scene::draw(float deltaTime)
-{
-
-
-	//// Draw Engine models
-	//for (auto model = m_models.begin(); model != m_models.end(); ++model)
-	//{
-	//	Shader* shader = model->second->getShader();
-	//	shader->use();
-
-	//	if (shader->IsLightsEnabled())
-	//	{
-	//		// Use all directional lights
-	//		{
-	//			int i = 0;
-	//			for (auto it = m_directionalLights.begin(); it != m_directionalLights.end(); ++it, ++i) {
-	//				it->second->useLight(*shader, i);
-	//			}
-	//			shader->SetInt("dirLightCount", m_directionalLights.size());
-	//		}
-
-	//		// Use all point lights
-	//		{
-	//			int i = 0;
-	//			for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++i, ++it) {
-	//				it->second->useLight(*shader, i);
-	//			}
-	//			shader->SetInt("pointLightCount", m_pointLights.size());
-	//		}
-	//	}
-
-	//	glStencilFunc(GL_ALWAYS, model->second->getID(), 0xff);
-
-	//	// Draw model
-	//	model->second->draw(*m_renderer.get(), shader);
-
-	//	shader->release();
-	//}
-
-	//// Update phong shader
+{	//// Update phong shader
 	auto phongShader = m_context->getPhongShader();
 	//phongShader->use();
 	//phongShader->updateDirLights(m_directionalLights);
@@ -199,9 +161,7 @@ void Scene::draw(float deltaTime)
 		m_postProcessProjector->enableWriting();
 	}
 
-	auto view = m_registry.view<Model>();
-
-	for (auto [entity, model] : view.each()) 
+	for (auto [entity, model] : m_registry.view<Model>().each())
 	{
 		// If in debug MODE -> put model in displayNormalsQueue
 		//if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
@@ -213,24 +173,7 @@ void Scene::draw(float deltaTime)
 			DrawQueuePreRenderParams params;
 			params.scene = this;
 			params.model = &model;
-
-			//// This will be optimized using Entt
-			//std::vector<const DirectionalLight*> dirLight;
-			//dirLight.reserve(m_directionalLights.size());
-
-			//for (auto& pair : m_directionalLights) {
-			//	dirLight.push_back(pair.second.get());
-			//}
-			//params.directionalLights = dirLight;
-
-			//// This will be optimized using Entt
-			//std::vector<const PointLight*> pLight;
-			//pLight.reserve(m_pointLights.size());
-
-			//for (auto& pair : m_pointLights) {
-			//	pLight.push_back(pair.second.get());
-			//}
-			//params.pointLights = m_registry.group<PointLight>();
+			params.registry = &m_registry;
 			for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_PRE_RENDER])
 			{
 				cb(&params);
@@ -264,6 +207,7 @@ void Scene::draw(float deltaTime)
 			DrawQueuePreRenderParams params;
 			params.scene = this;
 			params.model = &model;
+			params.registry = &m_registry;
 			for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_POST_RENDER])
 			{
 				cb(&params);
