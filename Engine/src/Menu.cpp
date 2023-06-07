@@ -7,6 +7,7 @@
 #include "ModelImporter.h"
 #include "ModelBuilder.h"
 #include "ObjectHandler.h"
+#include "Entity.h"
 
 enum class PrimitiveType
 {
@@ -230,15 +231,14 @@ void LightCreatorWindow()
         {
             if (lightType == LightType::DirectionalLight) 
             {
-                
-                auto light = new DirectionalLight(color, dir, ambientIntensity, diffuseIntensity);
-                Engine::get()->getContext()->getActiveScene()->addDirectionalLight(light);
+                auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
+                e->addComponent<DirectionalLight>(color, dir, ambientIntensity, diffuseIntensity);
 
             }
             else if (lightType == LightType::PointLight)
             {
-                auto light = new PointLight(color, pos, ambientIntensity, diffuseIntensity, attenuation);
-                Engine::get()->getContext()->getActiveScene()->addPointLight(light);
+                auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
+                e->addComponent<PointLight>(color, pos, ambientIntensity, diffuseIntensity, attenuation);
             }
 
             ShowLightCreatorWindow = false;
@@ -306,7 +306,8 @@ void ShowModelCreatorWindow()
             model.object()->getTransformation()->setPosition(pos);
             model.object()->getTransformation()->setScale(scale);
 
-            Engine::get()->getContext()->getActiveScene()->addModel(model.object());
+            auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
+            e->addComponent<Model>(model.object());
 
             showModelCreatorWindow = false;
 

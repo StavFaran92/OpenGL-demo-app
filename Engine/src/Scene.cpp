@@ -52,8 +52,8 @@ void Scene::init(Context* context)
 
 	m_coroutineManager = std::make_shared<CoroutineSystem>();
 
-	auto light = new DirectionalLight();
-	addDirectionalLight(light);
+	// Add default dir light
+	createEntity()->addComponent<DirectionalLight>();
 
 	Engine::get()->getInput()->getMouse()->onMousePressed(Mouse::MouseButton::LeftMousebutton, [&](SDL_Event e)
 	{
@@ -82,14 +82,6 @@ void Scene::update(float deltaTime)
 	for (auto [entity, model] : view.each())
 	{
 		model.update(deltaTime);
-	}
-
-	while (!m_updateQueue.empty())
-	{
-		auto object = m_updateQueue.front();
-		m_updateQueue.pop_front();
-
-		object->update(deltaTime);
 	}
 
 	if (m_skybox)
@@ -207,22 +199,6 @@ void Scene::draw(float deltaTime)
 		m_postProcessProjector->enableWriting();
 	}
 
-	for (auto& model : m_models)
-	{
-		auto shader = model.second->getShader();
-		if (shader)
-		{
-			shader->use();
-			shader->updateDirLights(m_directionalLights);
-			shader->updatePointLights(m_pointLights);
-			shader->setViewPos(m_renderer->getCamera()->getPosition());
-			shader->release();
-		}
-
-		// draw model
-		m_renderer->render(model.second.get());
-	}
-
 	auto view = m_registry.view<Model>();
 
 	for (auto [entity, model] : view.each()) 
@@ -254,7 +230,7 @@ void Scene::draw(float deltaTime)
 			//for (auto& pair : m_pointLights) {
 			//	pLight.push_back(pair.second.get());
 			//}
-			//params.pointLights = pLight;
+			//params.pointLights = m_registry.group<PointLight>();
 			for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_PRE_RENDER])
 			{
 				cb(&params);
@@ -265,8 +241,8 @@ void Scene::draw(float deltaTime)
 		if (shader)
 		{
 			shader->use();
-			shader->updateDirLights(m_directionalLights);
-			shader->updatePointLights(m_pointLights);
+			shader->updateDirLights(m_registry);
+			shader->updatePointLights(m_registry);
 			shader->setViewPos(m_renderer->getCamera()->getPosition());
 			shader->release();
 		}
@@ -384,9 +360,9 @@ void Scene::removeEntity(std::shared_ptr<Entity> e)
 
 void Scene::clear()
 {
-	m_models.clear();
-	m_pointLights.clear();
-	m_directionalLights.clear();
+	//m_models.clear();
+	//m_pointLights.clear();
+	//m_directionalLights.clear();
 }
 
 Scene::Scene(Context* context)
@@ -394,90 +370,57 @@ Scene::Scene(Context* context)
 	init(context);
 }
 
-bool Scene::addModel(Model* model)
-{
-	auto entity = m_registry.create();
-	m_modelCounter++;
-	model->setSceneID(m_modelCounter);
-	m_models.emplace(m_modelCounter, std::shared_ptr<Model>(model));
+//bool Scene::addPointLight(PointLight* pLight)
+//{
+//	m_pointLightCounter++;
+//	pLight->setSceneID(m_pointLightCounter);
+//	m_pointLights.emplace(m_pointLightCounter, std::shared_ptr<PointLight>(pLight));
+//
+//	logInfo("PointLight {} Added successfully.", std::to_string(m_pointLightCounter));
+//	return true;
+//}
 
-	logInfo("Model {} Added successfully.", std::to_string(m_modelCounter));
-	return true;
-}
+//bool Scene::addDirectionalLight(DirectionalLight* dLight)
+//{
+//	m_directionalLightCounter++;
+//	dLight->setSceneID(m_directionalLightCounter);
+//	m_directionalLights.emplace(m_directionalLightCounter, std::shared_ptr<DirectionalLight>(dLight));
+//
+//	logInfo("DirectionalLight {} Added successfully.", std::to_string(m_directionalLightCounter));
+//	return true;
+//}
 
-bool Scene::addPointLight(PointLight* pLight)
-{
-	m_pointLightCounter++;
-	pLight->setSceneID(m_pointLightCounter);
-	m_pointLights.emplace(m_pointLightCounter, std::shared_ptr<PointLight>(pLight));
+//bool Scene::removePointLight(PointLight* pLight)
+//{
+//	uint32_t id = pLight->getID();
+//	auto iter = m_pointLights.find(id);
+//	if (iter == m_pointLights.end())
+//	{
+//		logError("Could not locate PointLight {}", id);
+//		return false;
+//	}
+//	m_pointLights.erase(iter);
+//
+//	logInfo("PointLight {} Erased successfully.", std::to_string(id));
+//
+//	return true;
+//}
 
-	logInfo("PointLight {} Added successfully.", std::to_string(m_pointLightCounter));
-	return true;
-}
-
-bool Scene::addDirectionalLight(DirectionalLight* dLight)
-{
-	m_directionalLightCounter++;
-	dLight->setSceneID(m_directionalLightCounter);
-	m_directionalLights.emplace(m_directionalLightCounter, std::shared_ptr<DirectionalLight>(dLight));
-
-	logInfo("DirectionalLight {} Added successfully.", std::to_string(m_directionalLightCounter));
-	return true;
-}
-
-bool Scene::removeModel(uint32_t id)
-{
-	auto iter = m_models.find(id);
-	if (iter == m_models.end())
-	{
-		logError("Could not locate Model {}", id);
-		return false;
-	}
-	m_models.erase(iter);
-
-	logInfo("Model {} Erased successfully.", std::to_string(id));
-
-	return true;
-}
-
-bool Scene::removeModel(Model* model)
-{
-	uint32_t id = model->getID();
-
-	return removeModel(id);
-}
-
-bool Scene::removePointLight(PointLight* pLight)
-{
-	uint32_t id = pLight->getID();
-	auto iter = m_pointLights.find(id);
-	if (iter == m_pointLights.end())
-	{
-		logError("Could not locate PointLight {}", id);
-		return false;
-	}
-	m_pointLights.erase(iter);
-
-	logInfo("PointLight {} Erased successfully.", std::to_string(id));
-
-	return true;
-}
-
-bool Scene::removeDirectionalLight(DirectionalLight* dLight)
-{
-	uint32_t id = dLight->getID();
-	auto iter = m_directionalLights.find(id);
-	if (iter == m_directionalLights.end())
-	{
-		logError("Could not locate DirectionalLight {}", id);
-		return false;
-	}
-	m_directionalLights.erase(iter);
-
-	logInfo("DirectionalLight {} Erased successfully.", std::to_string(id));
-
-	return true;
-}
+//bool Scene::removeDirectionalLight(DirectionalLight* dLight)
+//{
+//	uint32_t id = dLight->getID();
+//	auto iter = m_directionalLights.find(id);
+//	if (iter == m_directionalLights.end())
+//	{
+//		logError("Could not locate DirectionalLight {}", id);
+//		return false;
+//	}
+//	m_directionalLights.erase(iter);
+//
+//	logInfo("DirectionalLight {} Erased successfully.", std::to_string(id));
+//
+//	return true;
+//}
 
 
 void Scene::drawSkybox(ObjectHandler<Skybox> skybox)
@@ -531,15 +474,15 @@ void Scene::clearObjectSelection()
 	m_objectSelection->clear();
 }
 
-void Scene::update(ObjectHandler<Object3D> handler)
-{
-	m_updateQueue.push_back(handler.object());
-}
-
-void Scene::draw(ObjectHandler<Model> handler)
-{
-	m_drawQueue.push_back(handler.object());
-}
+//void Scene::update(ObjectHandler<Object3D> handler)
+//{
+//	m_updateQueue.push_back(handler.object());
+//}
+//
+//void Scene::draw(ObjectHandler<Model> handler)
+//{
+//	m_drawQueue.push_back(handler.object());
+//}
 
 bool Scene::setPostProcessShader(Shader* shader)
 {

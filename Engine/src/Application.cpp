@@ -30,18 +30,6 @@ void Application::postProcess(Shader* shader)
 	context->getActiveScene()->setPostProcessShader(shader);
 }
 
-void Application::update(ObjectHandler<Object3D> handler)
-{
-	Engine::get()->getContext()->getActiveScene()->update(handler);
-
-}
-
-void Application::draw(ObjectHandler<Model> handler)
-{
-	Engine::get()->getContext()->getActiveScene()->draw(handler);
-
-}
-
 bool Application::mouse_leftButtonPressed()
 {
 	return Engine::get()->getInput()->getMouse()->getButtonPressed(Mouse::MouseButton::LeftMousebutton);

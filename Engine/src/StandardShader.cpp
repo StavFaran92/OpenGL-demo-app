@@ -51,29 +51,37 @@ void StandardShader::setColorMul(glm::vec4 colorMul)
 	setValue("colorMul", colorMul);
 }
 
-void StandardShader::updateDirLights(std::unordered_map<uint32_t, std::shared_ptr<DirectionalLight>>& dirLights)
+void StandardShader::updateDirLights(entt::registry& registry)
 {
 	if (m_enableLight)
 	{
 		// Use all point lights
+		auto view = registry.view<DirectionalLight>();
+
 		int i = 0;
-		for (auto it = dirLights.begin(); it != dirLights.end(); ++i, ++it) {
-			it->second->useLight(*this, i);
+		for (auto it = view.begin(); it != view.end(); ++it, ++i)
+		{
+			auto& pLight = view.get<DirectionalLight>(*it);
+			pLight.useLight(*this, i);
 		}
-		setDirLightCount(dirLights.size());
+		setDirLightCount(view.size());
 	}
 }
 
-void StandardShader::updatePointLights(std::unordered_map<uint32_t, std::shared_ptr<PointLight>>& pointLights)
+void StandardShader::updatePointLights(entt::registry& registry)
 {
 	if (m_enableLight)
 	{
-		// Use all directional lights
+		// Use all point lights
+		auto view = registry.view<PointLight>();
+
 		int i = 0;
-		for (auto it = pointLights.begin(); it != pointLights.end(); ++it, ++i) {
-			it->second->useLight(*this, i);
+		for (auto it = view.begin(); it != view.end(); ++it, ++i) 
+		{
+			auto& pLight = view.get<PointLight>(*it);
+			pLight.useLight(*this, i);
 		}
-		setPointLightCount(pointLights.size());
+		setPointLightCount(view.size());
 	}
 }
 

@@ -58,20 +58,6 @@ public:
 public:
 	// -------------------- Methods -------------------- //
 	Scene(Context* context);
-	
-
-	bool addModel(Model* model);
-	bool removeModel(uint32_t id);
-	bool removeModel(Model* model);
-
-	bool addPointLight(PointLight* pLight);
-	bool removePointLight(PointLight* pLight);
-
-	bool addDirectionalLight(DirectionalLight* dLight);
-	bool removeDirectionalLight(DirectionalLight* dLight);
-
-	bool addObject(Object3D* object);
-	void removeObject(Object3D* object);
 
 	void drawSkybox(ObjectHandler<Skybox> skybox);
 
@@ -93,8 +79,7 @@ public:
 	void selectObject(uint32_t id);
 	void clearObjectSelection();
 
-	void update(ObjectHandler<Object3D> handler);
-	void draw(ObjectHandler<Model> handler);
+	//void addGUI();
 
 	void drawMultiple(const InstanceBatch& batch);
 
@@ -121,13 +106,6 @@ private:
 
 private:
 	// -------------------- Attributes -------------------- //
-	std::unordered_map<uint32_t, std::shared_ptr<Model>> m_models;
-	uint32_t m_modelCounter = 0;
-	std::unordered_map<uint32_t, std::shared_ptr<PointLight>> m_pointLights;
-	uint32_t m_pointLightCounter = 0;
-	std::unordered_map<uint32_t, std::shared_ptr<DirectionalLight>> m_directionalLights;
-	uint32_t m_directionalLightCounter = 0;
-
 	std::shared_ptr<Renderer> m_renderer = nullptr;
 	std::shared_ptr<GpuInstancingRenderer> m_gpuInstancingRenderer = nullptr;
 	std::shared_ptr<Renderer> m_skyboxRenderer = nullptr;
