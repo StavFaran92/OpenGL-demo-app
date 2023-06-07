@@ -52,7 +52,7 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 	}
 	else
 	{
-		shaderToUse = Engine::get()->getContext()->getPhongShader();
+		shaderToUse = Engine::get()->getContext()->getStandardShader();
 	}
 
 	assert(shaderToUse);

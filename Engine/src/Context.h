@@ -39,7 +39,7 @@ public:
 
 	Shader* GetReflectionShader() const;
 	Shader* GetRefractiveShader() const;
-	PhongShader* getPhongShader() const;
+	Shader* getStandardShader() const;
 	PickingShader* getPickingShader() const;
 	Shader* getNormalDisplayShader() const;
 
@@ -66,15 +66,12 @@ private:
 	uint32_t m_scenesCounter = 0;
 	std::map<uint32_t, std::shared_ptr<Scene>> m_scenes;
 
-	//std::map<uint32_t, std::shared_ptr<Object3D>> m_objects;
-	//uint32_t m_objCounter = 0;
-
 	std::map<uint32_t, std::shared_ptr<Shader>> m_shaders;
 	uint32_t m_shaderCounter = 0;
 
 	std::shared_ptr<Shader> m_reflectionShader = nullptr;
 	std::shared_ptr<Shader> m_refractiveShader = nullptr;
-	std::shared_ptr<PhongShader> m_phongShader = nullptr;
+	std::shared_ptr<Shader> m_phongShader = nullptr;
 	std::shared_ptr<PickingShader> m_pickingShader = nullptr;
 	std::shared_ptr<Shader> m_normalDisplayShader = nullptr;
 };

@@ -36,7 +36,7 @@ void Scene::init(Context* context)
 	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
 	m_gpuInstancingRenderer = std::make_shared<GpuInstancingRenderer>();
 
-	m_objectSelection = std::make_shared<ObjectSelection>();
+	m_objectSelection = std::make_shared<ObjectSelection>(this);
 
 	m_objectPicker = std::make_shared<ObjectPicker>();
 	if (!m_objectPicker->init(width, height))
@@ -184,16 +184,16 @@ void Scene::draw(float deltaTime)
 			shader->release();
 		}
 
-		auto phongShader = m_context->getPhongShader();
-		phongShader->use();
+		//auto phongShader = m_context->getStandardShader();
+		//phongShader->use();
 
-		// If model is selected highlight it's color
-		if (m_isObjectSelectionEnabled && isSelected(model.getID()))
-			phongShader->setColorMul({ 0.3f, 0.3f, 0.3f, 0.3f });
-		else
-			phongShader->setColorMul({ 0.f, 0.f, 0.f, 0.f });
+		//// If model is selected highlight it's color
+		//if (m_isObjectSelectionEnabled && isSelected(model.getID()))
+		//	phongShader->setColorMul({ 0.3f, 0.3f, 0.3f, 0.3f });
+		//else
+		//	phongShader->setColorMul({ 0.f, 0.f, 0.f, 0.f });
 
-		phongShader->release();
+		//phongShader->release();
 
 		// draw model
 		m_renderer->render(&model);

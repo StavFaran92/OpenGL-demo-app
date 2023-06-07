@@ -2,10 +2,12 @@
 
 #include <unordered_set>
 
+class Scene;
+
 class ObjectSelection
 {
 public:
-	ObjectSelection();
+	ObjectSelection(Scene* scene);
 	~ObjectSelection();
 
 	//void selectObject(int x, int y);

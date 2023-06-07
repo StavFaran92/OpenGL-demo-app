@@ -8,6 +8,7 @@
 #include "ICamera.h"
 #include "PhongShader.h"
 #include "PickingShader.h"
+#include "StandardShader.h"
 
 #include "Object3D.h"
 #include "Scene.h"
@@ -26,40 +27,13 @@ Context::Context() : m_shaderCounter(0)
 	m_refractiveShader->SetEnableMaterials(false);
 	m_refractiveShader->SetEnableTextures(false);
 
-	m_phongShader = Shader::createShared<PhongShader>();
+	m_phongShader = Shader::createShared<StandardShader>("Resources/Engine/Shaders/shader.vert", "Resources/Engine/Shaders/shader.frag");
 	m_pickingShader = Shader::createShared<PickingShader>();
 	//m_normalDisplayShader = std::make_shared<Shader>("Resources\\Shaders\\normalDisplayShader.vert", "Resources\\Shaders\\normalDisplayShader.frag", "Resources\\Shaders\\normalDisplayShader.geom");
 
 	//std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
 	//AddDirectionalLight(light);
 }
-
-//bool Context::addObject(std::shared_ptr<Object3D> object)
-//{
-//	m_objCounter += 1;
-//	object->SetID(m_objCounter);
-//	m_objects.emplace(m_objCounter, object);
-//
-//	logInfo("Object {} Added successfully.", std::to_string(m_objCounter));
-//
-//	return true;
-//}
-//
-//bool Context::removeObject(std::shared_ptr<Object3D> object)
-//{
-//	uint32_t id = object->getID();
-//	auto iter = m_objects.find(id);
-//	if (iter == m_objects.end())
-//	{
-//		logError("Could not locate Object {}", id);
-//		return false;
-//	}
-//	m_objects.erase(iter);
-//
-//	logInfo("Object {} Erased successfully.", std::to_string(id));
-//
-//	return true;
-//}
 
 bool Context::addScene(std::shared_ptr<Scene> scene)
 {
@@ -115,7 +89,7 @@ Shader* Context::GetRefractiveShader() const
 	return m_refractiveShader.get();
 }
 
-PhongShader* Context::getPhongShader() const
+Shader* Context::getStandardShader() const
 {
 	return m_phongShader.get();
 }

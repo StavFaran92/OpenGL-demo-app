@@ -204,13 +204,13 @@ ObjectHandler<RubiksCubeEnt> RubiksCube::createRubiksCubeBox(RubiksCube* rubiksC
 	textureHandlerSpecular->setType(Texture::Type::Specular);
 
 	return ModelBuilder::builder<RubiksCubeEnt>(rubiksCube)
-	.addTextureHandler(textureHandlerDiffse)
-	.addTextureHandler(textureHandlerSpecular)
-	.getMeshBuilder()
-	.setColors(colors, 36)
-	.getModelBuilder()
-	.build();
-}
+		.addTextureHandler(textureHandlerDiffse)
+		.addTextureHandler(textureHandlerSpecular)
+		.getMeshBuilder()
+		.setColors(colors, 36)
+		.getModelBuilder()
+		.build();
+	}
 
 RubiksCubeEnt* RubiksCube::getCube(int x, int y, int z) const
 {
