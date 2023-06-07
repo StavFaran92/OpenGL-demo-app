@@ -43,18 +43,18 @@ public:
 
 	void update(float deltaTime)
 	{
-		for (const auto cube : rubiksCube->getCubes())
-		{
-			update(cube);
-		}
+		//for (const auto cube : rubiksCube->getCubes())
+		//{
+		//	update(cube);
+		//}
 	}
 
 	void draw() override
 	{
-		for (const auto cube : rubiksCube->getCubes())
-		{
-			draw(cube);
-		}
+		//for (const auto cube : rubiksCube->getCubes())
+		//{
+		//	draw(cube);
+		//}
 
 		Engine::get()->getImguiHandler()->draw(gui.get());
 

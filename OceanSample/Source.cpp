@@ -27,9 +27,6 @@ public:
 		shader->setValue("steepness", .5f);
 		planeModel.object()->attachShader(shader);
 
-		//auto dLight = new PointLight(glm::vec3{ 1,1,1 }, glm::vec3{ 0, 0, 2 }, 1, 1, Attenuation());
-		//getContext()->getActiveScene()->addPointLight(dLight);
-
 		auto dLight = getContext()->getActiveScene()->createEntity();
 		dLight->addComponent<PointLight>(glm::vec3{ 1,1,1 }, glm::vec3{ 0, 0, 2 }, 1, 1, Attenuation());
 

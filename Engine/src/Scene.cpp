@@ -89,13 +89,7 @@ void Scene::update(float deltaTime)
 }
 
 void Scene::draw(float deltaTime)
-{	//// Update phong shader
-	auto phongShader = m_context->getPhongShader();
-	//phongShader->use();
-	//phongShader->updateDirLights(m_directionalLights);
-	//phongShader->updatePointLights(m_pointLights);
-	//phongShader->setViewPos(m_renderer->getCamera()->getPosition());
-	//phongShader->release();
+{
 
 	// Picking Phase
 	if (m_isObjectSelectionEnabled && m_pickingPhaseActive)
@@ -190,6 +184,7 @@ void Scene::draw(float deltaTime)
 			shader->release();
 		}
 
+		auto phongShader = m_context->getPhongShader();
 		phongShader->use();
 
 		// If model is selected highlight it's color
@@ -304,68 +299,13 @@ void Scene::removeEntity(std::shared_ptr<Entity> e)
 
 void Scene::clear()
 {
-	//m_models.clear();
-	//m_pointLights.clear();
-	//m_directionalLights.clear();
+	m_registry.clear();
 }
 
 Scene::Scene(Context* context)
 {
 	init(context);
 }
-
-//bool Scene::addPointLight(PointLight* pLight)
-//{
-//	m_pointLightCounter++;
-//	pLight->setSceneID(m_pointLightCounter);
-//	m_pointLights.emplace(m_pointLightCounter, std::shared_ptr<PointLight>(pLight));
-//
-//	logInfo("PointLight {} Added successfully.", std::to_string(m_pointLightCounter));
-//	return true;
-//}
-
-//bool Scene::addDirectionalLight(DirectionalLight* dLight)
-//{
-//	m_directionalLightCounter++;
-//	dLight->setSceneID(m_directionalLightCounter);
-//	m_directionalLights.emplace(m_directionalLightCounter, std::shared_ptr<DirectionalLight>(dLight));
-//
-//	logInfo("DirectionalLight {} Added successfully.", std::to_string(m_directionalLightCounter));
-//	return true;
-//}
-
-//bool Scene::removePointLight(PointLight* pLight)
-//{
-//	uint32_t id = pLight->getID();
-//	auto iter = m_pointLights.find(id);
-//	if (iter == m_pointLights.end())
-//	{
-//		logError("Could not locate PointLight {}", id);
-//		return false;
-//	}
-//	m_pointLights.erase(iter);
-//
-//	logInfo("PointLight {} Erased successfully.", std::to_string(id));
-//
-//	return true;
-//}
-
-//bool Scene::removeDirectionalLight(DirectionalLight* dLight)
-//{
-//	uint32_t id = dLight->getID();
-//	auto iter = m_directionalLights.find(id);
-//	if (iter == m_directionalLights.end())
-//	{
-//		logError("Could not locate DirectionalLight {}", id);
-//		return false;
-//	}
-//	m_directionalLights.erase(iter);
-//
-//	logInfo("DirectionalLight {} Erased successfully.", std::to_string(id));
-//
-//	return true;
-//}
-
 
 void Scene::drawSkybox(ObjectHandler<Skybox> skybox)
 {
@@ -417,16 +357,6 @@ void Scene::clearObjectSelection()
 {
 	m_objectSelection->clear();
 }
-
-//void Scene::update(ObjectHandler<Object3D> handler)
-//{
-//	m_updateQueue.push_back(handler.object());
-//}
-//
-//void Scene::draw(ObjectHandler<Model> handler)
-//{
-//	m_drawQueue.push_back(handler.object());
-//}
 
 bool Scene::setPostProcessShader(Shader* shader)
 {
