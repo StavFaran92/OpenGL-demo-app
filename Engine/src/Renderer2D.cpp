@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 
 #include "VertexArrayObject.h"
+#include "ICamera.h"
 
 void Renderer2D::draw(const VertexArrayObject& vao, Shader& shader) const
 {
@@ -30,4 +31,9 @@ glm::mat4 Renderer2D::getProjection() const
 
 void Renderer2D::render(Model* model, Shader* shader/* = nullptr*/)
 {
+}
+
+std::shared_ptr<ICamera> Renderer2D::getCamera() const
+{
+	return nullptr;
 }

@@ -3,6 +3,7 @@
 #include "IRenderer.h"
 
 class Model;
+class ICamera;
 
 class Renderer2D : public IRenderer
 {
@@ -17,5 +18,8 @@ public:
 
 	// Inherited via IRenderer
 	virtual void render(Model* model, Shader* shader = nullptr) override;
+
+	// Inherited via IRenderer
+	virtual std::shared_ptr<ICamera> getCamera() const override;
 };
 

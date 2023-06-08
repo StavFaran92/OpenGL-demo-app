@@ -40,7 +40,7 @@ public:
 	struct Params
 	{
 		const Scene* scene;
-		const entt::registry* registry;
+		entt::registry* registry;
 		const Context* context;
 		IRenderer* renderer;
 	};

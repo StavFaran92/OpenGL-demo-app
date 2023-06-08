@@ -10,6 +10,7 @@
 class Shader;
 class VertexArrayObject;
 class Model;
+class ICamera;
 
 class EngineAPI IRenderer {
 public:
@@ -27,6 +28,8 @@ public:
 	virtual void clear() const = 0;
 
 	virtual glm::mat4 getProjection() const = 0;
+	virtual std::shared_ptr<ICamera> getCamera() const = 0;
+
 	void SetDrawType(DrawType drawType);
 
 protected:

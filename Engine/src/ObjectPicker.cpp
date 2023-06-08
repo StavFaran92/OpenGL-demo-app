@@ -13,6 +13,7 @@
 #include "IRenderer.h"
 #include "ICamera.h"
 #include "PickingShader.h"
+#include "Model.h"
 
 #include "Logger.h"
 
@@ -49,63 +50,59 @@ bool ObjectPicker::init(int windowWidth, int windowHeight)
 
 ObjectPicker::ObjectPicker(Context* context, Scene* scene)
 {
-	//scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER, [=](const Scene::Params* params) {
-	//	// Picking Phase
-	//	if (scene->isObjectSelectionEnabled() && m_isPickingPhaseActive)
-	//	{
-	//		// Enable writing to picking frame buffer
-	//		enableWriting();
+	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER, [=](const Scene::Params* params) {
+		// Picking Phase
+		if (scene->isObjectSelectionEnabled() && m_isPickingPhaseActive)
+		{
+			// Enable writing to picking frame buffer
+			enableWriting();
 
-	//		// Set uniforms in picking shader
-	//		auto pickingShader = context->getPickingShader();
-	//		pickingShader->use();
-	//		pickingShader->setViewMatrix(params->renderer->getCamera()->getView());
-	//		pickingShader->setProjectionMatrix(params->renderer->getProjection());
+			// Set uniforms in picking shader
+			auto pickingShader = context->getPickingShader();
+			pickingShader->use();
+			pickingShader->setViewMatrix(params->renderer->getCamera()->getView());
+			pickingShader->setProjectionMatrix(params->renderer->getProjection());
 
-	//		// iterate models queue
-	//		for (unsigned int i = 0; i < m_drawQueue.size(); i++)
-	//		{
-	//			// Set Model related uniforms in picking shader  
-	//			auto model = m_drawQueue[i];
-	//			pickingShader->use();
-	//			pickingShader->setModelMatrix(model->getTransformation()->getMatrix());
-	//			pickingShader->setObjectIndex(model->getID() + 1);
-	//			pickingShader->release();
+			for (auto [entity, model] : params->registry->view<Model>().each())
+			{
+				pickingShader->use();
+				pickingShader->setModelMatrix(model.getTransformation()->getMatrix());
+				pickingShader->setObjectIndex(model.getID() + 1);
+				pickingShader->release();
 
-	//			// Draw model
-	//			params->renderer->render(model, pickingShader);
-	//			//model->draw(*m_renderer.get(), pickingShader);
-	//		}
+				// Draw model
+				params->renderer->render(&model, pickingShader);
+			}
 
-	//		// Release picking shader and stop writing to frame buffer
-	//		pickingShader->release();
-	//		disableWriting();
+			// Release picking shader and stop writing to frame buffer
+			pickingShader->release();
+			disableWriting();
 
-	//		// Get mouse X & Y
-	//		int x, y;
-	//		Engine::get()->getInput()->getMouse()->getMousePosition(x, y);
+			// Get mouse X & Y
+			int x, y;
+			Engine::get()->getInput()->getMouse()->getMousePosition(x, y);
 
-	//		// Pick object in scene according to X & Y
-	//		auto objectID = pickObject(x, y);
+			// Pick object in scene according to X & Y
+			auto objectID = pickObject(x, y);
 
 
 
-	//		// If object returned != -1 then an object has been picked (-1 means background)
-	//		if (objectID != -1)
-	//		{
-	//			auto obj = Engine::get()->getObjectManager()->getObjectById(objectID);
-	//			if (obj)
-	//			{
-	//				obj->pick();
-	//				obj->select();
+			// If object returned != -1 then an object has been picked (-1 means background)
+			if (objectID != -1)
+			{
+				auto obj = Engine::get()->getObjectManager()->getObjectById(objectID);
+				if (obj)
+				{
+					obj->pick();
+					obj->select();
 
-	//			}
-	//		}
+				}
+			}
 
-	//		// Turn picking phase flag off
-	//		m_isPickingPhaseActive = false;
-	//	}
-	//});
+			// Turn picking phase flag off
+			m_isPickingPhaseActive = false;
+		}
+	});
 
 	Engine::get()->getInput()->getMouse()->onMousePressed(Mouse::MouseButton::LeftMousebutton, [&](SDL_Event e) {
 		m_isPickingPhaseActive = true;
