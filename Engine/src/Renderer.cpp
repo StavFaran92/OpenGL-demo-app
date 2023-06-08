@@ -68,7 +68,7 @@ glm::mat4 Renderer::getProjection() const
 	return m_projection;
 }
 
-void Renderer::Clear() const
+void Renderer::clear() const
 {
 	// Clear window
 	//glClearStencil(0);

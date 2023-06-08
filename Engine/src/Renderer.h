@@ -20,9 +20,9 @@ public:
 
 	//Overrides
 	void draw(const VertexArrayObject& vao, Shader& shader) const override;
-	void render(Model* model, Shader* shader = nullptr);
+	void render(Model* model, Shader* shader = nullptr) override;
 	virtual void SetMVP(Shader& shader) const;
- 	void Clear() const override;
+ 	void clear() const override;
 	glm::mat4 getProjection() const override;
 
 	//Methods

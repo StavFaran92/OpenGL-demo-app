@@ -31,6 +31,7 @@ class ObjectPicker;
 class Transformation;
 class GpuInstancingRenderer;
 class Entity;
+class IRenderer;
 template<typename T> class ObjectHandler;
 
 class EngineAPI Scene
@@ -39,21 +40,25 @@ public:
 	struct Params
 	{
 		const Scene* scene;
+		const entt::registry* registry;
+		const Context* context;
+		IRenderer* renderer;
 	};
 
 	struct DrawQueuePreRenderParams : public Scene::Params
 	{
 		const Model* model;
-		const entt::registry* registry;
 	};
 
 	enum class RenderPhase
 	{
+		PRE_RENDER,
 		DRAW_QUEUE_PRE_RENDER,
 		DRAW_QUEUE_POST_RENDER,
+		POST_RENDER
 	};
 
-	using RenderCallback = std::function<void(const Params*)>;
+	using RenderCallback = std::function<void(const Scene::Params*)>;
 public:
 	// -------------------- Methods -------------------- //
 	Scene(Context* context);
@@ -74,9 +79,11 @@ public:
 	uint32_t getID() const { return m_id; }
 
 	bool isSelected(uint32_t id) const;
+	bool isObjectSelectionEnabled() const;
 	void enableObjectSelection(bool isEnabled);
 	void selectObject(uint32_t id);
 	void clearObjectSelection();
+	bool isPickingPhaseActive() const;
 
 	//void addGUI();
 
@@ -126,8 +133,8 @@ private:
 	Context* m_context = nullptr;
 
 	bool m_isPostProcessEnabled = false;
-	bool m_pickingPhaseActive = false;
-	bool m_isObjectSelectionEnabled = false;
+	//bool m_pickingPhaseActive = false;
+	//bool m_isObjectSelectionEnabled = false;
 
 	entt::registry m_registry;
 	std::map<RenderPhase, std::vector<RenderCallback>> m_renderCallbacks;

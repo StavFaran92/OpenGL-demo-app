@@ -36,9 +36,9 @@ void Scene::init(Context* context)
 	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
 	m_gpuInstancingRenderer = std::make_shared<GpuInstancingRenderer>();
 
-	m_objectSelection = std::make_shared<ObjectSelection>(this);
+	m_objectSelection = std::make_shared<ObjectSelection>(m_context, this);
 
-	m_objectPicker = std::make_shared<ObjectPicker>();
+	m_objectPicker = std::make_shared<ObjectPicker>(m_context, this);
 	if (!m_objectPicker->init(width, height))
 	{
 		logError("Object picker failed to init!");
@@ -54,16 +54,11 @@ void Scene::init(Context* context)
 
 	// Add default dir light
 	createEntity()->addComponent<DirectionalLight>();
-
-	Engine::get()->getInput()->getMouse()->onMousePressed(Mouse::MouseButton::LeftMousebutton, [&](SDL_Event e)
-	{
-		m_pickingPhaseActive = true;
-	});
 }
 
 void Scene::update(float deltaTime)
 {
-	m_renderer->Clear();
+	m_renderer->clear();
 
 	m_renderer->getCamera()->update(deltaTime);
 
@@ -90,62 +85,16 @@ void Scene::update(float deltaTime)
 
 void Scene::draw(float deltaTime)
 {
-
-	// Picking Phase
-	if (m_isObjectSelectionEnabled && m_pickingPhaseActive)
 	{
-		// Enable writing to picking frame buffer
-		m_objectPicker->enableWriting();
-
-		// Set uniforms in picking shader
-		auto pickingShader = m_context->getPickingShader();
-		pickingShader->use();
-		pickingShader->setViewMatrix(m_renderer->getCamera()->getView());
-		pickingShader->setProjectionMatrix(m_renderer->getProjection());
-
-		// iterate models queue
-		for (unsigned int i = 0; i < m_drawQueue.size(); i++)
+		Scene::Params params;
+		params.scene = this;
+		params.registry = &m_registry;
+		params.context = m_context;
+		params.renderer = m_renderer.get();
+		for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER])
 		{
-			// Set Model related uniforms in picking shader  
-			auto model = m_drawQueue[i];
-			pickingShader->use();
-			pickingShader->setModelMatrix(model->getTransformation()->getMatrix());
-			pickingShader->setObjectIndex(model->getID() + 1);
-			pickingShader->release();
-
-			// Draw model
-			m_renderer->render(model, pickingShader);
-			//model->draw(*m_renderer.get(), pickingShader);
+			cb(&params);
 		}
-
-		// Release picking shader and stop writing to frame buffer
-		pickingShader->release();
-		m_objectPicker->disableWriting();
-
-		// Get mouse X & Y
-		int x, y;
-		Engine::get()->getInput()->getMouse()->getMousePosition(x, y);
-
-		// Pick object in scene according to X & Y
-		auto objectID = m_objectPicker->pickObject(x, y);
-
-		// Clears previous object selection
-		m_objectSelection->clear();
-
-		// If object returned != -1 then an object has been picked (-1 means background)
-		if (objectID != -1)
-		{
-			auto obj = Engine::get()->getObjectManager()->getObjectById(objectID);
-			if (obj)
-			{
-				obj->pick();
-				obj->select();
-
-			}
-		}
-
-		// Turn picking phase flag off
-		m_pickingPhaseActive = false;
 	}
 
 	// Render Phase
@@ -183,17 +132,6 @@ void Scene::draw(float deltaTime)
 			shader->setViewPos(m_renderer->getCamera()->getPosition());
 			shader->release();
 		}
-
-		//auto phongShader = m_context->getStandardShader();
-		//phongShader->use();
-
-		//// If model is selected highlight it's color
-		//if (m_isObjectSelectionEnabled && isSelected(model.getID()))
-		//	phongShader->setColorMul({ 0.3f, 0.3f, 0.3f, 0.3f });
-		//else
-		//	phongShader->setColorMul({ 0.f, 0.f, 0.f, 0.f });
-
-		//phongShader->release();
 
 		// draw model
 		m_renderer->render(&model);
@@ -239,6 +177,18 @@ void Scene::draw(float deltaTime)
 			m_debugModelDeque.pop_front();
 
 			m_renderer->render(model, normalDisplayShader);
+		}
+	}
+
+	{
+		Scene::Params params;
+		params.scene = this;
+		params.registry = &m_registry;
+		params.context = m_context;
+		params.renderer = m_renderer.get();
+		for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER])
+		{
+			cb(&params);
 		}
 	}
 
@@ -332,20 +282,25 @@ void Scene::setPostProcess(bool value)
 	m_isPostProcessEnabled = value;
 }
 
-bool Scene::isSelected(uint32_t id) const
-{
-	if (!m_isObjectSelectionEnabled)
-	{
-		logWarning("Object selection isn't enabled for this scene.");
-		return false;
-	}
+//bool Scene::isSelected(uint32_t id) const
+//{
+//	if (!m_isObjectSelectionEnabled)
+//	{
+//		logWarning("Object selection isn't enabled for this scene.");
+//		return false;
+//	}
+//
+//	return m_objectSelection->isObjectSelected(id);
+//}
 
-	return m_objectSelection->isObjectSelected(id);
+bool Scene::isObjectSelectionEnabled() const
+{
+	return m_objectSelection->isEnabled();
 }
 
 void Scene::enableObjectSelection(bool isEnabled)
 {
-	m_isObjectSelectionEnabled = isEnabled;
+	m_objectSelection->enableObjectSelection(isEnabled);
 }
 
 void Scene::selectObject(uint32_t id)
@@ -381,4 +336,9 @@ void Scene::addCoroutine(const std::function<bool(float)>& coroutine)
 Skybox* Scene::getSkybox()
 {
 	return m_skybox;
+}
+
+bool Scene::isPickingPhaseActive() const
+{
+	return m_objectPicker->isPickingPhaseActive();
 }

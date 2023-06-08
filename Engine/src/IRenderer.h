@@ -9,6 +9,7 @@
 
 class Shader;
 class VertexArrayObject;
+class Model;
 
 class EngineAPI IRenderer {
 public:
@@ -20,8 +21,11 @@ public:
 	IRenderer() {
 		SetDrawType(DrawType::Triangles);
 	};
+
+	virtual void render(Model* model, Shader* shader = nullptr) = 0;
 	virtual void draw(const VertexArrayObject& vao, Shader& shader) const = 0;
-	virtual void Clear() const = 0;
+	virtual void clear() const = 0;
+
 	virtual glm::mat4 getProjection() const = 0;
 	void SetDrawType(DrawType drawType);
 
