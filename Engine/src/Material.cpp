@@ -93,3 +93,22 @@ void Material::SetTexturesInShader(Shader & shader)
 		shader.setValue(("material." + typeStr + count).c_str(), i);
 	}
 }
+
+void Material::setReflection(bool enable)
+{
+	m_isReflective = enable;
+}
+
+void Material::setRefraction(bool enable)
+{
+	m_isRefractive = enable;
+}
+
+bool Material::isReflective() const
+{
+	return m_isReflective;
+}
+bool Material::isRefractive() const
+{
+	return m_isRefractive;
+}

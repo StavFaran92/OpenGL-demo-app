@@ -62,7 +62,7 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 	auto context = Engine::get()->getContext();
 	if (context->getActiveScene()->getSkybox())
 	{
-		if (m_isReflective)
+		if (m_material->isReflective())
 		{
 			shaderToUse = context->GetReflectionShader();
 			shaderToUse->use();
@@ -76,7 +76,7 @@ void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 			textures[0]->bind();
 		}
 
-		if (m_isRefractive)
+		if (m_material->isRefractive())
 		{
 			shaderToUse = context->GetRefractiveShader();
 			shaderToUse->use();
@@ -157,16 +157,6 @@ bool Model::setMaterial(std::shared_ptr<Material> material)
 std::shared_ptr<Material> Model::getMaterial()
 {
 	return m_material;
-}
-
-void Model::setReflection(bool enable)
-{
-	m_isReflective = enable;
-}
-
-void Model::setRefraction(bool enable)
-{
-	m_isRefractive = enable;
 }
 
 MeshBuilder* Model::createMeshBuilder()
