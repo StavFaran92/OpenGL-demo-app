@@ -14,17 +14,17 @@ ObjectHandler<ScreenQuad> ScreenQuad::GenerateScreenQuad()
 	return ModelBuilder::builder<ScreenQuad>().build();
 }
 
-void ScreenQuad::draw(IRenderer& renderer, Shader* shader)
-{
-	Shader* currShader = (Shader*)m_shader.get();
-
-	if (shader)
-		currShader = shader;
-
-	renderer.SetDrawType(Renderer::DrawType::Triangles);
-
-	for (auto i = 0; i < m_meshes.size(); i++)
-	{
-		m_meshes[i]->render(*currShader, renderer);
-	}
-}
+//void ScreenQuad::draw(IRenderer& renderer, Shader* shader)
+//{
+//	Shader* currShader = (Shader*)m_shader.get();
+//
+//	if (shader)
+//		currShader = shader;
+//
+//	renderer.SetDrawType(Renderer::DrawType::Triangles);
+//
+//	for (auto i = 0; i < m_meshes.size(); i++)
+//	{
+//		m_meshes[i]->render(*currShader, renderer);
+//	}
+//}

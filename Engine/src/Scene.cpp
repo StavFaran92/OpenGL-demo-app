@@ -79,8 +79,8 @@ void Scene::update(float deltaTime)
 		model.update(deltaTime);
 	}
 
-	if (m_skybox)
-		m_skybox->update(deltaTime);
+	//if (m_skybox)
+	//	m_skybox->update(deltaTime);
 }
 
 void Scene::draw(float deltaTime)
@@ -160,12 +160,12 @@ void Scene::draw(float deltaTime)
 		m_gpuInstancingRenderer->render(batch);
 	}
 
-	// Draw skybox
-	if (m_skybox)
-	{
-		m_skybox->draw(*m_skyboxRenderer.get());
-		m_skybox = nullptr;
-	}
+	//// Draw skybox
+	//if (m_skybox)
+	//{
+	//	m_skybox->draw(*m_skyboxRenderer.get());
+	//	m_skybox = nullptr;
+	//}
 
 	if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
 	{
@@ -258,10 +258,10 @@ Scene::Scene(Context* context)
 	init(context);
 }
 
-void Scene::drawSkybox(ObjectHandler<Skybox> skybox)
-{
-	m_skybox = skybox.object();
-}
+//void Scene::drawSkybox(ObjectHandler<Skybox> skybox)
+//{
+//	m_skybox = skybox.object();
+//}
 
 std::shared_ptr<Renderer> Scene::getRenderer() const
 {
@@ -334,10 +334,10 @@ void Scene::addCoroutine(const std::function<bool(float)>& coroutine)
 //	m_coroutineManager->removeCoroutine(coroutine);
 //}
 
-Skybox* Scene::getSkybox()
-{
-	return m_skybox;
-}
+//Skybox* Scene::getSkybox()
+//{
+//	return m_skybox;
+//}
 
 bool Scene::isPickingPhaseActive() const
 {

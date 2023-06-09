@@ -65,7 +65,7 @@ public:
 	// -------------------- Methods -------------------- //
 	Scene(Context* context);
 
-	void drawSkybox(ObjectHandler<Skybox> skybox);
+	//void drawSkybox(ObjectHandler<Skybox> skybox);
 
 	void setPostProcess(bool value);
 	bool setPostProcessShader(Shader* shader);
@@ -127,7 +127,7 @@ private:
 
 	std::deque<Model*> m_drawQueue;
 	std::deque<Object3D*> m_updateQueue;
-	Skybox* m_skybox = nullptr;
+	//Skybox* m_skybox = nullptr;
 
 	std::deque<Model*> m_debugModelDeque;
 	std::deque<std::shared_ptr<InstanceBatch>> m_instanceBatchQueue;
