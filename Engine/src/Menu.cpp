@@ -7,6 +7,7 @@
 #include "ModelImporter.h"
 #include "ModelBuilder.h"
 #include "ObjectHandler.h"
+#include "ShapeFactory.h"
 #include "Entity.h"
 
 enum class PrimitiveType
@@ -410,28 +411,24 @@ void ShowPrimitiveCreatorWindow()
 
             //auto texture = Texture::loadTextureFromFile(texturePath.c_str(), flipTexture);
 
-            ObjectHandler<Model> modelHandler;
+            std::shared_ptr<Entity> entity;
             if (shape == PrimitiveType::Quad)
             {
-                modelHandler = ModelBuilder::builder<Quad>().build();
+                //entity = ModelBuilder::builder<Quad>().build();
             }
             else if (shape == PrimitiveType::Cube)
             {
-                modelHandler = ModelBuilder::builder<Box>().build();
+                entity = ShapeFactory::createBox();
             }
 
-            assert(modelHandler);
+            assert(entity);
 
-            if (modelHandler.isValid())
+            if (entity->valid())
             {
-                std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-                modelHandler.object()->setMaterial(material);
-                modelHandler.object()->getTransformation()->setPosition(pos);
-                modelHandler.object()->getTransformation()->setScale(scale);
+                entity->getComponent<Transformation>().setPosition(pos);
+                entity->getComponent<Transformation>().setScale(scale);
 
-                //Engine::get()->getContext()->getActiveScene()->addModel(model);
-
-                logInfo("Added Model successfully.");
+                logInfo("Added Entity successfully.");
             }
 
             showPrimitiveCreatorWindow = false;

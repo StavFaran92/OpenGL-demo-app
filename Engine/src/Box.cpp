@@ -69,7 +69,7 @@ static const unsigned int indices[] = {
     6, 7, 3
 };
 
-MeshBuilder* Box::createMeshBuilder()
+Mesh* Box::createMesh()
 {
     VertexLayout layout;
     layout.numOfVertices = 36;
@@ -77,6 +77,7 @@ MeshBuilder* Box::createMeshBuilder()
     layout.attribs.emplace_back(LayoutAttribute::Normals);
     layout.attribs.emplace_back(LayoutAttribute::Texcoords);
 
-    return &MeshBuilder::builder()
-        .setRawVertices((float*)vertices, layout);
+    return MeshBuilder::builder()
+        .setRawVertices((float*)vertices, layout)
+        .build();
 }
