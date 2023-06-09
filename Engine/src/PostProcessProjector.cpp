@@ -10,6 +10,29 @@
 #include "Logger.h"
 #include "TextureHandler.h"
 #include "ObjectHandler.h"
+#include "Scene.h"
+
+PostProcessProjector::PostProcessProjector(Scene* scene)
+{
+	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const Scene::Params* params) {
+
+		// Post process Enable writing
+		if (isEnabled())
+		{
+			enableWriting();
+		}
+	});
+
+	scene->addRenderCallback(Scene::RenderPhase::POST_RENDER_BEGIN, [=](const Scene::Params* params) {
+
+		// Post process Enable writing
+		if (isEnabled())
+		{
+			disableWriting();
+			draw();
+		}
+	});
+}
 
 bool PostProcessProjector::init(int windowWidth, int windowHeight)
 {
@@ -84,4 +107,14 @@ void PostProcessProjector::draw()
 void PostProcessProjector::setPostProcessShader(std::shared_ptr<Shader> shader)
 {
 	m_screenShader = shader;
+}
+
+bool PostProcessProjector::isEnabled() const
+{
+	return m_isEnabled;
+}
+
+void PostProcessProjector::setEnabled(bool enable)
+{
+	m_isEnabled = enable;
 }

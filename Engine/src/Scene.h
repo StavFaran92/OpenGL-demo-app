@@ -45,17 +45,19 @@ public:
 		IRenderer* renderer;
 	};
 
-	struct DrawQueuePreRenderParams : public Scene::Params
+	struct DrawQueueRenderParams : public Scene::Params
 	{
 		const Model* model;
 	};
 
 	enum class RenderPhase
 	{
-		PRE_RENDER,
+		PRE_RENDER_BEGIN,
+		PRE_RENDER_END,
 		DRAW_QUEUE_PRE_RENDER,
 		DRAW_QUEUE_POST_RENDER,
-		POST_RENDER
+		POST_RENDER_BEGIN,
+		POST_RENDER_END
 	};
 
 	using RenderCallback = std::function<void(const Scene::Params*)>;

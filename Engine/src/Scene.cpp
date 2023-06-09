@@ -44,7 +44,7 @@ void Scene::init(Context* context)
 		logError("Object picker failed to init!");
 	}
 
-	m_postProcessProjector = std::make_shared<PostProcessProjector>();
+	m_postProcessProjector = std::make_shared<PostProcessProjector>(this);
 	if (!m_postProcessProjector->init(width, height))
 	{
 		logError("Post process projector failed to init!");
@@ -85,25 +85,26 @@ void Scene::update(float deltaTime)
 
 void Scene::draw(float deltaTime)
 {
+	// PRE Render Phase
 	{
 		Scene::Params params;
 		params.scene = this;
 		params.registry = &m_registry;
 		params.context = m_context;
 		params.renderer = m_renderer.get();
-		for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER])
+
+		for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])
+		{
+			cb(&params);
+		}
+
+		for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_END])
 		{
 			cb(&params);
 		}
 	}
 
 	// Render Phase
-	// Post process Enable writing
-	if (m_isPostProcessEnabled && m_postProcessProjector)
-	{
-		m_postProcessProjector->enableWriting();
-	}
-
 	for (auto [entity, model] : m_registry.view<Model>().each())
 	{
 		// If in debug MODE -> put model in displayNormalsQueue
@@ -113,7 +114,7 @@ void Scene::draw(float deltaTime)
 		//}
 
 		{
-			DrawQueuePreRenderParams params;
+			DrawQueueRenderParams params;
 			params.scene = this;
 			params.model = &model;
 			params.registry = &m_registry;
@@ -137,7 +138,7 @@ void Scene::draw(float deltaTime)
 		m_renderer->render(&model);
 
 		{
-			DrawQueuePreRenderParams params;
+			DrawQueueRenderParams params;
 			params.scene = this;
 			params.model = &model;
 			params.registry = &m_registry;
@@ -148,6 +149,7 @@ void Scene::draw(float deltaTime)
 		}
 	};
 
+	// POST Render Phase
 	// Iterate GPU instancing batches
 	while (!m_instanceBatchQueue.empty())
 	{
@@ -186,7 +188,13 @@ void Scene::draw(float deltaTime)
 		params.registry = &m_registry;
 		params.context = m_context;
 		params.renderer = m_renderer.get();
-		for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER])
+
+		for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_BEGIN])
+		{
+			cb(&params);
+		}
+
+		for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_END])
 		{
 			cb(&params);
 		}

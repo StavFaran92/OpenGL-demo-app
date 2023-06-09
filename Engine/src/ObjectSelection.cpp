@@ -17,7 +17,7 @@
 ObjectSelection::ObjectSelection(Context* context, Scene* scene)
 	: m_isObjectSelectionEnabled(false)
 {
-	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER, [=](const Scene::Params* params) {
+	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const Scene::Params* params) {
 
 		if (isEnabled() && params->scene->isPickingPhaseActive())
 		{
@@ -28,7 +28,7 @@ ObjectSelection::ObjectSelection(Context* context, Scene* scene)
 
 	scene->addRenderCallback(Scene::RenderPhase::DRAW_QUEUE_PRE_RENDER, [=](const Scene::Params* params) {
 
-		auto drawQueueRenderParams = (Scene::DrawQueuePreRenderParams*)params;
+		auto drawQueueRenderParams = (Scene::DrawQueueRenderParams*)params;
 
 		auto phongShader = context->getStandardShader();
 		phongShader->use();
