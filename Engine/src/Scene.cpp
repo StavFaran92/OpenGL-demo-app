@@ -199,13 +199,6 @@ void Scene::draw(float deltaTime)
 			cb(&params);
 		}
 	}
-
-	// Post process disable writing and draw if required
-	if (m_isPostProcessEnabled && m_postProcessProjector)
-	{
-		m_postProcessProjector->disableWriting();
-		m_postProcessProjector->draw();
-	}
 }
 
 void Scene::drawMultiple(const InstanceBatch& batch)

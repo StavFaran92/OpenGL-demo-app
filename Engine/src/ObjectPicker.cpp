@@ -50,7 +50,7 @@ bool ObjectPicker::init(int windowWidth, int windowHeight)
 
 ObjectPicker::ObjectPicker(Context* context, Scene* scene)
 {
-	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER, [=](const Scene::Params* params) {
+	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const Scene::Params* params) {
 		// Picking Phase
 		if (scene->isObjectSelectionEnabled() && m_isPickingPhaseActive)
 		{
