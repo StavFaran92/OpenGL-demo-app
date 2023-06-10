@@ -6,12 +6,16 @@
 #include "Quad.h"
 #include "ModelBuilder.h"
 #include "ObjectHandler.h"
+#include "ShapeFactory.h"
+#include "Entity.h"
+#include "Scene.h"
+
 
 #include "Resources/Engine/Primitives/quad.h"
 
-ObjectHandler<ScreenQuad> ScreenQuad::GenerateScreenQuad()
+std::shared_ptr<Entity> ScreenQuad::GenerateScreenQuad(Scene* scene)
 {
-	return ModelBuilder::builder<ScreenQuad>().build();
+	return ShapeFactory::createPlane(scene);
 }
 
 //void ScreenQuad::draw(IRenderer& renderer, Shader* shader)

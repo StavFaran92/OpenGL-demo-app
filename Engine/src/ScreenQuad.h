@@ -2,11 +2,12 @@
 
 #include "Quad.h"
 
-template<typename T> class ObjectHandler;
+class Entity;
+class Scene;
 
 class ScreenQuad
 {
 public:
-	static ObjectHandler<ScreenQuad> GenerateScreenQuad();
+	static std::shared_ptr<Entity> GenerateScreenQuad(Scene* scene);
 };
 

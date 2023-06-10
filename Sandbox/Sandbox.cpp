@@ -1,5 +1,6 @@
 #include "EntryPoint.h"
 #include "sge.h"
+#include "ShapeFactory.h"
 
 float colors[108] = {
 	//Red
@@ -59,7 +60,7 @@ public:
 
 
 	ObjectHandler<Model> guitar;
-	ObjectHandler<Box> box;
+	//ObjectHandler<Box> box;
 	Sphere* sphere1;
 	Sphere* sphere2;
 	ObjectHandler<Skybox> skybox;
@@ -72,10 +73,9 @@ public:
 
 	void start() override
 	{
-		skybox = Skybox::CreateSkybox();
+		//skybox = Skybox::CreateSkybox();
 
-		box = ModelBuilder::builder<Box>()
-			.build();
+		auto box = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 
 		//auto importer = getContext()->getModelImporter();
 		//guitar = importer->loadModelFromFile("D:\\program files\\downloads\\backpack\\backpack.obj");
@@ -83,16 +83,16 @@ public:
 		//transformations.push_back(&trans1);
 		//transformations.push_back(&trans2);
 
-		const int gridLength = 100;
+		//const int gridLength = 100;
 
-		for (int i = 0; i < gridLength; i++)
-		{
-			for (int j = 0; j < gridLength; j++)
-			{
-				Transformation trans({(i - gridLength / 2) * 2, 0, (j - gridLength / 2) * 2});
-				transformations.push_back(trans);
-			}
-		}
+		//for (int i = 0; i < gridLength; i++)
+		//{
+		//	for (int j = 0; j < gridLength; j++)
+		//	{
+		//		Transformation trans({(i - gridLength / 2) * 2, 0, (j - gridLength / 2) * 2});
+		//		transformations.push_back(trans);
+		//	}
+		//}
 
 		
 
@@ -131,13 +131,13 @@ public:
 		//	sphere1->rotate({ 0,0,1 }, 1);
 		//}
 
-		getContext()->getActiveScene()->drawMultiple({box, transformations});
+		//getContext()->getActiveScene()->drawMultiple({box, transformations});
 
-		//draw(box);
-		//draw(guitar);
-		//draw(sphere1);
-		//draw(sphere2);
-		getContext()->getActiveScene()->drawSkybox(skybox);
+		////draw(box);
+		////draw(guitar);
+		////draw(sphere1);
+		////draw(sphere2);
+		//getContext()->getActiveScene()->drawSkybox(skybox);
 
 	}
 

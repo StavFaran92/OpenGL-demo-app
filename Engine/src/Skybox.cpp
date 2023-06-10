@@ -11,11 +11,12 @@
 #include "ObjectHandler.h"
 #include "StandardShader.h"
 #include "ShapeFactory.h"
+#include "SkyboxRenderer.h"
 
 #include "EditorCamera.h"
 #include "Resources/Engine/Primitives/cube.h"
 
-std::shared_ptr<Entity> Skybox::CreateSkybox()
+std::shared_ptr<Entity> Skybox::CreateSkybox(Scene* scene)
 {
     auto shader = Shader::create<StandardShader>("Resources/Engine/Shaders/SkyboxShader.vert", "Resources/Engine/Shaders/SkyboxShader.frag");
 
@@ -30,7 +31,7 @@ std::shared_ptr<Entity> Skybox::CreateSkybox()
     };
     auto textureHandler = Texture::loadCubemapTexture(faces);
 
-    auto entity = ShapeFactory::createBox();
+    auto entity = ShapeFactory::createBox(scene);
 
     entity->addComponent<StandardShader>(shader);
     entity->addComponent<TextureHandler>(textureHandler);

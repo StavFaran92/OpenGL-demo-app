@@ -418,7 +418,7 @@ void ShowPrimitiveCreatorWindow()
             }
             else if (shape == PrimitiveType::Cube)
             {
-                entity = ShapeFactory::createBox();
+                entity = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
             }
 
             assert(entity);

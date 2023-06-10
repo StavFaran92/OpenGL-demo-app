@@ -40,75 +40,75 @@ Model::~Model()
 
 void Model::draw(IRenderer& renderer, Shader* shader /* = nullptr*/)
 {
-	Shader* shaderToUse = nullptr;
+	//Shader* shaderToUse = nullptr;
 
-	if (shader)
-	{
-		shaderToUse = shader;
-	}
-	else if (m_shader)
-	{
-		shaderToUse = m_shader.get();
-	}
-	else
-	{
-		shaderToUse = Engine::get()->getContext()->getStandardShader();
-	}
+	//if (shader)
+	//{
+	//	shaderToUse = shader;
+	//}
+	//else if (m_shader)
+	//{
+	//	shaderToUse = m_shader.get();
+	//}
+	//else
+	//{
+	//	shaderToUse = Engine::get()->getContext()->getStandardShader();
+	//}
 
-	assert(shaderToUse);
+	//assert(shaderToUse);
 
-	shaderToUse->use();
+	//shaderToUse->use();
 
-	auto context = Engine::get()->getContext();
-	if (context->getActiveScene()->getSkybox())
-	{
-		if (m_material->isReflective())
-		{
-			shaderToUse = context->GetReflectionShader();
-			shaderToUse->use();
-			shaderToUse->setValue("skybox", 0);
-			auto textures = context->getActiveScene()->getSkybox()->getTextureHandlers();
-			if (textures.size() <= 0)
-			{
-				logError("Skybox does not contain cubemap texture.");
-				return;
-			}
-			textures[0]->bind();
-		}
+	//auto context = Engine::get()->getContext();
+	//if (context->getActiveScene()->getSkybox())
+	//{
+	//	if (m_material->isReflective())
+	//	{
+	//		shaderToUse = context->GetReflectionShader();
+	//		shaderToUse->use();
+	//		shaderToUse->setValue("skybox", 0);
+	//		auto textures = context->getActiveScene()->getSkybox()->getTextureHandlers();
+	//		if (textures.size() <= 0)
+	//		{
+	//			logError("Skybox does not contain cubemap texture.");
+	//			return;
+	//		}
+	//		textures[0]->bind();
+	//	}
 
-		if (m_material->isRefractive())
-		{
-			shaderToUse = context->GetRefractiveShader();
-			shaderToUse->use();
-			shaderToUse->setValue("skybox", 0);
-			shaderToUse->setValue("refractiveRatio", 1 / 1.52f);
-			auto textures = context->getActiveScene()->getSkybox()->getTextureHandlers();
-			if (textures.size() <= 0)
-			{
-				logError("Skybox does not contain cubemap texture.");
-				return;
-			}
-			textures[0]->bind();
-		}
-	}
+	//	if (m_material->isRefractive())
+	//	{
+	//		shaderToUse = context->GetRefractiveShader();
+	//		shaderToUse->use();
+	//		shaderToUse->setValue("skybox", 0);
+	//		shaderToUse->setValue("refractiveRatio", 1 / 1.52f);
+	//		auto textures = context->getActiveScene()->getSkybox()->getTextureHandlers();
+	//		if (textures.size() <= 0)
+	//		{
+	//			logError("Skybox does not contain cubemap texture.");
+	//			return;
+	//		}
+	//		textures[0]->bind();
+	//	}
+	//}
 
-	shaderToUse->setModelMatrix(m_transformation->getMatrix());
-	auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
-	shaderToUse->setTime(elapsed);
+	//shaderToUse->setModelMatrix(m_transformation->getMatrix());
+	//auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
+	//shaderToUse->setTime(elapsed);
 
-	if (shaderToUse->IsMaterialsEnabled() && m_material)
-	{
-		m_material->UseMaterial(*shaderToUse);
-	}
+	//if (shaderToUse->IsMaterialsEnabled() && m_material)
+	//{
+	//	m_material->UseMaterial(*shaderToUse);
+	//}
 
-	renderer.SetDrawType(Renderer::DrawType::Triangles);
+	//renderer.SetDrawType(Renderer::DrawType::Triangles);
 
-	for (auto i = 0; i < m_meshes.size(); i++)
-	{
-		m_meshes[i]->render(*shaderToUse, renderer);
-	}
+	//for (auto i = 0; i < m_meshes.size(); i++)
+	//{
+	//	m_meshes[i]->render(*shaderToUse, renderer);
+	//}
 
-	shaderToUse->release();
+	//shaderToUse->release();
 }
 
 bool Model::attachShader(std::shared_ptr<StandardShader> shader)

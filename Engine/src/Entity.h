@@ -81,7 +81,7 @@ public:
     bool HasComponent()
     {
         assert(valid() && "Invalid entity.");
-        return m_scene->getRegistry().has<T>(m_entity);
+        return m_scene->getRegistry().any_of<T>(m_entity);
     }
 
     /**

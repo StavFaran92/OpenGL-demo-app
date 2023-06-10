@@ -24,6 +24,8 @@
 #include "InstanceBatch.h"
 #include "StandardShader.h"
 #include "Entity.h"
+#include "Transformation.h"
+#include "Mesh.h"
 
 void Scene::init(Context* context)
 {
@@ -105,7 +107,7 @@ void Scene::draw(float deltaTime)
 	}
 
 	// Render Phase
-	for (auto [entity, model] : m_registry.view<Model>().each())
+	for (auto [entity, mesh, transform] : m_registry.group<Mesh, Transformation>().each())
 	{
 		// If in debug MODE -> put model in displayNormalsQueue
 		//if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
@@ -116,7 +118,8 @@ void Scene::draw(float deltaTime)
 		{
 			DrawQueueRenderParams params;
 			params.scene = this;
-			params.model = &model;
+			params.mesh = &mesh;
+			params.transformation = &transform;
 			params.registry = &m_registry;
 			for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_PRE_RENDER])
 			{
@@ -124,7 +127,7 @@ void Scene::draw(float deltaTime)
 			}
 		}
 
-		auto shader = model.getShader();
+		auto shader = m_registry.try_get<StandardShader>(entity);
 		if (shader)
 		{
 			shader->use();
@@ -135,12 +138,14 @@ void Scene::draw(float deltaTime)
 		}
 
 		// draw model
-		m_renderer->render(&model);
+		Entity entityhandler{ entity, this };
+		m_renderer->render(&entityhandler, &mesh, &transform);
 
 		{
 			DrawQueueRenderParams params;
 			params.scene = this;
-			params.model = &model;
+			params.mesh = &mesh;
+			params.transformation = &transform;
 			params.registry = &m_registry;
 			for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_POST_RENDER])
 			{
@@ -167,20 +172,20 @@ void Scene::draw(float deltaTime)
 	//	m_skybox = nullptr;
 	//}
 
-	if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
-	{
-		// Use normal display shader
-		auto normalDisplayShader = m_context->getNormalDisplayShader();
+	//if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
+	//{
+	//	// Use normal display shader
+	//	auto normalDisplayShader = m_context->getNormalDisplayShader();
 
-		// draw scene
-		while (!m_debugModelDeque.empty())
-		{
-			auto model = m_debugModelDeque.front();
-			m_debugModelDeque.pop_front();
+	//	// draw scene
+	//	while (!m_debugModelDeque.empty())
+	//	{
+	//		auto model = m_debugModelDeque.front();
+	//		m_debugModelDeque.pop_front();
 
-			m_renderer->render(model, normalDisplayShader);
-		}
-	}
+	//		m_renderer->render(model, normalDisplayShader);
+	//	}
+	//}
 
 	{
 		Scene::Params params;

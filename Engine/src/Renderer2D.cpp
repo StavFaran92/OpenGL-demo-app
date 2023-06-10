@@ -29,11 +29,15 @@ glm::mat4 Renderer2D::getProjection() const
 	return glm::mat4(1);
 }
 
-void Renderer2D::render(Model* model, Shader* shader/* = nullptr*/)
-{
-}
+//void Renderer2D::render(Model* model, Shader* shader/* = nullptr*/)
+//{
+//}
 
 std::shared_ptr<ICamera> Renderer2D::getCamera() const
 {
 	return nullptr;
+}
+
+void Renderer2D::render(Entity* entity, Mesh* mesh, Transformation* transform, Shader* shader/* = nullptr*/)
+{
 }

@@ -32,6 +32,8 @@ class Transformation;
 class GpuInstancingRenderer;
 class Entity;
 class IRenderer;
+class Mesh;
+class Transformation;
 template<typename T> class ObjectHandler;
 
 class EngineAPI Scene
@@ -47,7 +49,8 @@ public:
 
 	struct DrawQueueRenderParams : public Scene::Params
 	{
-		const Model* model;
+		const Mesh* mesh;
+		const Transformation* transformation;
 	};
 
 	enum class RenderPhase

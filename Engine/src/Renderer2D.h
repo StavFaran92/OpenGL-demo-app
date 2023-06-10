@@ -17,9 +17,12 @@ public:
 	glm::mat4 getProjection() const override;
 
 	// Inherited via IRenderer
-	virtual void render(Model* model, Shader* shader = nullptr) override;
+	//virtual void render(Model* model, Shader* shader = nullptr) override;
 
 	// Inherited via IRenderer
 	virtual std::shared_ptr<ICamera> getCamera() const override;
+
+	// Inherited via IRenderer
+	virtual void render(Entity* entity, Mesh* mesh, Transformation* transform, Shader* shader = nullptr) override;
 };
 

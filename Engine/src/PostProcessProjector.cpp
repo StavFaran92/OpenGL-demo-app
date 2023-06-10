@@ -11,9 +11,12 @@
 #include "TextureHandler.h"
 #include "ObjectHandler.h"
 #include "Scene.h"
+#include "Entity.h"
 
 PostProcessProjector::PostProcessProjector(Scene* scene)
 {
+	m_scene = scene;
+
 	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const Scene::Params* params) {
 
 		// Post process Enable writing
@@ -63,7 +66,7 @@ bool PostProcessProjector::init(int windowWidth, int windowHeight)
 	m_frameBuffer->unbind();
 
 	// Generate screen quad
-	m_quad = ScreenQuad::GenerateScreenQuad();
+	m_quad = ScreenQuad::GenerateScreenQuad(m_scene);
 	
 	// Generate screen shader
 	m_screenShader = Shader::createShared<Shader>("Resources/Engine/Shaders/PostProcess/PostProcessShader_default.vert", "Resources/Engine/Shaders/PostProcess/PostProcessShader_default.frag");
@@ -99,7 +102,7 @@ void PostProcessProjector::draw()
 
 	m_textureHandler->bind();
 
-	m_quad.object()->draw(*m_renderer.get(), m_screenShader.get());
+	m_quad->getComponent<Model>().draw(*m_renderer.get(), m_screenShader.get());
 
 	m_textureHandler->unbind();
 }
