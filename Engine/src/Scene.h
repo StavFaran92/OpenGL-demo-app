@@ -137,7 +137,7 @@ private:
 
 	Context* m_context = nullptr;
 
-	bool m_isPostProcessEnabled = false;
+	//bool m_isPostProcessEnabled = false;
 	//bool m_pickingPhaseActive = false;
 	//bool m_isObjectSelectionEnabled = false;
 

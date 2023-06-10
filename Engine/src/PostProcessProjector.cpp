@@ -26,7 +26,7 @@ PostProcessProjector::PostProcessProjector(Scene* scene)
 		}
 	});
 
-	scene->addRenderCallback(Scene::RenderPhase::POST_RENDER_BEGIN, [=](const Scene::Params* params) {
+	scene->addRenderCallback(Scene::RenderPhase::POST_RENDER_END, [=](const Scene::Params* params) {
 
 		// Post process Enable writing
 		if (isEnabled())
@@ -102,7 +102,11 @@ void PostProcessProjector::draw()
 
 	m_textureHandler->bind();
 
-	m_quad->getComponent<Model>().draw(*m_renderer.get(), m_screenShader.get());
+	m_renderer->SetDrawType(Renderer::DrawType::Triangles);
+
+	auto& mesh = m_quad->getComponent<Mesh>();
+
+	mesh.render(*m_screenShader, *m_renderer);
 
 	m_textureHandler->unbind();
 }

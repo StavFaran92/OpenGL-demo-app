@@ -51,6 +51,7 @@ void Scene::init(Context* context)
 	{
 		logError("Post process projector failed to init!");
 	}
+	m_postProcessProjector->setEnabled(true);
 
 	m_coroutineManager = std::make_shared<CoroutineSystem>();
 
@@ -285,7 +286,7 @@ void Scene::close()
 
 void Scene::setPostProcess(bool value)
 {
-	m_isPostProcessEnabled = value;
+	m_postProcessProjector->setEnabled(value);
 }
 
 //bool Scene::isSelected(uint32_t id) const
