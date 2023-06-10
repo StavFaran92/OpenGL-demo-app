@@ -10,12 +10,15 @@
 #include "Sphere.h"
 #include "Scene.h"
 #include "Transformation.h"
+#include "StandardShader.h"
 
 std::shared_ptr<Entity> ShapeFactory::createEntity(Scene* scene)
 {
 	auto entity = scene->createEntity();
 	entity->addComponent<Material>(32.0f);
 	entity->addComponent<Transformation>();
+	auto shader = Shader::create<StandardShader>();
+	entity->addComponent<StandardShader>(shader);
 	return entity;
 }
 

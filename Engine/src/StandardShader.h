@@ -11,6 +11,7 @@ class PointLight;
 class EngineAPI StandardShader : public Shader
 {
 public:
+	StandardShader() : StandardShader("Resources/Engine/Shaders/shader.vert", "Resources/Engine/Shaders/shader.frag") {};
 	StandardShader(const std::string& vertexfilePath, const std::string& fragmentFilePath, const std::string& geometryShader = "");
 
 	void setDirLightCount(int count);

@@ -22,7 +22,7 @@ Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFil
 {}
 
 Shader::Shader(const Shader& other) :
-	m_id(0),
+	m_id(other.m_id),
 	m_vertexShaderFilepath(other.m_vertexShaderFilepath),
 	m_FragmentShaderFilepath(other.m_FragmentShaderFilepath),
 	m_geometryShaderFilepath(other.m_geometryShaderFilepath)
