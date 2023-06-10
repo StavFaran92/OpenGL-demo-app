@@ -4,7 +4,7 @@
 #include "Context.h"
 #include "Mesh.h"
 #include "Entity.h"
-#include "Material.h"
+#include "DefaultMaterial.h"
 #include "Box.h"
 #include "Quad.h"
 #include "Sphere.h"
@@ -15,7 +15,7 @@
 std::shared_ptr<Entity> ShapeFactory::createEntity(Scene* scene)
 {
 	auto entity = scene->createEntity();
-	entity->addComponent<Material>(32.0f);
+	entity->addComponent<DefaultMaterial>(32.0f);
 	entity->addComponent<Transformation>();
 	auto shader = Shader::create<StandardShader>();
 	entity->addComponent<StandardShader>(shader);

@@ -20,6 +20,7 @@
 #include "Skybox.h"
 #include "Transformation.h"
 #include "Material.h"
+#include "DefaultMaterial.h"
 #include "StandardShader.h"
 
 
@@ -144,9 +145,9 @@ void Renderer::render(Entity* entity, Mesh* mesh, Transformation* transform, Sha
     auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
     shaderToUse->setTime(elapsed);
 
-    if (shaderToUse->IsMaterialsEnabled() && entity->HasComponent<Material>())
+    if (shaderToUse->IsMaterialsEnabled() && entity->HasComponent<DefaultMaterial>())
     {
-        auto mat = entity->getComponent<Material>();
+        auto mat = entity->getComponent<DefaultMaterial>();
         mat.UseMaterial(*shaderToUse);
     }
 

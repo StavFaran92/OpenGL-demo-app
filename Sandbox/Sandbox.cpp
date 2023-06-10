@@ -75,7 +75,7 @@ public:
 	{
 		//skybox = Skybox::CreateSkybox();
 
-		//auto box = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+		auto box = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 
 		//auto importer = getContext()->getModelImporter();
 		//guitar = importer->loadModelFromFile("D:\\program files\\downloads\\backpack\\backpack.obj");
