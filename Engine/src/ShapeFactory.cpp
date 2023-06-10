@@ -11,6 +11,7 @@
 #include "Scene.h"
 #include "Transformation.h"
 #include "StandardShader.h"
+#include "RenderableComponent.h"
 
 std::shared_ptr<Entity> ShapeFactory::createEntity(Scene* scene)
 {
@@ -19,6 +20,7 @@ std::shared_ptr<Entity> ShapeFactory::createEntity(Scene* scene)
 	entity->addComponent<Transformation>();
 	auto shader = Shader::create<StandardShader>();
 	entity->addComponent<StandardShader>(shader);
+	entity->addComponent<RenderableComponent>();
 	return entity;
 }
 

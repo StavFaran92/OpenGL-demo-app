@@ -169,6 +169,7 @@
     <ClCompile Include="src\Entity.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\RenderableComponent.h" />
     <ClInclude Include="src\ShaderExtender.h" />
     <ClInclude Include="src\InstanceBatch.h" />
     <ClInclude Include="src\GpuInstancingRenderer.h" />

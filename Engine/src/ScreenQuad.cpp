@@ -10,12 +10,16 @@
 #include "Entity.h"
 #include "Scene.h"
 
+#include "RenderableComponent.h"
+
 
 #include "Resources/Engine/Primitives/quad.h"
 
 std::shared_ptr<Entity> ScreenQuad::GenerateScreenQuad(Scene* scene)
 {
-	return ShapeFactory::createPlane(scene);
+	auto entity = ShapeFactory::createPlane(scene);
+	entity->RemoveComponent<RenderableComponent>();
+	return entity;
 }
 
 //void ScreenQuad::draw(IRenderer& renderer, Shader* shader)

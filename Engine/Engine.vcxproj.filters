@@ -425,6 +425,7 @@
     <ClInclude Include="src\DefaultMaterial.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\ShapeFactory.h" />
+    <ClInclude Include="src\RenderableComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

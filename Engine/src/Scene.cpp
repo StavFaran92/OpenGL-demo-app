@@ -26,6 +26,7 @@
 #include "Entity.h"
 #include "Transformation.h"
 #include "Mesh.h"
+#include "RenderableComponent.h"
 
 void Scene::init(Context* context)
 {
@@ -108,7 +109,7 @@ void Scene::draw(float deltaTime)
 	}
 
 	// Render Phase
-	for (auto [entity, mesh, transform] : m_registry.group<Mesh, Transformation>().each())
+	for (auto [entity, mesh, transform, renderable] : m_registry.group<Mesh, Transformation, RenderableComponent>().each())
 	{
 		// If in debug MODE -> put model in displayNormalsQueue
 		//if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
