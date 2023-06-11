@@ -74,15 +74,16 @@ public:
 
 	void start() override
 	{
-		auto box1 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
-		auto box2 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+		// If i remove this the skybox works
+		//auto box1 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+		//auto box2 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 
-		box1->getComponent<Transformation>().translate({1, 0,0});
-		auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
+		//box1->getComponent<Transformation>().translate({1, 0,0});
+		//auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
 
 
-		//auto importer = getContext()->getModelImporter();
-		//auto guitar = importer->loadModelFromFile("D:\\program files\\downloads\\backpack\\backpack.obj");
+		auto importer = getContext()->getModelImporter();
+		auto guitar = importer->loadModelFromFile("D:/program files/downloads/backpack/backpack.obj");
 
 		//transformations.push_back(&trans1);
 		//transformations.push_back(&trans2);
@@ -98,7 +99,7 @@ public:
 			}
 		}
 
-		//box->addComponent<InstanceBatch>( transformations );
+		//box1->addComponent<InstanceBatch>( transformations );
 
 		//sphere1 = (Sphere*)ModelBuilder::builder<Sphere>(1, 36, 18)
 		//	.build();

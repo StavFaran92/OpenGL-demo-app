@@ -165,8 +165,7 @@ void Scene::draw(float deltaTime)
 	}
 
 	// For some reason this group destroys the entities
-	for (auto&& [entity, skybox, mesh, transform, mat, shader] :
-		m_registry.group<SkyboxComponent, Mesh, Transformation, DefaultMaterial, StandardShader>().each())
+	for (auto&& [entity, skybox, mesh, transform, mat, shader] : m_registry.view<SkyboxComponent, Mesh, Transformation, DefaultMaterial, StandardShader>().each())
 	{
 		Entity entityhandler{ entity, this };
 		m_skyboxRenderer->render(&entityhandler, &mesh, &transform, &mat, &shader);
@@ -239,6 +238,7 @@ std::shared_ptr<Entity> Scene::createEntity()
 {
 	entt::entity e = m_registry.create();
 	auto entityHandler = std::make_shared<Entity>(e, this);
+	entityHandler->addComponent<Transformation>();
 	return entityHandler;
 }
 

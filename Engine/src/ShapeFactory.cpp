@@ -18,7 +18,6 @@ std::shared_ptr<Entity> ShapeFactory::createEntity(Scene* scene)
 {
 	auto entity = scene->createEntity();
 	entity->addComponent<DefaultMaterial>(32.0f);
-	entity->addComponent<Transformation>();
 	auto shader = Shader::create<StandardShader>();
 	entity->addComponent<StandardShader>(shader);
 	entity->addComponent<RenderableComponent>();

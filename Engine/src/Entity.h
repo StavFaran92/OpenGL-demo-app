@@ -15,7 +15,7 @@ class EngineAPI Entity
 {
 public:
     /// Default constructor
-    //Entity() = delete;
+    Entity() = default;
 
     /**
      * @brief Constructs an entity belonging to a scene
@@ -123,15 +123,16 @@ public:
         return m_scene != nullptr && m_entity != entt::null && m_scene->getRegistry().valid(m_entity);
     }
 
-private:
     inline entt::entity handler() const
     {
         return m_entity;
     }
 
+    inline uint32_t handlerID() const
+    {
+        return (uint32_t)m_entity;
+    }
 
-
-    friend class Scene;
 private:
     Scene* m_scene = nullptr;  ///< Scene the entity belongs to
     entt::entity m_entity{ entt::null };  ///< ENTT entity instance
