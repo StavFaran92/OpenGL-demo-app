@@ -5,31 +5,18 @@
 
 #include "Core.h"
 
-#include "ObjectHandler.h"
+#include "Transformation.h"
+//#include "Components.h"
 
-class Model;
-class Transformation;
-
-class EngineAPI InstanceBatch
+class EngineAPI InstanceBatch// : public Component
 {
 public:
 	/** Constructor */
-	InstanceBatch(ObjectHandler<Model> modelHandler, std::vector<Transformation> transformations);
+	InstanceBatch(std::vector<Transformation>& transformations);
 
-	/** Copy Constructor */
-	InstanceBatch(const InstanceBatch& other);
-
-	/** Move Constructor */
-	InstanceBatch& operator=(InstanceBatch& other);
-
-	const glm::mat4* getTransformations() const;
-	ObjectHandler<Model> getModelHandler() const;
+	const glm::mat4* getMatrices() const;
 	size_t getAmount() const;
-
-	/** Destructor */
-	~InstanceBatch();
 private:
-	ObjectHandler<Model> m_modelHandler;
 	std::shared_ptr<glm::mat4[]> m_transformationMatrices;
 	int m_amount = 0;
 };

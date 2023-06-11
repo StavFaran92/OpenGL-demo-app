@@ -27,6 +27,9 @@
 #include "Transformation.h"
 #include "Mesh.h"
 #include "RenderableComponent.h"
+//#include "Components.h"
+#include "Model.h"
+#include "InstanceBatch.h"
 
 void Scene::init(Context* context)
 {
@@ -109,7 +112,7 @@ void Scene::draw(float deltaTime)
 	}
 
 	// Render Phase
-	for (auto [entity, mesh, transform, renderable] : m_registry.group<Mesh, Transformation, RenderableComponent>().each())
+	for (auto [entity, mesh, transform, renderable] : m_registry.group<Mesh, Transformation, Renderable>().each())
 	{
 		// If in debug MODE -> put model in displayNormalsQueue
 		//if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
@@ -158,13 +161,11 @@ void Scene::draw(float deltaTime)
 
 	// POST Render Phase
 	// Iterate GPU instancing batches
-	while (!m_instanceBatchQueue.empty())
+	for (auto [entity, mesh, instanceBatch] : m_registry.group<Mesh, InstanceBatch>().each())
 	{
-		auto batch = m_instanceBatchQueue.front();
-		m_instanceBatchQueue.pop_front();
-
 		// draw model
-		m_gpuInstancingRenderer->render(batch);
+		Entity entityhandler{ entity, this };
+		m_gpuInstancingRenderer->render(&entityhandler, &mesh, &instanceBatch);
 	}
 
 	//// Draw skybox
@@ -208,10 +209,10 @@ void Scene::draw(float deltaTime)
 	}
 }
 
-void Scene::drawMultiple(const InstanceBatch& batch)
-{
-	m_instanceBatchQueue.push_back(std::make_shared<InstanceBatch>(batch));
-}
+//void Scene::drawMultiple(const InstanceBatch& batch)
+//{
+//	m_instanceBatchQueue.push_back(std::make_shared<InstanceBatch>(batch));
+//}
 
 Scene::RenderCallback* Scene::addRenderCallback(RenderPhase renderPhase, RenderCallback renderCallback)
 {

@@ -78,23 +78,23 @@ public:
 		auto box = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 
 		//auto importer = getContext()->getModelImporter();
-		//guitar = importer->loadModelFromFile("D:\\program files\\downloads\\backpack\\backpack.obj");
+		//auto guitar = importer->loadModelFromFile("D:\\program files\\downloads\\backpack\\backpack.obj");
 
 		//transformations.push_back(&trans1);
 		//transformations.push_back(&trans2);
 
-		//const int gridLength = 100;
+		const int gridLength = 100;
 
-		//for (int i = 0; i < gridLength; i++)
-		//{
-		//	for (int j = 0; j < gridLength; j++)
-		//	{
-		//		Transformation trans({(i - gridLength / 2) * 2, 0, (j - gridLength / 2) * 2});
-		//		transformations.push_back(trans);
-		//	}
-		//}
+		for (int i = 0; i < gridLength; i++)
+		{
+			for (int j = 0; j < gridLength; j++)
+			{
+				Transformation trans({(i - gridLength / 2) * 2, 0, (j - gridLength / 2) * 2});
+				transformations.push_back(trans);
+			}
+		}
 
-		
+		box->addComponent<InstanceBatch> (transformations );
 
 		//sphere1 = (Sphere*)ModelBuilder::builder<Sphere>(1, 36, 18)
 		//	.build();

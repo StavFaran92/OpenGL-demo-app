@@ -13,14 +13,14 @@ GpuInstancingRenderer::GpuInstancingRenderer()
 	glGenBuffers(1, &buffer);
 }
 
-void GpuInstancingRenderer::render(const std::shared_ptr<InstanceBatch>& batch, Shader* shader)
+void GpuInstancingRenderer::render(Entity* entity, Mesh* mesh, InstanceBatch* batch, Shader* shader)
 {
 	m_amount = batch->getAmount();
 
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, m_amount * sizeof(glm::mat4), &batch->getTransformations()[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_amount * sizeof(glm::mat4), &batch->getMatrices()[0], GL_STATIC_DRAW);
 
-	batch->getModelHandler().object()->draw(*this, shader);
+	Renderer::render(entity, mesh, nullptr, shader);
 }
 
 void GpuInstancingRenderer::draw(const VertexArrayObject& vao, Shader& shader) const

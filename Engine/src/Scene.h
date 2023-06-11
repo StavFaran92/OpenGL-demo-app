@@ -9,8 +9,8 @@
 #include <functional>
 
 #include "Core.h"
-
-#include "InstanceBatch.h"
+#include "entt/entt.hpp"
+//#include "Entity.h"
 
 #include "glm/glm.hpp"
 
@@ -34,6 +34,7 @@ class Entity;
 class IRenderer;
 class Mesh;
 class Transformation;
+class InstanceBatch;
 template<typename T> class ObjectHandler;
 
 class EngineAPI Scene
@@ -133,7 +134,7 @@ private:
 	//Skybox* m_skybox = nullptr;
 
 	std::deque<Model*> m_debugModelDeque;
-	std::deque<std::shared_ptr<InstanceBatch>> m_instanceBatchQueue;
+	//std::deque<std::shared_ptr<InstanceBatch>> m_instanceBatchQueue;
 
 	Context* m_context = nullptr;
 

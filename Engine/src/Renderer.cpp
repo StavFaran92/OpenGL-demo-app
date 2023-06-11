@@ -138,8 +138,8 @@ void Renderer::render(Entity* entity, Mesh* mesh, Transformation* transform, Sha
     //}
 
     // Set model matrix
-    auto transformation = entity->getComponent<Transformation>();
-    shaderToUse->setModelMatrix(transformation.getMatrix());
+    if(transform)
+        shaderToUse->setModelMatrix(transform->getMatrix());
 
     // Set time elapsed
     auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;

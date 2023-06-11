@@ -1,9 +1,9 @@
 #pragma once
 
-class RenderableComponent
+class Renderable
 {
 public:
-	RenderableComponent() = default;
+	Renderable() = default;
 
 private:
 	int a;

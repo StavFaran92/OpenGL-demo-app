@@ -18,7 +18,7 @@
 std::shared_ptr<Entity> ScreenQuad::GenerateScreenQuad(Scene* scene)
 {
 	auto entity = ShapeFactory::createPlane(scene);
-	entity->RemoveComponent<RenderableComponent>();
+	entity->RemoveComponent<Renderable>();
 	return entity;
 }
 
