@@ -40,7 +40,6 @@ public:
 	bool isReflective() const;
 	bool isRefractive() const;
 
-	virtual ~Material();
 protected:
 	void SetTexturesInShader(Shader& shader);
 

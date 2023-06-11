@@ -53,9 +53,6 @@ void Material::addTextureHandlers(std::vector<TextureHandler*>& texturesHandlers
 	}
 }
 
-Material::~Material()
-{}
-
 void Material::SetTexturesInShader(Shader & shader)
 {
 	// Initialized counters

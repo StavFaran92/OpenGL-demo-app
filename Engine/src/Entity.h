@@ -15,7 +15,7 @@ class EngineAPI Entity
 {
 public:
     /// Default constructor
-    Entity() = delete;
+    //Entity() = delete;
 
     /**
      * @brief Constructs an entity belonging to a scene
@@ -40,6 +40,23 @@ public:
         assert(valid() && "Invalid entity.");
         assert(!m_scene->getRegistry().has<T>(m_entity) && "Component already exists.");
         T& component = m_scene->getRegistry().emplace<T>(m_entity, *componentInstance);
+        m_components.insert(typeid(T).name());
+        return component;
+    }
+
+    /**
+     * @brief Adds a component to the entity by moving an existing instance
+     * @tparam T Type of the component
+     * @param componentInstance Pointer to the component instance
+     * @return Reference to the added component
+     * @warning The behavior of the existing componentInstance after the call is undefined
+     */
+    template<typename T>
+    T& addOrReplaceComponent(T* componentInstance)
+    {
+        assert(valid() && "Invalid entity.");
+        T& component = m_scene->getRegistry().emplace_or_replace<T>(m_entity, *componentInstance);
+        m_components.insert(typeid(T).name());
         return component;
     }
 
@@ -56,6 +73,7 @@ public:
         assert(valid() && "Invalid entity.");
         assert(!m_scene->getRegistry().has<T>(m_entity) && "Component already exists.");
         T& component = m_scene->getRegistry().emplace<T>(m_entity, std::forward<Args>(args)...);
+        m_components.insert(typeid(T).name());
         return component;
     }
 
@@ -92,8 +110,8 @@ public:
     void RemoveComponent()
     {
         assert(valid() && "Invalid entity.");
-        assert(m_scene->getRegistry().has<T>(m_entity) && "Component does not exist.");
         m_scene->getRegistry().remove<T>(m_entity);
+        m_components.erase(typeid(T).name());
     }
 
     /**
@@ -117,4 +135,6 @@ private:
 private:
     Scene* m_scene = nullptr;  ///< Scene the entity belongs to
     entt::entity m_entity{ entt::null };  ///< ENTT entity instance
+
+    std::set<std::string> m_components;
 };

@@ -27,7 +27,11 @@
 #include "Mesh.h"
 #include "RenderableComponent.h"
 #include "Component.h"
+#include "Shader.h"
 #include "InstanceBatch.h"
+#include "SkyboxRenderer.h"
+#include "Material.h"
+#include "DefaultMaterial.h"
 
 void Scene::init(Context* context)
 {
@@ -110,7 +114,7 @@ void Scene::draw(float deltaTime)
 	}
 
 	// Render Phase
-	for (auto [entity, mesh, transform, renderable] : m_registry.group<Mesh, Transformation, Renderable>().each())
+	for (auto&& [entity, mesh, transform, renderable] : m_registry.group<Mesh, Transformation, RenderableComponent>().each())
 	{
 		{
 			DrawQueueRenderParams params;
@@ -153,19 +157,20 @@ void Scene::draw(float deltaTime)
 
 	// POST Render Phase
 	// Iterate GPU instancing batches
-	for (auto [entity, mesh, instanceBatch] : m_registry.group<Mesh, InstanceBatch>().each())
+	for (auto&& [entity, mesh, instanceBatch] : m_registry.group<Mesh, InstanceBatch>().each())
 	{
 		// draw model
 		Entity entityhandler{ entity, this };
 		m_gpuInstancingRenderer->render(&entityhandler, &mesh, &instanceBatch);
 	}
 
-	//// Draw skybox
-	//if (m_skybox)
-	//{
-	//	m_skybox->draw(*m_skyboxRenderer.get());
-	//	m_skybox = nullptr;
-	//}
+	// For some reason this group destroys the entities
+	for (auto&& [entity, skybox, mesh, transform, mat, shader] :
+		m_registry.group<SkyboxComponent, Mesh, Transformation, DefaultMaterial, StandardShader>().each())
+	{
+		Entity entityhandler{ entity, this };
+		m_skyboxRenderer->render(&entityhandler, &mesh, &transform, &mat, &shader);
+	}
 
 	//if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
 	//{
@@ -253,11 +258,6 @@ Scene::Scene(Context* context)
 	init(context);
 }
 
-//void Scene::drawSkybox(ObjectHandler<Skybox> skybox)
-//{
-//	m_skybox = skybox.object();
-//}
-
 std::shared_ptr<Renderer> Scene::getRenderer() const
 {
 	return m_renderer;
@@ -327,11 +327,6 @@ void Scene::addCoroutine(const std::function<bool(float)>& coroutine)
 //void Scene::removeCoroutine(std::function<bool(float)>* coroutine)
 //{
 //	m_coroutineManager->removeCoroutine(coroutine);
-//}
-
-//Skybox* Scene::getSkybox()
-//{
-//	return m_skybox;
 //}
 
 bool Scene::isPickingPhaseActive() const

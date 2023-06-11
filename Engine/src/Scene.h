@@ -34,6 +34,7 @@ class IRenderer;
 class Mesh;
 class Transformation;
 class InstanceBatch;
+class SkyboxRenderer;
 template<typename T> class ObjectHandler;
 
 class EngineAPI Scene
@@ -117,7 +118,7 @@ private:
 	// Renderers
 	std::shared_ptr<Renderer> m_renderer = nullptr;
 	std::shared_ptr<GpuInstancingRenderer> m_gpuInstancingRenderer = nullptr;
-	std::shared_ptr<Renderer> m_skyboxRenderer = nullptr;
+	std::shared_ptr<SkyboxRenderer> m_skyboxRenderer = nullptr;
 
 	// Scene Services
 	std::shared_ptr<ObjectSelection> m_objectSelection = nullptr;

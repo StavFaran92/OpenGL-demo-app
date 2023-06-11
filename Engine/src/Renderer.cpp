@@ -37,11 +37,6 @@ Renderer::Renderer(const Renderer& other)
 	m_projection = other.m_projection;
 }
 
-//void Renderer::render(Model* model, Shader* shader /* = nullptr*/)
-//{
-//	model->draw(*this, shader);
-//}
-
 void Renderer::draw(const VertexArrayObject& vao, Shader& shader) const
 {
 	SetMVP(shader);

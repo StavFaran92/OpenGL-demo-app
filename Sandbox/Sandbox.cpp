@@ -63,19 +63,23 @@ public:
 	//ObjectHandler<Box> box;
 	Sphere* sphere1;
 	Sphere* sphere2;
-	ObjectHandler<Skybox> skybox;
+	//ObjectHandler<Skybox> skybox;
 	//Transformation trans1{ { 5,5,5 } };
 	//Transformation trans2{ { 2,2,2 } };
 	
-
+	//std::shared_ptr<Entity>skybox;
+	//std::shared_ptr<Entity>box;
 	std::vector<Transformation> transformations;
 	
 
 	void start() override
 	{
-		//skybox = Skybox::CreateSkybox();
+		auto box1 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+		auto box2 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 
-		auto box = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+		box1->getComponent<Transformation>().translate({1, 0,0});
+		auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
+
 
 		//auto importer = getContext()->getModelImporter();
 		//auto guitar = importer->loadModelFromFile("D:\\program files\\downloads\\backpack\\backpack.obj");
@@ -94,7 +98,7 @@ public:
 			}
 		}
 
-		box->addComponent<InstanceBatch>( transformations );
+		//box->addComponent<InstanceBatch>( transformations );
 
 		//sphere1 = (Sphere*)ModelBuilder::builder<Sphere>(1, 36, 18)
 		//	.build();

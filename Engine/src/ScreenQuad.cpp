@@ -9,6 +9,7 @@
 #include "ShapeFactory.h"
 #include "Entity.h"
 #include "Scene.h"
+#include "Component.h"
 
 #include "RenderableComponent.h"
 
@@ -18,7 +19,7 @@
 std::shared_ptr<Entity> ScreenQuad::GenerateScreenQuad(Scene* scene)
 {
 	auto entity = ShapeFactory::createPlane(scene);
-	entity->RemoveComponent<Renderable>();
+	entity->RemoveComponent<RenderableComponent>();
 	return entity;
 }
 

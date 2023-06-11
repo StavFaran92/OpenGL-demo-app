@@ -11,7 +11,8 @@
 #include "ObjectHandler.h"
 #include "StandardShader.h"
 #include "ShapeFactory.h"
-#include "SkyboxRenderer.h"
+#include "DefaultMaterial.h"
+#include "Component.h"
 
 #include "EditorCamera.h"
 #include "Resources/Engine/Primitives/cube.h"
@@ -33,9 +34,10 @@ std::shared_ptr<Entity> Skybox::CreateSkybox(Scene* scene)
 
     auto entity = ShapeFactory::createBox(scene);
 
-    entity->addComponent<StandardShader>(shader);
-    entity->addComponent<TextureHandler>(textureHandler);
-    entity->addComponent<SkyboxRenderer>();
+    entity->addOrReplaceComponent<StandardShader>(shader);
+    entity->RemoveComponent<RenderableComponent>();
+    entity->getComponent<DefaultMaterial>().addTextureHandler(textureHandler);
+    entity->addComponent<SkyboxComponent>();
 
     return entity;
 }
