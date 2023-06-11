@@ -94,7 +94,7 @@ public:
 			}
 		}
 
-		box->addComponent<InstanceBatch> (transformations );
+		box->addComponent<InstanceBatch>( transformations );
 
 		//sphere1 = (Sphere*)ModelBuilder::builder<Sphere>(1, 36, 18)
 		//	.build();

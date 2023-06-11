@@ -10,7 +10,6 @@
 
 #include "Core.h"
 #include "entt/entt.hpp"
-//#include "Entity.h"
 
 #include "glm/glm.hpp"
 
@@ -69,8 +68,6 @@ public:
 	// -------------------- Methods -------------------- //
 	Scene(Context* context);
 
-	//void drawSkybox(ObjectHandler<Skybox> skybox);
-
 	void setPostProcess(bool value);
 	bool setPostProcessShader(Shader* shader);
 
@@ -79,8 +76,6 @@ public:
 
 	std::shared_ptr<Renderer> getRenderer() const;
 	std::shared_ptr<Renderer> getSkyboxRenderer();
-
-	Skybox* getSkybox();
 
 	uint32_t getID() const { return m_id; }
 
@@ -92,8 +87,6 @@ public:
 	bool isPickingPhaseActive() const;
 
 	//void addGUI();
-
-	void drawMultiple(const InstanceBatch& batch);
 
 	RenderCallback* addRenderCallback(RenderPhase renderPhase, RenderCallback renderCallback);
 	void removeRenderCallback(RenderCallback* callback);
@@ -118,29 +111,22 @@ private:
 
 private:
 	// -------------------- Attributes -------------------- //
+	uint32_t m_id = 0;
+	Context* m_context = nullptr;
+
+	// Renderers
 	std::shared_ptr<Renderer> m_renderer = nullptr;
 	std::shared_ptr<GpuInstancingRenderer> m_gpuInstancingRenderer = nullptr;
 	std::shared_ptr<Renderer> m_skyboxRenderer = nullptr;
 
-	uint32_t m_id = 0;
-
+	// Scene Services
 	std::shared_ptr<ObjectSelection> m_objectSelection = nullptr;
 	std::shared_ptr<PostProcessProjector> m_postProcessProjector = nullptr;
 	std::shared_ptr<CoroutineSystem> m_coroutineManager = nullptr;
 	std::shared_ptr<ObjectPicker> m_objectPicker = nullptr;
 
-	std::deque<Model*> m_drawQueue;
 	std::deque<Object3D*> m_updateQueue;
-	//Skybox* m_skybox = nullptr;
-
 	std::deque<Model*> m_debugModelDeque;
-	//std::deque<std::shared_ptr<InstanceBatch>> m_instanceBatchQueue;
-
-	Context* m_context = nullptr;
-
-	//bool m_isPostProcessEnabled = false;
-	//bool m_pickingPhaseActive = false;
-	//bool m_isObjectSelectionEnabled = false;
 
 	entt::registry m_registry;
 	std::map<RenderPhase, std::vector<RenderCallback>> m_renderCallbacks;

@@ -6,7 +6,6 @@
 #include "PointLight.h"
 #include "Engine.h"
 #include "ICamera.h"
-#include "Model.h"
 #include "ObjectSelection.h"
 #include "SkyboxRenderer.h"
 #include "PostProcessProjector.h"
@@ -27,8 +26,7 @@
 #include "Transformation.h"
 #include "Mesh.h"
 #include "RenderableComponent.h"
-//#include "Components.h"
-#include "Model.h"
+#include "Component.h"
 #include "InstanceBatch.h"
 
 void Scene::init(Context* context)
@@ -79,11 +77,11 @@ void Scene::update(float deltaTime)
 		}
 	}
 
-	auto view = m_registry.view<Model>();
+	auto view = m_registry.view<Transformation>();
 
-	for (auto [entity, model] : view.each())
+	for (auto [entity, transformation] : view.each())
 	{
-		model.update(deltaTime);
+		transformation.update(deltaTime);
 	}
 
 	//if (m_skybox)
@@ -114,12 +112,6 @@ void Scene::draw(float deltaTime)
 	// Render Phase
 	for (auto [entity, mesh, transform, renderable] : m_registry.group<Mesh, Transformation, Renderable>().each())
 	{
-		// If in debug MODE -> put model in displayNormalsQueue
-		//if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
-		//{
-		//	m_debugModelDeque.push_back(model);
-		//}
-
 		{
 			DrawQueueRenderParams params;
 			params.scene = this;
@@ -208,11 +200,6 @@ void Scene::draw(float deltaTime)
 		}
 	}
 }
-
-//void Scene::drawMultiple(const InstanceBatch& batch)
-//{
-//	m_instanceBatchQueue.push_back(std::make_shared<InstanceBatch>(batch));
-//}
 
 Scene::RenderCallback* Scene::addRenderCallback(RenderPhase renderPhase, RenderCallback renderCallback)
 {
