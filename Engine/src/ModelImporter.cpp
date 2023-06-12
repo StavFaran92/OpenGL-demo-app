@@ -79,7 +79,7 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 		entity->addComponent<Mesh>(processMesh(mesh, scene, session));
 		auto textureHandlers = new std::vector<TextureHandler*>();
 
-		auto material = entity->addComponent<DefaultMaterial>(32.0f);
+		auto& material = entity->addComponent<DefaultMaterial>(32.0f);
 		// process material
 		if (mesh->mMaterialIndex >= 0)
 		{

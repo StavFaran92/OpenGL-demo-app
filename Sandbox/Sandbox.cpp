@@ -1,6 +1,5 @@
 #include "EntryPoint.h"
 #include "sge.h"
-#include "ShapeFactory.h"
 
 float colors[108] = {
 	//Red
