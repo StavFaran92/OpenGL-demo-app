@@ -83,7 +83,7 @@ public:
 
 
 		auto importer = getContext()->getModelImporter();
-		auto guitar = importer->loadModelFromFile("D:/program files/downloads/backpack/backpack.obj");
+		auto guitar = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());
 
 		//transformations.push_back(&trans1);
 		//transformations.push_back(&trans2);

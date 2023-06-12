@@ -12,6 +12,22 @@ void Transformation::getMatrix(glm::mat4& mat)
 	mat = m_transformation;
 }
 
+void Transformation::addChild(Transformation* transform)
+{
+	m_children.push_back(transform);
+}
+
+void Transformation::removeChild(Transformation* transform)
+{
+	auto it = std::find(m_children.begin(), m_children.end(), transform);
+
+	// If the element is found, remove it.
+	if (it != m_children.end())
+	{
+		m_children.erase(it);
+	}
+}
+
 void Transformation::update(float deltaTime)
 {
 	if (m_change)

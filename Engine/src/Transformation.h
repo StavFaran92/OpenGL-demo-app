@@ -57,6 +57,9 @@ public:
 	void rotateAroundLerp(glm::vec3 pivot, glm::vec3 axis, float angle, float t);
 	void getMatrix(glm::mat4& mat);
 
+	void addChild(Transformation* transform);
+	void removeChild(Transformation* transform);
+
 
 private:
 	glm::vec3 m_translation;
@@ -69,6 +72,8 @@ private:
 	glm::vec3 m_scale;
 
 	glm::mat4 m_transformation;
+
+	std::vector<Transformation*> m_children;
 
 	bool m_change = false;
 };

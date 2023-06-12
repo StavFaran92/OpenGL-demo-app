@@ -13,6 +13,8 @@
 #include "ObjectHandler.h"
 #include "DefaultMaterial.h"
 #include "Entity.h"
+#include "Component.h"
+#include "StandardShader.h"
 
 ModelImporter::ModelImporter()
 {
@@ -53,10 +55,7 @@ std::shared_ptr<Entity> ModelImporter::loadModelFromFile(const std::string& path
 
 	//create new model
 	auto entity = pScene->createEntity();
-	//auto modelHandler = ObjectFactory::create<Model>();
-
-	//std::shared_ptr<Material> material = std::make_shared<DefaultMaterial>(32.0f);
-	//modelHandler.object()->setMaterial(material);
+	addDefaultComponents(entity.get());
 
 	// create new model session
 	ModelImportSession session;
@@ -98,8 +97,10 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
 		auto childEntity = pScene->createEntity();
-		childEntity->getComponent<Transformation>().setParent
-		processNode(node->mChildren[i], scene, session, model, pScene);
+		addDefaultComponents(childEntity.get());
+		auto transform = childEntity->getComponent<Transformation>();
+		entity->getComponent<Transformation>().addChild(&transform);
+		processNode(node->mChildren[i], scene, session, childEntity.get(), pScene);
 	}
 }
 
@@ -180,6 +181,14 @@ std::vector<TextureHandler*> ModelImporter::loadMaterialTextures(aiMaterial* mat
 		}
 	}
 	return textureHandlers;
+}
+
+void ModelImporter::addDefaultComponents(Entity* entity)
+{
+	entity->addComponent<DefaultMaterial>(32.0f);
+	auto shader = Shader::create<StandardShader>();
+	entity->addComponent<StandardShader>(shader);
+	entity->addComponent<RenderableComponent>();
 }
 
 Texture::Type ModelImporter::getTextureType(aiTextureType type)

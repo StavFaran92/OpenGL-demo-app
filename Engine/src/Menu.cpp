@@ -301,14 +301,10 @@ void ShowModelCreatorWindow()
 
             logInfo("Open file: " + path);
 
-            auto model = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str());
-            std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-            model.object()->setMaterial(material);
-            model.object()->getTransformation()->setPosition(pos);
-            model.object()->getTransformation()->setScale(scale);
+            auto entity = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str());
 
-            auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
-            e->addComponent<Model>(model.object());
+            entity->getComponent<Transformation>().setPosition(pos);
+            entity->getComponent<Transformation>().setScale(scale);
 
             showModelCreatorWindow = false;
 
