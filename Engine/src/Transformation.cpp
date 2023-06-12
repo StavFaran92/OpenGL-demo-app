@@ -1,15 +1,23 @@
 #include "Transformation.h"
 #include<glm/gtx/quaternion.hpp>
 #include "LinearAlgebraUtil.h"
+#include "Logger.h"
 
 glm::mat4 Transformation::getMatrix() const
 {
-	return m_transformation;
+	if (m_parent)
+		return m_parent->getMatrix() * m_transformation;
+	else
+		return m_transformation;
 }
 
 void Transformation::getMatrix(glm::mat4& mat)
 {
-	mat = m_transformation;
+	if (m_parent)
+		mat = m_transformation * m_parent->getMatrix();
+	else
+		mat = m_transformation;
+
 }
 
 void Transformation::addChild(Transformation* transform)
@@ -26,6 +34,22 @@ void Transformation::removeChild(Transformation* transform)
 	{
 		m_children.erase(it);
 	}
+}
+
+void Transformation::setParent(Transformation* transform)
+{
+	if (transform == this) 
+	{
+		logError("Attempting to set entity as its own parent is not allowed");
+		return;
+	}
+	
+	m_parent = transform;
+}
+
+void Transformation::removeParent(Transformation* transform)
+{
+	m_parent = nullptr;
 }
 
 void Transformation::update(float deltaTime)

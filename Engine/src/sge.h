@@ -52,3 +52,4 @@
 #include "StandardShader.h"
 #include "Entity.h"
 #include "ShapeFactory.h"
+#include "Component.h"

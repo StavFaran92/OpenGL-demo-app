@@ -84,6 +84,9 @@ public:
 		auto importer = getContext()->getModelImporter();
 		auto guitar = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());
 
+		//auto& transform = guitar->getComponent<Transformation>();
+		//transform.translate({ 10, 0,0 });
+
 		//transformations.push_back(&trans1);
 		//transformations.push_back(&trans2);
 
@@ -99,6 +102,7 @@ public:
 		}
 
 		//box1->addComponent<InstanceBatch>( transformations );
+		//guitar->RemoveComponent<RenderableComponent>( );
 
 		//sphere1 = (Sphere*)ModelBuilder::builder<Sphere>(1, 36, 18)
 		//	.build();

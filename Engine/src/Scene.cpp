@@ -114,7 +114,7 @@ void Scene::draw(float deltaTime)
 	}
 
 	// Render Phase
-	for (auto&& [entity, mesh, transform, renderable] : m_registry.group<Mesh, Transformation, RenderableComponent>().each())
+	for (auto&& [entity, mesh, transform, renderable] : m_registry.view<Mesh, Transformation, RenderableComponent>().each())
 	{
 		{
 			DrawQueueRenderParams params;

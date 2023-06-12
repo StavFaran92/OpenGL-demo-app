@@ -2,17 +2,27 @@
 
 #include "Core.h"
 
-class EngineAPI Component
+struct EngineAPI Component
 {
 
 };
 
-class EngineAPI SkyboxComponent
+struct EngineAPI TagComponent
 {
 	[[maybe_unused]] bool empty = false;
 };
 
-class EngineAPI RenderableComponent
+struct EngineAPI SkyboxComponent : public TagComponent
 {
-	[[maybe_unused]] bool empty = false;
+	
+};
+
+struct EngineAPI RenderableComponent : public TagComponent
+{
+	
+};
+
+struct EngineAPI ParentComponent : public Component
+{
+	entt::entity parent{ entt::null };
 };

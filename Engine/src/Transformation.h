@@ -59,6 +59,8 @@ public:
 
 	void addChild(Transformation* transform);
 	void removeChild(Transformation* transform);
+	void setParent(Transformation* transform);
+	void removeParent(Transformation* transform);
 
 
 private:
@@ -74,6 +76,8 @@ private:
 	glm::mat4 m_transformation;
 
 	std::vector<Transformation*> m_children;
+
+	Transformation* m_parent = nullptr;
 
 	bool m_change = false;
 };
