@@ -13,10 +13,14 @@ public:
 	void start() override
 	{
 		auto importer = getContext()->getModelImporter();
-		ObjectHandler<Model> planeModel = importer->loadModelFromFile("C:/Users/Stav/Documents/blender/plane_v2.fbx");
+		auto planeModel = importer->loadModelFromFile("C:/Users/Stav/Documents/blender/plane_v2.fbx", getContext()->getActiveScene().get());
 
-		planeModel.object()->rotate({1,0,0}, 90);
-		planeModel.object()->rotate({0,1,0}, 90);
+		auto& planeTransform = planeModel->getComponent<Transformation>();
+		planeTransform.rotate({ 1,0,0 }, 90);
+		planeTransform.rotate({ 0,1,0 }, 90);
+
+		//planeModel.object()->rotate({1,0,0}, 90);
+		//planeModel.object()->rotate({0,1,0}, 90);
 		//plane.object()->scale(10, 1, 10);
 
 		StandardShader* shader = Shader::create<StandardShader>("Resources/Content/Shaders/OceanVertexShader.vert", "Resources/Content/Shaders/OceanFragmentShader.frag");
@@ -25,13 +29,10 @@ public:
 		shader->setValue("waveLength", 2.f);
 		shader->setValue("waveSpeed", 5.0f);
 		shader->setValue("steepness", .5f);
-		planeModel.object()->attachShader(shader);
+		planeModel->addOrReplaceComponent<StandardShader>(shader);
 
 		auto dLight = getContext()->getActiveScene()->createEntity();
 		dLight->addComponent<PointLight>(glm::vec3{ 1,1,1 }, glm::vec3{ 0, 0, 2 }, 1, 1, Attenuation());
-
-		auto plane = getContext()->getActiveScene()->createEntity();
-		plane->addComponent<Model>(planeModel.object());
 
 		gui = std::make_shared<GUIHandler>(shader);
 

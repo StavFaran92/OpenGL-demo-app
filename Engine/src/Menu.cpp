@@ -301,7 +301,7 @@ void ShowModelCreatorWindow()
 
             logInfo("Open file: " + path);
 
-            auto entity = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str());
+            auto entity = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str(), Engine::get()->getContext()->getActiveScene().get());
 
             entity->getComponent<Transformation>().setPosition(pos);
             entity->getComponent<Transformation>().setScale(scale);

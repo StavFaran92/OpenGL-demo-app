@@ -46,7 +46,7 @@ public:
 	 * \param flipTexture	should flip loaded texture
 	 * \return A poitner to the newly created model
 	 */
-	std::shared_ptr<Entity> loadModelFromFile(const std::string& path, Scene* pScene = nullptr);
+	std::shared_ptr<Entity> loadModelFromFile(const std::string& path, Scene* pScene);
 private:
 	friend class Engine;
 	/** Init the model loader module */
