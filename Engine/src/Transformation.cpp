@@ -52,6 +52,11 @@ void Transformation::removeParent(Transformation* transform)
 	m_parent = nullptr;
 }
 
+Transformation* Transformation::getParent()
+{
+	return m_parent;
+}
+
 void Transformation::update(float deltaTime)
 {
 	if (m_change)

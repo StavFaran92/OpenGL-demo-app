@@ -22,6 +22,7 @@
 #include "Material.h"
 #include "DefaultMaterial.h"
 #include "StandardShader.h"
+#include "Component.h"
 
 
 Renderer::Renderer()
@@ -91,6 +92,12 @@ void Renderer::render(Entity* entity, Mesh* mesh, Transformation* transform, Sha
     }
     else
     {
+        // Add getComponentInParent
+        auto& hierarchy = entity->getComponent<HierarchyComponent>();
+        if (hierarchy.parent != entt::null)
+        {
+
+        }
         shaderToUse = Engine::get()->getContext()->getStandardShader();
     }
 

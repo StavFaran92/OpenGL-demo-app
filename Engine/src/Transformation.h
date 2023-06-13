@@ -61,6 +61,7 @@ public:
 	void removeChild(Transformation* transform);
 	void setParent(Transformation* transform);
 	void removeParent(Transformation* transform);
+	Transformation* getParent();
 
 
 private:

@@ -157,7 +157,7 @@ void Scene::draw(float deltaTime)
 
 	// POST Render Phase
 	// Iterate GPU instancing batches
-	for (auto&& [entity, mesh, instanceBatch] : m_registry.group<Mesh, InstanceBatch>().each())
+	for (auto&& [entity, mesh, instanceBatch] : m_registry.view<Mesh, InstanceBatch>().each())
 	{
 		// draw model
 		Entity entityhandler{ entity, this };

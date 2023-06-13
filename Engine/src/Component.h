@@ -2,6 +2,8 @@
 
 #include "Core.h"
 
+class Scene;
+
 struct EngineAPI Component
 {
 
@@ -22,7 +24,9 @@ struct EngineAPI RenderableComponent : public TagComponent
 	
 };
 
-struct EngineAPI ParentComponent : public Component
+struct EngineAPI HierarchyComponent : public Component
 {
 	entt::entity parent{ entt::null };
+	std::vector<entt::entity> children{};
+	Scene* scene = nullptr;
 };
