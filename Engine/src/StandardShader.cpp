@@ -2,6 +2,7 @@
 
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "Transformation.h"
 
 #include "glm/glm.hpp"
 #include <glm/gtc/type_ptr.hpp>
@@ -73,15 +74,17 @@ void StandardShader::updatePointLights(entt::registry& registry)
 	if (m_enableLight)
 	{
 		// Use all point lights
-		auto view = registry.view<PointLight>();
+		auto view = registry.view<PointLight, Transformation>();
 
 		int i = 0;
 		for (auto it = view.begin(); it != view.end(); ++it, ++i) 
 		{
 			auto& pLight = view.get<PointLight>(*it);
+			auto& transform = view.get<Transformation>(*it);
+			setValue("pointLights[" + std::to_string(i) + "]" + ".position", transform.getPosition());
 			pLight.useLight(*this, i);
 		}
-		setPointLightCount(view.size());
+		setPointLightCount(i);
 	}
 }
 

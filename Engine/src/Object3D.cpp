@@ -9,7 +9,7 @@
 
 Object3D::Object3D()
 {
-	m_transformation = std::make_shared<Transformation>();
+	//m_transformation = std::make_shared<Transformation>();
 }
 
 void Object3D::update(float deltatime)

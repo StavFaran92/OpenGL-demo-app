@@ -239,7 +239,7 @@ std::shared_ptr<Entity> Scene::createEntity()
 {
 	entt::entity e = m_registry.create();
 	auto entityHandler = std::make_shared<Entity>(e, this);
-	entityHandler->addComponent<Transformation>();
+	entityHandler->addComponent<Transformation>(entityHandler);
 	entityHandler->addComponent<HierarchyComponent>();
 	return entityHandler;
 }
