@@ -29,12 +29,12 @@ public:
 		shader->setValue("waveLength", 2.f);
 		shader->setValue("waveSpeed", 5.0f);
 		shader->setValue("steepness", .5f);
-		planeModel->addOrReplaceComponent<StandardShader>(shader);
+		auto& shaderRef = planeModel->addOrReplaceComponent<StandardShader>(shader);
 
 		auto dLight = getContext()->getActiveScene()->createEntity();
 		dLight->addComponent<PointLight>(glm::vec3{ 1,1,1 }, glm::vec3{ 0, 0, 2 }, 1, 1, Attenuation());
 
-		gui = std::make_shared<GUIHandler>(shader);
+		gui = std::make_shared<GUIHandler>(&shaderRef);
 
 	}
 
