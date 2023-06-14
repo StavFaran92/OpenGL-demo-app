@@ -70,10 +70,10 @@ protected:
 	Shader(const std::string& vertexfilePath, const std::string& fragmentFilePath, const std::string& geometryShader = "");
 
 	/** Copy Constructor */
-	Shader(const Shader& other);
+	Shader(const Shader& other) = default;
 
 	/** Copy Assignemnt operator */
-	Shader& operator=(const Shader& other);
+	Shader& operator=(const Shader& other) = default;
 
 	void clear();
 	virtual void BuildShaders(const std::string& vertexCode, const std::string& fragmentCode, const std::string& geometryShader);

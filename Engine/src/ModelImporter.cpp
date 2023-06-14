@@ -99,9 +99,7 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 		auto childEntity = pScene->createEntity();
 		addDefaultComponents(childEntity.get());
 
-		auto& transform = childEntity->getComponent<Transformation>();
-		auto& parentTransform = entity->getComponent<Transformation>();
-		transform.setParent(&parentTransform);
+		childEntity->setParent(entity);
 
 		processNode(node->mChildren[i], scene, session, childEntity.get(), pScene);
 	}
@@ -188,9 +186,9 @@ std::vector<TextureHandler*> ModelImporter::loadMaterialTextures(aiMaterial* mat
 
 void ModelImporter::addDefaultComponents(Entity* entity)
 {
-	entity->addComponent<DefaultMaterial>(32.0f);
-	auto shader = Shader::create<StandardShader>();
-	entity->addComponent<StandardShader>(shader);
+	//entity->addComponent<DefaultMaterial>(32.0f);
+	//auto shader = Shader::create<StandardShader>();
+	//entity->addComponent<StandardShader>(shader);
 	entity->addComponent<RenderableComponent>();
 }
 

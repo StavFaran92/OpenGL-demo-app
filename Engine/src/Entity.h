@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "entt/entt.hpp"
 #include "Scene.h"
+#include "Component.h"
 
 /**
  * @class Entity
@@ -40,7 +41,9 @@ public:
         assert(valid() && "Invalid entity.");
         assert(!m_scene->getRegistry().has<T>(m_entity) && "Component already exists.");
         T& component = m_scene->getRegistry().emplace<T>(m_entity, *componentInstance);
+
         m_components.insert(typeid(T).name());
+
         return component;
     }
 
@@ -56,7 +59,9 @@ public:
     {
         assert(valid() && "Invalid entity.");
         T& component = m_scene->getRegistry().emplace_or_replace<T>(m_entity, *componentInstance);
+
         m_components.insert(typeid(T).name());
+
         return component;
     }
 
@@ -73,7 +78,9 @@ public:
         assert(valid() && "Invalid entity.");
         assert(!m_scene->getRegistry().has<T>(m_entity) && "Component already exists.");
         T& component = m_scene->getRegistry().emplace<T>(m_entity, std::forward<Args>(args)...);
+
         m_components.insert(typeid(T).name());
+
         return component;
     }
 
@@ -88,6 +95,33 @@ public:
         assert(valid() && "Invalid entity.");
         assert(m_scene->getRegistry().has<T>(m_entity) && "Component does not exist.");
         return m_scene->getRegistry().get<T>(m_entity);
+    }
+
+    template<typename T>
+    T* tryGetComponent()
+    {
+        assert(valid() && "Invalid entity.");
+        return m_scene->getRegistry().try_get<T>(m_entity);
+    }
+
+    template<typename T>
+    T& getComponentInParent()
+    {
+        assert(valid() && "Invalid entity.");
+        if (HasComponent<T>())
+        {
+            return getComponent<T>();
+        }
+
+        auto parent = getParent();
+        if (parent)
+        {
+            return parent->getComponentInParent<T>();
+        }
+
+        assert(false && "Component not found in tree hierarchy.");
+
+        throw std::runtime_error("Component not found in tree hierarchy.");
     }
 
     /**
@@ -111,7 +145,30 @@ public:
     {
         assert(valid() && "Invalid entity.");
         m_scene->getRegistry().remove<T>(m_entity);
+
         m_components.erase(typeid(T).name());
+
+    }
+
+    void setParent(Entity* entity)
+    {
+        assert(valid() && "Invalid entity.");
+        assert(entity->valid() && "Invalid parent entity.");
+        assert(entity->HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
+        auto& hierarchy = getComponent<HierarchyComponent>();
+        hierarchy.parent = entity->handler();
+    }
+
+    std::shared_ptr<Entity> getParent()
+    {
+        assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
+        auto& hierarchy = getComponent<HierarchyComponent>();
+        if (hierarchy.parent == entt::null)
+        {
+            return nullptr;
+        }
+
+        return std::make_shared<Entity>(hierarchy.parent, m_scene);
     }
 
     /**
@@ -137,5 +194,7 @@ private:
     Scene* m_scene = nullptr;  ///< Scene the entity belongs to
     entt::entity m_entity{ entt::null };  ///< ENTT entity instance
 
+
     std::set<std::string> m_components;
+
 };

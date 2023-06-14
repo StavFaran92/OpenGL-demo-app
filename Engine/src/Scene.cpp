@@ -128,18 +128,19 @@ void Scene::draw(float deltaTime)
 			}
 		}
 
-		auto shader = m_registry.try_get<StandardShader>(entity);
-		if (shader)
-		{
-			shader->use();
-			shader->updateDirLights(m_registry);
-			shader->updatePointLights(m_registry);
-			shader->setViewPos(m_renderer->getCamera()->getPosition());
-			shader->release();
-		}
+		Entity entityhandler{ entity, this };
+
+		auto& shader = entityhandler.getComponentInParent<StandardShader>();
+		//if (shader)
+		//{
+			shader.use();
+			shader.updateDirLights(m_registry);
+			shader.updatePointLights(m_registry);
+			shader.setViewPos(m_renderer->getCamera()->getPosition());
+			shader.release();
+		//}
 
 		// draw model
-		Entity entityhandler{ entity, this };
 		m_renderer->render(&entityhandler, &mesh, &transform);
 
 		{
@@ -239,6 +240,7 @@ std::shared_ptr<Entity> Scene::createEntity()
 	entt::entity e = m_registry.create();
 	auto entityHandler = std::make_shared<Entity>(e, this);
 	entityHandler->addComponent<Transformation>();
+	entityHandler->addComponent<HierarchyComponent>();
 	return entityHandler;
 }
 

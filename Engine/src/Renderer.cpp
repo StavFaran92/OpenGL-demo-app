@@ -80,24 +80,15 @@ void Renderer::render(Entity* entity, Mesh* mesh, Transformation* transform, Sha
 {
     //model->draw(*this, shader);
 
-    Shader* shaderToUse = nullptr;
+    Shader* shaderToUse = shader;
 
-    if (shader)
+    if(!shaderToUse)
     {
-        shaderToUse = shader;
+        shaderToUse = &entity->getComponentInParent<StandardShader>();
     }
-    else if (entity->HasComponent<StandardShader>())
+   
+    if (!shaderToUse)
     {
-        shaderToUse = &entity->getComponent<StandardShader>();
-    }
-    else
-    {
-        // Add getComponentInParent
-        auto& hierarchy = entity->getComponent<HierarchyComponent>();
-        if (hierarchy.parent != entt::null)
-        {
-
-        }
         shaderToUse = Engine::get()->getContext()->getStandardShader();
     }
 
@@ -149,7 +140,7 @@ void Renderer::render(Entity* entity, Mesh* mesh, Transformation* transform, Sha
 
     if (shaderToUse->IsMaterialsEnabled() && entity->HasComponent<DefaultMaterial>())
     {
-        auto mat = entity->getComponent<DefaultMaterial>();
+        auto& mat = entity->getComponent<DefaultMaterial>();
         mat.UseMaterial(*shaderToUse);
     }
 
