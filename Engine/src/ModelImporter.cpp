@@ -55,6 +55,8 @@ std::shared_ptr<Entity> ModelImporter::loadModelFromFile(const std::string& path
 
 	//create new model
 	auto entity = pScene->createEntity();
+	StandardShader* shader = Shader::create<StandardShader>();
+	entity->addComponent<StandardShader>(shader);
 	addDefaultComponents(entity.get());
 
 	// create new model session

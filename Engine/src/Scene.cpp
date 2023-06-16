@@ -43,9 +43,7 @@ void Scene::init(Context* context)
 	m_renderer = std::make_shared<Renderer>();
 	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
 	m_gpuInstancingRenderer = std::make_shared<GpuInstancingRenderer>();
-
 	m_objectSelection = std::make_shared<ObjectSelection>(m_context, this);
-
 	m_objectPicker = std::make_shared<ObjectPicker>(m_context, this);
 	if (!m_objectPicker->init(width, height))
 	{
