@@ -29,7 +29,7 @@ public:
 	virtual void SetMVP(Shader& shader) const;
  	void clear() const override;
 	glm::mat4 getProjection() const override;
-	void render(Entity* entity, Mesh* mesh, Transformation* transform, Shader* shader = nullptr);
+	void render(const DrawQueueRenderParams& renderParams);
 
 	//Methods
 	std::shared_ptr<ICamera> getCamera() const override;

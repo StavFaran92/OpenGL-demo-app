@@ -6,7 +6,7 @@
 #include "StandardShader.h"
 #include "Mesh.h"
 #include "Transformation.h"
-#include "Material.h"
+#include "DefaultMaterial.h"
 #include <GL/glew.h>
 
 void SkyboxRenderer::SetMVP(Shader& shader) const
@@ -15,20 +15,20 @@ void SkyboxRenderer::SetMVP(Shader& shader) const
 	shader.setValue("view", glm::mat4(glm::mat3(m_camera->getView())));
 }
 
-void SkyboxRenderer::render(Entity* entity, Mesh* mesh, Transformation* transform, Material* mat, Shader* shader)
+void SkyboxRenderer::render(const DrawQueueRenderParams& renderParams)
 {
 	glDepthMask(GL_FALSE);
     glDepthFunc(GL_LEQUAL);
 
     Shader* shaderToUse = nullptr;
 
-    if (shader)
+    if (renderParams.shader)
     {
-        shaderToUse = shader;
+        shaderToUse = renderParams.shader;
     }
-    else if (entity->HasComponent<StandardShader>())
+    else if (renderParams.entity->HasComponent<StandardShader>())
     {
-        shaderToUse = &entity->getComponent<StandardShader>();
+        shaderToUse = &renderParams.entity->getComponent<StandardShader>();
     }
     else
     {
@@ -39,16 +39,17 @@ void SkyboxRenderer::render(Entity* entity, Mesh* mesh, Transformation* transfor
 
     shaderToUse->use();
 
-    mat->getTextureHandlers()[0]->bind();
+    auto& mat = renderParams.entity->getComponent<DefaultMaterial>();
+    mat.getTextureHandlers()[0]->bind();
 
     //auto view = glm::mat4(glm::mat3(dynamic_cast<Renderer*>(renderer.get())->GetCamera()->getView())); // remove translation from the view matrix
-    shaderToUse->setValue("model", transform->getMatrix());
+    shaderToUse->setValue("model", renderParams.transform->getMatrix());
 
     SetDrawType(Renderer::DrawType::Triangles);
 
-    mesh->render(*shaderToUse, *this);
+    renderParams.mesh->render(*shaderToUse, *this);
 
-    mat->getTextureHandlers()[0]->unbind();
+    mat.getTextureHandlers()[0]->unbind();
     shaderToUse->release();
 
     glDepthMask(GL_TRUE);

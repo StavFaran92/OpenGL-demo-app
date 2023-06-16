@@ -12,6 +12,7 @@
 #include "entt/entt.hpp"
 
 #include "glm/glm.hpp"
+#include "IRenderer.h"
 
 
 class Model;
@@ -40,19 +41,19 @@ template<typename T> class ObjectHandler;
 class EngineAPI Scene
 {
 public:
-	struct Params
-	{
-		const Scene* scene;
-		entt::registry* registry;
-		const Context* context;
-		IRenderer* renderer;
-	};
+	//struct Params
+	//{
+	//	const Scene* scene;
+	//	entt::registry* registry;
+	//	const Context* context;
+	//	IRenderer* renderer;
+	//};
 
-	struct DrawQueueRenderParams : public Scene::Params
-	{
-		const Mesh* mesh;
-		const Transformation* transformation;
-	};
+	//struct DrawQueueRenderParams : public Scene::Params
+	//{
+	//	const Mesh* mesh;
+	//	const Transformation* transformation;
+	//};
 
 	enum class RenderPhase
 	{
@@ -64,7 +65,7 @@ public:
 		POST_RENDER_END
 	};
 
-	using RenderCallback = std::function<void(const Scene::Params*)>;
+	using RenderCallback = std::function<void(const IRenderer::Params*)>;
 public:
 	// -------------------- Methods -------------------- //
 	Scene(Context* context);

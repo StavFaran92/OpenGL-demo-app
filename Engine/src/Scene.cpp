@@ -67,8 +67,6 @@ void Scene::init(Context* context)
 
 void Scene::update(float deltaTime)
 {
-	m_renderer->clear();
-
 	m_renderer->getCamera()->update(deltaTime);
 
 	// Advance all coroutines
@@ -83,7 +81,7 @@ void Scene::update(float deltaTime)
 
 	auto view = m_registry.view<Transformation>();
 
-	for (auto [entity, transformation] : view.each())
+	for (auto&& [entity, transformation] : view.each())
 	{
 		transformation.update(deltaTime);
 	}
@@ -94,65 +92,49 @@ void Scene::update(float deltaTime)
 
 void Scene::draw(float deltaTime)
 {
+	m_renderer->clear();
+
+	IRenderer::DrawQueueRenderParams params;
+	params.scene = this;
+	params.context = m_context;
+	params.registry = &m_registry;
+	params.renderer = m_renderer.get();
+
 	// PRE Render Phase
+	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])
 	{
-		Scene::Params params;
-		params.scene = this;
-		params.registry = &m_registry;
-		params.context = m_context;
-		params.renderer = m_renderer.get();
+		cb(&params);
+	}
 
-		for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])
-		{
-			cb(&params);
-		}
-
-		for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_END])
-		{
-			cb(&params);
-		}
+	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_END])
+	{
+		cb(&params);
 	}
 
 	// Render Phase
 	for (auto&& [entity, mesh, transform, renderable] : m_registry.view<Mesh, Transformation, RenderableComponent>().each())
 	{
+		Entity entityhandler{ entity, this };
+		params.entity = &entityhandler;
+		params.mesh = &mesh;
+		params.transform = &transform;
+			
+		for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_PRE_RENDER])
 		{
-			DrawQueueRenderParams params;
-			params.scene = this;
-			params.mesh = &mesh;
-			params.transformation = &transform;
-			params.registry = &m_registry;
-			for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_PRE_RENDER])
-			{
-				cb(&params);
-			}
+			cb(&params);
 		}
 
-		Entity entityhandler{ entity, this };
-
 		auto& shader = entityhandler.getComponentInParent<StandardShader>();
-		//if (shader)
-		//{
-			shader.use();
-			shader.updateDirLights(m_registry);
-			shader.updatePointLights(m_registry);
-			shader.setViewPos(m_renderer->getCamera()->getPosition());
-			shader.release();
-		//}
+		shader.updateDirLights(m_registry);
+		shader.updatePointLights(m_registry);
+		shader.setViewPos(m_renderer->getCamera()->getPosition());
 
 		// draw model
-		m_renderer->render(&entityhandler, &mesh, &transform);
+		m_renderer->render(params);
 
+		for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_POST_RENDER])
 		{
-			DrawQueueRenderParams params;
-			params.scene = this;
-			params.mesh = &mesh;
-			params.transformation = &transform;
-			params.registry = &m_registry;
-			for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_POST_RENDER])
-			{
-				cb(&params);
-			}
+			cb(&params);
 		}
 	};
 
@@ -162,14 +144,20 @@ void Scene::draw(float deltaTime)
 	{
 		// draw model
 		Entity entityhandler{ entity, this };
-		m_gpuInstancingRenderer->render(&entityhandler, &mesh, &instanceBatch);
+		params.entity = &entityhandler;
+		params.mesh = &mesh;
+		m_gpuInstancingRenderer->render(params);
 	}
 
 	// For some reason this group destroys the entities
 	for (auto&& [entity, skybox, mesh, transform, mat, shader] : m_registry.view<SkyboxComponent, Mesh, Transformation, DefaultMaterial, StandardShader>().each())
 	{
 		Entity entityhandler{ entity, this };
-		m_skyboxRenderer->render(&entityhandler, &mesh, &transform, &mat, &shader);
+		params.entity = &entityhandler;
+		params.mesh = &mesh;
+		params.transform = &transform;
+		params.shader = &shader;
+		m_skyboxRenderer->render(params);
 	}
 
 	//if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
@@ -187,22 +175,14 @@ void Scene::draw(float deltaTime)
 	//	}
 	//}
 
+	for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_BEGIN])
 	{
-		Scene::Params params;
-		params.scene = this;
-		params.registry = &m_registry;
-		params.context = m_context;
-		params.renderer = m_renderer.get();
+		cb(&params);
+	}
 
-		for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_BEGIN])
-		{
-			cb(&params);
-		}
-
-		for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_END])
-		{
-			cb(&params);
-		}
+	for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_END])
+	{
+		cb(&params);
 	}
 }
 

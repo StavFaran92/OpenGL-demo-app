@@ -76,15 +76,15 @@ glm::mat4 Renderer::getProjection() const
 	return m_projection;
 }
 
-void Renderer::render(Entity* entity, Mesh* mesh, Transformation* transform, Shader* shader)
+void Renderer::render(const DrawQueueRenderParams& renderParams)
 {
     //model->draw(*this, shader);
 
-    Shader* shaderToUse = shader;
+    Shader* shaderToUse = renderParams.shader;
 
     if(!shaderToUse)
     {
-        shaderToUse = &entity->getComponentInParent<StandardShader>();
+        shaderToUse = &renderParams.entity->getComponentInParent<StandardShader>();
     }
    
     if (!shaderToUse)
@@ -131,22 +131,22 @@ void Renderer::render(Entity* entity, Mesh* mesh, Transformation* transform, Sha
     //}
 
     // Set model matrix
-    if(transform)
-        shaderToUse->setModelMatrix(transform->getMatrix());
+    if(renderParams.transform)
+        shaderToUse->setModelMatrix(renderParams.transform->getMatrix());
 
     // Set time elapsed
     auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
     shaderToUse->setTime(elapsed);
 
-    if (shaderToUse->IsMaterialsEnabled() && entity->HasComponent<DefaultMaterial>())
+    if (shaderToUse->IsMaterialsEnabled() && renderParams.entity->HasComponent<DefaultMaterial>())
     {
-        auto& mat = entity->getComponent<DefaultMaterial>();
+        auto& mat = renderParams.entity->getComponent<DefaultMaterial>();
         mat.UseMaterial(*shaderToUse);
     }
 
     SetDrawType(Renderer::DrawType::Triangles);
 
-    mesh->render(*shaderToUse, *this);
+    renderParams.mesh->render(*shaderToUse, *this);
 
     shaderToUse->release();
 }

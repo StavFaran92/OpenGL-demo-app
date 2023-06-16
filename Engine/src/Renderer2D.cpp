@@ -38,6 +38,6 @@ std::shared_ptr<ICamera> Renderer2D::getCamera() const
 	return nullptr;
 }
 
-void Renderer2D::render(Entity* entity, Mesh* mesh, Transformation* transform, Shader* shader/* = nullptr*/)
+void Renderer2D::render(const DrawQueueRenderParams& renderParams)
 {
 }

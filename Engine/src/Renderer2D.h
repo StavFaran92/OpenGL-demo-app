@@ -23,6 +23,6 @@ public:
 	virtual std::shared_ptr<ICamera> getCamera() const override;
 
 	// Inherited via IRenderer
-	virtual void render(Entity* entity, Mesh* mesh, Transformation* transform, Shader* shader = nullptr) override;
+	virtual void render(const DrawQueueRenderParams& renderParams) override;
 };
 
