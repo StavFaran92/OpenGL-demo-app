@@ -7,6 +7,7 @@
 
 #include "ISelectable.h"
 #include "IPickable.h"
+#include "entt/entt.hpp"
 
 class ObjectManager;
 class ObjectFactory;
@@ -74,4 +75,7 @@ private:
 
 	uint32_t m_sceneID = 0;
 	uint32_t m_id = 0;
+
+	
+	entt::entity m_entity;
 };

@@ -1,12 +1,12 @@
 #pragma once
 #include "Core.h"
-#include "Model.h"
+#include "Mesh.h"
 
 class MeshBuilder;
 
-class EngineAPI Quad : public Model
+class EngineAPI Quad 
 {
 public:
-	MeshBuilder* createMeshBuilder() override;
+	static Mesh* createMesh();
 };
 

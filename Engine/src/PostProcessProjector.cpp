@@ -10,6 +10,32 @@
 #include "Logger.h"
 #include "TextureHandler.h"
 #include "ObjectHandler.h"
+#include "Scene.h"
+#include "Entity.h"
+
+PostProcessProjector::PostProcessProjector(Scene* scene)
+{
+	m_scene = scene;
+
+	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const IRenderer::Params* params) {
+
+		// Post process Enable writing
+		if (isEnabled())
+		{
+			enableWriting();
+		}
+	});
+
+	scene->addRenderCallback(Scene::RenderPhase::POST_RENDER_END, [=](const IRenderer::Params* params) {
+
+		// Post process Enable writing
+		if (isEnabled())
+		{
+			disableWriting();
+			draw();
+		}
+	});
+}
 
 bool PostProcessProjector::init(int windowWidth, int windowHeight)
 {
@@ -40,7 +66,7 @@ bool PostProcessProjector::init(int windowWidth, int windowHeight)
 	m_frameBuffer->unbind();
 
 	// Generate screen quad
-	m_quad = ScreenQuad::GenerateScreenQuad();
+	m_quad = ScreenQuad::GenerateScreenQuad(m_scene);
 	
 	// Generate screen shader
 	m_screenShader = Shader::createShared<Shader>("Resources/Engine/Shaders/PostProcess/PostProcessShader_default.vert", "Resources/Engine/Shaders/PostProcess/PostProcessShader_default.frag");
@@ -76,7 +102,11 @@ void PostProcessProjector::draw()
 
 	m_textureHandler->bind();
 
-	m_quad.object()->draw(*m_renderer.get(), m_screenShader.get());
+	m_renderer->SetDrawType(Renderer::DrawType::Triangles);
+
+	auto& mesh = m_quad->getComponent<Mesh>();
+
+	mesh.render(*m_screenShader, *m_renderer);
 
 	m_textureHandler->unbind();
 }
@@ -84,4 +114,14 @@ void PostProcessProjector::draw()
 void PostProcessProjector::setPostProcessShader(std::shared_ptr<Shader> shader)
 {
 	m_screenShader = shader;
+}
+
+bool PostProcessProjector::isEnabled() const
+{
+	return m_isEnabled;
+}
+
+void PostProcessProjector::setEnabled(bool enable)
+{
+	m_isEnabled = enable;
 }

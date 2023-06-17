@@ -2,11 +2,17 @@
 
 #include <unordered_set>
 
+class Scene;
+class Context;
+
 class ObjectSelection
 {
 public:
-	ObjectSelection();
+	ObjectSelection(Context* context, Scene* scene);
 	~ObjectSelection();
+
+	void enableObjectSelection(bool enable);
+	bool isEnabled() const;
 
 	//void selectObject(int x, int y);
 	bool selectObject(uint32_t id);
@@ -18,5 +24,6 @@ private:
 	
 private:
 	std::unordered_set<uint32_t> m_selectedObjects;
+	bool m_isObjectSelectionEnabled;
 };
 

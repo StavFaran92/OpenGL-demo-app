@@ -8,10 +8,13 @@
 
 #include "Core.h"
 
+#include "Entity.h"
+
 class EngineAPI Transformation
 {
 public:
-	Transformation() :
+	Transformation(std::shared_ptr<Entity> entity) :
+		m_entity(entity),
 		m_translation(0, 0, 0),
 		m_orientationLocal(1, 0, 0, 0),
 		m_orientationWorld(1, 0, 0, 0),
@@ -20,7 +23,8 @@ public:
 		m_relativeRot(1.f)
 	{}
 
-	Transformation(glm::vec3 translation) :
+	Transformation(std::shared_ptr<Entity> entity, glm::vec3 translation) :
+		m_entity(entity),
 		m_translation(translation),
 		m_orientationLocal(1, 0, 0, 0),
 		m_orientationWorld(1, 0, 0, 0),
@@ -57,7 +61,6 @@ public:
 	void rotateAroundLerp(glm::vec3 pivot, glm::vec3 axis, float angle, float t);
 	void getMatrix(glm::mat4& mat);
 
-
 private:
 	glm::vec3 m_translation;
 
@@ -69,6 +72,8 @@ private:
 	glm::vec3 m_scale;
 
 	glm::mat4 m_transformation;
+
+	std::shared_ptr<Entity> m_entity;
 
 	bool m_change = false;
 };

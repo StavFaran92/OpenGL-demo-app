@@ -8,13 +8,13 @@
 Light::Light()
 	:m_color(glm::vec3(1.0f, 1.0f, 1.0f)), m_ambientIntensity(0.2f), m_diffuseIntensity(.5f)
 {
-	m_transform = std::make_shared<Transformation>();
+	//m_transform = std::make_shared<Transformation>();
 }
 
 Light::Light(glm::vec3 color, float aIntensity, float dIntensity) :
 	m_color(color), m_ambientIntensity(aIntensity), m_diffuseIntensity(dIntensity)
 {
-	m_transform = std::make_shared<Transformation>();
+	//m_transform = std::make_shared<Transformation>();
 }
 
 void Light::useLight(Shader& shader, int index)

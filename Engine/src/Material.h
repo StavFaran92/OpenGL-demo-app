@@ -34,7 +34,12 @@ public:
 	 */
 	std::vector<const TextureHandler*> getTextureHandlers() const;
 
-	virtual ~Material();
+	void setReflection(bool enable);
+	void setRefraction(bool enable);
+
+	bool isReflective() const;
+	bool isRefractive() const;
+
 protected:
 	void SetTexturesInShader(Shader& shader);
 
@@ -45,4 +50,7 @@ protected:
 	/** Material texture Handlers */
 	std::vector<std::shared_ptr<TextureHandler>>  m_defaultTextureHandlers;
 	std::vector<std::shared_ptr<TextureHandler>>  m_textureHandlers;
+
+	bool m_isReflective = false;
+	bool m_isRefractive = false;
 };

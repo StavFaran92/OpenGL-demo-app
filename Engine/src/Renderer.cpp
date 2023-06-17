@@ -9,7 +9,20 @@
 #include "EditorCamera.h"
 #include "SkyboxRenderer.h"
 #include "Logger.h"
-#include "Model.h"
+#include "Mesh.h"
+//#include "Model.h"
+#include "Entity.h"
+#include "Engine.h"
+#include "Context.h"
+#include "Scene.h"
+#include "TimeManager.h"
+#include "Entity.h"
+#include "Skybox.h"
+#include "Transformation.h"
+#include "Material.h"
+#include "DefaultMaterial.h"
+#include "StandardShader.h"
+#include "Component.h"
 
 
 Renderer::Renderer()
@@ -23,11 +36,6 @@ Renderer::Renderer(const Renderer& other)
 {
 	m_camera = other.m_camera;
 	m_projection = other.m_projection;
-}
-
-void Renderer::render(Model* model, Shader* shader /* = nullptr*/)
-{
-	model->draw(*this, shader);
 }
 
 void Renderer::draw(const VertexArrayObject& vao, Shader& shader) const
@@ -68,7 +76,84 @@ glm::mat4 Renderer::getProjection() const
 	return m_projection;
 }
 
-void Renderer::Clear() const
+void Renderer::render(const DrawQueueRenderParams& renderParams)
+{
+    //model->draw(*this, shader);
+
+    Shader* shaderToUse = renderParams.shader;
+
+    if(!shaderToUse)
+    {
+        shaderToUse = &renderParams.entity->getComponentInParent<StandardShader>();
+    }
+   
+    if (!shaderToUse)
+    {
+        shaderToUse = Engine::get()->getContext()->getStandardShader();
+    }
+
+    assert(shaderToUse);
+
+    shaderToUse->use();
+
+    //auto context = Engine::get()->getContext();
+    //if (context->getActiveScene()->getSkybox() && entity->HasComponent<Material>())
+    //{
+    //    auto mat = entity->getComponent<Material>();
+    //    if (mat.isReflective())
+    //    {
+    //        shaderToUse = context->GetReflectionShader();
+    //        shaderToUse->use();
+    //        shaderToUse->setValue("skybox", 0);
+    //        auto textures = context->getActiveScene()->getSkybox()->getTextureHandlers();
+    //        if (textures.size() <= 0)
+    //        {
+    //            logError("Skybox does not contain cubemap texture.");
+    //            return;
+    //        }
+    //        textures[0]->bind();
+    //    }
+
+    //    if (mat.isRefractive())
+    //    {
+    //        shaderToUse = context->GetRefractiveShader();
+    //        shaderToUse->use();
+    //        shaderToUse->setValue("skybox", 0);
+    //        shaderToUse->setValue("refractiveRatio", 1 / 1.52f);
+    //        auto textures = context->getActiveScene()->getSkybox()->getTextureHandlers();
+    //        if (textures.size() <= 0)
+    //        {
+    //            logError("Skybox does not contain cubemap texture.");
+    //            return;
+    //        }
+    //        textures[0]->bind();
+    //    }
+    //}
+
+    // Set model matrix
+    if(renderParams.transform)
+        shaderToUse->setModelMatrix(renderParams.transform->getMatrix());
+
+    // Set time elapsed
+    auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
+    shaderToUse->setTime(elapsed);
+
+    
+    if (shaderToUse->IsMaterialsEnabled() && renderParams.entity->HasComponent<DefaultMaterial>())
+    {
+        auto& mat = renderParams.entity->getComponent<DefaultMaterial>();
+        // this causes the skybox to not render
+        mat.UseMaterial(*shaderToUse);
+    }
+
+    SetDrawType(Renderer::DrawType::Triangles);
+
+    renderParams.mesh->render(*shaderToUse, *this);
+
+    shaderToUse->release();
+}
+
+void Renderer::clear() const
 {
 	// Clear window
 	//glClearStencil(0);

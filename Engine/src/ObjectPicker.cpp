@@ -9,6 +9,12 @@
 #include "FrameBufferObject.h"
 #include "RenderBufferObject.h"
 #include "TextureHandler.h"
+#include "Input.h"
+#include "IRenderer.h"
+#include "ICamera.h"
+#include "PickingShader.h"
+#include "Model.h"
+#include "Entity.h"
 
 #include "Logger.h"
 
@@ -41,6 +47,68 @@ bool ObjectPicker::init(int windowWidth, int windowHeight)
 	m_frameBuffer->unbind();
 
 	return true;
+}
+
+ObjectPicker::ObjectPicker(Context* context, Scene* scene)
+{
+	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const IRenderer::Params* params) {
+		// Picking Phase
+		if (scene->isObjectSelectionEnabled() && m_isPickingPhaseActive)
+		{
+			//// Enable writing to picking frame buffer
+			//enableWriting();
+
+			//// Set uniforms in picking shader
+			//auto pickingShader = context->getPickingShader();
+			//pickingShader->use();
+			//pickingShader->setViewMatrix(params->renderer->getCamera()->getView());
+			//pickingShader->setProjectionMatrix(params->renderer->getProjection());
+
+			//for (auto [entity, mesh, transform] : params->registry->group<Mesh, Transformation>().each())
+			//{
+			//	pickingShader->use();
+			//	pickingShader->setModelMatrix(transform.getMatrix());
+			//	pickingShader->setObjectIndex(model.getID() + 1);
+			//	pickingShader->release();
+
+			//	// Draw model
+			//	Entity entityhandler{ entity, scene };
+			//	params->renderer->render(&entityhandler, &mesh, &transform, pickingShader);
+			//}
+
+			//// Release picking shader and stop writing to frame buffer
+			//pickingShader->release();
+			//disableWriting();
+
+			//// Get mouse X & Y
+			//int x, y;
+			//Engine::get()->getInput()->getMouse()->getMousePosition(x, y);
+
+			//// Pick object in scene according to X & Y
+			//auto objectID = pickObject(x, y);
+
+
+
+			//// If object returned != -1 then an object has been picked (-1 means background)
+			//if (objectID != -1)
+			//{
+			//	auto obj = Engine::get()->getObjectManager()->getObjectById(objectID);
+			//	if (obj)
+			//	{
+			//		obj->pick();
+			//		obj->select();
+
+			//	}
+			//}
+
+			//// Turn picking phase flag off
+			//m_isPickingPhaseActive = false;
+		}
+	});
+
+	Engine::get()->getInput()->getMouse()->onMousePressed(Mouse::MouseButton::LeftMousebutton, [&](SDL_Event e) {
+		m_isPickingPhaseActive = true;
+	});
 }
 
 int ObjectPicker::pickObject(int x, int y)
@@ -83,4 +151,9 @@ void ObjectPicker::disableWriting()
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST);
+}
+
+bool ObjectPicker::isPickingPhaseActive() const
+{
+	return m_isPickingPhaseActive;
 }

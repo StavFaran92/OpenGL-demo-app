@@ -81,7 +81,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>ENGINE_PLATFORM_WINDOWS;ENGINE_BUILD_DLL;STB_IMAGE_IMPLEMENTATION;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(ProjectDir)include\sge;$(ProjectDir)extern\imgui;$(ProjectDir)extern\assimp\include;$(ProjectDir)extern\SDL2\include\SDL2;$(ProjectDir)extern\GLM;$(ProjectDir)extern\glew\include;$(ProjectDir)extern\stb_image;$(ProjectDir)extern\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(ProjectDir)include\sge;$(ProjectDir)extern\;$(ProjectDir)extern\imgui;$(ProjectDir)extern\assimp\include;$(ProjectDir)extern\SDL2\include\SDL2;$(ProjectDir)extern\GLM;$(ProjectDir)extern\glew\include;$(ProjectDir)extern\stb_image;$(ProjectDir)extern\entt;$(ProjectDir)extern\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -116,6 +116,7 @@
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Context.cpp" />
     <ClCompile Include="src\Quad.cpp" />
+    <ClCompile Include="src\ShapeFactory.cpp" />
     <ClCompile Include="src\Sphere.cpp" />
     <ClCompile Include="src\DirectionalLight.cpp" />
     <ClCompile Include="src\EditorCamera.cpp" />
@@ -165,8 +166,11 @@
     <ClCompile Include="src\TimeManager.cpp" />
     <ClCompile Include="src\ShaderExtender.cpp" />
     <ClCompile Include="src\DefaultMaterial.cpp" />
+    <ClCompile Include="src\Entity.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Component.h" />
+    <ClInclude Include="src\RenderableComponent.h" />
     <ClInclude Include="src\ShaderExtender.h" />
     <ClInclude Include="src\InstanceBatch.h" />
     <ClInclude Include="src\GpuInstancingRenderer.h" />
@@ -188,6 +192,7 @@
     <ClInclude Include="src\Box.h" />
     <ClInclude Include="src\Quad.h" />
     <ClInclude Include="src\ISelectable.h" />
+    <ClInclude Include="src\ShapeFactory.h" />
     <ClInclude Include="src\Sphere.h" />
     <ClInclude Include="src\Core.h" />
     <ClInclude Include="src\ApplicationConstants.h" />
@@ -254,6 +259,7 @@
     <ClInclude Include="src\TimeManager.h" />
     <ClInclude Include="src\StandardShader.h" />
     <ClInclude Include="src\DefaultMaterial.h" />
+    <ClInclude Include="src\Entity.h" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="extern\imgui\imgui.natvis" />

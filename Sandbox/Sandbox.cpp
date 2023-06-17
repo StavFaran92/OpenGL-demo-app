@@ -1,56 +1,6 @@
 #include "EntryPoint.h"
 #include "sge.h"
 
-float colors[108] = {
-	//Red
-	1.0f,  0.0f,  0.0f,
-	1.0f,  0.0f,  0.0f,
-	1.0f,  0.0f,  0.0f,
-	1.0f,  0.0f,  0.0f,
-	1.0f,  0.0f,  0.0f,
-	1.0f,  0.0f,  0.0f,
-
-	//Green
-	0.0f,  1.0f,  0.0f,
-	0.0f,  1.0f,  0.0f,
-	0.0f,  1.0f,  0.0f,
-	0.0f,  1.0f,  0.0f,
-	0.0f,  1.0f,  0.0f,
-	0.0f,  1.0f,  0.0f,
-
-	//Blue
-	0.0f,  0.0f,  1.0f,
-	0.0f,  0.0f,  1.0f,
-	0.0f,  0.0f,  1.0f,
-	0.0f,  0.0f,  1.0f,
-	0.0f,  0.0f,  1.0f,
-	0.0f,  0.0f,  1.0f,
-
-	//Yellow
-	1.0f,  1.0f,  0.0f,
-	1.0f,  1.0f,  0.0f,
-	1.0f,  1.0f,  0.0f,
-	1.0f,  1.0f,  0.0f,
-	1.0f,  1.0f,  0.0f,
-	1.0f,  1.0f,  0.0f,
-
-	//Purple
-	1.0f,  0.0f,  1.0f,
-	1.0f,  0.0f,  1.0f,
-	1.0f,  0.0f,  1.0f,
-	1.0f,  0.0f,  1.0f,
-	1.0f,  0.0f,  1.0f,
-	1.0f,  0.0f,  1.0f,
-
-	//White
-	1.0f,  1.0f,  1.0f,
-	1.0f,  1.0f,  1.0f,
-	1.0f,  1.0f,  1.0f,
-	1.0f,  1.0f,  1.0f,
-	1.0f,  1.0f,  1.0f,
-	1.0f,  1.0f,  1.0f,
-};
-
 class Sandbox : public Application
 {
 public:
@@ -59,42 +9,51 @@ public:
 
 
 	ObjectHandler<Model> guitar;
-	ObjectHandler<Box> box;
+	//ObjectHandler<Box> box;
 	Sphere* sphere1;
 	Sphere* sphere2;
-	ObjectHandler<Skybox> skybox;
+	//ObjectHandler<Skybox> skybox;
 	//Transformation trans1{ { 5,5,5 } };
 	//Transformation trans2{ { 2,2,2 } };
 	
-
+	//std::shared_ptr<Entity>skybox;
+	//std::shared_ptr<Entity>box;
 	std::vector<Transformation> transformations;
 	
 
 	void start() override
 	{
-		skybox = Skybox::CreateSkybox();
+		// If i remove this the skybox works
 
-		box = ModelBuilder::builder<Box>()
-			.build();
+		auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
+
+		auto box1 = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get(), 1, 32, 32);
+		//box1->getComponent<Transformation>().translate({1, 0,0});
+		//auto box2 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+
 
 		//auto importer = getContext()->getModelImporter();
-		//guitar = importer->loadModelFromFile("D:\\program files\\downloads\\backpack\\backpack.obj");
+		//auto guitar = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());
+
+		//auto& transform = guitar->getComponent<Transformation>();
+		//transform.translate({ 10, 0,0 });
 
 		//transformations.push_back(&trans1);
 		//transformations.push_back(&trans2);
 
-		const int gridLength = 100;
+		//const int gridLength = 100;
 
-		for (int i = 0; i < gridLength; i++)
-		{
-			for (int j = 0; j < gridLength; j++)
-			{
-				Transformation trans({(i - gridLength / 2) * 2, 0, (j - gridLength / 2) * 2});
-				transformations.push_back(trans);
-			}
-		}
+		//for (int i = 0; i < gridLength; i++)
+		//{
+		//	for (int j = 0; j < gridLength; j++)
+		//	{
+		//		Transformation trans({(i - gridLength / 2) * 2, 0, (j - gridLength / 2) * 2});
+		//		transformations.push_back(trans);
+		//	}
+		//}
 
-		
+		//box1->addComponent<InstanceBatch>( transformations );
+		//guitar->RemoveComponent<RenderableComponent>( );
 
 		//sphere1 = (Sphere*)ModelBuilder::builder<Sphere>(1, 36, 18)
 		//	.build();
@@ -108,7 +67,7 @@ public:
 		//box->addChildren(sphere1);
 		//sphere1->addChildren(sphere2);
 
-		//postProcess(PostProcess::grayscale());
+		postProcess(PostProcess::grayscale());
 	}
 
 	void update(float deltaTime) override
@@ -131,13 +90,13 @@ public:
 		//	sphere1->rotate({ 0,0,1 }, 1);
 		//}
 
-		getContext()->getActiveScene()->drawMultiple({box, transformations});
+		//getContext()->getActiveScene()->drawMultiple({box, transformations});
 
-		//draw(box);
-		//draw(guitar);
-		//draw(sphere1);
-		//draw(sphere2);
-		getContext()->getActiveScene()->drawSkybox(skybox);
+		////draw(box);
+		////draw(guitar);
+		////draw(sphere1);
+		////draw(sphere2);
+		//getContext()->getActiveScene()->drawSkybox(skybox);
 
 	}
 

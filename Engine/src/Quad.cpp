@@ -17,7 +17,7 @@ static const unsigned int indices[] = {
 	1, 0, 3    // second triangle
 };
 
-MeshBuilder* Quad::createMeshBuilder()
+Mesh* Quad::createMesh()
 {
 	VertexLayout layout;
 	layout.numOfVertices = 4;
@@ -25,8 +25,9 @@ MeshBuilder* Quad::createMeshBuilder()
 	layout.attribs.emplace_back(LayoutAttribute::Normals);
 	layout.attribs.emplace_back(LayoutAttribute::Texcoords);
 
-	return &MeshBuilder::builder()
+	return MeshBuilder::builder()
 		.setRawVertices((float*)vertices, layout)
-		.setRawIndices((unsigned int*)indices, sizeof(indices) / sizeof(unsigned int));
+		.setRawIndices((unsigned int*)indices, sizeof(indices) / sizeof(unsigned int))
+		.build();
 }
 

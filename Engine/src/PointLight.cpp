@@ -9,7 +9,7 @@ PointLight::PointLight(glm::vec3 color, glm::vec3 pos, float aIntensity, float d
 {
 	m_name = "pointLights";
 
-	m_transform->setPosition(pos);
+	//m_transform->setPosition(pos);
 }
 
 void PointLight::SetAttenuation(Attenuation attenuation)
@@ -21,7 +21,7 @@ void PointLight::useLight(Shader& shader, int index)
 {
 	Light::useLight(shader, index);
 
-	shader.setValue(m_name + "["+std::to_string(index) +"]"+ ".position", m_transform->getPosition());
+	
 	shader.setValue(m_name + "["+std::to_string(index) +"]"+ ".constant", m_attenuation.constant);
 	shader.setValue(m_name + "["+std::to_string(index) +"]"+ ".linear", m_attenuation.linear);
 	shader.setValue(m_name + "["+std::to_string(index) +"]"+ ".quadratic", m_attenuation.quadratic);

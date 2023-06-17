@@ -1,17 +1,10 @@
 #pragma once
 #include "Core.h"
 
-#include "Model.h"
+#include "Mesh.h"
 
-class EngineAPI Sphere : public Model
+class EngineAPI Sphere
 {
 public:
-	Sphere(float radius, int sectors, int stacks)
-		: m_radius(radius), m_sectors(sectors), m_stacks(stacks) {};
-
-	MeshBuilder* createMeshBuilder() override;
-private:
-	const float m_radius = 0;
-	const int m_sectors = 0;
-	const int m_stacks = 0;
+	static Mesh* createMesh(float radius, int sectors, int stacks);
 };

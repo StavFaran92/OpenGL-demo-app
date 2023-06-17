@@ -13,7 +13,7 @@ class GpuInstancingRenderer : public Renderer
 {
 public:
 	GpuInstancingRenderer();
-	void render(const std::shared_ptr<InstanceBatch>& batch, Shader* shader = nullptr);
+	void render(const DrawQueueRenderParams& renderParams);
 	void draw(const VertexArrayObject& vao, Shader& shader) const override;
 private:
 	size_t m_amount = 0;

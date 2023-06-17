@@ -53,9 +53,6 @@ void Material::addTextureHandlers(std::vector<TextureHandler*>& texturesHandlers
 	}
 }
 
-Material::~Material()
-{}
-
 void Material::SetTexturesInShader(Shader & shader)
 {
 	// Initialized counters
@@ -69,6 +66,7 @@ void Material::SetTexturesInShader(Shader & shader)
 		textures = m_defaultTextureHandlers;
 	}
 
+	// This causes skybox to not render
 	// Iterate the mesh's textures
 	for (auto i = 0; i < textures.size(); i++)
 	{
@@ -92,4 +90,23 @@ void Material::SetTexturesInShader(Shader & shader)
 		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
 		shader.setValue(("material." + typeStr + count).c_str(), i);
 	}
+}
+
+void Material::setReflection(bool enable)
+{
+	m_isReflective = enable;
+}
+
+void Material::setRefraction(bool enable)
+{
+	m_isRefractive = enable;
+}
+
+bool Material::isReflective() const
+{
+	return m_isReflective;
+}
+bool Material::isRefractive() const
+{
+	return m_isRefractive;
 }

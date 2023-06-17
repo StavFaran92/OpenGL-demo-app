@@ -188,6 +188,8 @@
     <ClCompile Include="src\TimeManager.cpp" />
     <ClCompile Include="src\ShaderExtender.cpp" />
     <ClCompile Include="src\DefaultMaterial.cpp" />
+    <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\ShapeFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -421,6 +423,10 @@
     <ClInclude Include="src\TimeManager.h" />
     <ClInclude Include="src\StandardShader.h" />
     <ClInclude Include="src\DefaultMaterial.h" />
+    <ClInclude Include="src\Entity.h" />
+    <ClInclude Include="src\ShapeFactory.h" />
+    <ClInclude Include="src\RenderableComponent.h" />
+    <ClInclude Include="src\Component.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

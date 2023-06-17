@@ -7,6 +7,8 @@
 #include "ModelImporter.h"
 #include "ModelBuilder.h"
 #include "ObjectHandler.h"
+#include "ShapeFactory.h"
+#include "Entity.h"
 
 enum class PrimitiveType
 {
@@ -230,15 +232,14 @@ void LightCreatorWindow()
         {
             if (lightType == LightType::DirectionalLight) 
             {
-                
-                auto light = new DirectionalLight(color, dir, ambientIntensity, diffuseIntensity);
-                Engine::get()->getContext()->getActiveScene()->addDirectionalLight(light);
+                auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
+                e->addComponent<DirectionalLight>(color, dir, ambientIntensity, diffuseIntensity);
 
             }
             else if (lightType == LightType::PointLight)
             {
-                auto light = new PointLight(color, pos, ambientIntensity, diffuseIntensity, attenuation);
-                Engine::get()->getContext()->getActiveScene()->addPointLight(light);
+                auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
+                e->addComponent<PointLight>(color, pos, ambientIntensity, diffuseIntensity, attenuation);
             }
 
             ShowLightCreatorWindow = false;
@@ -300,13 +301,10 @@ void ShowModelCreatorWindow()
 
             logInfo("Open file: " + path);
 
-            auto model = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str());
-            std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-            model.object()->setMaterial(material);
-            model.object()->getTransformation()->setPosition(pos);
-            model.object()->getTransformation()->setScale(scale);
+            auto entity = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str(), Engine::get()->getContext()->getActiveScene().get());
 
-            Engine::get()->getContext()->getActiveScene()->addModel(model.object());
+            entity->getComponent<Transformation>().setPosition(pos);
+            entity->getComponent<Transformation>().setScale(scale);
 
             showModelCreatorWindow = false;
 
@@ -409,28 +407,24 @@ void ShowPrimitiveCreatorWindow()
 
             //auto texture = Texture::loadTextureFromFile(texturePath.c_str(), flipTexture);
 
-            ObjectHandler<Model> modelHandler;
+            std::shared_ptr<Entity> entity;
             if (shape == PrimitiveType::Quad)
             {
-                modelHandler = ModelBuilder::builder<Quad>().build();
+                //entity = ModelBuilder::builder<Quad>().build();
             }
             else if (shape == PrimitiveType::Cube)
             {
-                modelHandler = ModelBuilder::builder<Box>().build();
+                entity = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
             }
 
-            assert(modelHandler);
+            assert(entity);
 
-            if (modelHandler.isValid())
+            if (entity->valid())
             {
-                std::shared_ptr<Material> material = std::make_shared<Material>(32.0f);
-                modelHandler.object()->setMaterial(material);
-                modelHandler.object()->getTransformation()->setPosition(pos);
-                modelHandler.object()->getTransformation()->setScale(scale);
+                entity->getComponent<Transformation>().setPosition(pos);
+                entity->getComponent<Transformation>().setScale(scale);
 
-                //Engine::get()->getContext()->getActiveScene()->addModel(model);
-
-                logInfo("Added Model successfully.");
+                logInfo("Added Entity successfully.");
             }
 
             showPrimitiveCreatorWindow = false;

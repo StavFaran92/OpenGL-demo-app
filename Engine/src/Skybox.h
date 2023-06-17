@@ -1,21 +1,15 @@
 #pragma once
 
-#include "Box.h"
 #include "Core.h"
+#include "Entity.h"
 
-template<typename T> class ObjectHandler;
-class ObjectFactory;
-
-
-class EngineAPI Skybox : public Box
+class EngineAPI Skybox
 {
 public:
-    static ObjectHandler<Skybox> CreateSkybox();
+    static std::shared_ptr<Entity> CreateSkybox(Scene* scene);
 
-    void draw(IRenderer& renderer, Shader* shader = nullptr) override;
     
 private:
-    friend class ObjectFactory;
     Skybox() = default;
 };
 

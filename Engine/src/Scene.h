@@ -9,10 +9,10 @@
 #include <functional>
 
 #include "Core.h"
-
-#include "InstanceBatch.h"
+#include "entt/entt.hpp"
 
 #include "glm/glm.hpp"
+#include "IRenderer.h"
 
 
 class Model;
@@ -30,49 +30,31 @@ class Context;
 class ObjectPicker;
 class Transformation;
 class GpuInstancingRenderer;
+class Entity;
+class IRenderer;
+class Mesh;
+class Transformation;
+class InstanceBatch;
+class SkyboxRenderer;
 template<typename T> class ObjectHandler;
 
 class EngineAPI Scene
 {
 public:
-	struct Params
-	{
-		const Scene* scene;
-	};
-
-	struct DrawQueuePreRenderParams : public Scene::Params
-	{
-		const Model* model;
-		std::vector<const DirectionalLight*> directionalLights;
-		std::vector<const PointLight*> pointLights;
-	};
-
 	enum class RenderPhase
 	{
+		PRE_RENDER_BEGIN,
+		PRE_RENDER_END,
 		DRAW_QUEUE_PRE_RENDER,
 		DRAW_QUEUE_POST_RENDER,
+		POST_RENDER_BEGIN,
+		POST_RENDER_END
 	};
 
-	using RenderCallback = std::function<void(const Params*)>;
+	using RenderCallback = std::function<void(const IRenderer::Params*)>;
 public:
 	// -------------------- Methods -------------------- //
 	Scene(Context* context);
-	
-
-	bool addModel(Model* model);
-	bool removeModel(uint32_t id);
-	bool removeModel(Model* model);
-
-	bool addPointLight(PointLight* pLight);
-	bool removePointLight(PointLight* pLight);
-
-	bool addDirectionalLight(DirectionalLight* dLight);
-	bool removeDirectionalLight(DirectionalLight* dLight);
-
-	bool addObject(Object3D* object);
-	void removeObject(Object3D* object);
-
-	void drawSkybox(ObjectHandler<Skybox> skybox);
 
 	void setPostProcess(bool value);
 	bool setPostProcessShader(Shader* shader);
@@ -81,24 +63,25 @@ public:
 	void removeCoroutine(std::function<bool(float)> coroutine);
 
 	std::shared_ptr<Renderer> getRenderer() const;
-	std::shared_ptr<Renderer> getSkyboxRenderer();
-
-	Skybox* getSkybox();
 
 	uint32_t getID() const { return m_id; }
 
 	bool isSelected(uint32_t id) const;
+	bool isObjectSelectionEnabled() const;
 	void enableObjectSelection(bool isEnabled);
 	void selectObject(uint32_t id);
 	void clearObjectSelection();
+	bool isPickingPhaseActive() const;
 
-	void update(ObjectHandler<Object3D> handler);
-	void draw(ObjectHandler<Model> handler);
-
-	void drawMultiple(const InstanceBatch& batch);
+	//void addGUI();
 
 	RenderCallback* addRenderCallback(RenderPhase renderPhase, RenderCallback renderCallback);
 	void removeRenderCallback(RenderCallback* callback);
+
+	entt::registry& getRegistry();
+
+	std::shared_ptr<Entity> createEntity();
+	void removeEntity(std::shared_ptr<Entity> e);
 	
 
 
@@ -115,36 +98,20 @@ private:
 
 private:
 	// -------------------- Attributes -------------------- //
-	std::unordered_map<uint32_t, std::shared_ptr<Model>> m_models;
-	uint32_t m_modelCounter = 0;
-	std::unordered_map<uint32_t, std::shared_ptr<PointLight>> m_pointLights;
-	uint32_t m_pointLightCounter = 0;
-	std::unordered_map<uint32_t, std::shared_ptr<DirectionalLight>> m_directionalLights;
-	uint32_t m_directionalLightCounter = 0;
+	uint32_t m_id = 0;
+	Context* m_context = nullptr;
 
+	// Renderers
 	std::shared_ptr<Renderer> m_renderer = nullptr;
 	std::shared_ptr<GpuInstancingRenderer> m_gpuInstancingRenderer = nullptr;
-	std::shared_ptr<Renderer> m_skyboxRenderer = nullptr;
+	std::shared_ptr<SkyboxRenderer> m_skyboxRenderer = nullptr;
 
-	uint32_t m_id = 0;
-
+	// Scene Services
 	std::shared_ptr<ObjectSelection> m_objectSelection = nullptr;
 	std::shared_ptr<PostProcessProjector> m_postProcessProjector = nullptr;
 	std::shared_ptr<CoroutineSystem> m_coroutineManager = nullptr;
 	std::shared_ptr<ObjectPicker> m_objectPicker = nullptr;
 
-	std::deque<Model*> m_drawQueue;
-	std::deque<Object3D*> m_updateQueue;
-	Skybox* m_skybox = nullptr;
-
-	std::deque<Model*> m_debugModelDeque;
-	std::deque<std::shared_ptr<InstanceBatch>> m_instanceBatchQueue;
-
-	Context* m_context;
-
-	bool m_isPostProcessEnabled = false;
-	bool m_pickingPhaseActive = false;
-	bool m_isObjectSelectionEnabled = false;
-
+	entt::registry m_registry;
 	std::map<RenderPhase, std::vector<RenderCallback>> m_renderCallbacks;
 };

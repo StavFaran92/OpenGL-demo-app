@@ -81,9 +81,6 @@ public:
 
 	std::vector<const TextureHandler*> getTextureHandlers();
 
-	void setReflection(bool enable);
-	void setRefraction(bool enable);
-
 	virtual MeshBuilder* createMeshBuilder();
 
 	virtual void draw(IRenderer& renderer, Shader* shader = nullptr);
@@ -103,7 +100,4 @@ protected:
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
 	std::shared_ptr<StandardShader> m_shader = nullptr;
 	std::shared_ptr<Material> m_material = nullptr;
-
-	bool m_isReflective = false;
-	bool m_isRefractive = false;
 };

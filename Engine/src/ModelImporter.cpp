@@ -12,6 +12,9 @@
 #include "Model.h"
 #include "ObjectHandler.h"
 #include "DefaultMaterial.h"
+#include "Entity.h"
+#include "Component.h"
+#include "StandardShader.h"
 
 ModelImporter::ModelImporter()
 {
@@ -25,19 +28,19 @@ void ModelImporter::init()
 	logInfo("Model importer init successfully.");
 }
 
-ObjectHandler<Model> ModelImporter::loadModelFromFile(const std::string& path)
+std::shared_ptr<Entity> ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 {
 	// validate init
 	if (m_importer == nullptr)
 	{
 		logError("Importer not initialized.");
-		return ObjectHandler<Model>::EmptyHandler;
+		return std::make_shared<Entity>();
 	}
 
 	if (!std::filesystem::exists(path))
 	{
 		logError("File doesn't exists: " + path);
-		return ObjectHandler<Model>::EmptyHandler;
+		return std::make_shared<Entity>();
 	}
 
 	// read scene from file
@@ -47,38 +50,38 @@ ObjectHandler<Model> ModelImporter::loadModelFromFile(const std::string& path)
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
 		logError("ERROR::ASSIMP::{}", m_importer->GetErrorString());
-		return ObjectHandler<Model>::EmptyHandler;
+		return std::make_shared<Entity>();
 	}
 
 	//create new model
-	auto modelHandler = ObjectFactory::create<Model>();
-
-	std::shared_ptr<Material> material = std::make_shared<DefaultMaterial>(32.0f);
-	modelHandler.object()->setMaterial(material);
+	auto entity = pScene->createEntity();
+	StandardShader* shader = Shader::create<StandardShader>();
+	entity->addComponent<StandardShader>(shader);
+	addDefaultComponents(entity.get());
 
 	// create new model session
 	ModelImportSession session;
 	session.filepath = path;
-	session.fileDir = path.substr(0, path.find_last_of('\\'));
+	session.fileDir = path.substr(0, path.find_last_of('/'));
 
 	// place session in session map
-	m_sessions[modelHandler.getID()] = session;
+	m_sessions[entity->handlerID()] = session;
 
-	processNode(scene->mRootNode, scene, session, *modelHandler.object());
+	processNode(scene->mRootNode, scene, session, entity.get(), pScene);
 
-	return modelHandler;
+	return entity;
 }
 
-void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporter::ModelImportSession& session, Model& model)
+void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporter::ModelImportSession& session, Entity* entity, Scene* pScene)
 {
 	// process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		model.addMesh(processMesh(mesh, scene, session));
+		entity->addComponent<Mesh>(processMesh(mesh, scene, session));
 		auto textureHandlers = new std::vector<TextureHandler*>();
 
-		auto material = model.getMaterial();
+		auto& material = entity->addComponent<DefaultMaterial>(32.0f);
 		// process material
 		if (mesh->mMaterialIndex >= 0)
 		{
@@ -90,12 +93,17 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 			auto specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, session);
 			textureHandlers->insert(textureHandlers->end(), specularMaps.begin(), specularMaps.end());
 		}
-		material->addTextureHandlers(*textureHandlers);
+		material.addTextureHandlers(*textureHandlers);
 	}
 	// then do the same for each of its children
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
-		processNode(node->mChildren[i], scene, session, model);
+		auto childEntity = pScene->createEntity();
+		addDefaultComponents(childEntity.get());
+
+		childEntity->setParent(entity);
+
+		processNode(node->mChildren[i], scene, session, childEntity.get(), pScene);
 	}
 }
 
@@ -167,7 +175,7 @@ std::vector<TextureHandler*> ModelImporter::loadMaterialTextures(aiMaterial* mat
 		auto textureName = str.C_Str();
 
 		// Texture not found in cache -> load it and add to cache
-		auto textureHandler = Texture::loadTextureFromFile(session.fileDir + "\\" + textureName);
+		auto textureHandler = Texture::loadTextureFromFile(session.fileDir + "/" + textureName);
 		auto pType = getTextureType(type);
 		if (pType != Texture::Type::None)
 		{
@@ -176,6 +184,14 @@ std::vector<TextureHandler*> ModelImporter::loadMaterialTextures(aiMaterial* mat
 		}
 	}
 	return textureHandlers;
+}
+
+void ModelImporter::addDefaultComponents(Entity* entity)
+{
+	//entity->addComponent<DefaultMaterial>(32.0f);
+	//auto shader = Shader::create<StandardShader>();
+	//entity->addComponent<StandardShader>(shader);
+	entity->addComponent<RenderableComponent>();
 }
 
 Texture::Type ModelImporter::getTextureType(aiTextureType type)

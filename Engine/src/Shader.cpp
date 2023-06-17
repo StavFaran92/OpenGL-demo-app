@@ -21,34 +21,6 @@ Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFil
 	m_geometryShaderFilepath(geometryShader)
 {}
 
-Shader::Shader(const Shader& other) :
-	m_id(0),
-	m_vertexShaderFilepath(other.m_vertexShaderFilepath),
-	m_FragmentShaderFilepath(other.m_FragmentShaderFilepath),
-	m_geometryShaderFilepath(other.m_geometryShaderFilepath)
-{
-	m_enableLight = other.m_enableLight;
-	m_enableMaterial = other.m_enableMaterial;
-	m_enableTexture = other.m_enableTexture;
-	m_enableColors = other.m_enableColors;
-}
-
-Shader& Shader::operator=(const Shader& other)
-{
-	m_vertexShaderFilepath = other.m_vertexShaderFilepath;
-	m_FragmentShaderFilepath = other.m_FragmentShaderFilepath;
-	m_geometryShaderFilepath = other.m_geometryShaderFilepath;
-
-	m_enableLight = other.m_enableLight;
-	m_enableMaterial = other.m_enableMaterial;
-	m_enableTexture = other.m_enableTexture;
-	m_enableColors = other.m_enableColors;
-
-	init();
-
-	return *this;
-}
-
 
 void Shader::init()
 {
@@ -337,5 +309,6 @@ void Shader::setTime(float time)
 }
 
 Shader::~Shader() {
-	clear();
+	// TODO fix, this is currently a gpu memory leak
+	//clear();
 }

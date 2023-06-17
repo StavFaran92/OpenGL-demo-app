@@ -6,7 +6,6 @@
 #include "PointLight.h"
 #include "Engine.h"
 #include "ICamera.h"
-#include "Model.h"
 #include "ObjectSelection.h"
 #include "SkyboxRenderer.h"
 #include "PostProcessProjector.h"
@@ -23,6 +22,16 @@
 #include "GpuInstancingRenderer.h"
 #include "InstanceBatch.h"
 #include "StandardShader.h"
+#include "Entity.h"
+#include "Transformation.h"
+#include "Mesh.h"
+#include "RenderableComponent.h"
+#include "Component.h"
+#include "Shader.h"
+#include "InstanceBatch.h"
+#include "SkyboxRenderer.h"
+#include "Material.h"
+#include "DefaultMaterial.h"
 
 void Scene::init(Context* context)
 {
@@ -34,36 +43,28 @@ void Scene::init(Context* context)
 	m_renderer = std::make_shared<Renderer>();
 	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
 	m_gpuInstancingRenderer = std::make_shared<GpuInstancingRenderer>();
-
-	m_objectSelection = std::make_shared<ObjectSelection>();
-
-	m_objectPicker = std::make_shared<ObjectPicker>();
+	m_objectSelection = std::make_shared<ObjectSelection>(m_context, this);
+	m_objectPicker = std::make_shared<ObjectPicker>(m_context, this);
 	if (!m_objectPicker->init(width, height))
 	{
 		logError("Object picker failed to init!");
 	}
 
-	m_postProcessProjector = std::make_shared<PostProcessProjector>();
+	m_postProcessProjector = std::make_shared<PostProcessProjector>(this);
 	if (!m_postProcessProjector->init(width, height))
 	{
 		logError("Post process projector failed to init!");
 	}
+	m_postProcessProjector->setEnabled(true);
 
 	m_coroutineManager = std::make_shared<CoroutineSystem>();
 
-	auto light = new DirectionalLight();
-	addDirectionalLight(light);
-
-	Engine::get()->getInput()->getMouse()->onMousePressed(Mouse::MouseButton::LeftMousebutton, [&](SDL_Event e)
-	{
-		m_pickingPhaseActive = true;
-	});
+	// Add default dir light
+	createEntity()->addComponent<DirectionalLight>();
 }
 
 void Scene::update(float deltaTime)
 {
-	m_renderer->Clear();
-
 	m_renderer->getCamera()->update(deltaTime);
 
 	// Advance all coroutines
@@ -76,252 +77,120 @@ void Scene::update(float deltaTime)
 		}
 	}
 
-	//Update models
-	for (auto model = m_models.begin(); model != m_models.end(); ++model)
+	auto view = m_registry.view<Transformation>();
+
+	for (auto&& [entity, transformation] : view.each())
 	{
-		model->second->update(deltaTime);
+		transformation.update(deltaTime);
 	}
-
-	while (!m_updateQueue.empty())
-	{
-		auto object = m_updateQueue.front();
-		m_updateQueue.pop_front();
-
-		object->update(deltaTime);
-	}
-
-	if (m_skybox)
-		m_skybox->update(deltaTime);
 }
 
 void Scene::draw(float deltaTime)
 {
+	m_renderer->clear();
 
+	IRenderer::DrawQueueRenderParams params;
+	params.scene = this;
+	params.context = m_context;
+	params.registry = &m_registry;
+	params.renderer = m_renderer.get();
 
-	//// Draw Engine models
-	//for (auto model = m_models.begin(); model != m_models.end(); ++model)
-	//{
-	//	Shader* shader = model->second->getShader();
-	//	shader->use();
-
-	//	if (shader->IsLightsEnabled())
-	//	{
-	//		// Use all directional lights
-	//		{
-	//			int i = 0;
-	//			for (auto it = m_directionalLights.begin(); it != m_directionalLights.end(); ++it, ++i) {
-	//				it->second->useLight(*shader, i);
-	//			}
-	//			shader->SetInt("dirLightCount", m_directionalLights.size());
-	//		}
-
-	//		// Use all point lights
-	//		{
-	//			int i = 0;
-	//			for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++i, ++it) {
-	//				it->second->useLight(*shader, i);
-	//			}
-	//			shader->SetInt("pointLightCount", m_pointLights.size());
-	//		}
-	//	}
-
-	//	glStencilFunc(GL_ALWAYS, model->second->getID(), 0xff);
-
-	//	// Draw model
-	//	model->second->draw(*m_renderer.get(), shader);
-
-	//	shader->release();
-	//}
-
-	//// Update phong shader
-	auto phongShader = m_context->getPhongShader();
-	//phongShader->use();
-	//phongShader->updateDirLights(m_directionalLights);
-	//phongShader->updatePointLights(m_pointLights);
-	//phongShader->setViewPos(m_renderer->getCamera()->getPosition());
-	//phongShader->release();
-
-	// Picking Phase
-	if (m_isObjectSelectionEnabled && m_pickingPhaseActive)
+	// PRE Render Phase
+	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])
 	{
-		// Enable writing to picking frame buffer
-		m_objectPicker->enableWriting();
+		cb(&params);
+	}
 
-		// Set uniforms in picking shader
-		auto pickingShader = m_context->getPickingShader();
-		pickingShader->use();
-		pickingShader->setViewMatrix(m_renderer->getCamera()->getView());
-		pickingShader->setProjectionMatrix(m_renderer->getProjection());
-
-		// iterate models queue
-		for (unsigned int i = 0; i < m_drawQueue.size(); i++)
-		{
-			// Set Model related uniforms in picking shader  
-			auto model = m_drawQueue[i];
-			pickingShader->use();
-			pickingShader->setModelMatrix(model->getTransformation()->getMatrix());
-			pickingShader->setObjectIndex(model->getID() + 1);
-			pickingShader->release();
-
-			// Draw model
-			m_renderer->render(model, pickingShader);
-			//model->draw(*m_renderer.get(), pickingShader);
-		}
-
-		// Release picking shader and stop writing to frame buffer
-		pickingShader->release();
-		m_objectPicker->disableWriting();
-
-		// Get mouse X & Y
-		int x, y;
-		Engine::get()->getInput()->getMouse()->getMousePosition(x, y);
-
-		// Pick object in scene according to X & Y
-		auto objectID = m_objectPicker->pickObject(x, y);
-
-		// Clears previous object selection
-		m_objectSelection->clear();
-
-		// If object returned != -1 then an object has been picked (-1 means background)
-		if (objectID != -1)
-		{
-			auto obj = Engine::get()->getObjectManager()->getObjectById(objectID);
-			if (obj)
-			{
-				obj->pick();
-				obj->select();
-
-			}
-		}
-
-		// Turn picking phase flag off
-		m_pickingPhaseActive = false;
+	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_END])
+	{
+		cb(&params);
 	}
 
 	// Render Phase
-	// Post process Enable writing
-	if (m_isPostProcessEnabled && m_postProcessProjector)
+	for (auto&& [entity, mesh, transform, renderable] : 
+		m_registry.view<Mesh, Transformation, RenderableComponent>().each())
 	{
-		m_postProcessProjector->enableWriting();
-	}
-
-	// Iterate Application models
-	while (!m_drawQueue.empty())
-	{
-		auto model = m_drawQueue.front();
-		m_drawQueue.pop_front();
-
-		// If in debug MODE -> put model in displayNormalsQueue
-		if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
+		Entity entityhandler{ entity, this };
+		params.entity = &entityhandler;
+		params.mesh = &mesh;
+		params.transform = &transform;
+			
+		for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_PRE_RENDER])
 		{
-			m_debugModelDeque.push_back(model);
+			cb(&params);
 		}
 
-		{
-			DrawQueuePreRenderParams params;
-			params.scene = this;
-			params.model = model;
-
-			//// This will be optimized using Entt
-			//std::vector<const DirectionalLight*> dirLight;
-			//dirLight.reserve(m_directionalLights.size());
-
-			//for (auto& pair : m_directionalLights) {
-			//	dirLight.push_back(pair.second.get());
-			//}
-			//params.directionalLights = dirLight;
-
-			//// This will be optimized using Entt
-			//std::vector<const PointLight*> pLight;
-			//pLight.reserve(m_pointLights.size());
-
-			//for (auto& pair : m_pointLights) {
-			//	pLight.push_back(pair.second.get());
-			//}
-			//params.pointLights = pLight;
-			for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_PRE_RENDER])
-			{
-				cb(&params);
-			}
-		}
-
-		auto shader = model->getShader();
-		if (shader)
-		{
-			shader->use();
-			shader->updateDirLights(m_directionalLights);
-			shader->updatePointLights(m_pointLights);
-			shader->setViewPos(m_renderer->getCamera()->getPosition());
-			shader->release();
-		}
-
-		phongShader->use();
-
-		// If model is selected highlight it's color
-		if (m_isObjectSelectionEnabled && isSelected(model->getID()))
-			phongShader->setColorMul({ 0.3f, 0.3f, 0.3f, 0.3f });
-		else
-			phongShader->setColorMul({ 0.f, 0.f, 0.f, 0.f });
-
-		phongShader->release();
+		auto& shader = entityhandler.getComponentInParent<StandardShader>();
+		shader.updateDirLights(m_registry);
+		shader.updatePointLights(m_registry);
+		shader.setViewPos(m_renderer->getCamera()->getPosition());
 
 		// draw model
-		m_renderer->render(model);
+		m_renderer->render(params);
 
+		for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_POST_RENDER])
 		{
-			DrawQueuePreRenderParams params;
-			params.scene = this;
-			params.model = model;
-			for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_POST_RENDER])
-			{
-				cb(&params);
-			}
+			cb(&params);
 		}
-	}
 
+		params.entity = nullptr;
+		params.mesh = nullptr;
+		params.transform = nullptr;
+	};
+
+	// POST Render Phase
 	// Iterate GPU instancing batches
-	while (!m_instanceBatchQueue.empty())
+	for (auto&& [entity, mesh, instanceBatch] : m_registry.view<Mesh, InstanceBatch>().each())
 	{
-		auto batch = m_instanceBatchQueue.front();
-		m_instanceBatchQueue.pop_front();
-
 		// draw model
-		m_gpuInstancingRenderer->render(batch);
+		Entity entityhandler{ entity, this };
+		params.entity = &entityhandler;
+		params.mesh = &mesh;
+		m_gpuInstancingRenderer->render(params);
 	}
 
-	// Draw skybox
-	if (m_skybox)
+	// For some reason this group destroys the entities
+	for (auto&& [entity, skybox, mesh, transform, mat, shader] : 
+		m_registry.view<SkyboxComponent, Mesh, Transformation, DefaultMaterial, StandardShader>().each())
 	{
-		m_skybox->draw(*m_skyboxRenderer.get());
-		m_skybox = nullptr;
+		Entity entityhandler{ entity, this };
+		params.entity = &entityhandler;
+		params.mesh = &mesh;
+		params.transform = &transform;
+		params.shader = &shader;
+
+		m_skyboxRenderer->render(params);
+
+		params.entity = nullptr;
+		params.mesh = nullptr;
+		params.transform = nullptr;
+		params.shader = nullptr;
 	}
 
-	if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
+	//if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
+	//{
+	//	// Use normal display shader
+	//	auto normalDisplayShader = m_context->getNormalDisplayShader();
+
+	//	// draw scene
+	//	while (!m_debugModelDeque.empty())
+	//	{
+	//		auto model = m_debugModelDeque.front();
+	//		m_debugModelDeque.pop_front();
+
+	//		m_renderer->render(model, normalDisplayShader);
+	//	}
+	//}
+
+	for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_BEGIN])
 	{
-		// Use normal display shader
-		auto normalDisplayShader = m_context->getNormalDisplayShader();
-
-		// draw scene
-		while (!m_debugModelDeque.empty())
-		{
-			auto model = m_debugModelDeque.front();
-			m_debugModelDeque.pop_front();
-
-			m_renderer->render(model, normalDisplayShader);
-		}
+		cb(&params);
 	}
 
-	// Post process disable writing and draw if required
-	if (m_isPostProcessEnabled && m_postProcessProjector)
+	for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_END])
 	{
-		m_postProcessProjector->disableWriting();
-		m_postProcessProjector->draw();
+		cb(&params);
 	}
-}
-
-void Scene::drawMultiple(const InstanceBatch& batch)
-{
-	m_instanceBatchQueue.push_back(std::make_shared<InstanceBatch>(batch));
 }
 
 Scene::RenderCallback* Scene::addRenderCallback(RenderPhase renderPhase, RenderCallback renderCallback)
@@ -348,11 +217,29 @@ void Scene::removeRenderCallback(RenderCallback* callback)
 	}
 }
 
+entt::registry& Scene::getRegistry()
+{
+	return m_registry;
+}
+
+std::shared_ptr<Entity> Scene::createEntity()
+{
+	entt::entity e = m_registry.create();
+	auto entityHandler = std::make_shared<Entity>(e, this);
+	entityHandler->addComponent<Transformation>(entityHandler);
+	entityHandler->addComponent<HierarchyComponent>();
+	return entityHandler;
+}
+
+void Scene::removeEntity(std::shared_ptr<Entity> e)
+{
+	m_registry.destroy(e->handler());
+}
+
+
 void Scene::clear()
 {
-	m_models.clear();
-	m_pointLights.clear();
-	m_directionalLights.clear();
+	m_registry.clear();
 }
 
 Scene::Scene(Context* context)
@@ -360,104 +247,9 @@ Scene::Scene(Context* context)
 	init(context);
 }
 
-bool Scene::addModel(Model* model)
-{
-	m_modelCounter++;
-	model->setSceneID(m_modelCounter);
-	m_models.emplace(m_modelCounter, std::shared_ptr<Model>(model));
-
-	logInfo("Model {} Added successfully.", std::to_string(m_modelCounter));
-	return true;
-}
-
-bool Scene::addPointLight(PointLight* pLight)
-{
-	m_pointLightCounter++;
-	pLight->setSceneID(m_pointLightCounter);
-	m_pointLights.emplace(m_pointLightCounter, std::shared_ptr<PointLight>(pLight));
-
-	logInfo("PointLight {} Added successfully.", std::to_string(m_pointLightCounter));
-	return true;
-}
-
-bool Scene::addDirectionalLight(DirectionalLight* dLight)
-{
-	m_directionalLightCounter++;
-	dLight->setSceneID(m_directionalLightCounter);
-	m_directionalLights.emplace(m_directionalLightCounter, std::shared_ptr<DirectionalLight>(dLight));
-
-	logInfo("DirectionalLight {} Added successfully.", std::to_string(m_directionalLightCounter));
-	return true;
-}
-
-bool Scene::removeModel(uint32_t id)
-{
-	auto iter = m_models.find(id);
-	if (iter == m_models.end())
-	{
-		logError("Could not locate Model {}", id);
-		return false;
-	}
-	m_models.erase(iter);
-
-	logInfo("Model {} Erased successfully.", std::to_string(id));
-
-	return true;
-}
-
-bool Scene::removeModel(Model* model)
-{
-	uint32_t id = model->getID();
-
-	return removeModel(id);
-}
-
-bool Scene::removePointLight(PointLight* pLight)
-{
-	uint32_t id = pLight->getID();
-	auto iter = m_pointLights.find(id);
-	if (iter == m_pointLights.end())
-	{
-		logError("Could not locate PointLight {}", id);
-		return false;
-	}
-	m_pointLights.erase(iter);
-
-	logInfo("PointLight {} Erased successfully.", std::to_string(id));
-
-	return true;
-}
-
-bool Scene::removeDirectionalLight(DirectionalLight* dLight)
-{
-	uint32_t id = dLight->getID();
-	auto iter = m_directionalLights.find(id);
-	if (iter == m_directionalLights.end())
-	{
-		logError("Could not locate DirectionalLight {}", id);
-		return false;
-	}
-	m_directionalLights.erase(iter);
-
-	logInfo("DirectionalLight {} Erased successfully.", std::to_string(id));
-
-	return true;
-}
-
-
-void Scene::drawSkybox(ObjectHandler<Skybox> skybox)
-{
-	m_skybox = skybox.object();
-}
-
 std::shared_ptr<Renderer> Scene::getRenderer() const
 {
 	return m_renderer;
-}
-
-std::shared_ptr<Renderer> Scene::getSkyboxRenderer()
-{
-	return m_skyboxRenderer;
 }
 
 void Scene::close()
@@ -467,23 +259,28 @@ void Scene::close()
 
 void Scene::setPostProcess(bool value)
 {
-	m_isPostProcessEnabled = value;
+	m_postProcessProjector->setEnabled(value);
 }
 
-bool Scene::isSelected(uint32_t id) const
-{
-	if (!m_isObjectSelectionEnabled)
-	{
-		logWarning("Object selection isn't enabled for this scene.");
-		return false;
-	}
+//bool Scene::isSelected(uint32_t id) const
+//{
+//	if (!m_isObjectSelectionEnabled)
+//	{
+//		logWarning("Object selection isn't enabled for this scene.");
+//		return false;
+//	}
+//
+//	return m_objectSelection->isObjectSelected(id);
+//}
 
-	return m_objectSelection->isObjectSelected(id);
+bool Scene::isObjectSelectionEnabled() const
+{
+	return m_objectSelection->isEnabled();
 }
 
 void Scene::enableObjectSelection(bool isEnabled)
 {
-	m_isObjectSelectionEnabled = isEnabled;
+	m_objectSelection->enableObjectSelection(isEnabled);
 }
 
 void Scene::selectObject(uint32_t id)
@@ -494,16 +291,6 @@ void Scene::selectObject(uint32_t id)
 void Scene::clearObjectSelection()
 {
 	m_objectSelection->clear();
-}
-
-void Scene::update(ObjectHandler<Object3D> handler)
-{
-	m_updateQueue.push_back(handler.object());
-}
-
-void Scene::draw(ObjectHandler<Model> handler)
-{
-	m_drawQueue.push_back(handler.object());
 }
 
 bool Scene::setPostProcessShader(Shader* shader)
@@ -526,7 +313,7 @@ void Scene::addCoroutine(const std::function<bool(float)>& coroutine)
 //	m_coroutineManager->removeCoroutine(coroutine);
 //}
 
-Skybox* Scene::getSkybox()
+bool Scene::isPickingPhaseActive() const
 {
-	return m_skybox;
+	return m_objectPicker->isPickingPhaseActive();
 }
