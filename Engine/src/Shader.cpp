@@ -309,5 +309,6 @@ void Shader::setTime(float time)
 }
 
 Shader::~Shader() {
-	clear();
+	// TODO fix, this is currently a gpu memory leak
+	//clear();
 }

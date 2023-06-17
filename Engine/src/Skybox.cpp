@@ -41,28 +41,3 @@ std::shared_ptr<Entity> Skybox::CreateSkybox(Scene* scene)
 
     return entity;
 }
-
-//void Skybox::draw(IRenderer& renderer, Shader* shader)
-//{
-//    glDepthMask(GL_FALSE);
-//    glDepthFunc(GL_LEQUAL);
-//
-//    m_shader->use();
-//    getTextureHandlers()[0]->bind();
-//
-//    //auto view = glm::mat4(glm::mat3(dynamic_cast<Renderer*>(renderer.get())->GetCamera()->getView())); // remove translation from the view matrix
-//    m_shader->setValue("model", m_transformation->getMatrix());
-//
-//    renderer.SetDrawType(Renderer::DrawType::Triangles);
-//
-//    for (auto i = 0; i < m_meshes.size(); i++)
-//    {
-//        m_meshes[i]->render(*m_shader, renderer);
-//    }
-//
-//    getTextureHandlers()[0]->unbind();
-//    m_shader->release();
-//
-//    glDepthMask(GL_TRUE);
-//    glDepthFunc(GL_LESS);
-//}

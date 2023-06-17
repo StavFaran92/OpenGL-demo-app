@@ -28,11 +28,11 @@ public:
 		//auto box2 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 
 		//box1->getComponent<Transformation>().translate({1, 0,0});
-		//auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
+		auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
 
 
-		auto importer = getContext()->getModelImporter();
-		auto guitar = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());
+		//auto importer = getContext()->getModelImporter();
+		//auto guitar = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());
 
 		//auto& transform = guitar->getComponent<Transformation>();
 		//transform.translate({ 10, 0,0 });

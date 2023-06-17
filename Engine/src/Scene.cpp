@@ -134,6 +134,10 @@ void Scene::draw(float deltaTime)
 		{
 			cb(&params);
 		}
+
+		params.entity = nullptr;
+		params.mesh = nullptr;
+		params.transform = nullptr;
 	};
 
 	// POST Render Phase
@@ -155,7 +159,13 @@ void Scene::draw(float deltaTime)
 		params.mesh = &mesh;
 		params.transform = &transform;
 		params.shader = &shader;
+
 		m_skyboxRenderer->render(params);
+
+		params.entity = nullptr;
+		params.mesh = nullptr;
+		params.transform = nullptr;
+		params.shader = nullptr;
 	}
 
 	//if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
