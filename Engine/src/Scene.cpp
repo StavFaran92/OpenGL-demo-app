@@ -83,9 +83,6 @@ void Scene::update(float deltaTime)
 	{
 		transformation.update(deltaTime);
 	}
-
-	//if (m_skybox)
-	//	m_skybox->update(deltaTime);
 }
 
 void Scene::draw(float deltaTime)
@@ -110,7 +107,8 @@ void Scene::draw(float deltaTime)
 	}
 
 	// Render Phase
-	for (auto&& [entity, mesh, transform, renderable] : m_registry.view<Mesh, Transformation, RenderableComponent>().each())
+	for (auto&& [entity, mesh, transform, renderable] : 
+		m_registry.view<Mesh, Transformation, RenderableComponent>().each())
 	{
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;
@@ -152,7 +150,8 @@ void Scene::draw(float deltaTime)
 	}
 
 	// For some reason this group destroys the entities
-	for (auto&& [entity, skybox, mesh, transform, mat, shader] : m_registry.view<SkyboxComponent, Mesh, Transformation, DefaultMaterial, StandardShader>().each())
+	for (auto&& [entity, skybox, mesh, transform, mat, shader] : 
+		m_registry.view<SkyboxComponent, Mesh, Transformation, DefaultMaterial, StandardShader>().each())
 	{
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;
@@ -251,11 +250,6 @@ Scene::Scene(Context* context)
 std::shared_ptr<Renderer> Scene::getRenderer() const
 {
 	return m_renderer;
-}
-
-std::shared_ptr<Renderer> Scene::getSkyboxRenderer()
-{
-	return m_skyboxRenderer;
 }
 
 void Scene::close()

@@ -66,7 +66,7 @@ public:
 		//box->addChildren(sphere1);
 		//sphere1->addChildren(sphere2);
 
-		//postProcess(PostProcess::grayscale());
+		postProcess(PostProcess::grayscale());
 	}
 
 	void update(float deltaTime) override

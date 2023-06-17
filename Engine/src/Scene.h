@@ -41,20 +41,6 @@ template<typename T> class ObjectHandler;
 class EngineAPI Scene
 {
 public:
-	//struct Params
-	//{
-	//	const Scene* scene;
-	//	entt::registry* registry;
-	//	const Context* context;
-	//	IRenderer* renderer;
-	//};
-
-	//struct DrawQueueRenderParams : public Scene::Params
-	//{
-	//	const Mesh* mesh;
-	//	const Transformation* transformation;
-	//};
-
 	enum class RenderPhase
 	{
 		PRE_RENDER_BEGIN,
@@ -77,7 +63,6 @@ public:
 	void removeCoroutine(std::function<bool(float)> coroutine);
 
 	std::shared_ptr<Renderer> getRenderer() const;
-	std::shared_ptr<Renderer> getSkyboxRenderer();
 
 	uint32_t getID() const { return m_id; }
 
@@ -126,9 +111,6 @@ private:
 	std::shared_ptr<PostProcessProjector> m_postProcessProjector = nullptr;
 	std::shared_ptr<CoroutineSystem> m_coroutineManager = nullptr;
 	std::shared_ptr<ObjectPicker> m_objectPicker = nullptr;
-
-	std::deque<Object3D*> m_updateQueue;
-	std::deque<Model*> m_debugModelDeque;
 
 	entt::registry m_registry;
 	std::map<RenderPhase, std::vector<RenderCallback>> m_renderCallbacks;
