@@ -24,11 +24,12 @@ public:
 	void start() override
 	{
 		// If i remove this the skybox works
-		//auto box1 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
-		//auto box2 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 
-		//box1->getComponent<Transformation>().translate({1, 0,0});
 		auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
+
+		auto box1 = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get(), 1, 32, 32);
+		//box1->getComponent<Transformation>().translate({1, 0,0});
+		//auto box2 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 
 
 		//auto importer = getContext()->getModelImporter();

@@ -66,6 +66,7 @@ void Material::SetTexturesInShader(Shader & shader)
 		textures = m_defaultTextureHandlers;
 	}
 
+	// This causes skybox to not render
 	// Iterate the mesh's textures
 	for (auto i = 0; i < textures.size(); i++)
 	{

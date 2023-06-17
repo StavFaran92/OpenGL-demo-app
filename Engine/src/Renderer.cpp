@@ -138,9 +138,11 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
     auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
     shaderToUse->setTime(elapsed);
 
+    
     if (shaderToUse->IsMaterialsEnabled() && renderParams.entity->HasComponent<DefaultMaterial>())
     {
         auto& mat = renderParams.entity->getComponent<DefaultMaterial>();
+        // this causes the skybox to not render
         mat.UseMaterial(*shaderToUse);
     }
 
