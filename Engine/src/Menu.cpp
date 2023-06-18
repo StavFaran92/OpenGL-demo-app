@@ -239,7 +239,7 @@ void LightCreatorWindow()
             else if (lightType == LightType::PointLight)
             {
                 auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
-                e->addComponent<PointLight>(color, pos, ambientIntensity, diffuseIntensity, attenuation);
+                e->addComponent<PointLight>(color, ambientIntensity, diffuseIntensity, attenuation);
             }
 
             ShowLightCreatorWindow = false;

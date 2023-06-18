@@ -18,7 +18,7 @@ public:
 		m_name = "pointLights";
 	}
 
-	PointLight(glm::vec3 color, glm::vec3 pos, float aIntensity, float dIntensity, Attenuation attenuation);
+	PointLight(glm::vec3 color, float aIntensity, float dIntensity, Attenuation attenuation);
 
 	void useLight(Shader& shader, int index);
 

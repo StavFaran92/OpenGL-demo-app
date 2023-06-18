@@ -4,11 +4,9 @@
 #include <string>
 #include "Core.h"
 
-#include "Object3D.h"
-
 class Shader;
 
-class EngineAPI Light : public Object3D
+class EngineAPI Light
 {
 public:
 	Light();
@@ -26,6 +24,5 @@ protected:
 	glm::vec3 m_color;
 	float m_ambientIntensity = 0;
 	float m_diffuseIntensity = 0;
-	std::shared_ptr<Transformation >m_transform = nullptr;
 	std::string m_name;
 };
