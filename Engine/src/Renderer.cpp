@@ -150,6 +150,12 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
 
     renderParams.mesh->render(*shaderToUse, *this);
 
+    glActiveTexture(GL_TEXTURE0 + 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+
+    glActiveTexture(GL_TEXTURE0 + 1);
+    glBindTexture(GL_TEXTURE_2D, 0);
     shaderToUse->release();
 }
 

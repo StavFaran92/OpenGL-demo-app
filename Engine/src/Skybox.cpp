@@ -31,6 +31,7 @@ std::shared_ptr<Entity> Skybox::CreateSkybox(Scene* scene)
         "Resources/Engine/Textures/Skybox/back.jpg"
     };
     auto textureHandler = Texture::loadCubemapTexture(faces);
+    textureHandler->setSlot(0);
 
     auto entity = ShapeFactory::createBox(scene);
 
