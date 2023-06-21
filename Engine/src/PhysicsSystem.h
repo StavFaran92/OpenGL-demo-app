@@ -12,6 +12,8 @@ public:
 
 	void update(float deltaTime);
 
+	void close();
+
 private:
 	class PhysicsSystemImpl;
 	PhysicsSystemImpl* m_pimpl;

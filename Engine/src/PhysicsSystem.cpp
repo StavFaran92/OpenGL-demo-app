@@ -12,6 +12,8 @@ public:
     void setActiveScene(int index);
 
     void update(float deltaTime);
+
+    void close();
 private:
     physx::PxDefaultAllocator       m_defaultAllocatorCallback;
     physx::PxDefaultErrorCallback   m_defaultErrorCallback;
@@ -105,6 +107,12 @@ void PhysicsSystem::PhysicsSystemImpl::setActiveScene(int index)
     m_activeScene = index;
 }
 
+void PhysicsSystem::PhysicsSystemImpl::close()
+{
+    m_physics->release();
+    m_foundation->release();
+}
+
 
 bool PhysicsSystem::init()
 {
@@ -124,4 +132,10 @@ void PhysicsSystem::createScene()
 void PhysicsSystem::setActiveScene(int index)
 {
     m_pimpl->setActiveScene(index);
+}
+
+void PhysicsSystem::close()
+{
+    m_pimpl->close();
+
 }
