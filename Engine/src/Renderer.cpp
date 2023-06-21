@@ -84,7 +84,7 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
 
     if(!shaderToUse)
     {
-        shaderToUse = &renderParams.entity->getComponentInParent<StandardShader>();
+        shaderToUse = renderParams.entity->tryGetComponentInParent<StandardShader>();
     }
    
     if (!shaderToUse)

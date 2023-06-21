@@ -23,8 +23,6 @@ public:
 
 	void start() override
 	{
-		// If i remove this the skybox works
-
 		auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
 
 		auto box1 = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get(), 1, 32, 32);

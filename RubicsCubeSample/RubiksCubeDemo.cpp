@@ -16,11 +16,9 @@ public:
 	std::shared_ptr<RubiksCubeController> controller;
 	std::shared_ptr<RubiksCubeGui> gui;
 
-	ObjectHandler<Skybox> skybox;
-
 	void start() override
 	{
-		skybox = Skybox::CreateSkybox();
+		auto skybox = Skybox::CreateSkybox();
 
 		rubiksCube = std::make_shared<RubiksCube>();
 		rubiksCube->init(7);
@@ -58,12 +56,10 @@ public:
 
 		Engine::get()->getImguiHandler()->draw(gui.get());
 
-		Engine::get()->getContext()->getActiveScene()->drawSkybox(skybox);
 	}
 
 	void close() override
 	{
-		skybox.release();
 	}
 
 };

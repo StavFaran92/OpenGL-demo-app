@@ -13,12 +13,17 @@
 #include "ShapeFactory.h"
 #include "DefaultMaterial.h"
 #include "Component.h"
+#include "Context.h"
 
 #include "EditorCamera.h"
 #include "Resources/Engine/Primitives/cube.h"
 
 std::shared_ptr<Entity> Skybox::CreateSkybox(Scene* scene)
 {
+    if (!scene)
+    {
+        scene = Engine::get()->getContext()->getActiveScene().get();
+    }
     auto shader = Shader::create<StandardShader>("Resources/Engine/Shaders/SkyboxShader.vert", "Resources/Engine/Shaders/SkyboxShader.frag");
 
     std::vector<std::string> faces
