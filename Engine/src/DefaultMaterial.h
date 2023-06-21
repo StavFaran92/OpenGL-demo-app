@@ -9,7 +9,8 @@ class EngineAPI DefaultMaterial : public Material
 public:
 	DefaultMaterial(float shine);
 
-	void UseMaterial(Shader& shader) override;
+	void use(Shader& shader) override;
+	void release() override;
 
 	~DefaultMaterial();
 

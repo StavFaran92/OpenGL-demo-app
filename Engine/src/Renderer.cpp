@@ -139,23 +139,26 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
     shaderToUse->setTime(elapsed);
 
     
-    if (shaderToUse->IsMaterialsEnabled() && renderParams.entity->HasComponent<DefaultMaterial>())
+    DefaultMaterial* mat = nullptr;
+    if (shaderToUse->IsMaterialsEnabled())
     {
-        auto& mat = renderParams.entity->getComponent<DefaultMaterial>();
-        // this causes the skybox to not render
-        mat.UseMaterial(*shaderToUse);
+        mat = renderParams.entity->tryGetComponentInParent<DefaultMaterial>();
+        
+        if (mat)
+        {
+            mat->use(*shaderToUse);
+        }
     }
 
     SetDrawType(Renderer::DrawType::Triangles);
 
     renderParams.mesh->render(*shaderToUse, *this);
 
-    glActiveTexture(GL_TEXTURE0 + 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    if (mat)
+    {
+        mat->release();
+    }
 
-
-    glActiveTexture(GL_TEXTURE0 + 1);
-    glBindTexture(GL_TEXTURE_2D, 0);
     shaderToUse->release();
 }
 
