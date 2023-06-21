@@ -190,6 +190,7 @@
     <ClCompile Include="src\DefaultMaterial.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\ShapeFactory.cpp" />
+    <ClCompile Include="src\PhysicsSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -427,6 +428,7 @@
     <ClInclude Include="src\ShapeFactory.h" />
     <ClInclude Include="src\RenderableComponent.h" />
     <ClInclude Include="src\Component.h" />
+    <ClInclude Include="src\PhysicsSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
