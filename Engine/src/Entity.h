@@ -105,6 +105,25 @@ public:
     }
 
     template<typename T>
+    T* tryGetComponentInParent()
+    {
+        assert(valid() && "Invalid entity.");
+        auto comp = tryGetComponent<T>();
+        if (comp)
+        {
+            return comp;
+        }
+
+        auto parent = getParent();
+        if (parent)
+        {
+            return parent->tryGetComponentInParent<T>();
+        }
+
+        return nullptr;
+    }
+
+    template<typename T>
     T& getComponentInParent()
     {
         assert(valid() && "Invalid entity.");
