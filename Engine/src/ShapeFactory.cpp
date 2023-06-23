@@ -32,7 +32,7 @@ std::shared_ptr<Entity> ShapeFactory::createBox(Scene* scene)
 	return entity;
 }
 
-std::shared_ptr<Entity> ShapeFactory::createPlane(Scene* scene)
+std::shared_ptr<Entity> ShapeFactory::createQuad(Scene* scene)
 {
 	auto entity = createEntity(scene);
 	auto mesh = Quad::createMesh();

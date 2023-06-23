@@ -13,11 +13,11 @@ public:
 	void start() override
 	{
 		auto importer = getContext()->getModelImporter();
-		auto planeModel = importer->loadModelFromFile("C:/Users/Stav/Documents/blender/plane_v2.fbx", getContext()->getActiveScene().get());
+		auto quad = importer->loadModelFromFile("C:/Users/Stav/Documents/blender/plane_v2.fbx", getContext()->getActiveScene().get());
 
-		auto& planeTransform = planeModel->getComponent<Transformation>();
-		planeTransform.rotate({ 1,0,0 }, 90);
-		planeTransform.rotate({ 0,1,0 }, 90);
+		auto& quadTransform = quad->getComponent<Transformation>();
+		quadTransform.rotate({ 1,0,0 }, 90);
+		quadTransform.rotate({ 0,1,0 }, 90);
 
 		//planeModel.object()->rotate({1,0,0}, 90);
 		//planeModel.object()->rotate({0,1,0}, 90);
@@ -29,7 +29,7 @@ public:
 		shader->setValue("waveLength", 2.f);
 		shader->setValue("waveSpeed", 5.0f);
 		shader->setValue("steepness", .5f);
-		auto& shaderRef = planeModel->addOrReplaceComponent<StandardShader>(shader);
+		auto& shaderRef = quad->addOrReplaceComponent<StandardShader>(shader);
 
 		auto dLight = getContext()->getActiveScene()->createEntity();
 		dLight->addComponent<PointLight>(glm::vec3{ 1,1,1 }, glm::vec3{ 0, 0, 2 }, 1, 1, Attenuation());

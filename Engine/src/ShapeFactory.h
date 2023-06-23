@@ -11,7 +11,7 @@ class EngineAPI ShapeFactory
 {
 public:
 	static std::shared_ptr<Entity> createBox(Scene* scene);
-	static std::shared_ptr<Entity> createPlane(Scene* scene);
+	static std::shared_ptr<Entity> createQuad(Scene* scene);
 	static std::shared_ptr<Entity> createSphere(Scene* scene, float radius, int sectors, int stacks);
 
 private:
