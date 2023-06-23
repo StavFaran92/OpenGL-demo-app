@@ -113,6 +113,16 @@ void PhysicsSystem::PhysicsSystemImpl::close()
     m_foundation->release();
 }
 
+PhysicsSystem::PhysicsSystem()
+{
+    m_pimpl = new PhysicsSystemImpl();
+}
+
+PhysicsSystem::~PhysicsSystem()
+{
+    delete m_pimpl;
+}
+
 
 bool PhysicsSystem::init()
 {

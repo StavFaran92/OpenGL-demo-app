@@ -5,6 +5,9 @@
 class EngineAPI PhysicsSystem
 {
 public:
+	PhysicsSystem();
+	~PhysicsSystem();
+
 	bool init();
 
 	void createScene();

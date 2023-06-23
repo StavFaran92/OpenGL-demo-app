@@ -18,6 +18,7 @@
 #include "ObjectManager.h"
 #include "ObjectFactory.h"
 #include "TimeManager.h"
+#include "PhysicsSystem.h"
 
 #include "Application.h"
 #include "SDL.h"
@@ -77,6 +78,12 @@ bool Engine::init()
     m_modelImporter = std::make_shared<ModelImporter>();
 
     m_timeManager = std::make_shared<TimeManager>();
+    m_physicsSystem = std::make_shared<PhysicsSystem>();
+    if (!m_physicsSystem->init())
+    {
+        logError("Physics System init failed!");
+        return false;
+    }
 
     m_isInit = true;
 
@@ -233,6 +240,11 @@ ObjectManager* Engine::getObjectManager() const
 TimeManager* Engine::getTimeManager() const
 {
     return m_timeManager.get();
+}
+
+PhysicsSystem* Engine::getPhysicsSystem() const
+{
+    return m_physicsSystem.get();
 }
 
 void Engine::pause()
