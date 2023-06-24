@@ -1,6 +1,14 @@
 #include "EntryPoint.h"
 #include "sge.h"
 
+class CustomBoxBehaviour : public ScriptableEntity
+{
+	virtual void onCreate() override
+	{
+		std::cout << "Box was created modafaka.\n";
+	}
+};
+
 class Sandbox : public Application
 {
 public:
@@ -23,18 +31,20 @@ public:
 
 	void start() override
 	{
-		auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
+		//auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
 
-		auto box1 = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get(), 1, 32, 32);
-		box1->getComponent<Transformation>().translate({1, 0,0});
-		auto box2 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+		auto box1 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+		auto& nsc = box1->addComponent<NativeScriptComponent>();
+		nsc.bind<CustomBoxBehaviour>();
+		//box1->getComponent<Transformation>().translate({1, 0,0});
+		//auto box2 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 
 
-		auto importer = getContext()->getModelImporter();
-		auto guitar = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());
+		//auto importer = getContext()->getModelImporter();
+		//auto guitar = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());
 
-		auto& transform = guitar->getComponent<Transformation>();
-		transform.translate({ 10, 0,0 });
+		//auto& transform = guitar->getComponent<Transformation>();
+		//transform.translate({ 10, 0,0 });
 
 		//transformations.push_back(&trans1);
 		//transformations.push_back(&trans2);
