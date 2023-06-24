@@ -25,10 +25,11 @@ public:
 		shader->setValue("waveLength", 2.f);
 		shader->setValue("waveSpeed", 5.0f);
 		shader->setValue("steepness", .5f);
-		auto& shaderRef = planeModel->addOrReplaceComponent<StandardShader>(shader);
+		auto& shaderRef = planeModel->addComponent<StandardShader>(shader);
 
 		auto dLight = getContext()->getActiveScene()->createEntity();
-		dLight->addComponent<PointLight>(glm::vec3{ 1,1,1 }, 1, 1, Attenuation());
+		dLight->addComponent<PointLight>(glm::vec3{ 1,1,1 }, 1.f, 1.f, Attenuation());
+		dLight->addComponent<Transformation>(dLight, glm::vec3{ 0,0,2 });
 
 		auto gui = new GUIHandler(&shaderRef);
 		Engine::get()->getImguiHandler()->addGUI(gui);

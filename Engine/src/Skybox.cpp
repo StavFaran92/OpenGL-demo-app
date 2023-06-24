@@ -40,7 +40,7 @@ std::shared_ptr<Entity> Skybox::CreateSkybox(Scene* scene)
 
     auto entity = ShapeFactory::createBox(scene);
 
-    entity->addOrReplaceComponent<StandardShader>(shader);
+    entity->addComponent<StandardShader>(shader);
     entity->RemoveComponent<RenderableComponent>();
     entity->getComponent<DefaultMaterial>().addTextureHandler(textureHandler);
     entity->addComponent<SkyboxComponent>();

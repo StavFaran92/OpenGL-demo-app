@@ -39,25 +39,6 @@ public:
     T& addComponent(T* componentInstance)
     {
         assert(valid() && "Invalid entity.");
-        assert(!m_scene->getRegistry().has<T>(m_entity) && "Component already exists.");
-        T& component = m_scene->getRegistry().emplace<T>(m_entity, *componentInstance);
-
-        m_components.insert(typeid(T).name());
-
-        return component;
-    }
-
-    /**
-     * @brief Adds a component to the entity by moving an existing instance
-     * @tparam T Type of the component
-     * @param componentInstance Pointer to the component instance
-     * @return Reference to the added component
-     * @warning The behavior of the existing componentInstance after the call is undefined
-     */
-    template<typename T>
-    T& addOrReplaceComponent(T* componentInstance)
-    {
-        assert(valid() && "Invalid entity.");
         T& component = m_scene->getRegistry().emplace_or_replace<T>(m_entity, *componentInstance);
 
         m_components.insert(typeid(T).name());
@@ -76,8 +57,7 @@ public:
     T& addComponent(Args&&... args)
     {
         assert(valid() && "Invalid entity.");
-        assert(!m_scene->getRegistry().has<T>(m_entity) && "Component already exists.");
-        T& component = m_scene->getRegistry().emplace<T>(m_entity, std::forward<Args>(args)...);
+        T& component = m_scene->getRegistry().emplace_or_replace<T>(m_entity, std::forward<Args>(args)...);
 
         m_components.insert(typeid(T).name());
 
