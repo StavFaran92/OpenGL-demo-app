@@ -18,7 +18,7 @@ public:
 
 	void start() override
 	{
-		auto skybox = Skybox::CreateSkybox();
+		auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
 
 		rubiksCube = std::make_shared<RubiksCube>();
 		rubiksCube->init(7);

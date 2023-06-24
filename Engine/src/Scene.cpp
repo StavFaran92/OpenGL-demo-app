@@ -77,9 +77,26 @@ void Scene::update(float deltaTime)
 		}
 	}
 
-	auto view = m_registry.view<Transformation>();
+	// Run all User Scriptable Entities scripts
+	for (auto&& [entity, nsc] : m_registry.view<NativeScriptComponent>().each())
+	{
+		if (!nsc.instantiateScript)
+		{
+			logWarning("Native Script does not have an instantiation method, did you forget to call Bind()?");
+			continue;
+		}
 
-	for (auto&& [entity, transformation] : view.each())
+		if (!nsc.script)
+		{
+			nsc.script = nsc.instantiateScript();
+			nsc.entity = Entity{entity, this};
+			nsc.script->onCreate();
+		}
+
+		nsc.script->onUpdate(deltaTime);
+	}
+
+	for (auto&& [entity, transformation] : m_registry.view<Transformation>().each())
 	{
 		transformation.update(deltaTime);
 	}
