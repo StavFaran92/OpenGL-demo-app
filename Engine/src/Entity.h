@@ -3,7 +3,7 @@
 #include "Core.h"
 #include "entt/entt.hpp"
 #include "Scene.h"
-#include "Component.h"
+//#include "Component.h"
 
 /**
  * @class Entity
@@ -169,26 +169,9 @@ public:
 
     }
 
-    void setParent(Entity* entity)
-    {
-        assert(valid() && "Invalid entity.");
-        assert(entity->valid() && "Invalid parent entity.");
-        assert(entity->HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
-        auto& hierarchy = getComponent<HierarchyComponent>();
-        hierarchy.parent = entity->handler();
-    }
+    void setParent(Entity* entity);
 
-    std::shared_ptr<Entity> getParent()
-    {
-        assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
-        auto& hierarchy = getComponent<HierarchyComponent>();
-        if (hierarchy.parent == entt::null)
-        {
-            return nullptr;
-        }
-
-        return std::make_shared<Entity>(hierarchy.parent, m_scene);
-    }
+    std::shared_ptr<Entity> getParent();
 
     /**
      * @brief Checks if the entity is valid

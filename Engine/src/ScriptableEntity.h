@@ -4,14 +4,22 @@
 
 #include "Entity.h"
 
+class Scene;
+
 class EngineAPI ScriptableEntity
 {
 public:
+	virtual ~ScriptableEntity() = default;
+
+protected:
 	virtual void onCreate() {};
 	virtual void onUpdate(float deltaTime) {};
 	virtual void onDestroy() {};
 
-	virtual ~ScriptableEntity() = default;
-private:
+	Entity entity;
+
+	friend class Scene;
+
+protected:
 
 };

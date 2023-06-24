@@ -37,7 +37,6 @@ struct EngineAPI HierarchyComponent : public Component
 struct EngineAPI NativeScriptComponent : public Component
 {
 	ScriptableEntity* script = nullptr;
-	Entity entity;
 	std::function<ScriptableEntity*()> instantiateScript = nullptr;
 
 	template<typename T>

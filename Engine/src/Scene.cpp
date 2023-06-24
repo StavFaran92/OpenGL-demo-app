@@ -32,6 +32,7 @@
 #include "SkyboxRenderer.h"
 #include "Material.h"
 #include "DefaultMaterial.h"
+#include "ScriptableEntity.h"
 
 void Scene::init(Context* context)
 {
@@ -89,7 +90,7 @@ void Scene::update(float deltaTime)
 		if (!nsc.script)
 		{
 			nsc.script = nsc.instantiateScript();
-			nsc.entity = Entity{entity, this};
+			nsc.script->entity = Entity{entity, this};
 			nsc.script->onCreate();
 		}
 

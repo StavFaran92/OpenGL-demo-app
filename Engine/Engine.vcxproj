@@ -171,6 +171,7 @@
   <ItemGroup>
     <ClInclude Include="src\Component.h" />
     <ClInclude Include="src\RenderableComponent.h" />
+    <ClInclude Include="src\ScriptableEntity.h" />
     <ClInclude Include="src\ShaderExtender.h" />
     <ClInclude Include="src\InstanceBatch.h" />
     <ClInclude Include="src\GpuInstancingRenderer.h" />
