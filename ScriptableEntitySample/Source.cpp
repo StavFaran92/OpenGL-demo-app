@@ -3,7 +3,7 @@
 
 class CustomBoxBehaviour : public ScriptableEntity
 {
-	virtual void onCreate() override
+	virtual void onUpdate(float a) override
 	{
 		std::cout << "Box was created modafaka.\n";
 	}
@@ -12,22 +12,11 @@ class CustomBoxBehaviour : public ScriptableEntity
 class Sandbox : public Application
 {
 public:
-	using Application::draw;
-	using Application::update;
-
 	void start() override
 	{
 		auto box1 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 		auto& nsc = box1->addComponent<NativeScriptComponent>();
 		nsc.bind<CustomBoxBehaviour>();
-	}
-
-	void update(float deltaTime) override
-	{
-	}
-
-	void draw() override
-	{
 	}
 
 };

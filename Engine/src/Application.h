@@ -18,8 +18,6 @@ class EngineAPI Application
 {
 public:
 	virtual void start() = 0;
-	virtual void update(float deltaTime) = 0;
-	virtual void draw() = 0;
 	virtual void close() {};
 
 protected:

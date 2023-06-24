@@ -3,7 +3,7 @@
 #include "SDL.h"
 #include "Core.h"
 
-#include <deque>
+#include <vector>
 
 class GuiMenu;
 
@@ -15,9 +15,10 @@ public:
 	void render();
 	bool close();
 
-	void draw(GuiMenu* menu);
+	void addGUI(GuiMenu* menu);
+	void removeGUI(GuiMenu* menu);
 
 private:
-	std::deque<GuiMenu*> m_guiQueue;
+	std::vector<GuiMenu*> m_guiList;
 };
 

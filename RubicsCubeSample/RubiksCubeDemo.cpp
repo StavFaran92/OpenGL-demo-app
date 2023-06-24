@@ -10,8 +10,6 @@
 class RubiksCubeDemo : public Application
 {
 public:
-	using Application::draw;
-	using Application::update;
 	std::shared_ptr<RubiksCube> rubiksCube;
 	std::shared_ptr<RubiksCubeController> controller;
 	std::shared_ptr<RubiksCubeGui> gui;
@@ -37,25 +35,6 @@ public:
 		scene->enableObjectSelection(true);
 
 		//postProcess(PostProcess::grayscale());
-	}
-
-	void update(float deltaTime)
-	{
-		//for (const auto cube : rubiksCube->getCubes())
-		//{
-		//	update(cube);
-		//}
-	}
-
-	void draw() override
-	{
-		//for (const auto cube : rubiksCube->getCubes())
-		//{
-		//	draw(cube);
-		//}
-
-		Engine::get()->getImguiHandler()->draw(gui.get());
-
 	}
 
 	void close() override

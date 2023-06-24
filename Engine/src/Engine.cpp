@@ -125,8 +125,6 @@ Context* Engine::getContext() const
 
 void Engine::draw(float deltaTime)
 {
-
-
     m_context->draw(deltaTime);
 
     m_imguiHandler->render();
@@ -137,10 +135,6 @@ void Engine::draw(float deltaTime)
 
 void Engine::update(float deltaTime)
 {
-    //lightCube->GetTransformation()->SetPosition({ 10 * cos(angle * Constants::toRadians) ,0, 10 * sin(angle * Constants::toRadians) });
-    //angle++;
-    //lightCube->GetTransformation()->SetScale({ .25f, .25f, .25f });
-
     m_context->update(deltaTime);
 }
 
@@ -169,9 +163,7 @@ void Engine::run(Application* app)
         if (quit)
             return;
 
-        app->update(deltaTime);
         update(deltaTime);
-        app->draw();
         draw(deltaTime);
 
     }

@@ -6,10 +6,6 @@
 class Sandbox : public Application
 {
 public:
-
-	std::shared_ptr<GUIHandler> gui;
-
-
 	void start() override
 	{
 		auto importer = getContext()->getModelImporter();
@@ -32,17 +28,11 @@ public:
 		auto& shaderRef = planeModel->addOrReplaceComponent<StandardShader>(shader);
 
 		auto dLight = getContext()->getActiveScene()->createEntity();
-		dLight->addComponent<PointLight>(glm::vec3{ 1,1,1 }, glm::vec3{ 0, 0, 2 }, 1, 1, Attenuation());
+		dLight->addComponent<PointLight>(glm::vec3{ 1,1,1 }, 1, 1, Attenuation());
 
-		gui = std::make_shared<GUIHandler>(&shaderRef);
+		auto gui = new GUIHandler(&shaderRef);
+		Engine::get()->getImguiHandler()->addGUI(gui);
 
-	}
-
-	void update(float deltaTime) override {}
-
-	void draw() override
-	{
-		Engine::get()->getImguiHandler()->draw(gui.get());
 	}
 
 };
