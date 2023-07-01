@@ -11,12 +11,12 @@ class EngineAPI ScriptableEntity
 public:
 	virtual ~ScriptableEntity() = default;
 
+	Entity entity;
+
 protected:
 	virtual void onCreate() {};
 	virtual void onUpdate(float deltaTime) {};
 	virtual void onDestroy() {};
-
-	Entity entity;
 
 	friend class Scene;
 

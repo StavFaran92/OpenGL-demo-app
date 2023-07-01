@@ -5,6 +5,8 @@
 #include "Scene.h"
 //#include "Component.h"
 
+using entity_id = entt::id_type;
+
 /**
  * @class Entity
  * @brief Class for handling entities in a scene
@@ -15,6 +17,7 @@
 class EngineAPI Entity
 {
 public:
+    static Entity EmptyEntity;
     /// Default constructor
     Entity() = default;
 
@@ -149,9 +152,12 @@ public:
 
     }
 
-    void setParent(Entity* entity);
-
-    std::shared_ptr<Entity> getParent();
+    void setParent(Entity entity);
+    Entity removeParent();
+    Entity getParent();
+    void addChildren(Entity entity);
+    Entity removeChildren(Entity entity);
+    auto getChildren();
 
     /**
      * @brief Checks if the entity is valid
@@ -167,15 +173,14 @@ public:
         return m_entity;
     }
 
-    inline uint32_t handlerID() const
+    inline entity_id handlerID() const
     {
-        return (uint32_t)m_entity;
+        return (entity_id)m_entity;
     }
 
 private:
     Scene* m_scene = nullptr;  ///< Scene the entity belongs to
     entt::entity m_entity{ entt::null };  ///< ENTT entity instance
-
 
     std::set<std::string> m_components;
 
