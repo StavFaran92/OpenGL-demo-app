@@ -80,8 +80,8 @@ public:
 
 	entt::registry& getRegistry();
 
-	std::shared_ptr<Entity> createEntity();
-	void removeEntity(std::shared_ptr<Entity> e);
+	Entity createEntity();
+	void removeEntity(const Entity& e);
 	
 
 

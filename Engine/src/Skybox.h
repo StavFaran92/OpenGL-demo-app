@@ -6,7 +6,7 @@
 class EngineAPI Skybox
 {
 public:
-    static std::shared_ptr<Entity> CreateSkybox(Scene* scene = nullptr);
+    static Entity CreateSkybox(Scene* scene = nullptr);
 
     
 private:

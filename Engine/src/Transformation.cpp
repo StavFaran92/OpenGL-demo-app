@@ -3,12 +3,12 @@
 #include "LinearAlgebraUtil.h"
 #include "Logger.h"
 
-glm::mat4 Transformation::getMatrix() const
+glm::mat4 Transformation::getMatrix() 
 {
-	auto parent = m_entity->getParent();
-	if (parent)
+	auto parent = m_entity.getParent();
+	if (parent.valid())
 	{
-		auto& parentTransform = parent->getComponent<Transformation>();
+		auto& parentTransform = parent.getComponent<Transformation>();
 		return parentTransform.getMatrix() * m_transformation;
 	}
 	else
@@ -19,10 +19,10 @@ glm::mat4 Transformation::getMatrix() const
 
 void Transformation::getMatrix(glm::mat4& mat)
 {
-	auto parent = m_entity->getParent();
-	if (parent)
+	auto parent = m_entity.getParent();
+	if (parent.valid())
 	{
-		auto& parentTransform = parent->getComponent<Transformation>();
+		auto& parentTransform = parent.getComponent<Transformation>();
 		mat = parentTransform.getMatrix() * m_transformation;
 	}
 	else

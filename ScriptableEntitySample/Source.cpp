@@ -15,7 +15,7 @@ public:
 	void start() override
 	{
 		auto box1 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
-		auto& nsc = box1->addComponent<NativeScriptComponent>();
+		auto& nsc = box1.addComponent<NativeScriptComponent>();
 		nsc.bind<CustomBoxBehaviour>();
 	}
 

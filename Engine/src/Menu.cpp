@@ -233,13 +233,13 @@ void LightCreatorWindow()
             if (lightType == LightType::DirectionalLight) 
             {
                 auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
-                e->addComponent<DirectionalLight>(color, dir, ambientIntensity, diffuseIntensity);
+                e.addComponent<DirectionalLight>(color, dir, ambientIntensity, diffuseIntensity);
 
             }
             else if (lightType == LightType::PointLight)
             {
                 auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
-                e->addComponent<PointLight>(color, ambientIntensity, diffuseIntensity, attenuation);
+                e.addComponent<PointLight>(color, ambientIntensity, diffuseIntensity, attenuation);
             }
 
             ShowLightCreatorWindow = false;
@@ -303,8 +303,8 @@ void ShowModelCreatorWindow()
 
             auto entity = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str(), Engine::get()->getContext()->getActiveScene().get());
 
-            entity->getComponent<Transformation>().setPosition(pos);
-            entity->getComponent<Transformation>().setScale(scale);
+            entity.getComponent<Transformation>().setPosition(pos);
+            entity.getComponent<Transformation>().setScale(scale);
 
             showModelCreatorWindow = false;
 
@@ -407,7 +407,7 @@ void ShowPrimitiveCreatorWindow()
 
             //auto texture = Texture::loadTextureFromFile(texturePath.c_str(), flipTexture);
 
-            std::shared_ptr<Entity> entity;
+            Entity entity;
             if (shape == PrimitiveType::Quad)
             {
                 //entity = ModelBuilder::builder<Quad>().build();
@@ -419,10 +419,10 @@ void ShowPrimitiveCreatorWindow()
 
             assert(entity);
 
-            if (entity->valid())
+            if (entity.valid())
             {
-                entity->getComponent<Transformation>().setPosition(pos);
-                entity->getComponent<Transformation>().setScale(scale);
+                entity.getComponent<Transformation>().setPosition(pos);
+                entity.getComponent<Transformation>().setScale(scale);
 
                 logInfo("Added Entity successfully.");
             }

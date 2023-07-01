@@ -88,37 +88,43 @@ public:
     }
 
     template<typename T>
-    T* tryGetComponentInParent()
+    T* tryGetComponentInParent(bool includeSelf = true)
     {
         assert(valid() && "Invalid entity.");
-        auto comp = tryGetComponent<T>();
-        if (comp)
+        if (includeSelf)
         {
-            return comp;
+            auto comp = tryGetComponent<T>();
+            if (comp)
+            {
+                return comp;
+            }
         }
 
         auto parent = getParent();
-        if (parent)
+        if (parent.valid())
         {
-            return parent->tryGetComponentInParent<T>();
+            return parent.tryGetComponentInParent<T>(true);
         }
 
         return nullptr;
     }
 
     template<typename T>
-    T& getComponentInParent()
+    T& getComponentInParent(bool includeSelf = true)
     {
         assert(valid() && "Invalid entity.");
-        if (HasComponent<T>())
+        if (includeSelf)
         {
-            return getComponent<T>();
+            if (HasComponent<T>())
+            {
+                return getComponent<T>();
+            }
         }
 
         auto parent = getParent();
-        if (parent)
+        if (parent.valid())
         {
-            return parent->getComponentInParent<T>();
+            return parent.getComponentInParent<T>(true);
         }
 
         assert(false && "Component not found in tree hierarchy.");
@@ -156,7 +162,7 @@ public:
     Entity removeParent();
     Entity getParent();
     void addChildren(Entity entity);
-    Entity removeChildren(Entity entity);
+    void removeChildren(Entity entity);
     auto getChildren();
 
     /**
@@ -166,6 +172,11 @@ public:
     bool valid() const
     {
         return m_scene != nullptr && m_entity != entt::null && m_scene->getRegistry().valid(m_entity);
+    }
+
+    bool operator==(const Entity& other)
+    {
+        return m_scene == other.m_scene && m_entity == other.m_entity;
     }
 
     inline entt::entity handler() const
@@ -182,6 +193,7 @@ private:
     Scene* m_scene = nullptr;  ///< Scene the entity belongs to
     entt::entity m_entity{ entt::null };  ///< ENTT entity instance
 
+    // TODO remove
     std::set<std::string> m_components;
 
 };

@@ -13,7 +13,7 @@
 class EngineAPI Transformation
 {
 public:
-	Transformation(std::shared_ptr<Entity> entity) :
+	Transformation(const Entity& entity) :
 		m_entity(entity),
 		m_translation(0, 0, 0),
 		m_orientationLocal(1, 0, 0, 0),
@@ -23,7 +23,7 @@ public:
 		m_relativeRot(1.f)
 	{}
 
-	Transformation(std::shared_ptr<Entity> entity, glm::vec3 translation) :
+	Transformation(const Entity& entity, glm::vec3 translation) :
 		m_entity(entity),
 		m_translation(translation),
 		m_orientationLocal(1, 0, 0, 0),
@@ -42,7 +42,7 @@ public:
 	void setRotation(float angle, glm::vec3 axis);
 	void setScale(glm::vec3 scale);
 
-	glm::mat4 getMatrix() const;
+	glm::mat4 getMatrix();
 	glm::vec3 getPosition() const;
 	glm::quat getLocalOrientation() const;
 	glm::quat getWorldOrientation() const;
@@ -73,7 +73,7 @@ private:
 
 	glm::mat4 m_transformation;
 
-	std::shared_ptr<Entity> m_entity;
+	Entity m_entity;
 
 	bool m_change = false;
 };

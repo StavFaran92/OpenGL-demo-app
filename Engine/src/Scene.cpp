@@ -61,7 +61,7 @@ void Scene::init(Context* context)
 	m_coroutineManager = std::make_shared<CoroutineSystem>();
 
 	// Add default dir light
-	createEntity()->addComponent<DirectionalLight>();
+	createEntity().addComponent<DirectionalLight>();
 }
 
 void Scene::update(float deltaTime)
@@ -240,18 +240,18 @@ entt::registry& Scene::getRegistry()
 	return m_registry;
 }
 
-std::shared_ptr<Entity> Scene::createEntity()
+Entity Scene::createEntity()
 {
 	entt::entity e = m_registry.create();
-	auto entityHandler = std::make_shared<Entity>(e, this);
-	entityHandler->addComponent<Transformation>(entityHandler);
-	entityHandler->addComponent<HierarchyComponent>();
+	auto entityHandler = Entity(e, this);
+	entityHandler.addComponent<Transformation>(entityHandler);
+	entityHandler.addComponent<HierarchyComponent>();
 	return entityHandler;
 }
 
-void Scene::removeEntity(std::shared_ptr<Entity> e)
+void Scene::removeEntity(const Entity& e)
 {
-	m_registry.destroy(e->handler());
+	m_registry.destroy(e.handler());
 }
 
 

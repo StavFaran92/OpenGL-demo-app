@@ -44,7 +44,7 @@ void Entity::addChildren(Entity entity)
     auto& hierarchy = getComponent<HierarchyComponent>();
     hierarchy.children[entity.handlerID()] = entity;
 }
-Entity Entity::removeChildren(Entity entity)
+void Entity::removeChildren(Entity entity)
 {
     assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
     auto& hierarchy = getComponent<HierarchyComponent>();

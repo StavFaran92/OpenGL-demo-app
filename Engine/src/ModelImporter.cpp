@@ -28,19 +28,19 @@ void ModelImporter::init()
 	logInfo("Model importer init successfully.");
 }
 
-std::shared_ptr<Entity> ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
+Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 {
 	// validate init
 	if (m_importer == nullptr)
 	{
 		logError("Importer not initialized.");
-		return std::make_shared<Entity>();
+		return Entity::EmptyEntity;
 	}
 
 	if (!std::filesystem::exists(path))
 	{
 		logError("File doesn't exists: " + path);
-		return std::make_shared<Entity>();
+		return Entity::EmptyEntity;
 	}
 
 	// read scene from file
@@ -50,14 +50,14 @@ std::shared_ptr<Entity> ModelImporter::loadModelFromFile(const std::string& path
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
 		logError("ERROR::ASSIMP::{}", m_importer->GetErrorString());
-		return std::make_shared<Entity>();
+		return Entity::EmptyEntity;
 	}
 
 	//create new model
 	auto entity = pScene->createEntity();
 	StandardShader* shader = Shader::create<StandardShader>();
-	entity->addComponent<StandardShader>(shader);
-	addDefaultComponents(entity.get());
+	entity.addComponent<StandardShader>(shader);
+	entity.addComponent<RenderableComponent>();
 
 	// create new model session
 	ModelImportSession session;
@@ -65,23 +65,23 @@ std::shared_ptr<Entity> ModelImporter::loadModelFromFile(const std::string& path
 	session.fileDir = path.substr(0, path.find_last_of('/'));
 
 	// place session in session map
-	m_sessions[entity->handlerID()] = session;
+	m_sessions[entity.handlerID()] = session;
 
-	processNode(scene->mRootNode, scene, session, entity.get(), pScene);
+	processNode(scene->mRootNode, scene, session, entity, pScene);
 
 	return entity;
 }
 
-void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporter::ModelImportSession& session, Entity* entity, Scene* pScene)
+void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporter::ModelImportSession& session, Entity entity, Scene* pScene)
 {
 	// process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		entity->addComponent<Mesh>(processMesh(mesh, scene, session));
+		entity.addComponent<Mesh>(processMesh(mesh, scene, session));
 		auto textureHandlers = new std::vector<TextureHandler*>();
 
-		auto& material = entity->addComponent<DefaultMaterial>(32.0f);
+		auto& material = entity.addComponent<DefaultMaterial>(32.0f);
 		// process material
 		if (mesh->mMaterialIndex >= 0)
 		{
@@ -99,11 +99,11 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
 		auto childEntity = pScene->createEntity();
-		addDefaultComponents(childEntity.get());
+		childEntity.addComponent<RenderableComponent>();
 
-		childEntity->setParent(entity);
+		childEntity.setParent(entity);
 
-		processNode(node->mChildren[i], scene, session, childEntity.get(), pScene);
+		processNode(node->mChildren[i], scene, session, childEntity, pScene);
 	}
 }
 
@@ -184,14 +184,6 @@ std::vector<TextureHandler*> ModelImporter::loadMaterialTextures(aiMaterial* mat
 		}
 	}
 	return textureHandlers;
-}
-
-void ModelImporter::addDefaultComponents(Entity* entity)
-{
-	//entity->addComponent<DefaultMaterial>(32.0f);
-	//auto shader = Shader::create<StandardShader>();
-	//entity->addComponent<StandardShader>(shader);
-	entity->addComponent<RenderableComponent>();
 }
 
 Texture::Type ModelImporter::getTextureType(aiTextureType type)

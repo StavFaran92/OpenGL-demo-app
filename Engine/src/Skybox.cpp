@@ -18,7 +18,7 @@
 #include "EditorCamera.h"
 #include "Resources/Engine/Primitives/cube.h"
 
-std::shared_ptr<Entity> Skybox::CreateSkybox(Scene* scene)
+Entity Skybox::CreateSkybox(Scene* scene)
 {
     if (!scene)
     {
@@ -40,10 +40,10 @@ std::shared_ptr<Entity> Skybox::CreateSkybox(Scene* scene)
 
     auto entity = ShapeFactory::createBox(scene);
 
-    entity->addComponent<StandardShader>(shader);
-    entity->RemoveComponent<RenderableComponent>();
-    entity->getComponent<DefaultMaterial>().addTextureHandler(textureHandler);
-    entity->addComponent<SkyboxComponent>();
+    entity.addComponent<StandardShader>(shader);
+    entity.RemoveComponent<RenderableComponent>();
+    entity.getComponent<DefaultMaterial>().addTextureHandler(textureHandler);
+    entity.addComponent<SkyboxComponent>();
 
     return entity;
 }
