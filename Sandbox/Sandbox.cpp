@@ -18,7 +18,7 @@ public:
 		//auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
 
 		auto box1 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
-		auto& nsc = box1->addComponent<NativeScriptComponent>();
+		auto& nsc = box1.addComponent<NativeScriptComponent>();
 		nsc.bind<CustomBoxBehaviour>();
 		//box1->getComponent<Transformation>().translate({1, 0,0});
 		//auto box2 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());

@@ -36,10 +36,24 @@ public:
 		update(0);
 	}
 
+	Transformation(const Entity& entity, glm::vec3 translation, glm::quat rotation) :
+		m_entity(entity),
+		m_translation(translation),
+		m_orientationLocal(rotation),
+		m_orientationWorld(rotation),
+		m_scale(1, 1, 1),
+		m_transformation(1.f),
+		m_relativeRot(1.f)
+	{
+		m_change = true;
+		update(0);
+	}
+
 	void update(float deltaTime);
 
 	void setPosition(glm::vec3 pos);
 	void setRotation(float angle, glm::vec3 axis);
+	void setRotation(glm::quat quat);
 	void setScale(glm::vec3 scale);
 
 	glm::mat4 getMatrix();

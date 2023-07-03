@@ -1,23 +1,41 @@
 #pragma once
 
+#include <vector>
+#include <cstdint>
 #include "Core.h"
+#include <PxPhysicsAPI.h>
 
 class EngineAPI PhysicsSystem
 {
 public:
-	PhysicsSystem();
-	~PhysicsSystem();
+	PhysicsSystem() = default;
+	~PhysicsSystem() = default;
 
 	bool init();
 
-	void createScene();
-	void setActiveScene(int index);
+	physx::PxScene* createScene();
 
-	void update(float deltaTime);
+	void startSimulation();
+	void stopSimulation();
+
+	void update(float deltaTime, uint32_t sceneID);
 
 	void close();
 
-private:
-	class PhysicsSystemImpl;
-	PhysicsSystemImpl* m_pimpl;
+public:
+	physx::PxDefaultAllocator       m_defaultAllocatorCallback;
+	physx::PxDefaultErrorCallback   m_defaultErrorCallback;
+	physx::PxDefaultCpuDispatcher* m_dispatcher = nullptr;
+	physx::PxTolerancesScale        m_toleranceScale;
+
+	physx::PxFoundation* m_foundation = nullptr;
+	physx::PxPhysics* m_physics = nullptr;
+
+	std::vector<physx::PxScene*>    m_scenes;
+	int m_activeScene = -1;
+	physx::PxMaterial* m_defaultMaterial = nullptr;
+
+	physx::PxPvd* mPvd = nullptr;
+
+	bool m_isSimulationActive = false;
 };

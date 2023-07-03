@@ -33,6 +33,8 @@
 #include "Material.h"
 #include "DefaultMaterial.h"
 #include "ScriptableEntity.h"
+#include "PhysicsSystem.h"
+#include "PhysXUtils.h"
 
 void Scene::init(Context* context)
 {
@@ -59,6 +61,8 @@ void Scene::init(Context* context)
 	m_postProcessProjector->setEnabled(true);
 
 	m_coroutineManager = std::make_shared<CoroutineSystem>();
+
+	m_PhysicsScene = Engine::get()->getPhysicsSystem()->createScene();
 
 	// Add default dir light
 	createEntity().addComponent<DirectionalLight>();
@@ -90,6 +94,7 @@ void Scene::update(float deltaTime)
 		if (!nsc.script)
 		{
 			nsc.script = nsc.instantiateScript();
+			assert(nsc.script);
 			nsc.script->entity = Entity{entity, this};
 			nsc.script->onCreate();
 		}
@@ -97,10 +102,42 @@ void Scene::update(float deltaTime)
 		nsc.script->onUpdate(deltaTime);
 	}
 
-	for (auto&& [entity, transformation] : m_registry.view<Transformation>().each())
+	// Physics
+	m_PhysicsScene->simulate(deltaTime);
+	m_PhysicsScene->fetchResults(true);
+
+	//physx::PxU32 nbActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
+	//if (nbActors)
+	//{
+	//	std::vector<physx::PxRigidActor*> actors(nbActors);
+	//	m_PhysicsScene->getActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC, reinterpret_cast<physx::PxActor**>(&actors[0]), nbActors);
+
+	//	for (physx::PxRigidActor* actor : actors)
+	//	{
+	//		entity_id id = (entity_id)actor->userData;
+	//		Entity e{ (entt::entity)id, this };
+	//		auto& rb = e.getComponent<RigidBodyComponent>();
+	//		auto& transform = e.getComponent<Transformation>();
+
+	//		physx::PxTransform pxTransform = actor->getGlobalPose();
+	//		transform.setPosition({ pxTransform.p.x, pxTransform.p.y, pxTransform.p.z });
+	//	}
+	//}
+
+	for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
 	{
-		transformation.update(deltaTime);
+		Entity e{ entity, this };
+		auto& transform = e.getComponent<Transformation>();
+		physx::PxRigidActor* actor = (physx::PxRigidActor*)rb.simulatedBody;
+		
+		physx::PxTransform pxTransform = actor->getGlobalPose();
+		transform.setPosition({ pxTransform.p.x, pxTransform.p.y, pxTransform.p.z });
 	}
+
+	//for (auto&& [entity, transformation] : m_registry.view<Transformation>().each())
+	//{
+	//	transformation.update(deltaTime);
+	//}
 }
 
 void Scene::draw(float deltaTime)
@@ -334,4 +371,53 @@ void Scene::addCoroutine(const std::function<bool(float)>& coroutine)
 bool Scene::isPickingPhaseActive() const
 {
 	return m_objectPicker->isPickingPhaseActive();
+}
+
+void Scene::startSimulation()
+{
+	if (m_isSimulationActive)
+	{
+		logWarning("Simulation already active.");
+		return;
+	}
+
+	for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
+	{
+		Entity e{ entity, this };
+		if (e.HasComponent<CollisionBoxComponent>())
+		{
+			auto physicsSystem = Engine::get()->getPhysicsSystem();
+			auto physics = physicsSystem->m_physics;
+			auto& collider = e.getComponent<CollisionBoxComponent>();
+			auto& transform = e.getComponent<Transformation>();
+			physx::PxShape* shape = Engine::get()->getPhysicsSystem()->m_physics->createShape(physx::PxBoxGeometry(collider.halfExtent, collider.halfExtent, collider.halfExtent), *physicsSystem->m_defaultMaterial);
+
+			physx::PxTransform pxTransform = PhysXUtils::toPhysXTransform(transform);
+			physx::PxRigidDynamic* body = physics->createRigidDynamic(pxTransform);
+			body->attachShape(*shape);
+			physx::PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
+			m_PhysicsScene->addActor(*body);
+			rb.simulatedBody = body;
+	
+			shape->release();
+		}
+	}
+
+	m_isSimulationActive = true;
+}
+
+void Scene::stopSimulation()
+{
+	if (!m_isSimulationActive)
+	{
+		logWarning("Simulation already stopped.");
+		return;
+	}
+
+	m_isSimulationActive = false;
+}
+
+bool Scene::isSimulationActive() const
+{
+	return m_isSimulationActive;
 }

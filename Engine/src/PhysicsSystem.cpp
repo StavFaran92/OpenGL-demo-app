@@ -1,36 +1,8 @@
 #include "PhysicsSystem.h"
 
 #include "Logger.h"
-#include <PxPhysicsAPI.h>
 
-class PhysicsSystem::PhysicsSystemImpl
-{
-public:
-    bool init();
-
-    void createScene();
-    void setActiveScene(int index);
-
-    void update(float deltaTime);
-
-    void close();
-private:
-    physx::PxDefaultAllocator       m_defaultAllocatorCallback;
-    physx::PxDefaultErrorCallback   m_defaultErrorCallback;
-    physx::PxDefaultCpuDispatcher*  m_dispatcher = nullptr;
-    physx::PxTolerancesScale        m_toleranceScale;
-
-    physx::PxFoundation*            m_foundation = nullptr;
-    physx::PxPhysics*               m_physics = nullptr;
-
-    std::vector<physx::PxScene*>    m_scenes;
-    int m_activeScene = -1;
-    physx::PxMaterial*              mMaterial = nullptr;
-
-    physx::PxPvd*                   mPvd = nullptr;
-};
-
-bool PhysicsSystem::PhysicsSystemImpl::init()
+bool PhysicsSystem::init()
 {
     // init physx
     m_foundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_defaultAllocatorCallback, m_defaultErrorCallback);
@@ -64,6 +36,8 @@ bool PhysicsSystem::PhysicsSystemImpl::init()
         return false;
     }
 
+    m_defaultMaterial = m_physics->createMaterial(0.5f, 0.5f, 0.f);
+
 #ifdef DEBUG
     physx::PxPvdSceneClient* pvdClient = mScene->getScenePvdClient();
     if (pvdClient)
@@ -75,16 +49,13 @@ bool PhysicsSystem::PhysicsSystemImpl::init()
 #endif // DEBUG
 }
 
-void PhysicsSystem::PhysicsSystemImpl::update(float deltaTime)
+void PhysicsSystem::update(float deltaTime, uint32_t sceneID)
 {
-    if (m_activeScene != -1)
-    {
-        m_scenes[m_activeScene]->simulate(deltaTime);
-        m_scenes[m_activeScene]->fetchResults(true);
-    }
+    m_scenes[sceneID]->simulate(deltaTime);
+    m_scenes[sceneID]->fetchResults(true);
 }
 
-void PhysicsSystem::PhysicsSystemImpl::createScene()
+physx::PxScene* PhysicsSystem::createScene()
 {
     physx::PxSceneDesc sceneDesc(m_physics->getTolerancesScale());
     sceneDesc.gravity = physx::PxVec3(0.0f, -9.81f, 0.0f);
@@ -92,60 +63,33 @@ void PhysicsSystem::PhysicsSystemImpl::createScene()
     sceneDesc.cpuDispatcher = m_dispatcher;
     sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
     physx::PxScene* scene = m_physics->createScene(sceneDesc);
-    m_scenes.push_back(scene);
-    setActiveScene(m_scenes.size() - 1);
+    return scene;
 }
 
-void PhysicsSystem::PhysicsSystemImpl::setActiveScene(int index)
+void PhysicsSystem::startSimulation()
 {
-    if (index > m_scenes.size() || index < 0)
+    if (m_isSimulationActive)
     {
-        logError("Invalid index specified: " + std::to_string(index));
+        logWarning("Simulation already active.");
         return;
     }
 
-    m_activeScene = index;
+    m_isSimulationActive = true;
 }
 
-void PhysicsSystem::PhysicsSystemImpl::close()
+void PhysicsSystem::stopSimulation()
 {
-    m_physics->release();
-    m_foundation->release();
-}
+    if (!m_isSimulationActive)
+    {
+        logWarning("Simulation already stopped.");
+        return;
+    }
 
-PhysicsSystem::PhysicsSystem()
-{
-    m_pimpl = new PhysicsSystemImpl();
-}
-
-PhysicsSystem::~PhysicsSystem()
-{
-    delete m_pimpl;
-}
-
-
-bool PhysicsSystem::init()
-{
-    return m_pimpl->init();
-}
-
-void PhysicsSystem::update(float deltaTime)
-{
-    m_pimpl->update(deltaTime);
-}
-
-void PhysicsSystem::createScene()
-{
-    m_pimpl->createScene();
-}
-
-void PhysicsSystem::setActiveScene(int index)
-{
-    m_pimpl->setActiveScene(index);
+    m_isSimulationActive = false;
 }
 
 void PhysicsSystem::close()
 {
-    m_pimpl->close();
-
+    m_physics->release();
+    m_foundation->release();
 }

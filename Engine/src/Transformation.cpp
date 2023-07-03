@@ -95,6 +95,12 @@ void Transformation::setRotation(float angle, glm::vec3 axis)
 {
 	m_change = true;
 }
+void Transformation::setRotation(glm::quat quat)
+{
+	m_orientationWorld = quat;
+
+	m_change = true;
+}
 void Transformation::setScale(glm::vec3 scale)
 {
 	m_scale = scale;

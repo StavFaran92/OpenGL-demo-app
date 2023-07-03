@@ -58,12 +58,6 @@ bool Engine::init()
 
     m_context = std::make_shared<Context>();
 
-    auto defaultScene = std::make_shared<Scene>(m_context.get());
-    defaultScene->setPostProcess(true);
-
-    m_context->addScene(defaultScene);
-    m_context->setActiveScene(defaultScene->getID());
-
     //auto secondScene = std::make_shared<Scene>();
     //secondScene->setPostProcess(true);
     //m_context->addScene(secondScene);
@@ -84,6 +78,12 @@ bool Engine::init()
         logError("Physics System init failed!");
         return false;
     }
+
+    auto defaultScene = std::make_shared<Scene>(m_context.get());
+    defaultScene->setPostProcess(true);
+
+    m_context->addScene(defaultScene);
+    m_context->setActiveScene(defaultScene->getID());
 
     m_isInit = true;
 

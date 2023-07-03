@@ -36,6 +36,9 @@ class Mesh;
 class Transformation;
 class InstanceBatch;
 class SkyboxRenderer;
+namespace physx {
+	class PxScene;
+}
 template<typename T> class ObjectHandler;
 
 class EngineAPI Scene
@@ -92,6 +95,10 @@ private:
 	inline void SetID(uint32_t id) { m_id = id; }
 	void draw(float deltaTime);
 
+	void startSimulation();
+	void stopSimulation();
+	bool isSimulationActive() const;
+
 	void init(Context* context);
 	void clear();
 	void close();
@@ -114,4 +121,8 @@ private:
 
 	entt::registry m_registry;
 	std::map<RenderPhase, std::vector<RenderCallback>> m_renderCallbacks;
+
+	physx::PxScene* m_PhysicsScene = nullptr;
+
+	bool m_isSimulationActive = false;
 };
