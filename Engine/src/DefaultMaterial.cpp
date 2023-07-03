@@ -29,11 +29,16 @@ DefaultMaterial::DefaultMaterial(float shine = 0) : Material(shine)
 	m_defaultTextureHandlers.push_back(std::shared_ptr<TextureHandler>(textureSpec));
 }
 
-void DefaultMaterial::UseMaterial(Shader& shader)
+void DefaultMaterial::use(Shader& shader)
 {
-	Material::UseMaterial(shader);
+	Material::use(shader);
 
 	shader.setValue("material.shininess", m_shininess);
+}
+
+void DefaultMaterial::release()
+{
+	Material::release();
 }
 
 DefaultMaterial::~DefaultMaterial()

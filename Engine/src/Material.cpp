@@ -8,7 +8,7 @@ Material::Material(float shine)
 {
 }
 
-void Material::UseMaterial(Shader& shader)
+void Material::use(Shader& shader)
 {
 	if (!shader.IsMaterialsEnabled())
 	{
@@ -19,6 +19,22 @@ void Material::UseMaterial(Shader& shader)
 	if (shader.IsTexturesEnabled())
 	{
 		SetTexturesInShader(shader);
+	}
+}
+
+void Material::release()
+{
+	auto textures = m_textureHandlers;
+
+	if (textures.size() == 0)
+	{
+		textures = m_defaultTextureHandlers;
+	}
+
+	for (auto i = 0; i < textures.size(); i++)
+	{
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
 

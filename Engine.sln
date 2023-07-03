@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31702.278
@@ -22,6 +22,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoadModelSample", "LoadModelSample\LoadModelSample.vcxproj", "{EF82E3ED-BFC8-4365-BEF2-F013478030BC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SkyboxSample", "SkyboxSample\SkyboxSample.vcxproj", "{23E84DAF-5964-4FE8-B6A0-037ACE3A63C8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScriptableEntitySample", "ScriptableEntitySample\ScriptableEntitySample.vcxproj", "{E21E551D-C7B3-40F5-9477-7A2D81784FDB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhysxSample", "PhysxSample\PhysxSample.vcxproj", "{61C1CA61-FAF1-47B3-8C4C-8429BFDECBF2}"
 EndProject
@@ -111,6 +113,14 @@ Global
 		{23E84DAF-5964-4FE8-B6A0-037ACE3A63C8}.Release|x64.Build.0 = Release|x64
 		{23E84DAF-5964-4FE8-B6A0-037ACE3A63C8}.Release|x86.ActiveCfg = Release|Win32
 		{23E84DAF-5964-4FE8-B6A0-037ACE3A63C8}.Release|x86.Build.0 = Release|Win32
+		{E21E551D-C7B3-40F5-9477-7A2D81784FDB}.Debug|x64.ActiveCfg = Debug|x64
+		{E21E551D-C7B3-40F5-9477-7A2D81784FDB}.Debug|x64.Build.0 = Debug|x64
+		{E21E551D-C7B3-40F5-9477-7A2D81784FDB}.Debug|x86.ActiveCfg = Debug|Win32
+		{E21E551D-C7B3-40F5-9477-7A2D81784FDB}.Debug|x86.Build.0 = Debug|Win32
+		{E21E551D-C7B3-40F5-9477-7A2D81784FDB}.Release|x64.ActiveCfg = Release|x64
+		{E21E551D-C7B3-40F5-9477-7A2D81784FDB}.Release|x64.Build.0 = Release|x64
+		{E21E551D-C7B3-40F5-9477-7A2D81784FDB}.Release|x86.ActiveCfg = Release|Win32
+		{E21E551D-C7B3-40F5-9477-7A2D81784FDB}.Release|x86.Build.0 = Release|Win32
 		{61C1CA61-FAF1-47B3-8C4C-8429BFDECBF2}.Debug|x64.ActiveCfg = Debug|x64
 		{61C1CA61-FAF1-47B3-8C4C-8429BFDECBF2}.Debug|x64.Build.0 = Debug|x64
 		{61C1CA61-FAF1-47B3-8C4C-8429BFDECBF2}.Debug|x86.ActiveCfg = Debug|Win32

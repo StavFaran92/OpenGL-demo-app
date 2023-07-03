@@ -4,8 +4,6 @@
 class Sandbox : public Application
 {
 public:
-	using Application::draw;
-	using Application::update;
 
 	void start() override
 	{
@@ -15,14 +13,6 @@ public:
 
 
 		//postProcess(PostProcess::grayscale());
-	}
-
-	void update(float deltaTime) override
-	{
-	}
-
-	void draw() override
-	{
 	}
 
 };

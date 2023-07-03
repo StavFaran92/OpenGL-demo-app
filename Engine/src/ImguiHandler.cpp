@@ -57,14 +57,10 @@ void ImguiHandler::render()
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-	while (!m_guiQueue.empty())
+	for (auto& gui : m_guiList)
 	{
-		auto gui = m_guiQueue.front();
-		m_guiQueue.pop_front();
-
 		gui->display();
 	}
-	//displayGUI();
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -77,10 +73,21 @@ bool ImguiHandler::close()
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 
+	for (int i = m_guiList.size() - 1; i >= 0; i--)
+	{
+		delete m_guiList[i];
+	}
+
     return true;
 }
 
-void ImguiHandler::draw(GuiMenu* menu)
+void ImguiHandler::addGUI(GuiMenu* menu)
 {
-	m_guiQueue.push_back(menu);
+	m_guiList.push_back(menu);
 }
+
+void ImguiHandler::removeGUI(GuiMenu* menu)
+{
+	m_guiList.erase(std::remove(m_guiList.begin(), m_guiList.end(), menu), m_guiList.end());
+}
+

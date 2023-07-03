@@ -1,33 +1,25 @@
 #include "EntryPoint.h"
 #include "sge.h"
 
+class CustomBoxBehaviour : public ScriptableEntity
+{
+	virtual void onCreate() override
+	{
+		std::cout << "Box was created modafaka.\n";
+	}
+};
+
 class Sandbox : public Application
 {
 public:
-	using Application::draw;
-	using Application::update;
-
-
-	ObjectHandler<Model> guitar;
-	//ObjectHandler<Box> box;
-	Sphere* sphere1;
-	Sphere* sphere2;
-	//ObjectHandler<Skybox> skybox;
-	//Transformation trans1{ { 5,5,5 } };
-	//Transformation trans2{ { 2,2,2 } };
-	
-	//std::shared_ptr<Entity>skybox;
-	//std::shared_ptr<Entity>box;
-	std::vector<Transformation> transformations;
-	
 
 	void start() override
 	{
-		// If i remove this the skybox works
+		//auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
 
-		auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
-
-		auto box1 = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get(), 1, 32, 32);
+		auto box1 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+		auto& nsc = box1->addComponent<NativeScriptComponent>();
+		nsc.bind<CustomBoxBehaviour>();
 		//box1->getComponent<Transformation>().translate({1, 0,0});
 		//auto box2 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 
@@ -68,36 +60,6 @@ public:
 		//sphere1->addChildren(sphere2);
 
 		postProcess(PostProcess::grayscale());
-	}
-
-	void update(float deltaTime) override
-	{
-		//update(box);
-		//update(guitar);
-		//update(sphere1);
-		//update(sphere2);
-	}
-
-	void draw() override
-	{
-		//if (keyboard_getKeyState(SDL_Scancode::SDL_SCANCODE_X))
-		//{
-		//	box->rotate({0,0,1}, 1);
-		//}
-
-		//if (keyboard_getKeyState(SDL_Scancode::SDL_SCANCODE_Z))
-		//{
-		//	sphere1->rotate({ 0,0,1 }, 1);
-		//}
-
-		//getContext()->getActiveScene()->drawMultiple({box, transformations});
-
-		////draw(box);
-		////draw(guitar);
-		////draw(sphere1);
-		////draw(sphere2);
-		//getContext()->getActiveScene()->drawSkybox(skybox);
-
 	}
 
 };

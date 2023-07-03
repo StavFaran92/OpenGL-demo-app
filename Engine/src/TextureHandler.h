@@ -50,6 +50,8 @@ public:
 	 */
 	unsigned int getID() const;
 
+	inline void setSlot(int slot) { m_texture->setSlot(slot); }
+
 
 private:
 	std::shared_ptr<Texture> m_texture = nullptr;

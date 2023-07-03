@@ -16,10 +16,10 @@
 
 #include "Resources/Engine/Primitives/quad.h"
 
-std::shared_ptr<Entity> ScreenQuad::GenerateScreenQuad(Scene* scene)
+Entity ScreenQuad::GenerateScreenQuad(Scene* scene)
 {
 	auto entity = ShapeFactory::createQuad(scene);
-	entity->RemoveComponent<RenderableComponent>();
+	entity.RemoveComponent<RenderableComponent>();
 	return entity;
 }
 

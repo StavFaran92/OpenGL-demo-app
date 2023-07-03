@@ -8,6 +8,6 @@ class Scene;
 class ScreenQuad
 {
 public:
-	static std::shared_ptr<Entity> GenerateScreenQuad(Scene* scene);
+	static Entity GenerateScreenQuad(Scene* scene);
 };
 

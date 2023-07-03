@@ -4,6 +4,7 @@
 
 #include "IProjector.h"
 #include "ObjectHandler.h"
+#include "Entity.h"
 
 class FrameBufferObject;
 class RenderBufferObject;
@@ -12,7 +13,6 @@ class ScreenQuad;
 class IRenderer;
 class TextureHandler;
 class Scene;
-class Entity;
 
 class PostProcessProjector : public IProjector
 {
@@ -27,10 +27,10 @@ public:
 	void setEnabled(bool enable);
 
 private:
+	Entity m_quad;
 	std::shared_ptr<FrameBufferObject> m_frameBuffer = nullptr;
 	std::shared_ptr<RenderBufferObject> m_renderBuffer = nullptr;
 	std::shared_ptr<Shader> m_screenShader = nullptr;
-	std::shared_ptr<Entity> m_quad;
 	std::shared_ptr<IRenderer> m_renderer = nullptr;
 	std::shared_ptr<TextureHandler> m_textureHandler = nullptr;
 	Scene* m_scene = nullptr;

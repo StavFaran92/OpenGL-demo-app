@@ -3,7 +3,9 @@
 #include "Core.h"
 #include "entt/entt.hpp"
 #include "Scene.h"
-#include "Component.h"
+//#include "Component.h"
+
+using entity_id = entt::id_type;
 
 /**
  * @class Entity
@@ -15,6 +17,7 @@
 class EngineAPI Entity
 {
 public:
+    static Entity EmptyEntity;
     /// Default constructor
     Entity() = default;
 
@@ -39,25 +42,6 @@ public:
     T& addComponent(T* componentInstance)
     {
         assert(valid() && "Invalid entity.");
-        assert(!m_scene->getRegistry().has<T>(m_entity) && "Component already exists.");
-        T& component = m_scene->getRegistry().emplace<T>(m_entity, *componentInstance);
-
-        m_components.insert(typeid(T).name());
-
-        return component;
-    }
-
-    /**
-     * @brief Adds a component to the entity by moving an existing instance
-     * @tparam T Type of the component
-     * @param componentInstance Pointer to the component instance
-     * @return Reference to the added component
-     * @warning The behavior of the existing componentInstance after the call is undefined
-     */
-    template<typename T>
-    T& addOrReplaceComponent(T* componentInstance)
-    {
-        assert(valid() && "Invalid entity.");
         T& component = m_scene->getRegistry().emplace_or_replace<T>(m_entity, *componentInstance);
 
         m_components.insert(typeid(T).name());
@@ -76,8 +60,7 @@ public:
     T& addComponent(Args&&... args)
     {
         assert(valid() && "Invalid entity.");
-        assert(!m_scene->getRegistry().has<T>(m_entity) && "Component already exists.");
-        T& component = m_scene->getRegistry().emplace<T>(m_entity, std::forward<Args>(args)...);
+        T& component = m_scene->getRegistry().emplace_or_replace<T>(m_entity, std::forward<Args>(args)...);
 
         m_components.insert(typeid(T).name());
 
@@ -105,18 +88,43 @@ public:
     }
 
     template<typename T>
-    T& getComponentInParent()
+    T* tryGetComponentInParent(bool includeSelf = true)
     {
         assert(valid() && "Invalid entity.");
-        if (HasComponent<T>())
+        if (includeSelf)
         {
-            return getComponent<T>();
+            auto comp = tryGetComponent<T>();
+            if (comp)
+            {
+                return comp;
+            }
         }
 
         auto parent = getParent();
-        if (parent)
+        if (parent.valid())
         {
-            return parent->getComponentInParent<T>();
+            return parent.tryGetComponentInParent<T>(true);
+        }
+
+        return nullptr;
+    }
+
+    template<typename T>
+    T& getComponentInParent(bool includeSelf = true)
+    {
+        assert(valid() && "Invalid entity.");
+        if (includeSelf)
+        {
+            if (HasComponent<T>())
+            {
+                return getComponent<T>();
+            }
+        }
+
+        auto parent = getParent();
+        if (parent.valid())
+        {
+            return parent.getComponentInParent<T>(true);
         }
 
         assert(false && "Component not found in tree hierarchy.");
@@ -150,26 +158,12 @@ public:
 
     }
 
-    void setParent(Entity* entity)
-    {
-        assert(valid() && "Invalid entity.");
-        assert(entity->valid() && "Invalid parent entity.");
-        assert(entity->HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
-        auto& hierarchy = getComponent<HierarchyComponent>();
-        hierarchy.parent = entity->handler();
-    }
-
-    std::shared_ptr<Entity> getParent()
-    {
-        assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
-        auto& hierarchy = getComponent<HierarchyComponent>();
-        if (hierarchy.parent == entt::null)
-        {
-            return nullptr;
-        }
-
-        return std::make_shared<Entity>(hierarchy.parent, m_scene);
-    }
+    void setParent(Entity entity);
+    Entity removeParent();
+    Entity getParent();
+    void addChildren(Entity entity);
+    void removeChildren(Entity entity);
+    auto getChildren();
 
     /**
      * @brief Checks if the entity is valid
@@ -180,21 +174,26 @@ public:
         return m_scene != nullptr && m_entity != entt::null && m_scene->getRegistry().valid(m_entity);
     }
 
+    bool operator==(const Entity& other)
+    {
+        return m_scene == other.m_scene && m_entity == other.m_entity;
+    }
+
     inline entt::entity handler() const
     {
         return m_entity;
     }
 
-    inline uint32_t handlerID() const
+    inline entity_id handlerID() const
     {
-        return (uint32_t)m_entity;
+        return (entity_id)m_entity;
     }
 
 private:
     Scene* m_scene = nullptr;  ///< Scene the entity belongs to
     entt::entity m_entity{ entt::null };  ///< ENTT entity instance
 
-
+    // TODO remove
     std::set<std::string> m_components;
 
 };

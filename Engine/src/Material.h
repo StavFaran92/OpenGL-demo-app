@@ -11,7 +11,9 @@ class EngineAPI Material
 public:
 	Material(float shine = 0);
 
-	virtual void UseMaterial(Shader& shader);
+	virtual void use(Shader& shader);
+
+	virtual void release();
 
 	/**
 	 * Add a texture to the mesh.

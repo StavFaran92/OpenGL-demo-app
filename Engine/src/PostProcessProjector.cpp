@@ -103,8 +103,8 @@ void PostProcessProjector::draw()
 	m_textureHandler->bind();
 
 	m_renderer->SetDrawType(Renderer::DrawType::Triangles);
-
-	auto& mesh = m_quad->getComponent<Mesh>();
+	
+	auto& mesh = m_quad.getComponent<Mesh>();
 
 	mesh.render(*m_screenShader, *m_renderer);
 

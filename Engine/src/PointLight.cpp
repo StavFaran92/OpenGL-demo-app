@@ -4,12 +4,10 @@
 #include "Logger.h"
 #include "Transformation.h"
 
-PointLight::PointLight(glm::vec3 color, glm::vec3 pos, float aIntensity, float dIntensity, Attenuation attenuation)
+PointLight::PointLight(glm::vec3 color, float aIntensity, float dIntensity, Attenuation attenuation)
 	: Light(color, aIntensity, dIntensity), m_attenuation(attenuation)
 {
 	m_name = "pointLights";
-
-	//m_transform->setPosition(pos);
 }
 
 void PointLight::SetAttenuation(Attenuation attenuation)

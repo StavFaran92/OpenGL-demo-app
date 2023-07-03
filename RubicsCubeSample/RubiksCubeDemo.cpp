@@ -10,17 +10,13 @@
 class RubiksCubeDemo : public Application
 {
 public:
-	using Application::draw;
-	using Application::update;
 	std::shared_ptr<RubiksCube> rubiksCube;
 	std::shared_ptr<RubiksCubeController> controller;
 	std::shared_ptr<RubiksCubeGui> gui;
 
-	ObjectHandler<Skybox> skybox;
-
 	void start() override
 	{
-		skybox = Skybox::CreateSkybox();
+		auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
 
 		rubiksCube = std::make_shared<RubiksCube>();
 		rubiksCube->init(7);
@@ -41,29 +37,8 @@ public:
 		//postProcess(PostProcess::grayscale());
 	}
 
-	void update(float deltaTime)
-	{
-		//for (const auto cube : rubiksCube->getCubes())
-		//{
-		//	update(cube);
-		//}
-	}
-
-	void draw() override
-	{
-		//for (const auto cube : rubiksCube->getCubes())
-		//{
-		//	draw(cube);
-		//}
-
-		Engine::get()->getImguiHandler()->draw(gui.get());
-
-		Engine::get()->getContext()->getActiveScene()->drawSkybox(skybox);
-	}
-
 	void close() override
 	{
-		skybox.release();
 	}
 
 };

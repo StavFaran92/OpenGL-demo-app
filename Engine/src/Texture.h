@@ -79,6 +79,8 @@ public:
 	bool isFlipped() const;
 	unsigned int getID() const;
 
+	inline void setSlot(int slot) { m_slot = slot; }
+
 	/**  Destructor */
 	~Texture();
 private:
