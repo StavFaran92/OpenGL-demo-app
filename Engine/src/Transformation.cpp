@@ -73,15 +73,11 @@ void Transformation::update(float deltaTime)
 {
 	if (m_change)
 	{
+		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_translation);
+		glm::mat4 rotationMatrix = glm::mat4_cast(m_orientation);
+		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), m_scale);
 
-		glm::mat4 identity(1.0f);
-		auto translate = glm::translate(glm::mat4(1.0f), m_translation);
-		auto scale = glm::scale(glm::mat4(1.0f), m_scale);
-
-		auto finalRotation = glm::mat4_cast(m_orientation) * m_relativeRot * identity;
-
-		m_transformation = scale * translate * finalRotation * identity;
-
+		m_transformation = translationMatrix * rotationMatrix * scaleMatrix;
 		m_change = false;
 	}
 }
