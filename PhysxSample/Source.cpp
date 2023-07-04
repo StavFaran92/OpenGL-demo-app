@@ -14,6 +14,8 @@ public:
 
 			auto& boxTransform = box.getComponent<Transformation>();
 			boxTransform.setPosition({ 0, 10, 0 });
+			boxTransform.rotate({ 0, 1, 0 }, 40);
+			boxTransform.rotate({ 0, 0, 1 }, 40);
 
 			auto& rb = box.addComponent<RigidBodyComponent>();
 			rb.mass = 1;
@@ -24,17 +26,17 @@ public:
 		}
 
 		{
-			//auto ground = ShapeFactory::createQuad(Engine::get()->getContext()->getActiveScene().get());
-			//auto& groundTransfrom = ground.getComponent<Transformation>();
-			//groundTransfrom.setScale({ 10, 1, 10 });
+			auto ground = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+			auto& groundTransfrom = ground.getComponent<Transformation>();
+			groundTransfrom.setScale({ 10, .5f, 10 });
 			//groundTransfrom.rotate({ 0, 1, 0 }, 90);
 			//groundTransfrom.rotate({ 0, 0, 1 }, 90);
 
-			//auto& rb = ground.addComponent<RigidBodyComponent>();
-			//rb.type = RigidBodyComponent::RigidbodyType::Static;
+			auto& rb = ground.addComponent<RigidBodyComponent>();
+			rb.type = RigidBodyComponent::RigidbodyType::Static;
 
-			//auto& collisionBox = ground.addComponent<CollisionBoxComponent>();
-			//collisionBox.halfExtent = 5.f;
+			auto& collisionBox = ground.addComponent<CollisionBoxComponent>();
+			collisionBox.halfExtent = 1.f;
 		}
 	}
 

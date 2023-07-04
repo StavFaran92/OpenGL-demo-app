@@ -78,7 +78,7 @@ void Transformation::update(float deltaTime)
 		auto translate = glm::translate(glm::mat4(1.0f), m_translation);
 		auto scale = glm::scale(glm::mat4(1.0f), m_scale);
 
-		auto finalRotation = glm::mat4_cast(m_orientationLocal) * m_relativeRot * identity;
+		auto finalRotation = glm::mat4_cast(m_orientation) * m_relativeRot * identity;
 
 		m_transformation = scale * finalRotation * translate * identity;
 
@@ -97,7 +97,7 @@ void Transformation::setRotation(float angle, glm::vec3 axis)
 }
 void Transformation::setRotation(glm::quat quat)
 {
-	m_orientationWorld = quat;
+	m_orientation = quat;
 
 	m_change = true;
 }
@@ -113,14 +113,9 @@ glm::vec3 Transformation::getPosition() const
 	return m_translation;
 }
 
-glm::quat Transformation::getLocalOrientation() const
+glm::quat Transformation::getOrientation() const
 {
-	return m_orientationLocal;
-}
-
-glm::quat Transformation::getWorldOrientation() const
-{
-	return m_orientationWorld;
+	return m_orientation;
 }
 
 glm::vec3 Transformation::getScale() const
@@ -158,14 +153,14 @@ void Transformation::scale(glm::vec3 scaleFactor)
 
 void Transformation::rotate(glm::vec3 eulers)
 {
-	m_orientationLocal = glm::quat(eulers) * m_orientationLocal;
+	m_orientation = glm::quat(eulers) * m_orientation;
 
 	m_change = true;
 }
 
 void Transformation::rotateLerp(glm::vec3 axis, float angle, float t)
 {
-	m_orientationLocal = glm::mix(m_orientationLocal, glm::angleAxis(degToRad(angle), axis) * m_orientationLocal, t);// *m_orientationLocal;
+	m_orientation = glm::mix(m_orientation, glm::angleAxis(degToRad(angle), axis) * m_orientation, t);// *m_orientationLocal;
 
 	m_change = true;
 }
@@ -173,7 +168,7 @@ void Transformation::rotateLerp(glm::vec3 axis, float angle, float t)
 
 void Transformation::rotate(glm::vec3 axis, float angle)
 {
-	m_orientationLocal = glm::angleAxis(degToRad(angle), axis) * m_orientationLocal;
+	m_orientation = glm::angleAxis(degToRad(angle), axis) * m_orientation;
 
 	m_change = true;
 }

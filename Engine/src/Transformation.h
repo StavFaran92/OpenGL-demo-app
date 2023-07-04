@@ -16,8 +16,7 @@ public:
 	Transformation(const Entity& entity) :
 		m_entity(entity),
 		m_translation(0, 0, 0),
-		m_orientationLocal(1, 0, 0, 0),
-		m_orientationWorld(1, 0, 0, 0),
+		m_orientation(1, 0, 0, 0),
 		m_scale(1, 1, 1),
 		m_transformation(1.f),
 		m_relativeRot(1.f)
@@ -26,8 +25,7 @@ public:
 	Transformation(const Entity& entity, glm::vec3 translation) :
 		m_entity(entity),
 		m_translation(translation),
-		m_orientationLocal(1, 0, 0, 0),
-		m_orientationWorld(1, 0, 0, 0),
+		m_orientation(1, 0, 0, 0),
 		m_scale(1, 1, 1),
 		m_transformation(1.f),
 		m_relativeRot(1.f)
@@ -39,8 +37,7 @@ public:
 	Transformation(const Entity& entity, glm::vec3 translation, glm::quat rotation) :
 		m_entity(entity),
 		m_translation(translation),
-		m_orientationLocal(rotation),
-		m_orientationWorld(rotation),
+		m_orientation(rotation),
 		m_scale(1, 1, 1),
 		m_transformation(1.f),
 		m_relativeRot(1.f)
@@ -58,8 +55,7 @@ public:
 
 	glm::mat4 getMatrix();
 	glm::vec3 getPosition() const;
-	glm::quat getLocalOrientation() const;
-	glm::quat getWorldOrientation() const;
+	glm::quat getOrientation() const;
 	glm::vec3 getScale() const;
 
 	void translate(float x, float y, float z);
@@ -78,8 +74,7 @@ public:
 private:
 	glm::vec3 m_translation;
 
-	glm::quat m_orientationLocal;
-	glm::quat m_orientationWorld;
+	glm::quat m_orientation;
 
 	glm::mat4 m_relativeRot;
 

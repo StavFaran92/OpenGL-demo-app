@@ -9,7 +9,7 @@ public:
 	inline static physx::PxTransform toPhysXTransform(const Transformation& transform)
 	{
 		auto translation = transform.getPosition();
-		auto orientation = transform.getWorldOrientation();
+		auto orientation = transform.getOrientation();
 
 		physx::PxVec3 pxTranslation(translation.x, translation.y, translation.z);
 		physx::PxQuat pxRotation(orientation.x, orientation.y, orientation.z, orientation.w);
@@ -20,7 +20,7 @@ public:
 	inline static void toPhysXTransform(const Transformation& transform, physx::PxTransform& pxTransform)
 	{
 		auto translation = transform.getPosition();
-		auto orientation = transform.getWorldOrientation();
+		auto orientation = transform.getOrientation();
 
 		physx::PxVec3 pxTranslation(translation.x, translation.y, translation.z);
 		physx::PxQuat pxRotation(orientation.x, orientation.y, orientation.z, orientation.w);

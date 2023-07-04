@@ -103,7 +103,7 @@ void Scene::update(float deltaTime)
 	}
 
 	// Physics
-	m_PhysicsScene->simulate(1/60.f);
+	m_PhysicsScene->simulate(1/360.f);
 	m_PhysicsScene->fetchResults(true);
 
 	//physx::PxU32 nbActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
@@ -131,7 +131,8 @@ void Scene::update(float deltaTime)
 		physx::PxRigidActor* actor = (physx::PxRigidActor*)rb.simulatedBody;
 		
 		physx::PxTransform pxTransform = actor->getGlobalPose();
-		transform.setPosition({ pxTransform.p.x, pxTransform.p.y, pxTransform.p.z });
+		transform.setPosition({ pxTransform.p.x, -pxTransform.p.y, pxTransform.p.z });
+		transform.setRotation({pxTransform.q.x, pxTransform.q.y , pxTransform.q.z,  pxTransform.q.w });
 	}
 
 	for (auto&& [entity, transformation] : m_registry.view<Transformation>().each())
@@ -390,12 +391,22 @@ void Scene::startSimulation()
 			auto physics = physicsSystem->m_physics;
 			auto& collider = e.getComponent<CollisionBoxComponent>();
 			auto& transform = e.getComponent<Transformation>();
-			physx::PxShape* shape = Engine::get()->getPhysicsSystem()->m_physics->createShape(physx::PxBoxGeometry(collider.halfExtent, collider.halfExtent, collider.halfExtent), *physicsSystem->m_defaultMaterial);
+			auto scale = transform.getScale();
+			physx::PxShape* shape = Engine::get()->getPhysicsSystem()->m_physics->createShape(physx::PxBoxGeometry(collider.halfExtent * scale.x, collider.halfExtent * scale.y, collider.halfExtent * scale.z), *physicsSystem->m_defaultMaterial);
 
 			physx::PxTransform pxTransform = PhysXUtils::toPhysXTransform(transform);
-			physx::PxRigidDynamic* body = physics->createRigidDynamic(pxTransform);
+			physx::PxRigidActor* body = nullptr;
+			if (rb.type == RigidBodyComponent::RigidbodyType::Dynamic)
+			{
+				body = physics->createRigidDynamic(pxTransform);
+				physx::PxRigidBodyExt::updateMassAndInertia(*static_cast<physx::PxRigidDynamic*>(body), rb.mass);
+			}
+			else if (rb.type == RigidBodyComponent::RigidbodyType::Static)
+			{
+				body = physics->createRigidStatic(pxTransform);
+			}
 			body->attachShape(*shape);
-			physx::PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
+			
 			m_PhysicsScene->addActor(*body);
 			rb.simulatedBody = body;
 	
