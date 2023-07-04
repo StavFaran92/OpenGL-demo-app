@@ -24,17 +24,17 @@ public:
 		}
 
 		{
-			auto ground = ShapeFactory::createQuad(Engine::get()->getContext()->getActiveScene().get());
-			auto& groundTransfrom = ground.getComponent<Transformation>();
-			groundTransfrom.setScale({ 10, 1, 10 });
-			groundTransfrom.rotate({ 0, 1, 0 }, 90);
-			groundTransfrom.rotate({ 0, 0, 1 }, 90);
+			//auto ground = ShapeFactory::createQuad(Engine::get()->getContext()->getActiveScene().get());
+			//auto& groundTransfrom = ground.getComponent<Transformation>();
+			//groundTransfrom.setScale({ 10, 1, 10 });
+			//groundTransfrom.rotate({ 0, 1, 0 }, 90);
+			//groundTransfrom.rotate({ 0, 0, 1 }, 90);
 
-			auto& rb = ground.addComponent<RigidBodyComponent>();
-			rb.type = RigidBodyComponent::RigidbodyType::Static;
+			//auto& rb = ground.addComponent<RigidBodyComponent>();
+			//rb.type = RigidBodyComponent::RigidbodyType::Static;
 
-			auto& collisionBox = ground.addComponent<CollisionBoxComponent>();
-			collisionBox.halfExtent = 5.f;
+			//auto& collisionBox = ground.addComponent<CollisionBoxComponent>();
+			//collisionBox.halfExtent = 5.f;
 		}
 	}
 

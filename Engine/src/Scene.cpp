@@ -103,7 +103,7 @@ void Scene::update(float deltaTime)
 	}
 
 	// Physics
-	m_PhysicsScene->simulate(deltaTime);
+	m_PhysicsScene->simulate(1/60.f);
 	m_PhysicsScene->fetchResults(true);
 
 	//physx::PxU32 nbActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
@@ -134,10 +134,10 @@ void Scene::update(float deltaTime)
 		transform.setPosition({ pxTransform.p.x, pxTransform.p.y, pxTransform.p.z });
 	}
 
-	//for (auto&& [entity, transformation] : m_registry.view<Transformation>().each())
-	//{
-	//	transformation.update(deltaTime);
-	//}
+	for (auto&& [entity, transformation] : m_registry.view<Transformation>().each())
+	{
+		transformation.update(deltaTime);
+	}
 }
 
 void Scene::draw(float deltaTime)
