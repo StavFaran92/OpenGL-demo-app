@@ -80,7 +80,7 @@ void Transformation::update(float deltaTime)
 
 		auto finalRotation = glm::mat4_cast(m_orientation) * m_relativeRot * identity;
 
-		m_transformation = scale * finalRotation * translate * identity;
+		m_transformation = scale * translate * finalRotation * identity;
 
 		m_change = false;
 	}

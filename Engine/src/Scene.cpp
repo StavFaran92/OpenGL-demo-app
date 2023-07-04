@@ -64,6 +64,16 @@ void Scene::init(Context* context)
 
 	m_PhysicsScene = Engine::get()->getPhysicsSystem()->createScene();
 
+#ifdef SGE_DEBUG
+	physx::PxPvdSceneClient* pvdClient = m_PhysicsScene->getScenePvdClient();
+	if (pvdClient)
+	{
+		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+	}
+#endif // SGE_DEBUG
+
 	// Add default dir light
 	createEntity().addComponent<DirectionalLight>();
 }
@@ -103,7 +113,7 @@ void Scene::update(float deltaTime)
 	}
 
 	// Physics
-	m_PhysicsScene->simulate(1/360.f);
+	m_PhysicsScene->simulate(1/180.f);
 	m_PhysicsScene->fetchResults(true);
 
 	//physx::PxU32 nbActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
@@ -131,7 +141,7 @@ void Scene::update(float deltaTime)
 		physx::PxRigidActor* actor = (physx::PxRigidActor*)rb.simulatedBody;
 		
 		physx::PxTransform pxTransform = actor->getGlobalPose();
-		transform.setPosition({ pxTransform.p.x, -pxTransform.p.y, pxTransform.p.z });
+		transform.setPosition({ pxTransform.p.x, pxTransform.p.y, pxTransform.p.z });
 		transform.setRotation({pxTransform.q.x, pxTransform.q.y , pxTransform.q.z,  pxTransform.q.w });
 	}
 
@@ -399,7 +409,9 @@ void Scene::startSimulation()
 			if (rb.type == RigidBodyComponent::RigidbodyType::Dynamic)
 			{
 				body = physics->createRigidDynamic(pxTransform);
-				physx::PxRigidBodyExt::updateMassAndInertia(*static_cast<physx::PxRigidDynamic*>(body), rb.mass);
+				auto dynamicBody = static_cast<physx::PxRigidDynamic*>(body);
+				dynamicBody->setAngularDamping(0.5f);
+				physx::PxRigidBodyExt::updateMassAndInertia(*dynamicBody, 10.f);
 			}
 			else if (rb.type == RigidBodyComponent::RigidbodyType::Static)
 			{

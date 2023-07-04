@@ -12,15 +12,13 @@ bool PhysicsSystem::init()
         return false;
     }
 
-#ifdef DEBUG
+#ifdef SGE_DEBUG
     mPvd = PxCreatePvd(*m_foundation);
     physx::PxPvdTransport* transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
     mPvd->connect(*transport, physx::PxPvdInstrumentationFlag::eALL);
-#endif // DEBUG
+#endif // SGE_DEBUG
 
-    m_toleranceScale.length = 100;        // typical length of an object
-    m_toleranceScale.speed = 981;         // typical speed of an object, gravity*1s is a reasonable choice
-    m_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_foundation, m_toleranceScale, true, mPvd);
+    m_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_foundation, physx::PxTolerancesScale(), true, mPvd);
 
     // Set up cooking parameters
     physx::PxCookingParams cookingParams(m_physics->getTolerancesScale());
@@ -37,16 +35,6 @@ bool PhysicsSystem::init()
     }
 
     m_defaultMaterial = m_physics->createMaterial(0.5f, 0.5f, 0.f);
-
-#ifdef DEBUG
-    physx::PxPvdSceneClient* pvdClient = mScene->getScenePvdClient();
-    if (pvdClient)
-    {
-        pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-        pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-        pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
-    }
-#endif // DEBUG
 }
 
 void PhysicsSystem::update(float deltaTime, uint32_t sceneID)

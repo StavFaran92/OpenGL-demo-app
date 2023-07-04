@@ -79,7 +79,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>ENGINE_PLATFORM_WINDOWS;ENGINE_BUILD_DLL;STB_IMAGE_IMPLEMENTATION;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SGE_DEBUG;ENGINE_PLATFORM_WINDOWS;ENGINE_BUILD_DLL;STB_IMAGE_IMPLEMENTATION;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(ProjectDir)include\sge;$(ProjectDir)extern\;$(ProjectDir)extern\imgui;$(ProjectDir)extern\assimp\include;$(ProjectDir)extern\SDL2\include\SDL2;$(ProjectDir)extern\GLM;$(ProjectDir)extern\glew\include;$(ProjectDir)extern\stb_image;$(ProjectDir)extern\entt;$(ProjectDir)extern\spdlog\include;C:\dev\repos\PhysX\physx\include;C:\dev\repos\PhysX\pxshared\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
