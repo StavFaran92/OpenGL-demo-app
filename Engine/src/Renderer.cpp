@@ -40,6 +40,8 @@ Renderer::Renderer(const Renderer& other)
 
 void Renderer::draw(const VertexArrayObject& vao, Shader& shader) const
 {
+   //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 	SetMVP(shader);
 
 	vao.Bind();
@@ -52,6 +54,9 @@ void Renderer::draw(const VertexArrayObject& vao, Shader& shader) const
 	{
 		glDrawElements(m_drawType, vao.GetIndexCount(), GL_UNSIGNED_INT, 0);
 	}
+
+
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 }
 
@@ -160,6 +165,11 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
     }
 
     shaderToUse->release();
+}
+
+void Renderer::enableWriteFrame(bool enable)
+{
+    m_wireFrameMode = enable;
 }
 
 void Renderer::clear() const

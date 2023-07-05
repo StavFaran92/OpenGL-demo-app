@@ -31,12 +31,16 @@ public:
 	glm::mat4 getProjection() const override;
 	void render(const DrawQueueRenderParams& renderParams);
 
+	void enableWriteFrame(bool enable);
+
 	//Methods
 	std::shared_ptr<ICamera> getCamera() const override;
 	void setCamera(std::shared_ptr<ICamera> camera);
 protected:
 	std::shared_ptr<ICamera> m_camera = nullptr;
 	glm::mat4 m_projection;
+
+	bool m_wireFrameMode = false;
 
 
 };

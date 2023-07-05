@@ -42,7 +42,7 @@ public:
 		}
 
 		{
-			auto sphere = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get(), 1, 10, 10);
+			auto sphere = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get(), 1, 36, 36);
 
 			auto& sphereTransform = sphere.getComponent<Transformation>();
 			sphereTransform.setPosition({ 0, 15, 0 });

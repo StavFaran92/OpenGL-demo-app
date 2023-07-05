@@ -35,6 +35,7 @@
 #include "ScriptableEntity.h"
 #include "PhysicsSystem.h"
 #include "PhysXUtils.h"
+#include "Box.h"
 
 void Scene::init(Context* context)
 {
@@ -76,6 +77,9 @@ void Scene::init(Context* context)
 
 	// Add default dir light
 	createEntity().addComponent<DirectionalLight>();
+
+	m_tempBoxMesh = Box::createMesh();
+	m_tempOutlineShader = Shader::create<Shader>("Resources/Engine/Shaders/shader.vert", "Resources/Engine/Shaders/OutlineShader.frag");
 }
 
 void Scene::update(float deltaTime)
@@ -248,13 +252,25 @@ void Scene::draw(float deltaTime)
 	//}
 
 #ifdef SGE_DEBUG
-	for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
+	for (auto&& [entity, cb] : m_registry.view<CollisionBoxComponent>().each())
 	{
 		Entity e{ entity, this };
-		physx::PxRigidActor* actor = (physx::PxRigidActor*)rb.simulatedBody;
-		physx::PxShape* shape = nullptr;
-		actor->getShapes(&shape, 1);
-		physx::PxGeometry geom = shape->getGeometry().any();
+		//physx::PxRigidActor* actor = (physx::PxRigidActor*)rb.simulatedBody;
+		//physx::PxShape* shape = nullptr;
+		//actor->getShapes(&shape, 1);
+		//physx::PxGeometry geom = shape->getGeometry().any();
+		params.entity = &e;
+		params.shader = m_tempOutlineShader;
+		params.mesh = m_tempBoxMesh;
+		params.transform = &e.getComponent<Transformation>();
+
+		m_renderer->render(params);
+
+		params.entity = nullptr;
+		params.shader = nullptr;
+		params.mesh = nullptr;
+		params.transform = nullptr;
+
 	}
 #endif //SGE_DEBUG
 

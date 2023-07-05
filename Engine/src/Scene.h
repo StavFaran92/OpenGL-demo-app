@@ -125,4 +125,7 @@ private:
 	physx::PxScene* m_PhysicsScene = nullptr;
 
 	bool m_isSimulationActive = false;
+
+	Mesh* m_tempBoxMesh = nullptr;
+	Shader* m_tempOutlineShader = nullptr;
 };
