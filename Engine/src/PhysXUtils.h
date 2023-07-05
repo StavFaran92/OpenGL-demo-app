@@ -32,7 +32,7 @@ public:
 	inline static Transformation fromPhysXTransform(const Entity& entity, const physx::PxTransform& pxTransform)
 	{
 		glm::vec3 translation(pxTransform.p.x, pxTransform.p.y, pxTransform.p.z);
-		glm::quat rotation(pxTransform.q.x, pxTransform.q.y, pxTransform.q.z, pxTransform.q.w);
+		glm::quat rotation(pxTransform.q.w, pxTransform.q.x, pxTransform.q.y, pxTransform.q.z);
 
 		return Transformation(entity, translation, rotation);
 	}
@@ -40,7 +40,7 @@ public:
 	inline static void fromPhysXTransform(const Entity& entity, const physx::PxTransform& pxTransform, Transformation& transform)
 	{
 		glm::vec3 translation(pxTransform.p.x, pxTransform.p.y, pxTransform.p.z);
-		glm::quat rotation(pxTransform.q.x, pxTransform.q.y, pxTransform.q.z, pxTransform.q.w);
+		glm::quat rotation(pxTransform.q.w, pxTransform.q.x, pxTransform.q.y, pxTransform.q.z);
 
 		transform.setPosition(translation);
 		transform.setRotation(rotation);

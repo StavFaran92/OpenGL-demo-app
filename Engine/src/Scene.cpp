@@ -141,8 +141,7 @@ void Scene::update(float deltaTime)
 		physx::PxRigidActor* actor = (physx::PxRigidActor*)rb.simulatedBody;
 		
 		physx::PxTransform pxTransform = actor->getGlobalPose();
-		transform.setPosition({ pxTransform.p.x, pxTransform.p.y, pxTransform.p.z });
-		transform.setRotation({pxTransform.q.x, pxTransform.q.y , pxTransform.q.z,  pxTransform.q.w });
+		PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
 	}
 
 	for (auto&& [entity, transformation] : m_registry.view<Transformation>().each())

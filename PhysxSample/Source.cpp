@@ -13,9 +13,9 @@ public:
 			auto box = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 
 			auto& boxTransform = box.getComponent<Transformation>();
-			boxTransform.setPosition({ 0, 10, 0 });
-			boxTransform.rotate({ 0, 1, 0 }, 40);
-			boxTransform.rotate({ 0, 0, 1 }, 40);
+			boxTransform.setPosition({ 0, 10, .5f });
+			boxTransform.rotate({ 0, 1, 0 }, 45);
+			//boxTransform.rotate({ 0, 0, 1 }, 180);
 
 			auto& rb = box.addComponent<RigidBodyComponent>();
 			rb.mass = 1;
@@ -30,8 +30,8 @@ public:
 
 			auto& boxTransform = box.getComponent<Transformation>();
 			boxTransform.setPosition({ 0, 12, 0 });
-			boxTransform.rotate({ 0, 1, 0 }, 40);
-			boxTransform.rotate({ 0, 0, 1 }, 40);
+			//boxTransform.rotate({ 0, 1, 0 }, 90);
+			//boxTransform.rotate({ 0, 0, 1 }, 180);
 
 			auto& rb = box.addComponent<RigidBodyComponent>();
 			rb.mass = 1;
