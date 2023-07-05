@@ -415,11 +415,18 @@ void Scene::startSimulation()
 		if (e.HasComponent<CollisionBoxComponent>())
 		{
 			auto& collider = e.getComponent<CollisionBoxComponent>();
-			
 			physx::PxShape* shape = physicsSystem->createBoxShape(collider.halfExtent * scale.x, collider.halfExtent * scale.y, collider.halfExtent * scale.z);
 			body->attachShape(*shape);
 			shape->release();
 		}
+		else if (e.HasComponent<CollisionSphereComponent>())
+		{
+			auto& collider = e.getComponent<CollisionSphereComponent>();
+			physx::PxShape* shape = physicsSystem->createSphereShape(collider.radius * std::max(std::max(scale.x, scale.y), scale.z));
+			body->attachShape(*shape);
+			shape->release();
+		}
+
 
 		assert(body);
 

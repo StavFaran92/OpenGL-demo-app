@@ -99,6 +99,12 @@ physx::PxShape* PhysicsSystem::createBoxShape(float x, float y, float z)
     return m_physics->createShape(physx::PxBoxGeometry(x, y, z), *m_defaultMaterial);
 }
 
+physx::PxShape* PhysicsSystem::createSphereShape(float radius)
+{
+    return m_physics->createShape(physx::PxSphereGeometry(radius), *m_defaultMaterial);
+}
+
+
 void PhysicsSystem::close()
 {
     if (!m_isInit)

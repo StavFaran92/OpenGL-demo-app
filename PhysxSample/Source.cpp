@@ -41,6 +41,22 @@ public:
 			collisionBox.halfExtent = .5f;
 		}
 
+		{
+			auto sphere = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get(), 1, 10, 10);
+
+			auto& sphereTransform = sphere.getComponent<Transformation>();
+			sphereTransform.setPosition({ 0, 15, 0 });
+			//boxTransform.rotate({ 0, 1, 0 }, 90);
+			//boxTransform.rotate({ 0, 0, 1 }, 180);
+
+			auto& rb = sphere.addComponent<RigidBodyComponent>();
+			rb.mass = 1;
+			rb.type = RigidbodyType::Dynamic;
+
+			auto& collisionBox = sphere.addComponent<CollisionSphereComponent>();
+			collisionBox.radius = 1.f;
+		}
+
 
 		{
 			auto ground = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
@@ -53,7 +69,7 @@ public:
 			rb.type = RigidbodyType::Static;
 
 			auto& collisionBox = ground.addComponent<CollisionBoxComponent>();
-			collisionBox.halfExtent = 1.f;
+			collisionBox.halfExtent = .5f;
 		}
 	}
 

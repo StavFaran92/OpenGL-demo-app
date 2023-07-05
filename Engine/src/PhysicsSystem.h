@@ -26,6 +26,8 @@ public:
 
 	physx::PxShape* createBoxShape(float x, float y, float z);
 
+	physx::PxShape* createSphereShape(float radius);
+
 	void close();
 
 private:
