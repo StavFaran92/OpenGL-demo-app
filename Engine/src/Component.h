@@ -3,6 +3,7 @@
 #include "Core.h"
 
 #include "ScriptableEntity.h"
+#include "Configurations.h"
 
 class Scene;
 
@@ -61,12 +62,6 @@ struct EngineAPI NativeScriptComponent : public Component
 
 struct EngineAPI RigidBodyComponent : public Component
 {
-	enum class RigidbodyType
-	{
-		Static,
-		Dynamic
-	};
-
 	RigidbodyType type = RigidbodyType::Static;
 	float mass = 0;
 	void* simulatedBody = nullptr;

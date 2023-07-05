@@ -5,6 +5,9 @@
 #include "Core.h"
 #include <PxPhysicsAPI.h>
 
+#include "Transformation.h"
+#include "Configurations.h"
+
 class EngineAPI PhysicsSystem
 {
 public:
@@ -19,10 +22,9 @@ public:
 
 	physx::PxMaterial* getDefaultMaterial() const;
 
-	void startSimulation();
-	void stopSimulation();
+	physx::PxRigidActor* createRigidBody(Transformation& trasform, RigidbodyType bodyType);
 
-	void update(float deltaTime, uint32_t sceneID);
+	physx::PxShape* createBoxShape(float x, float y, float z);
 
 	void close();
 
@@ -39,7 +41,9 @@ private:
 
 	physx::PxMaterial* m_defaultMaterial = nullptr;
 
-	physx::PxPvd* mPvd = nullptr;
+	physx::PxPvd* m_pvd = nullptr;
 
 	bool m_isSimulationActive = false;
+
+	bool m_isInit = false;
 };

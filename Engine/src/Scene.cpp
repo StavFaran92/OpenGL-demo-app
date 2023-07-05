@@ -395,35 +395,28 @@ void Scene::startSimulation()
 	for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
 	{
 		Entity e{ entity, this };
+		auto physicsSystem = Engine::get()->getPhysicsSystem();
+
+		auto& transform = e.getComponent<Transformation>();
+		auto scale = transform.getScale();
+
+ 		auto body = physicsSystem->createRigidBody(transform, rb.type);
+
 		if (e.HasComponent<CollisionBoxComponent>())
 		{
-			auto physicsSystem = Engine::get()->getPhysicsSystem();
-			auto physics = physicsSystem->getPhysics();
 			auto& collider = e.getComponent<CollisionBoxComponent>();
-			auto& transform = e.getComponent<Transformation>();
-			auto scale = transform.getScale();
-			physx::PxShape* shape = physics->createShape(physx::PxBoxGeometry(collider.halfExtent * scale.x, collider.halfExtent * scale.y, collider.halfExtent * scale.z), *physicsSystem->getDefaultMaterial());
-
-			physx::PxTransform pxTransform = PhysXUtils::toPhysXTransform(transform);
-			physx::PxRigidActor* body = nullptr;
-			if (rb.type == RigidBodyComponent::RigidbodyType::Dynamic)
-			{
-				body = physics->createRigidDynamic(pxTransform);
-				auto dynamicBody = static_cast<physx::PxRigidDynamic*>(body);
-				dynamicBody->setAngularDamping(0.5f);
-				physx::PxRigidBodyExt::updateMassAndInertia(*dynamicBody, 10.f);
-			}
-			else if (rb.type == RigidBodyComponent::RigidbodyType::Static)
-			{
-				body = physics->createRigidStatic(pxTransform);
-			}
+			
+			physx::PxShape* shape = physicsSystem->createBoxShape(collider.halfExtent * scale.x, collider.halfExtent * scale.y, collider.halfExtent * scale.z);
+			
 			body->attachShape(*shape);
 			
-			m_PhysicsScene->addActor(*body);
-			rb.simulatedBody = body;
-	
 			shape->release();
 		}
+
+		assert(body);
+
+		m_PhysicsScene->addActor(*body);
+		rb.simulatedBody = body;
 	}
 
 	m_isSimulationActive = true;

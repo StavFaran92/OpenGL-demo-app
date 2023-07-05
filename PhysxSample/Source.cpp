@@ -19,7 +19,7 @@ public:
 
 			auto& rb = box.addComponent<RigidBodyComponent>();
 			rb.mass = 1;
-			rb.type = RigidBodyComponent::RigidbodyType::Dynamic;
+			rb.type = RigidbodyType::Dynamic;
 
 			auto& collisionBox = box.addComponent<CollisionBoxComponent>();
 			collisionBox.halfExtent = .5f;
@@ -35,7 +35,7 @@ public:
 
 			auto& rb = box.addComponent<RigidBodyComponent>();
 			rb.mass = 1;
-			rb.type = RigidBodyComponent::RigidbodyType::Dynamic;
+			rb.type = RigidbodyType::Dynamic;
 
 			auto& collisionBox = box.addComponent<CollisionBoxComponent>();
 			collisionBox.halfExtent = .5f;
@@ -50,7 +50,7 @@ public:
 			//groundTransfrom.rotate({ 0, 0, 1 }, 90);
 
 			auto& rb = ground.addComponent<RigidBodyComponent>();
-			rb.type = RigidBodyComponent::RigidbodyType::Static;
+			rb.type = RigidbodyType::Static;
 
 			auto& collisionBox = ground.addComponent<CollisionBoxComponent>();
 			collisionBox.halfExtent = 1.f;

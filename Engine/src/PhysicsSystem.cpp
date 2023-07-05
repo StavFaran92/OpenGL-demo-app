@@ -2,8 +2,16 @@
 
 #include "Logger.h"
 
+#include "PhysXUtils.h"
+#include "Component.h"
+
+#define PX_RELEASE(x)	if(x)	{ x->release(); x = nullptr; }
+
 bool PhysicsSystem::init()
 {
+    if (m_isInit)
+        return false;;
+
     // init physx
     m_foundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_defaultAllocatorCallback, m_defaultErrorCallback);
     if (!m_foundation)
@@ -13,12 +21,12 @@ bool PhysicsSystem::init()
     }
 
 #ifdef SGE_DEBUG
-    mPvd = PxCreatePvd(*m_foundation);
+    m_pvd = PxCreatePvd(*m_foundation);
     physx::PxPvdTransport* transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
-    mPvd->connect(*transport, physx::PxPvdInstrumentationFlag::eALL);
+    m_pvd->connect(*transport, physx::PxPvdInstrumentationFlag::eALL);
 #endif // SGE_DEBUG
 
-    m_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_foundation, physx::PxTolerancesScale(), true, mPvd);
+    m_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_foundation, physx::PxTolerancesScale(), true, m_pvd);
 
     // Set up cooking parameters
     physx::PxCookingParams cookingParams(m_physics->getTolerancesScale());
@@ -36,13 +44,9 @@ bool PhysicsSystem::init()
 
     m_defaultMaterial = m_physics->createMaterial(0.5f, 0.5f, 0.f);
 
-    return true;
-}
+    m_isInit = true;
 
-void PhysicsSystem::update(float deltaTime, uint32_t sceneID)
-{
-    m_scenes[sceneID]->simulate(deltaTime);
-    m_scenes[sceneID]->fetchResults(true);
+    return true;
 }
 
 physx::PxScene* PhysicsSystem::createScene()
@@ -66,30 +70,47 @@ physx::PxMaterial* PhysicsSystem::getDefaultMaterial() const
     return m_defaultMaterial;
 }
 
-void PhysicsSystem::startSimulation()
+physx::PxRigidActor* PhysicsSystem::createRigidBody(Transformation& transform, RigidbodyType bodyType)
 {
-    if (m_isSimulationActive)
+    auto scale = transform.getScale();
+    physx::PxTransform pxTransform = PhysXUtils::toPhysXTransform(transform);
+    physx::PxRigidActor* body = nullptr;
+
+    if (bodyType == RigidbodyType::Dynamic)
     {
-        logWarning("Simulation already active.");
-        return;
+        body = m_physics->createRigidDynamic(pxTransform);
+        auto dynamicBody = static_cast<physx::PxRigidDynamic*>(body);
+        dynamicBody->setAngularDamping(0.5f);
+        physx::PxRigidBodyExt::updateMassAndInertia(*dynamicBody, 10.f);
+    }
+    else if (bodyType == RigidbodyType::Static)
+    {
+        body = m_physics->createRigidStatic(pxTransform);
     }
 
-    m_isSimulationActive = true;
+    assert(body);
+
+    return body;
+
 }
 
-void PhysicsSystem::stopSimulation()
+physx::PxShape* PhysicsSystem::createBoxShape(float x, float y, float z)
 {
-    if (!m_isSimulationActive)
-    {
-        logWarning("Simulation already stopped.");
-        return;
-    }
-
-    m_isSimulationActive = false;
+    return m_physics->createShape(physx::PxBoxGeometry(x, y, z), *m_defaultMaterial);
 }
 
 void PhysicsSystem::close()
 {
-    m_physics->release();
-    m_foundation->release();
+    if (!m_isInit)
+        return;
+
+    PX_RELEASE(m_dispatcher);
+    PX_RELEASE(m_physics);
+    if (m_pvd)
+    {
+        physx::PxPvdTransport* transport = m_pvd->getTransport();
+        PX_RELEASE(m_pvd);
+        PX_RELEASE(transport);
+    }
+    PX_RELEASE(m_foundation);
 }
