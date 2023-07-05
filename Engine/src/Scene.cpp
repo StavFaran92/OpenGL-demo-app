@@ -248,6 +248,17 @@ void Scene::draw(float deltaTime)
 	//	}
 	//}
 
+#ifdef SGE_DEBUG
+	for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
+	{
+		Entity e{ entity, this };
+		physx::PxRigidActor* actor = (physx::PxRigidActor*)rb.simulatedBody;
+		physx::PxShape* shape = nullptr;
+		actor->getShapes(&shape, 1);
+		physx::PxGeometry geom = shape->getGeometry().any();
+	}
+#endif //SGE_DEBUG
+
 	for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_BEGIN])
 	{
 		cb(&params);
@@ -407,9 +418,7 @@ void Scene::startSimulation()
 			auto& collider = e.getComponent<CollisionBoxComponent>();
 			
 			physx::PxShape* shape = physicsSystem->createBoxShape(collider.halfExtent * scale.x, collider.halfExtent * scale.y, collider.halfExtent * scale.z);
-			
 			body->attachShape(*shape);
-			
 			shape->release();
 		}
 
