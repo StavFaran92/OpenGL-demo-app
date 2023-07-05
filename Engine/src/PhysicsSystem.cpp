@@ -35,6 +35,8 @@ bool PhysicsSystem::init()
     }
 
     m_defaultMaterial = m_physics->createMaterial(0.5f, 0.5f, 0.f);
+
+    return true;
 }
 
 void PhysicsSystem::update(float deltaTime, uint32_t sceneID)
@@ -52,6 +54,16 @@ physx::PxScene* PhysicsSystem::createScene()
     sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
     physx::PxScene* scene = m_physics->createScene(sceneDesc);
     return scene;
+}
+
+physx::PxPhysics* PhysicsSystem::getPhysics() const
+{
+    return m_physics;
+}
+
+physx::PxMaterial* PhysicsSystem::getDefaultMaterial() const
+{
+    return m_defaultMaterial;
 }
 
 void PhysicsSystem::startSimulation()

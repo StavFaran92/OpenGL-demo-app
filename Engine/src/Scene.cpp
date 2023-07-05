@@ -398,11 +398,11 @@ void Scene::startSimulation()
 		if (e.HasComponent<CollisionBoxComponent>())
 		{
 			auto physicsSystem = Engine::get()->getPhysicsSystem();
-			auto physics = physicsSystem->m_physics;
+			auto physics = physicsSystem->getPhysics();
 			auto& collider = e.getComponent<CollisionBoxComponent>();
 			auto& transform = e.getComponent<Transformation>();
 			auto scale = transform.getScale();
-			physx::PxShape* shape = Engine::get()->getPhysicsSystem()->m_physics->createShape(physx::PxBoxGeometry(collider.halfExtent * scale.x, collider.halfExtent * scale.y, collider.halfExtent * scale.z), *physicsSystem->m_defaultMaterial);
+			physx::PxShape* shape = physics->createShape(physx::PxBoxGeometry(collider.halfExtent * scale.x, collider.halfExtent * scale.y, collider.halfExtent * scale.z), *physicsSystem->getDefaultMaterial());
 
 			physx::PxTransform pxTransform = PhysXUtils::toPhysXTransform(transform);
 			physx::PxRigidActor* body = nullptr;

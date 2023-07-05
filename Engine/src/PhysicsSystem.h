@@ -15,6 +15,10 @@ public:
 
 	physx::PxScene* createScene();
 
+	physx::PxPhysics* getPhysics() const;
+
+	physx::PxMaterial* getDefaultMaterial() const;
+
 	void startSimulation();
 	void stopSimulation();
 
@@ -22,7 +26,7 @@ public:
 
 	void close();
 
-public:
+private:
 	physx::PxDefaultAllocator       m_defaultAllocatorCallback;
 	physx::PxDefaultErrorCallback   m_defaultErrorCallback;
 	physx::PxDefaultCpuDispatcher* m_dispatcher = nullptr;
@@ -32,7 +36,7 @@ public:
 	physx::PxPhysics* m_physics = nullptr;
 
 	std::vector<physx::PxScene*>    m_scenes;
-	int m_activeScene = -1;
+
 	physx::PxMaterial* m_defaultMaterial = nullptr;
 
 	physx::PxPvd* mPvd = nullptr;
