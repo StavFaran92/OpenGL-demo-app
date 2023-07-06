@@ -11,29 +11,18 @@
 
 #include "Logger.h"
 
-EditorCamera::EditorCamera(Transformation& transform, float startMoveSpeed, float startTurnSpeed)
-	: m_transform(transform),
-	m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
-	m_movementSpeed(startMoveSpeed),
+EditorCamera::EditorCamera() : EditorCamera(1.0f, .5f)
+{
+}
+
+EditorCamera::EditorCamera(float startMoveSpeed, float startTurnSpeed)
+	: m_movementSpeed(startMoveSpeed),
 	m_turnSpeed(startTurnSpeed),
 	m_distance(5)
 {
-	calculateOrientation();
+	//todo verify entity has camera component
 
-	auto eventSystem = Engine::get()->getEventSystem();
 
-	eventSystem->addEventListener(SDL_MOUSEMOTION, [this](SDL_Event e) { 
-		OnMouseMotion(e.motion.xrel, e.motion.yrel);
-	});
-	eventSystem->addEventListener(SDL_MOUSEBUTTONDOWN, [this](SDL_Event e) {
-		OnMousePressed(e.button);
-	});
-	eventSystem->addEventListener(SDL_MOUSEBUTTONUP, [this](SDL_Event e) {
-		OnMouseReleased(e.button);
-	});
-	eventSystem->addEventListener(SDL_MOUSEWHEEL, [this](SDL_Event e) {
-		OnMouseScroll(e.wheel.y);
-	});
 
 }
 
@@ -50,12 +39,6 @@ void EditorCamera::OnMouseMotion(float xChange, float yChange)
 		calculateOrientation();
 	}
 }
-
-glm::mat4 EditorCamera::getView()
-{
-	
-	return glm::lookAt(m_transform.getPosition(), m_center, m_up);
-};
 
 void EditorCamera::OnMousePressed(SDL_MouseButtonEvent& e)
 {
@@ -82,7 +65,9 @@ void EditorCamera::OnMouseScroll(Sint32& y)
 
 void EditorCamera::lookAt(float x, float y, float z)
 {
-	m_center = { x, y, z };
+	m_cameraComponent->center = { x, y, z };
+
+	calculateOrientation();
 }
 
 void EditorCamera::setPosition(float distance, float angleX, float angleY)
@@ -94,6 +79,28 @@ void EditorCamera::setPosition(float distance, float angleX, float angleY)
 	calculateOrientation();
 }
 
+void EditorCamera::onCreate()
+{
+	m_cameraComponent = &entity.getComponent<CameraComponent>();
+
+	calculateOrientation();
+
+	auto eventSystem = Engine::get()->getEventSystem();
+
+	eventSystem->addEventListener(SDL_MOUSEMOTION, [this](SDL_Event e) {
+		OnMouseMotion(e.motion.xrel, e.motion.yrel);
+		});
+	eventSystem->addEventListener(SDL_MOUSEBUTTONDOWN, [this](SDL_Event e) {
+		OnMousePressed(e.button);
+		});
+	eventSystem->addEventListener(SDL_MOUSEBUTTONUP, [this](SDL_Event e) {
+		OnMouseReleased(e.button);
+		});
+	eventSystem->addEventListener(SDL_MOUSEWHEEL, [this](SDL_Event e) {
+		OnMouseScroll(e.wheel.y);
+		});
+}
+
 void EditorCamera::calculateOrientation()
 {
 	float t = m_distance * cos(m_angleY * Constants::toRadians);
@@ -101,10 +108,9 @@ void EditorCamera::calculateOrientation()
 	float x = t * cos(m_angleX * Constants::toRadians);
 	float z = t * sin(m_angleX * Constants::toRadians);
 
-	m_transform.setPosition(glm::vec3(x, y, z) + m_center);
+	m_cameraComponent->position = glm::vec3(x, y, z) + m_cameraComponent->center;
 
-	m_front = glm::normalize(-m_transform.getPosition() + m_center);
-
-	m_right = glm::normalize(glm::cross(m_front, m_worldUp));
-	m_up = glm::normalize(glm::cross(m_right, m_front));
+	auto front = glm::normalize(-m_cameraComponent->position + m_cameraComponent->center);
+	auto right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
+	m_cameraComponent->up = glm::normalize(glm::cross(right, front));
 }

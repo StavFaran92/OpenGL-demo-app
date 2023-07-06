@@ -79,8 +79,10 @@ void Scene::init(Context* context)
 	// Add default dir light
 	createEntity().addComponent<DirectionalLight>();
 
-
-	createEntity().addComponent<CameraComponent>({ 5.0f, 5.0f, 5.0f }, 1.0f, .5f);
+	auto editorCamera = createEntity();
+	auto& camera = editorCamera.addComponent<CameraComponent>();
+	m_activeCamera = &camera;
+	editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
 
 	m_tempBoxMesh = Box::createMesh();
 	m_tempOutlineShader = Shader::create<Shader>("Resources/Engine/Shaders/shader.vert", "Resources/Engine/Shaders/OutlineShader.frag");
@@ -165,6 +167,7 @@ void Scene::draw(float deltaTime)
 	params.context = m_context;
 	params.registry = &m_registry;
 	params.renderer = m_renderer.get();
+	params.camera = m_activeCamera;
 
 	// PRE Render Phase
 	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])
@@ -194,7 +197,7 @@ void Scene::draw(float deltaTime)
 		auto& shader = entityhandler.getComponentInParent<StandardShader>();
 		shader.updateDirLights(m_registry);
 		shader.updatePointLights(m_registry);
-		shader.setViewPos(m_renderer->getCamera()->getPosition());
+		shader.setViewPos(m_activeCamera->getPosition());
 
 		// draw model
 		m_renderer->render(params);

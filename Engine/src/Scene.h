@@ -36,6 +36,10 @@ class Mesh;
 class Transformation;
 class InstanceBatch;
 class SkyboxRenderer;
+namespace physx {
+	class PxScene;
+}
+template<typename T> class ObjectHandler;
 
 class EngineAPI Scene
 {
@@ -122,4 +126,6 @@ private:
 
 	Mesh* m_tempBoxMesh = nullptr;
 	Shader* m_tempOutlineShader = nullptr;
+
+	CameraComponent* m_activeCamera = nullptr;
 };

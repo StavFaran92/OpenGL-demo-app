@@ -17,6 +17,7 @@ class Mesh;
 class Entity;
 class Scene;
 class Context;
+struct CameraComponent;
 
 class EngineAPI IRenderer {
 public:
@@ -26,6 +27,7 @@ public:
 		Context* context = nullptr;
 		IRenderer* renderer = nullptr;
 		entt::registry* registry = nullptr;
+		CameraComponent* camera = nullptr;
 	};
 
 	struct DrawQueueRenderParams : public Params

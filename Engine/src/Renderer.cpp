@@ -55,7 +55,6 @@ void Renderer::draw(const VertexArrayObject& vao, Shader& shader) const
 void Renderer::SetMVP(Shader& shader) const
 {
 	shader.setProjectionMatrix(m_projection);
-	shader.setViewMatrix(m_camera->getView());
 }
 
 glm::mat4 Renderer::getProjection() const
@@ -120,6 +119,8 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
     // Set model matrix
     if(renderParams.transform)
         shaderToUse->setModelMatrix(renderParams.transform->getMatrix());
+
+    shaderToUse->setViewMatrix(renderParams.camera->getView());
 
     // Set time elapsed
     auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;

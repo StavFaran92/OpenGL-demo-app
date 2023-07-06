@@ -4,6 +4,7 @@
 
 #include "ScriptableEntity.h"
 #include "Configurations.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 class Scene;
 
@@ -79,5 +80,17 @@ struct EngineAPI CollisionSphereComponent : public Component
 
 struct EngineAPI CameraComponent : public Component
 {
-	ICamera* camera = nullptr;
+	glm::mat4 getView()
+	{
+		return glm::lookAt(position, center, up);
+	}
+
+	glm::vec3 getPosition()
+	{
+		return position;
+	}
+
+	glm::vec3 position;
+	glm::vec3 center;
+	glm::vec3 up;
 };

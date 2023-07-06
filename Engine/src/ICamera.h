@@ -20,7 +20,7 @@ public:
 	//virtual void OnMouseScroll(Sint32& y) {};
 
 	virtual glm::mat4 getView() = 0;
-	//virtual glm::vec3 getPosition() = 0;
+	virtual glm::vec3 getPosition() = 0;
 
 	virtual ~ICamera() = default;
 };
