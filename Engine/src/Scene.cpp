@@ -117,7 +117,7 @@ void Scene::update(float deltaTime)
 	}
 
 	// Physics
-	m_PhysicsScene->simulate(1/180.f);
+	m_PhysicsScene->simulate(1/120.f);
 	m_PhysicsScene->fetchResults(true);
 
 	//physx::PxU32 nbActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
