@@ -76,3 +76,8 @@ struct EngineAPI CollisionSphereComponent : public Component
 {
 	float radius = 0;
 };
+
+struct EngineAPI CameraComponent : public Component
+{
+	ICamera* camera = nullptr;
+};

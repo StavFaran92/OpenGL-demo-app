@@ -36,6 +36,7 @@
 #include "PhysicsSystem.h"
 #include "PhysXUtils.h"
 #include "Box.h"
+#include "EditorCamera.h"
 
 void Scene::init(Context* context)
 {
@@ -78,14 +79,15 @@ void Scene::init(Context* context)
 	// Add default dir light
 	createEntity().addComponent<DirectionalLight>();
 
+
+	createEntity().addComponent<CameraComponent>({ 5.0f, 5.0f, 5.0f }, 1.0f, .5f);
+
 	m_tempBoxMesh = Box::createMesh();
 	m_tempOutlineShader = Shader::create<Shader>("Resources/Engine/Shaders/shader.vert", "Resources/Engine/Shaders/OutlineShader.frag");
 }
 
 void Scene::update(float deltaTime)
 {
-	m_renderer->getCamera()->update(deltaTime);
-
 	// Advance all coroutines
 	auto coroutines = m_coroutineManager->getAllCoroutines();
 	for (int i = 0; i < coroutines.size(); i++)

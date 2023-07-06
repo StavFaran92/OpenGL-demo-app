@@ -36,10 +36,6 @@ class Mesh;
 class Transformation;
 class InstanceBatch;
 class SkyboxRenderer;
-namespace physx {
-	class PxScene;
-}
-template<typename T> class ObjectHandler;
 
 class EngineAPI Scene
 {
@@ -75,8 +71,6 @@ public:
 	void selectObject(uint32_t id);
 	void clearObjectSelection();
 	bool isPickingPhaseActive() const;
-
-	//void addGUI();
 
 	RenderCallback* addRenderCallback(RenderPhase renderPhase, RenderCallback renderCallback);
 	void removeRenderCallback(RenderCallback* callback);

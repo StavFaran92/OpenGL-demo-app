@@ -11,8 +11,8 @@
 
 #include "Logger.h"
 
-EditorCamera::EditorCamera(glm::vec3 startPosition, float startMoveSpeed, float startTurnSpeed)
-	: m_position(startPosition),
+EditorCamera::EditorCamera(Transformation& transform, float startMoveSpeed, float startTurnSpeed)
+	: m_transform(transform),
 	m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
 	m_movementSpeed(startMoveSpeed),
 	m_turnSpeed(startTurnSpeed),
@@ -37,10 +37,6 @@ EditorCamera::EditorCamera(glm::vec3 startPosition, float startMoveSpeed, float 
 
 }
 
-void EditorCamera::keyControl(double deltaTime)
-{
-}
-
 void EditorCamera::OnMouseMotion(float xChange, float yChange)
 {
 
@@ -57,18 +53,9 @@ void EditorCamera::OnMouseMotion(float xChange, float yChange)
 
 glm::mat4 EditorCamera::getView()
 {
-	return glm::lookAt(m_position, m_center, m_up);
+	
+	return glm::lookAt(m_transform.getPosition(), m_center, m_up);
 };
-
-glm::vec3 EditorCamera::getPosition()
-{
-	return m_position;
-}
-
-void EditorCamera::update(float deltaTime)
-{
-	keyControl(deltaTime);
-}
 
 void EditorCamera::OnMousePressed(SDL_MouseButtonEvent& e)
 {
@@ -114,9 +101,9 @@ void EditorCamera::calculateOrientation()
 	float x = t * cos(m_angleX * Constants::toRadians);
 	float z = t * sin(m_angleX * Constants::toRadians);
 
-	m_position = glm::vec3(x, y, z) + m_center;
+	m_transform.setPosition(glm::vec3(x, y, z) + m_center);
 
-	m_front = glm::normalize(-m_position + m_center);
+	m_front = glm::normalize(-m_transform.getPosition() + m_center);
 
 	m_right = glm::normalize(glm::cross(m_front, m_worldUp));
 	m_up = glm::normalize(glm::cross(m_right, m_front));

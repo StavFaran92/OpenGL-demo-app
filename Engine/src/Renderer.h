@@ -20,24 +20,15 @@ public:
 	// Constructor
 	Renderer();
 
-	// Copy Constructor
-	Renderer(const Renderer& other);
-
 	//Overrides
 	void draw(const VertexArrayObject& vao, Shader& shader) const override;
-	//void render(Model* model, Shader* shader = nullptr) override;
 	virtual void SetMVP(Shader& shader) const;
  	void clear() const override;
 	glm::mat4 getProjection() const override;
 	void render(const DrawQueueRenderParams& renderParams);
 
-	void enableWriteFrame(bool enable);
-
-	//Methods
-	std::shared_ptr<ICamera> getCamera() const override;
-	void setCamera(std::shared_ptr<ICamera> camera);
+	void enableWireframeMode(bool enable);
 protected:
-	std::shared_ptr<ICamera> m_camera = nullptr;
 	glm::mat4 m_projection;
 
 	bool m_wireFrameMode = false;

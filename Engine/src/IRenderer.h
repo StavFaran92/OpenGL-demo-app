@@ -44,12 +44,10 @@ public:
 		SetDrawType(DrawType::Triangles);
 	};
 
-	//virtual void render(Model* model, Shader* shader = nullptr) = 0;
 	virtual void draw(const VertexArrayObject& vao, Shader& shader) const = 0;
 	virtual void clear() const = 0;
 
 	virtual glm::mat4 getProjection() const = 0;
-	virtual std::shared_ptr<ICamera> getCamera() const = 0;
 	virtual void render(const DrawQueueRenderParams& renderParams) = 0;
 
 	void SetDrawType(DrawType drawType);
