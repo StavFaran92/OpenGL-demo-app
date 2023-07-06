@@ -22,7 +22,7 @@ public:
 
 	physx::PxMaterial* getDefaultMaterial() const;
 
-	physx::PxRigidActor* createRigidBody(Transformation& trasform, RigidbodyType bodyType);
+	physx::PxRigidActor* createRigidBody(Transformation& trasform, RigidbodyType bodyType, float mass);
 
 	physx::PxShape* createBoxShape(float x, float y, float z);
 

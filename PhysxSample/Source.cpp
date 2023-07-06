@@ -66,7 +66,7 @@ public:
 			auto ground = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 			auto& groundTransfrom = ground.getComponent<Transformation>();
 			groundTransfrom.setScale({ 10, .5f, 10 });
-			//groundTransfrom.rotate({ 0, 1, 0 }, 90);
+			//groundTransfrom.rotate({ 0, 0, 1 }, 20);
 			//groundTransfrom.rotate({ 0, 0, 1 }, 90);
 
 			auto& rb = ground.addComponent<RigidBodyComponent>();

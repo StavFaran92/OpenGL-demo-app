@@ -426,7 +426,7 @@ void Scene::startSimulation()
 		auto& transform = e.getComponent<Transformation>();
 		auto scale = transform.getScale();
 
- 		auto body = physicsSystem->createRigidBody(transform, rb.type);
+ 		auto body = physicsSystem->createRigidBody(transform, rb.type, rb.mass);
 
 		if (e.HasComponent<CollisionBoxComponent>())
 		{

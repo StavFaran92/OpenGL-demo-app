@@ -70,7 +70,7 @@ physx::PxMaterial* PhysicsSystem::getDefaultMaterial() const
     return m_defaultMaterial;
 }
 
-physx::PxRigidActor* PhysicsSystem::createRigidBody(Transformation& transform, RigidbodyType bodyType)
+physx::PxRigidActor* PhysicsSystem::createRigidBody(Transformation& transform, RigidbodyType bodyType, float mass)
 {
     auto scale = transform.getScale();
     physx::PxTransform pxTransform = PhysXUtils::toPhysXTransform(transform);
@@ -81,7 +81,7 @@ physx::PxRigidActor* PhysicsSystem::createRigidBody(Transformation& transform, R
         body = m_physics->createRigidDynamic(pxTransform);
         auto dynamicBody = static_cast<physx::PxRigidDynamic*>(body);
         dynamicBody->setAngularDamping(0.5f);
-        physx::PxRigidBodyExt::updateMassAndInertia(*dynamicBody, 10.f);
+        physx::PxRigidBodyExt::updateMassAndInertia(*dynamicBody, mass);
     }
     else if (bodyType == RigidbodyType::Static)
     {
