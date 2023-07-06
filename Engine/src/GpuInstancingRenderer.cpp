@@ -27,8 +27,6 @@ void GpuInstancingRenderer::render(const DrawQueueRenderParams& renderParams)
 
 void GpuInstancingRenderer::draw(const VertexArrayObject& vao, Shader& shader) const
 {
-	SetMVP(shader);
-
 	shader.setValue("isGpuInstanced", 1);
 
 	vao.Bind();

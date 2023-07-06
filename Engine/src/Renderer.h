@@ -22,7 +22,6 @@ public:
 
 	//Overrides
 	void draw(const VertexArrayObject& vao, Shader& shader) const override;
-	virtual void SetMVP(Shader& shader) const;
  	void clear() const override;
 	glm::mat4 getProjection() const override;
 	void render(const DrawQueueRenderParams& renderParams);

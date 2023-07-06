@@ -34,7 +34,7 @@ void Renderer::draw(const VertexArrayObject& vao, Shader& shader) const
 {
    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	SetMVP(shader);
+	//SetMVP(shader);
 
 	vao.Bind();
 
@@ -50,11 +50,6 @@ void Renderer::draw(const VertexArrayObject& vao, Shader& shader) const
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-}
-
-void Renderer::SetMVP(Shader& shader) const
-{
-	shader.setProjectionMatrix(m_projection);
 }
 
 glm::mat4 Renderer::getProjection() const
@@ -116,11 +111,15 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
     //    }
     //}
 
-    // Set model matrix
+    // Model
     if(renderParams.transform)
         shaderToUse->setModelMatrix(renderParams.transform->getMatrix());
 
-    shaderToUse->setViewMatrix(renderParams.camera->getView());
+    // View
+    if(renderParams.camera)
+        shaderToUse->setViewMatrix(renderParams.camera->getView());
+
+    shaderToUse->setProjectionMatrix(m_projection);
 
     // Set time elapsed
     auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;

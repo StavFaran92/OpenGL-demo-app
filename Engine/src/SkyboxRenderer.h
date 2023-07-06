@@ -10,7 +10,6 @@ public:
 	SkyboxRenderer() = default;
 	SkyboxRenderer(const Renderer& other) : Renderer(other) {};
 
-	void SetMVP(Shader& shader) const override;
 	void render(const DrawQueueRenderParams& renderParams);
 };
 
