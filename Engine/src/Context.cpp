@@ -12,6 +12,7 @@
 
 #include "Object3D.h"
 #include "Scene.h"
+#include "Engine.h"
 
 #include "Logger.h"
 

@@ -1,26 +1,19 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 #include "Core.h"
-#include "Engine.h"
-#include "Input.h"
+#include "ScriptableEntity.h"
 
-#include "Keyboard.h"
-
-class EngineAPI ICamera
+class EngineAPI ICamera : public ScriptableEntity
 {
 public:
 	ICamera() = default;
 
-	//virtual void OnMouseMotion(float xChange, float yChange) = 0;
-	//virtual void OnMousePressed(SDL_MouseButtonEvent& e) = 0;
-	//virtual void OnMouseReleased(SDL_MouseButtonEvent& e) = 0;
-	//virtual void OnMouseScroll(Sint32& y) {};
-
 	virtual glm::mat4 getView() = 0;
 	virtual glm::vec3 getPosition() = 0;
+	virtual void lookAt(float x, float y, float z) = 0;
+	virtual void setPosition(float distance, float angleX, float angleY) = 0;
 
 	virtual ~ICamera() = default;
 };

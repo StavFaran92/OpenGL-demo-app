@@ -19,48 +19,16 @@ EditorCamera::EditorCamera(float startMoveSpeed, float startTurnSpeed)
 	: m_movementSpeed(startMoveSpeed),
 	m_turnSpeed(startTurnSpeed),
 	m_distance(5)
+{}
+
+glm::mat4 EditorCamera::getView()
 {
-	//todo verify entity has camera component
-
-
-
+	return m_cameraComponent->getView();
 }
 
-void EditorCamera::OnMouseMotion(float xChange, float yChange)
+glm::vec3 EditorCamera::getPosition()
 {
-
-	if (!m_isLocked)
-	{
-		m_angleX += xChange * m_turnSpeed;
-		m_angleY += yChange * m_turnSpeed;
-
-		m_angleY = std::clamp(m_angleY, -89.f, 89.f);
-
-		calculateOrientation();
-	}
-}
-
-void EditorCamera::OnMousePressed(SDL_MouseButtonEvent& e)
-{
-	if (e.button == SDL_BUTTON_RIGHT)
-	{
-		m_isLocked = false;
-	}
-}
-
-void EditorCamera::OnMouseReleased(SDL_MouseButtonEvent& e)
-{
-	if (e.button == SDL_BUTTON_RIGHT)
-	{
-		m_isLocked = true;
-	}
-}
-
-void EditorCamera::OnMouseScroll(Sint32& y)
-{
-	m_distance = std::clamp(m_distance-y, 1.f, 50.f);
-
-	calculateOrientation();
+	return m_cameraComponent->getPosition();
 }
 
 void EditorCamera::lookAt(float x, float y, float z)
@@ -87,18 +55,40 @@ void EditorCamera::onCreate()
 
 	auto eventSystem = Engine::get()->getEventSystem();
 
-	eventSystem->addEventListener(SDL_MOUSEMOTION, [this](SDL_Event e) {
-		OnMouseMotion(e.motion.xrel, e.motion.yrel);
-		});
-	eventSystem->addEventListener(SDL_MOUSEBUTTONDOWN, [this](SDL_Event e) {
-		OnMousePressed(e.button);
-		});
-	eventSystem->addEventListener(SDL_MOUSEBUTTONUP, [this](SDL_Event e) {
-		OnMouseReleased(e.button);
-		});
-	eventSystem->addEventListener(SDL_MOUSEWHEEL, [this](SDL_Event e) {
-		OnMouseScroll(e.wheel.y);
-		});
+	eventSystem->addEventListener(SDL_MOUSEMOTION, [this](SDL_Event e) 
+	{
+		int xChange = e.motion.xrel;
+		int yChange = e.motion.yrel;
+		if (!m_isLocked)
+		{
+			m_angleX += xChange * m_turnSpeed;
+			m_angleY += yChange * m_turnSpeed;
+
+			m_angleY = std::clamp(m_angleY, -89.f, 89.f);
+
+			calculateOrientation();
+		}
+	});
+	eventSystem->addEventListener(SDL_MOUSEBUTTONDOWN, [this](SDL_Event e) 
+	{
+		if (e.button.button == SDL_BUTTON_RIGHT)
+		{
+			m_isLocked = false;
+		}
+	});
+	eventSystem->addEventListener(SDL_MOUSEBUTTONUP, [this](SDL_Event e) 
+	{
+		if (e.button.button == SDL_BUTTON_RIGHT)
+		{
+			m_isLocked = true;
+		}
+	});
+	eventSystem->addEventListener(SDL_MOUSEWHEEL, [this](SDL_Event e) 
+	{
+		m_distance = std::clamp(m_distance - e.wheel.y, 1.f, 50.f);
+
+		calculateOrientation();
+	});
 }
 
 void EditorCamera::calculateOrientation()

@@ -21,5 +21,5 @@ protected:
 	friend class Scene;
 
 protected:
-
+	bool m_isInit = false;
 };

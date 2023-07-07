@@ -6,19 +6,16 @@
 #include "ScriptableEntity.h"
 
 
-class EngineAPI EditorCamera : public ScriptableEntity
+class EngineAPI EditorCamera : public ICamera
 {
 public:
 	EditorCamera();
 	EditorCamera(float startMoveSpeed, float startTurnSpeed);
 
-	void OnMouseMotion(float xChange, float yChange);
-	void OnMousePressed(SDL_MouseButtonEvent& e);
-	void OnMouseReleased(SDL_MouseButtonEvent& e);
-	void OnMouseScroll(Sint32& y);
-
-	void lookAt(float x, float y, float z);
-	void setPosition(float distance, float angleX, float angleY);
+	void lookAt(float x, float y, float z) override;
+	void setPosition(float distance, float angleX, float angleY) override;
+	glm::mat4 getView() override;
+	glm::vec3 getPosition() override;
 
 	void onCreate() override;
 private:
@@ -33,5 +30,6 @@ private:
 	float m_angleY = 0;
 
 	CameraComponent* m_cameraComponent = nullptr;
+
 };
 

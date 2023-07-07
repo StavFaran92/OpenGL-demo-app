@@ -80,9 +80,8 @@ void Scene::init(Context* context)
 	createEntity().addComponent<DirectionalLight>();
 
 	auto editorCamera = createEntity();
-	auto& camera = editorCamera.addComponent<CameraComponent>();
-	m_activeCamera = &camera;
-	editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
+	editorCamera.addComponent<CameraComponent>();
+	m_activeCamera = editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
 
 	m_tempBoxMesh = Box::createMesh();
 	m_tempOutlineShader = Shader::create<Shader>("Resources/Engine/Shaders/shader.vert", "Resources/Engine/Shaders/OutlineShader.frag");
@@ -103,18 +102,17 @@ void Scene::update(float deltaTime)
 	// Run all User Scriptable Entities scripts
 	for (auto&& [entity, nsc] : m_registry.view<NativeScriptComponent>().each())
 	{
-		if (!nsc.instantiateScript)
+		if (!nsc.script)
 		{
-			logWarning("Native Script does not have an instantiation method, did you forget to call Bind()?");
+			logWarning("Native Script cannot be Null, did you forget to call Bind()?");
 			continue;
 		}
 
-		if (!nsc.script)
+		if (!nsc.script->m_isInit)
 		{
-			nsc.script = nsc.instantiateScript();
-			assert(nsc.script);
 			nsc.script->entity = Entity{entity, this};
 			nsc.script->onCreate();
+			nsc.script->m_isInit = true;
 		}
 
 		nsc.script->onUpdate(deltaTime);
@@ -331,6 +329,11 @@ Entity Scene::createEntity()
 void Scene::removeEntity(const Entity& e)
 {
 	m_registry.destroy(e.handler());
+}
+
+ICamera* Scene::getActiveCamera() const
+{
+	return m_activeCamera;
 }
 
 

@@ -36,22 +36,28 @@ struct EngineAPI HierarchyComponent : public Component
 	Scene* scene = nullptr;
 };
 
+// Todo fix this whole mess of a class
 struct EngineAPI NativeScriptComponent : public Component
 {
 	ScriptableEntity* script = nullptr;
-	std::function<ScriptableEntity*()> instantiateScript = nullptr;
+	//std::function<ScriptableEntity*()> instantiateScript = nullptr;
 
 	template<typename T, typename... Args>
-	void bind(Args&&... args)
+	T* bind(Args&&... args)
 	{
 		static_assert(std::is_base_of<ScriptableEntity, T>::value, "T must inherit from ScriptableEntity");
 
-		instantiateScript = [args...]() {
-			return static_cast<ScriptableEntity*>(new T(std::forward<Args>(args)...));
-		};
+		script = new T(std::forward<Args>(args)...);
+
+		return static_cast<T*>(script);
+
+		//instantiateScript = [args...]() {
+		//	return static_cast<ScriptableEntity*>(new T(std::forward<Args>(args)...));
+		//};
 	}
 
-	void destroyScript()
+	template<typename T>
+	void unbind(T* script)
 	{
 		if (script)
 		{
@@ -59,6 +65,15 @@ struct EngineAPI NativeScriptComponent : public Component
 			script = nullptr;
 		}
 	}
+
+	//void destroyScript()
+	//{
+	//	if (script)
+	//	{
+	//		delete script;
+	//		script = nullptr;
+	//	}
+	//}
 };
 
 struct EngineAPI RigidBodyComponent : public Component

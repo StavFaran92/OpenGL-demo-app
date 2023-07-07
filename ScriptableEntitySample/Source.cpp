@@ -9,14 +9,35 @@ class CustomBoxBehaviour : public ScriptableEntity
 	}
 };
 
+class CustomBoxBehaviourWithParams : public ScriptableEntity
+{
+public:
+	CustomBoxBehaviourWithParams(float a) : m_a(a){}
+
+	virtual void onUpdate(float a) override
+	{
+
+	}
+
+	float m_a;
+};
+
 class Sandbox : public Application
 {
 public:
 	void start() override
 	{
-		auto box1 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
-		auto& nsc = box1.addComponent<NativeScriptComponent>();
-		nsc.bind<CustomBoxBehaviour>();
+		{
+			auto box1 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+			auto& nsc = box1.addComponent<NativeScriptComponent>();
+			nsc.bind<CustomBoxBehaviour>();
+		}
+
+		{
+			auto box2 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+			auto cbb = box2.addComponent<NativeScriptComponent>().bind<CustomBoxBehaviourWithParams>(5.f);
+			std::cout << std::to_string(cbb->m_a) << std::endl;
+		}
 	}
 
 };

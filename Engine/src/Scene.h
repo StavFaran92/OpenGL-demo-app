@@ -36,6 +36,7 @@ class Mesh;
 class Transformation;
 class InstanceBatch;
 class SkyboxRenderer;
+class ICamera;
 namespace physx {
 	class PxScene;
 }
@@ -69,7 +70,6 @@ public:
 
 	uint32_t getID() const { return m_id; }
 
-	bool isSelected(uint32_t id) const;
 	bool isObjectSelectionEnabled() const;
 	void enableObjectSelection(bool isEnabled);
 	void selectObject(uint32_t id);
@@ -83,6 +83,8 @@ public:
 
 	Entity createEntity();
 	void removeEntity(const Entity& e);
+
+	ICamera* getActiveCamera() const;
 	
 
 
@@ -127,5 +129,5 @@ private:
 	Mesh* m_tempBoxMesh = nullptr;
 	Shader* m_tempOutlineShader = nullptr;
 
-	CameraComponent* m_activeCamera = nullptr;
+	ICamera* m_activeCamera = nullptr;
 };

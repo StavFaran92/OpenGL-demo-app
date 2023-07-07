@@ -9,6 +9,7 @@
 #include "DefaultMaterial.h"
 #include <GL/glew.h>
 #include "Component.h"
+#include "Engine.h"
 
 void SkyboxRenderer::render(const DrawQueueRenderParams& renderParams)
 {
