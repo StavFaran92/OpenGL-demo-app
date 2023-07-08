@@ -80,6 +80,11 @@ struct EngineAPI CollisionSphereComponent : public Component
 	float radius = 0;
 };
 
+struct EngineAPI CollisionConvexMeshComponent : public Component
+{
+	float radius = 0;
+};
+
 struct EngineAPI CameraComponent : public Component
 {
 	glm::mat4 getView()

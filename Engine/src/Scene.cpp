@@ -37,6 +37,7 @@
 #include "PhysXUtils.h"
 #include "Box.h"
 #include "EditorCamera.h"
+#include <GL/glew.h>
 
 void Scene::init(Context* context)
 {
@@ -248,16 +249,18 @@ void Scene::draw(float deltaTime)
 	//}
 
 #ifdef SGE_DEBUG
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glEnable(GL_POLYGON_OFFSET_LINE);
+	glPolygonOffset(-1.0, -1.0);
 	for (auto&& [entity, cb] : m_registry.view<CollisionBoxComponent>().each())
 	{
 		Entity e{ entity, this };
-		//physx::PxRigidActor* actor = (physx::PxRigidActor*)rb.simulatedBody;
-		//physx::PxShape* shape = nullptr;
-		//actor->getShapes(&shape, 1);
-		//physx::PxGeometry geom = shape->getGeometry().any();
+
+		auto& mesh = e.getComponent<Mesh>();
+
 		params.entity = &e;
 		params.shader = m_tempOutlineShader;
-		params.mesh = m_tempBoxMesh;
+		params.mesh = &mesh;
 		params.transform = &e.getComponent<Transformation>();
 
 		m_renderer->render(params);
@@ -268,6 +271,28 @@ void Scene::draw(float deltaTime)
 		params.transform = nullptr;
 
 	}
+
+	for (auto&& [entity, cb] : m_registry.view<CollisionSphereComponent>().each())
+	{
+		Entity e{ entity, this };
+
+		auto& mesh = e.getComponent<Mesh>();
+
+		params.entity = &e;
+		params.shader = m_tempOutlineShader;
+		params.mesh = &mesh;
+		params.transform = &e.getComponent<Transformation>();
+
+		m_renderer->render(params);
+
+		params.entity = nullptr;
+		params.shader = nullptr;
+		params.mesh = nullptr;
+		params.transform = nullptr;
+
+	}
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glDisable(GL_POLYGON_OFFSET_LINE);
 #endif //SGE_DEBUG
 
 	for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_BEGIN])
@@ -440,6 +465,15 @@ void Scene::startSimulation()
 		{
 			auto& collider = e.getComponent<CollisionSphereComponent>();
 			physx::PxShape* shape = physicsSystem->createSphereShape(collider.radius * std::max(std::max(scale.x, scale.y), scale.z));
+			body->attachShape(*shape);
+			shape->release();
+		}
+		else if (e.HasComponent<CollisionConvexMeshComponent>())
+		{
+			//auto& mesh = e.getComponent<Mesh>();
+			std::vector<glm::vec3> pos = { {0,0,0}, {0,1,0}, {1,0,0} };
+			physx::PxShape* shape = physicsSystem->createConvexMeshShape(pos);
+			//physx::PxShape* shape = physicsSystem->createConvexMeshShape(*mesh.getPositions());
 			body->attachShape(*shape);
 			shape->release();
 		}

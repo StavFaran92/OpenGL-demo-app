@@ -35,8 +35,8 @@ bool PhysicsSystem::init()
     cookingParams.meshPreprocessParams |= physx::PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
     cookingParams.meshPreprocessParams |= physx::PxMeshPreprocessingFlag::eWELD_VERTICES;
 
-    physx::PxCooking* cooking = PxCreateCooking(PX_PHYSICS_VERSION, m_physics->getFoundation(), cookingParams);
-    if (!cooking)
+    m_cooking = PxCreateCooking(PX_PHYSICS_VERSION, m_physics->getFoundation(), cookingParams);
+    if (!m_cooking)
     {
         logError("PxCreateCooking failed!");
         return false;
@@ -102,6 +102,31 @@ physx::PxShape* PhysicsSystem::createBoxShape(float x, float y, float z)
 physx::PxShape* PhysicsSystem::createSphereShape(float radius)
 {
     return m_physics->createShape(physx::PxSphereGeometry(radius), *m_defaultMaterial);
+}
+
+physx::PxShape* PhysicsSystem::createConvexMeshShape(const std::vector<glm::vec3>& vertices)
+{
+    physx::PxConvexMeshDesc convexDesc;
+    convexDesc.points.count = vertices.size();
+    convexDesc.points.stride = sizeof(glm::vec3);
+    convexDesc.points.data = vertices.data();
+    convexDesc.flags = physx::PxConvexFlag::eCOMPUTE_CONVEX;
+
+    physx::PxDefaultMemoryOutputStream buf;
+    if (!m_cooking->cookConvexMesh(convexDesc, buf))
+        return nullptr;
+
+    physx::PxDefaultMemoryInputData id(buf.getData(), buf.getSize());
+    physx::PxConvexMesh* convexMesh = m_physics->createConvexMesh(id);
+
+    physx::PxShape* convexShape = m_physics->createShape(physx::PxConvexMeshGeometry(convexMesh), *m_defaultMaterial, true);
+
+    return convexShape;
+}
+
+void PhysicsSystem::renderWireframeDebug()
+{
+
 }
 
 

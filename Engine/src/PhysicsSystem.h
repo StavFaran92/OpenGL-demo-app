@@ -7,6 +7,7 @@
 
 #include "Transformation.h"
 #include "Configurations.h"
+#include <glm/glm.hpp>
 
 class EngineAPI PhysicsSystem
 {
@@ -25,8 +26,10 @@ public:
 	physx::PxRigidActor* createRigidBody(Transformation& trasform, RigidbodyType bodyType, float mass);
 
 	physx::PxShape* createBoxShape(float x, float y, float z);
-
 	physx::PxShape* createSphereShape(float radius);
+	physx::PxShape* createConvexMeshShape(const std::vector<glm::vec3>& vertices);
+
+	void renderWireframeDebug();
 
 	void close();
 
@@ -42,6 +45,7 @@ private:
 	std::vector<physx::PxScene*>    m_scenes;
 
 	physx::PxMaterial* m_defaultMaterial = nullptr;
+	physx::PxCooking* m_cooking = nullptr;
 
 	physx::PxPvd* m_pvd = nullptr;
 

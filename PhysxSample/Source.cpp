@@ -13,6 +13,23 @@ public:
 		camera->lookAt(0, 0, 0);
 		camera->setPosition(13, 225, 35);
 
+		//{
+		//	auto importer = getContext()->getModelImporter();
+		//	auto guitar = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());
+
+		//	auto& boxTransform = guitar.getComponent<Transformation>();
+		//	boxTransform.setPosition({ 0, 10, .5f });
+		//	boxTransform.rotate({ 0, 1, 0 }, 45);
+		//	//boxTransform.rotate({ 0, 0, 1 }, 180);
+
+		//	auto& rb = guitar.addComponent<RigidBodyComponent>();
+		//	rb.mass = 1;
+		//	rb.type = RigidbodyType::Dynamic;
+
+		//	guitar.addComponent<CollisionConvexMeshComponent>();
+		//}
+
+
 		{
 			auto box = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 
