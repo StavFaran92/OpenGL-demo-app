@@ -21,30 +21,30 @@ Entity Entity::getParent()
     return hierarchy.parent;
 }
 
-// Specialized version for ScriptableEntity
-template<>
-ScriptableEntity& Entity::getComponent()
-{
-    assert(valid() && "Invalid entity.");
-    assert(m_scene->getRegistry().has<NativeScriptComponent>(m_entity) && "Component does not exist.");
-    auto script = m_scene->getRegistry().get<NativeScriptComponent>(m_entity).script;
-    assert(script && "No script available.");
-    return *script;
-}
-
-template<>
-NativeScriptComponent& Entity::addComponentInst<NativeScriptComponent>(NativeScriptComponent* nsc)
-{
-    assert(valid() && "Invalid entity.");
-    NativeScriptComponent& component = m_scene->getRegistry().emplace_or_replace<NativeScriptComponent>(m_entity, *nsc);
-    component.entity = Entity(m_entity, m_scene);
-
-    std::cout << "test \n";
-
-    m_components.insert(typeid(nsc).name());
-
-    return component;
-}
+//// Specialized version for ScriptableEntity
+//template<>
+//ScriptableEntity& Entity::getComponent()
+//{
+//    assert(valid() && "Invalid entity.");
+//    assert(m_scene->getRegistry().has<NativeScriptComponent>(m_entity) && "Component does not exist.");
+//    auto script = m_scene->getRegistry().get<NativeScriptComponent>(m_entity).script;
+//    assert(script && "No script available.");
+//    return *script;
+//}
+//
+//template<>
+//NativeScriptComponent& Entity::addComponent<NativeScriptComponent>(NativeScriptComponent* nsc)
+//{
+//    assert(valid() && "Invalid entity.");
+//    NativeScriptComponent& component = m_scene->getRegistry().emplace_or_replace<NativeScriptComponent>(m_entity, *nsc);
+//    component.entity = Entity(m_entity, m_scene);
+//
+//    std::cout << "test \n";
+//
+//    m_components.insert(typeid(nsc).name());
+//
+//    return component;
+//}
 
 Entity Entity::removeParent()
 {

@@ -108,13 +108,6 @@ void Scene::update(float deltaTime)
 			continue;
 		}
 
-		//if (!nsc.script->m_isInit)
-		//{
-		//	nsc.script->entity = Entity{entity, this};
-		//	nsc.script->onCreate();
-		//	nsc.script->m_isInit = true;
-		//}
-
 		nsc.script->onUpdate(deltaTime);
 	}
 

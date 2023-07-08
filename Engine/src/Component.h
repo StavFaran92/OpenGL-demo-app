@@ -36,12 +36,10 @@ struct EngineAPI HierarchyComponent : public Component
 	Scene* scene = nullptr;
 };
 
-// Todo fix this whole mess of a class
 struct EngineAPI NativeScriptComponent : public Component
 {
 	ScriptableEntity* script = nullptr;
 	Entity entity = Entity::EmptyEntity;
-	//std::function<ScriptableEntity*()> instantiateScript = nullptr;
 
 	template<typename T, typename... Args>
 	T* bind(Args&&... args)
@@ -51,13 +49,8 @@ struct EngineAPI NativeScriptComponent : public Component
 		script = new T(std::forward<Args>(args)...);
 		script->entity = entity;
 		script->onCreate();
-		script->m_isInit = true;
 
 		return static_cast<T*>(script);
-
-		//instantiateScript = [args...]() {
-		//	return static_cast<ScriptableEntity*>(new T(std::forward<Args>(args)...));
-		//};
 	}
 
 	void unbind()
@@ -68,15 +61,6 @@ struct EngineAPI NativeScriptComponent : public Component
 			script = nullptr;
 		}
 	}
-
-	//void destroyScript()
-	//{
-	//	if (script)
-	//	{
-	//		delete script;
-	//		script = nullptr;
-	//	}
-	//}
 };
 
 struct EngineAPI RigidBodyComponent : public Component

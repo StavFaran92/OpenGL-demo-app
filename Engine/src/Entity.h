@@ -41,7 +41,7 @@ public:
      * @warning The behavior of the existing componentInstance after the call is undefined
      */
     template<typename T>
-    T& addComponentInst(T* componentInstance)
+    T& addComponent(T* componentInstance)
     {
         assert(valid() && "Invalid entity.");
 

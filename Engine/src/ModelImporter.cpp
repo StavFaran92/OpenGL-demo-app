@@ -56,7 +56,7 @@ Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 	//create new model
 	auto entity = pScene->createEntity();
 	StandardShader* shader = Shader::create<StandardShader>();
-	entity.addComponentInst<StandardShader>(shader);
+	entity.addComponent<StandardShader>(shader);
 	entity.addComponent<RenderableComponent>();
 
 	// create new model session
@@ -78,7 +78,7 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		entity.addComponentInst<Mesh>(processMesh(mesh, scene, session));
+		entity.addComponent<Mesh>(processMesh(mesh, scene, session));
 		auto textureHandlers = new std::vector<TextureHandler*>();
 
 		auto& material = entity.addComponent<DefaultMaterial>(32.0f);
