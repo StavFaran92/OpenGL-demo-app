@@ -1,6 +1,7 @@
 #include "Entity.h"
 
 #include "Component.h"
+#include <iostream>
 
 Entity Entity::EmptyEntity{};
 
@@ -29,6 +30,20 @@ ScriptableEntity& Entity::getComponent<ScriptableEntity>()
     auto script = m_scene->getRegistry().get<NativeScriptComponent>(m_entity).script;
     assert(script && "No script available.");
     return *script;
+}
+
+template<>
+NativeScriptComponent& Entity::addComponent(NativeScriptComponent* nsc)
+{
+    assert(valid() && "Invalid entity.");
+    NativeScriptComponent& component = m_scene->getRegistry().emplace_or_replace<NativeScriptComponent>(m_entity, *nsc);
+    component.script->entity = Entity(m_entity, m_scene);
+
+    std::cout << "test \n";
+
+    m_components.insert(typeid(nsc).name());
+
+    return component;
 }
 
 Entity Entity::removeParent()

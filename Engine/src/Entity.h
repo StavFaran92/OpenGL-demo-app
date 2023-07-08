@@ -158,6 +158,18 @@ public:
 
     }
 
+    //template<typename T, typename... Args>
+    //T& attachScript(Args&&... args)
+    //{
+    //    assert(valid() && "Invalid entity.");
+    //    NativeScriptComponent& nsc = m_scene->getRegistry().emplace_or_replace<NativeScriptComponent>(m_entity, std::forward<Args>(args)...);
+    //    nsc.bind<T>
+
+    //    m_components.insert(typeid(T).name());
+
+    //    return component;
+    //}
+
     void setParent(Entity entity);
     Entity removeParent();
     Entity getParent();

@@ -56,8 +56,7 @@ struct EngineAPI NativeScriptComponent : public Component
 		//};
 	}
 
-	template<typename T>
-	void unbind(T* script)
+	void unbind()
 	{
 		if (script)
 		{

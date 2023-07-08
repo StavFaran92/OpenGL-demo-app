@@ -9,9 +9,9 @@ public:
 	{
 		Skybox::CreateSkybox();
 
-		//auto camera = std::dynamic_pointer_cast<EditorCamera>(Engine::get()->getContext()->getActiveScene()->getRenderer()->getCamera());
-		//camera->lookAt(0, 0, 0);
-		//camera->setPosition(13, 225, 35);
+		auto camera = Engine::get()->getContext()->getActiveScene()->getActiveCamera();
+		camera->lookAt(0, 0, 0);
+		camera->setPosition(13, 225, 35);
 
 		{
 			auto box = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
