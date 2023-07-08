@@ -12,6 +12,7 @@ void Entity::setParent(Entity entity)
     assert(entity->HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
     auto& hierarchy = getComponent<HierarchyComponent>();
     hierarchy.parent = entity;
+    entity.addChildren(*this);
 }
 
 Entity Entity::getParent()

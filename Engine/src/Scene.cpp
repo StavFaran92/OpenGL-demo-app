@@ -39,6 +39,35 @@
 #include "EditorCamera.h"
 #include <GL/glew.h>
 
+void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
+{
+	auto mesh = e.tryGetComponent<Mesh>();
+
+	if (mesh)
+	{
+		params.entity = &e;
+		params.shader = m_tempOutlineShader;
+		params.mesh = mesh;
+		params.transform = &e.getComponent<Transformation>();
+
+		m_renderer->render(params);
+
+		params.entity = nullptr;
+		params.shader = nullptr;
+		params.mesh = nullptr;
+		params.transform = nullptr;
+	}
+
+	auto& hierarchy = e.getComponent<HierarchyComponent>();
+	if (hierarchy.children.size() > 0)
+	{
+		for (auto& [e, childEnt] : hierarchy.children)
+		{
+			displayWireframeMesh(childEnt, params);
+		}
+	}
+}
+
 void Scene::init(Context* context)
 {
 	m_context = context;
@@ -233,21 +262,6 @@ void Scene::draw(float deltaTime)
 		params.shader = nullptr;
 	}
 
-	//if (DEBUG_MODE_ENABLED && DEBUG_DISPLAY_NORMALS)
-	//{
-	//	// Use normal display shader
-	//	auto normalDisplayShader = m_context->getNormalDisplayShader();
-
-	//	// draw scene
-	//	while (!m_debugModelDeque.empty())
-	//	{
-	//		auto model = m_debugModelDeque.front();
-	//		m_debugModelDeque.pop_front();
-
-	//		m_renderer->render(model, normalDisplayShader);
-	//	}
-	//}
-
 #ifdef SGE_DEBUG
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glEnable(GL_POLYGON_OFFSET_LINE);
@@ -256,40 +270,21 @@ void Scene::draw(float deltaTime)
 	{
 		Entity e{ entity, this };
 
-		auto& mesh = e.getComponent<Mesh>();
-
-		params.entity = &e;
-		params.shader = m_tempOutlineShader;
-		params.mesh = &mesh;
-		params.transform = &e.getComponent<Transformation>();
-
-		m_renderer->render(params);
-
-		params.entity = nullptr;
-		params.shader = nullptr;
-		params.mesh = nullptr;
-		params.transform = nullptr;
-
+		displayWireframeMesh(e, params);
 	}
 
 	for (auto&& [entity, cb] : m_registry.view<CollisionSphereComponent>().each())
 	{
 		Entity e{ entity, this };
 
-		auto& mesh = e.getComponent<Mesh>();
+		displayWireframeMesh(e, params);
+	}
 
-		params.entity = &e;
-		params.shader = m_tempOutlineShader;
-		params.mesh = &mesh;
-		params.transform = &e.getComponent<Transformation>();
+	for (auto&& [entity, cb] : m_registry.view<CollisionConvexMeshComponent>().each())
+	{
+		Entity e{ entity, this };
 
-		m_renderer->render(params);
-
-		params.entity = nullptr;
-		params.shader = nullptr;
-		params.mesh = nullptr;
-		params.transform = nullptr;
-
+		displayWireframeMesh(e, params);
 	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDisable(GL_POLYGON_OFFSET_LINE);

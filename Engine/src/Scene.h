@@ -86,7 +86,7 @@ public:
 
 	ICamera* getActiveCamera() const;
 	
-
+	void displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params);
 
 private:
 	// -------------------- Methods -------------------- //
