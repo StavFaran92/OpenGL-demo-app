@@ -40,6 +40,7 @@ struct EngineAPI HierarchyComponent : public Component
 struct EngineAPI NativeScriptComponent : public Component
 {
 	ScriptableEntity* script = nullptr;
+	Entity entity = Entity::EmptyEntity;
 	//std::function<ScriptableEntity*()> instantiateScript = nullptr;
 
 	template<typename T, typename... Args>
@@ -48,6 +49,9 @@ struct EngineAPI NativeScriptComponent : public Component
 		static_assert(std::is_base_of<ScriptableEntity, T>::value, "T must inherit from ScriptableEntity");
 
 		script = new T(std::forward<Args>(args)...);
+		script->entity = entity;
+		script->onCreate();
+		script->m_isInit = true;
 
 		return static_cast<T*>(script);
 

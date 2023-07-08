@@ -23,7 +23,7 @@ Entity Entity::getParent()
 
 // Specialized version for ScriptableEntity
 template<>
-ScriptableEntity& Entity::getComponent<ScriptableEntity>()
+ScriptableEntity& Entity::getComponent()
 {
     assert(valid() && "Invalid entity.");
     assert(m_scene->getRegistry().has<NativeScriptComponent>(m_entity) && "Component does not exist.");
@@ -33,11 +33,11 @@ ScriptableEntity& Entity::getComponent<ScriptableEntity>()
 }
 
 template<>
-NativeScriptComponent& Entity::addComponent(NativeScriptComponent* nsc)
+NativeScriptComponent& Entity::addComponentInst<NativeScriptComponent>(NativeScriptComponent* nsc)
 {
     assert(valid() && "Invalid entity.");
     NativeScriptComponent& component = m_scene->getRegistry().emplace_or_replace<NativeScriptComponent>(m_entity, *nsc);
-    component.script->entity = Entity(m_entity, m_scene);
+    component.entity = Entity(m_entity, m_scene);
 
     std::cout << "test \n";
 

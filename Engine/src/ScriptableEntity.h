@@ -4,7 +4,7 @@
 
 #include "Entity.h"
 
-class Scene;
+struct NativeScriptComponent;
 
 class EngineAPI ScriptableEntity
 {
@@ -13,12 +13,12 @@ public:
 
 	Entity entity;
 
-protected:
+public:
 	virtual void onCreate() {};
 	virtual void onUpdate(float deltaTime) {};
 	virtual void onDestroy() {};
 
-	friend class Scene;
+	friend struct NativeScriptComponent;
 
 protected:
 	bool m_isInit = false;

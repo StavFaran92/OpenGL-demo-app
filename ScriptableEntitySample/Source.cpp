@@ -36,7 +36,7 @@ public:
 		{
 			auto box2 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 			NativeScriptComponent nsc;
-			auto cbb = box2.addComponent<NativeScriptComponent>(&nsc).bind<CustomBoxBehaviourWithParams>(5.0f);
+			auto cbb = box2.addComponentInst<NativeScriptComponent>(&nsc).bind<CustomBoxBehaviourWithParams>(5.0f);
 			std::cout << std::to_string(cbb->m_a) << std::endl;
 		}
 	}

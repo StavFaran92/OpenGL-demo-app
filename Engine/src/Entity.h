@@ -5,7 +5,9 @@
 #include "Scene.h"
 //#include "Component.h"
 
+
 using entity_id = entt::id_type;
+struct NativeScriptComponent;
 
 /**
  * @class Entity
@@ -39,9 +41,15 @@ public:
      * @warning The behavior of the existing componentInstance after the call is undefined
      */
     template<typename T>
-    T& addComponent(T* componentInstance)
+    T& addComponentInst(T* componentInstance)
     {
         assert(valid() && "Invalid entity.");
+
+        if constexpr (std::is_same_v<T, NativeScriptComponent>)
+        {
+            componentInstance->entity = Entity(m_entity, m_scene);
+        }
+
         T& component = m_scene->getRegistry().emplace_or_replace<T>(m_entity, *componentInstance);
 
         m_components.insert(typeid(T).name());
@@ -60,7 +68,13 @@ public:
     T& addComponent(Args&&... args)
     {
         assert(valid() && "Invalid entity.");
+
         T& component = m_scene->getRegistry().emplace_or_replace<T>(m_entity, std::forward<Args>(args)...);
+
+        if constexpr (std::is_same_v<T, NativeScriptComponent>)
+        {
+            component.entity = Entity(m_entity, m_scene);
+        }
 
         m_components.insert(typeid(T).name());
 
@@ -158,17 +172,7 @@ public:
 
     }
 
-    //template<typename T, typename... Args>
-    //T& attachScript(Args&&... args)
-    //{
-    //    assert(valid() && "Invalid entity.");
-    //    NativeScriptComponent& nsc = m_scene->getRegistry().emplace_or_replace<NativeScriptComponent>(m_entity, std::forward<Args>(args)...);
-    //    nsc.bind<T>
-
-    //    m_components.insert(typeid(T).name());
-
-    //    return component;
-    //}
+    
 
     void setParent(Entity entity);
     Entity removeParent();
@@ -209,3 +213,4 @@ private:
     std::set<std::string> m_components;
 
 };
+

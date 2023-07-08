@@ -41,7 +41,7 @@ Entity Skybox::CreateSkybox(Scene* scene)
 
     auto entity = ShapeFactory::createBox(scene);
 
-    entity.addComponent<StandardShader>(shader);
+    entity.addComponentInst<StandardShader>(shader);
     entity.RemoveComponent<RenderableComponent>();
     entity.getComponent<DefaultMaterial>().addTextureHandler(textureHandler);
     entity.addComponent<SkyboxComponent>();
