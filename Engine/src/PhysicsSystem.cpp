@@ -85,7 +85,7 @@ physx::PxRigidActor* PhysicsSystem::createRigidBody(Transformation& transform, R
 
         if (bodyType == RigidbodyType::Kinematic)
         {
-            //dynamicBody->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, true);
+            dynamicBody->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, true);
         }
     }
     else if (bodyType == RigidbodyType::Static)

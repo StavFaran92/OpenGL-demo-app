@@ -52,7 +52,7 @@ public:
 			auto& boxTransform = box.getComponent<Transformation>();
 			boxTransform.setPosition({ 0, 12, 0 });
 			//boxTransform.rotate({ 0, 1, 0 }, 90);
-			//boxTransform.rotate({ 0, 0, 1 }, 180);
+			boxTransform.rotate({ 0, 0, 1 }, 50);
 
 			auto& rb = box.addComponent<RigidBodyComponent>();
 			rb.mass = 1;
