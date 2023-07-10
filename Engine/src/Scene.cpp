@@ -145,33 +145,32 @@ void Scene::update(float deltaTime)
 	m_PhysicsScene->simulate(1/120.f);
 	m_PhysicsScene->fetchResults(true);
 
-	//physx::PxU32 nbActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
-	//if (nbActors)
-	//{
-	//	std::vector<physx::PxRigidActor*> actors(nbActors);
-	//	m_PhysicsScene->getActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC, reinterpret_cast<physx::PxActor**>(&actors[0]), nbActors);
-
-	//	for (physx::PxRigidActor* actor : actors)
-	//	{
-	//		entity_id id = (entity_id)actor->userData;
-	//		Entity e{ (entt::entity)id, this };
-	//		auto& rb = e.getComponent<RigidBodyComponent>();
-	//		auto& transform = e.getComponent<Transformation>();
-
-	//		physx::PxTransform pxTransform = actor->getGlobalPose();
-	//		transform.setPosition({ pxTransform.p.x, pxTransform.p.y, pxTransform.p.z });
-	//	}
-	//}
-
-	for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
+	physx::PxU32 nbActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
+	if (nbActors)
 	{
-		Entity e{ entity, this };
-		auto& transform = e.getComponent<Transformation>();
-		physx::PxRigidActor* actor = (physx::PxRigidActor*)rb.simulatedBody;
-		
-		physx::PxTransform pxTransform = actor->getGlobalPose();
-		PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
+		std::vector<physx::PxRigidActor*> actors(nbActors);
+		m_PhysicsScene->getActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC, reinterpret_cast<physx::PxActor**>(&actors[0]), nbActors);
+
+		for (physx::PxRigidActor* actor : actors)
+		{
+			entity_id id = (entity_id)actor->userData;
+			Entity e{ entt::entity(id), this };
+			auto& transform = e.getComponent<Transformation>();
+
+			physx::PxTransform pxTransform = actor->getGlobalPose();
+			PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
+		}
 	}
+
+	//for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
+	//{
+	//	Entity e{ entity, this };
+	//	auto& transform = e.getComponent<Transformation>();
+	//	physx::PxRigidActor* actor = (physx::PxRigidActor*)rb.simulatedBody;
+	//	
+	//	physx::PxTransform pxTransform = actor->getGlobalPose();
+	//	PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
+	//}
 
 	for (auto&& [entity, transformation] : m_registry.view<Transformation>().each())
 	{
@@ -439,46 +438,147 @@ void Scene::startSimulation()
 		return;
 	}
 
-	for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
+	auto physicsSystem = Engine::get()->getPhysicsSystem();
+
+	for (auto&& [entity, collider] : m_registry.view<CollisionBoxComponent>().each())
 	{
 		Entity e{ entity, this };
-		auto physicsSystem = Engine::get()->getPhysicsSystem();
-
+		physx::PxRigidActor* body = nullptr;
 		auto& transform = e.getComponent<Transformation>();
 		auto scale = transform.getScale();
 
- 		auto body = physicsSystem->createRigidBody(transform, rb.type, rb.mass);
-
-		if (e.HasComponent<CollisionBoxComponent>())
+		// Create rigid body
+		if (e.HasComponent<RigidBodyComponent>())
 		{
-			auto& collider = e.getComponent<CollisionBoxComponent>();
-			physx::PxShape* shape = physicsSystem->createBoxShape(collider.halfExtent * scale.x, collider.halfExtent * scale.y, collider.halfExtent * scale.z);
-			body->attachShape(*shape);
-			shape->release();
+			auto& rb = e.getComponent<RigidBodyComponent>();
+			body = physicsSystem->createRigidBody(transform, rb.type, rb.mass);
 		}
-		else if (e.HasComponent<CollisionSphereComponent>())
+		else
 		{
-			auto& collider = e.getComponent<CollisionSphereComponent>();
-			physx::PxShape* shape = physicsSystem->createSphereShape(collider.radius * std::max(std::max(scale.x, scale.y), scale.z));
-			body->attachShape(*shape);
-			shape->release();
-		}
-		else if (e.HasComponent<CollisionConvexMeshComponent>())
-		{
-			//auto& mesh = e.getComponent<Mesh>();
-			std::vector<glm::vec3> pos = { {0,0,0}, {0,1,0}, {1,0,0} };
-			physx::PxShape* shape = physicsSystem->createConvexMeshShape(pos);
-			//physx::PxShape* shape = physicsSystem->createConvexMeshShape(*mesh.getPositions());
-			body->attachShape(*shape);
-			shape->release();
+			body = physicsSystem->createRigidBody(transform, RigidbodyType::Kinematic, 0);
 		}
 
+		// Create shape
+		physx::PxShape* shape = physicsSystem->createBoxShape(collider.halfExtent * scale.x, collider.halfExtent * scale.y, collider.halfExtent * scale.z);
+		
+		// Attach shape
+		body->attachShape(*shape);
+
+		// clean
+		shape->release();
 
 		assert(body);
 
 		m_PhysicsScene->addActor(*body);
-		rb.simulatedBody = body;
+		body->userData = (void*)e.handlerID();
 	}
+
+	for (auto&& [entity, collider] : m_registry.view<CollisionSphereComponent>().each())
+	{
+		Entity e{ entity, this };
+		physx::PxRigidActor* body = nullptr;
+		auto& transform = e.getComponent<Transformation>();
+		auto scale = transform.getScale();
+
+		// Create rigid body
+		if (e.HasComponent<RigidBodyComponent>())
+		{
+			auto& rb = e.getComponent<RigidBodyComponent>();
+			body = physicsSystem->createRigidBody(transform, rb.type, rb.mass);
+		}
+		else
+		{
+			body = physicsSystem->createRigidBody(transform, RigidbodyType::Kinematic, 0);
+		}
+
+		// Create shape
+		physx::PxShape* shape = physicsSystem->createSphereShape(collider.radius * std::max(std::max(scale.x, scale.y), scale.z));
+
+		// Attach shape
+		body->attachShape(*shape);
+
+		// clean
+		shape->release();
+
+		assert(body);
+
+		m_PhysicsScene->addActor(*body);
+		body->userData = (void*)e.handlerID();
+	}
+
+	for (auto&& [entity, collider] : m_registry.view<CollisionConvexMeshComponent>().each())
+	{
+		Entity e{ entity, this };
+		physx::PxRigidActor* body = nullptr;
+		auto& transform = e.getComponent<Transformation>();
+		auto scale = transform.getScale();
+
+		// Create rigid body
+		if (e.HasComponent<RigidBodyComponent>())
+		{
+			auto& rb = e.getComponent<RigidBodyComponent>();
+			body = physicsSystem->createRigidBody(transform, rb.type, rb.mass);
+		}
+		else
+		{
+			body = physicsSystem->createRigidBody(transform, RigidbodyType::Kinematic, 0);
+		}
+
+		// Create shape
+		std::vector<glm::vec3> pos = { {0,0,0}, {0,1,0}, {1,0,0} };
+		physx::PxShape* shape = physicsSystem->createConvexMeshShape(pos);
+
+		// Attach shape
+		body->attachShape(*shape);
+
+		// clean
+		shape->release();
+
+		assert(body);
+
+		m_PhysicsScene->addActor(*body);
+		body->userData = (void*)e.handlerID();
+		//rb.simulatedBody = body;
+	}
+
+	//for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
+	//{
+	//	Entity e{ entity, this };
+
+	//	auto& transform = e.getComponent<Transformation>();
+	//	auto scale = transform.getScale();
+ //		auto body = physicsSystem->createRigidBody(transform, rb.type, rb.mass);
+
+	//	if (e.HasComponent<CollisionBoxComponent>())
+	//	{
+	//		auto& collider = e.getComponent<CollisionBoxComponent>();
+	//		physx::PxShape* shape = physicsSystem->createBoxShape(collider.halfExtent * scale.x, collider.halfExtent * scale.y, collider.halfExtent * scale.z);
+	//		body->attachShape(*shape);
+	//		shape->release();
+	//	}
+	//	else if (e.HasComponent<CollisionSphereComponent>())
+	//	{
+	//		auto& collider = e.getComponent<CollisionSphereComponent>();
+	//		physx::PxShape* shape = physicsSystem->createSphereShape(collider.radius * std::max(std::max(scale.x, scale.y), scale.z));
+	//		body->attachShape(*shape);
+	//		shape->release();
+	//	}
+	//	else if (e.HasComponent<CollisionConvexMeshComponent>())
+	//	{
+	//		//auto& mesh = e.getComponent<Mesh>();
+	//		std::vector<glm::vec3> pos = { {0,0,0}, {0,1,0}, {1,0,0} };
+	//		physx::PxShape* shape = physicsSystem->createConvexMeshShape(pos);
+	//		//physx::PxShape* shape = physicsSystem->createConvexMeshShape(*mesh.getPositions());
+	//		body->attachShape(*shape);
+	//		shape->release();
+	//	}
+
+
+	//	assert(body);
+
+	//	m_PhysicsScene->addActor(*body);
+	//	rb.simulatedBody = body;
+	//}
 
 	m_isSimulationActive = true;
 }

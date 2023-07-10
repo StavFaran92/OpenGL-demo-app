@@ -76,12 +76,17 @@ physx::PxRigidActor* PhysicsSystem::createRigidBody(Transformation& transform, R
     physx::PxTransform pxTransform = PhysXUtils::toPhysXTransform(transform);
     physx::PxRigidActor* body = nullptr;
 
-    if (bodyType == RigidbodyType::Dynamic)
+    if (bodyType == RigidbodyType::Dynamic || bodyType == RigidbodyType::Kinematic)
     {
         body = m_physics->createRigidDynamic(pxTransform);
         auto dynamicBody = static_cast<physx::PxRigidDynamic*>(body);
         dynamicBody->setAngularDamping(0.5f);
         physx::PxRigidBodyExt::updateMassAndInertia(*dynamicBody, mass);
+
+        if (bodyType == RigidbodyType::Kinematic)
+        {
+            //dynamicBody->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, true);
+        }
     }
     else if (bodyType == RigidbodyType::Static)
     {
