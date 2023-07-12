@@ -279,7 +279,7 @@ void Scene::draw(float deltaTime)
 		displayWireframeMesh(e, params);
 	}
 
-	for (auto&& [entity, cb] : m_registry.view<CollisionConvexMeshComponent>().each())
+	for (auto&& [entity, cb] : m_registry.view<CollisionMeshComponent>().each())
 	{
 		Entity e{ entity, this };
 
@@ -507,7 +507,7 @@ void Scene::startSimulation()
 		body->userData = (void*)id;
 	}
 
-	for (auto&& [entity, collider] : m_registry.view<CollisionConvexMeshComponent>().each())
+	for (auto&& [entity, collider] : m_registry.view<CollisionMeshComponent>().each())
 	{
 		Entity e{ entity, this };
 		physx::PxRigidActor* body = nullptr;

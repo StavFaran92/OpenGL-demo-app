@@ -73,9 +73,10 @@ struct EngineAPI CollisionSphereComponent : public Component
 	float radius = 0;
 };
 
-struct EngineAPI CollisionConvexMeshComponent : public Component
+struct EngineAPI CollisionMeshComponent : public Component
 {
-	float radius = 0;
+	bool isConvex = false;
+	Mesh* mesh = nullptr;
 };
 
 struct EngineAPI CameraComponent : public Component
@@ -93,4 +94,9 @@ struct EngineAPI CameraComponent : public Component
 	glm::vec3 position;
 	glm::vec3 center;
 	glm::vec3 up;
+};
+
+struct EngineAPI MeshComponent : public Component
+{
+	Mesh* mesh = nullptr;
 };
