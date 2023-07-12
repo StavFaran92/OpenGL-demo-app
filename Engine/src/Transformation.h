@@ -74,10 +74,12 @@ public:
 	void setParent(Entity parent);
 	void removeParent();
 	Entity getParent() const;
-	void addChild(Entity entity);
-	void removeChild(Entity entity);
+
 	std::unordered_map<entity_id, Entity> getChildren();
 
+private:
+	void addChild(Entity entity);
+	void removeChild(Entity entity);
 private:
 	glm::vec3 m_translation;
 

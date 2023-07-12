@@ -47,12 +47,18 @@ void Transformation::setParent(Entity parent)
 	m_rootTransformation = glm::inverse(pTransform.getMatrix());
 
 	m_parent = parent;
-	parent.addChildren(m_entity);
+	pTransform.addChild(m_entity);
+	//parent.addChildren(m_entity);
 }
 
 void Transformation::removeParent()
 {
+	if (m_parent == Entity::EmptyEntity)
+		return;
+
+	//m_parent.removeChildren(m_entity);
 	auto& pTransform = m_parent.getComponent<Transformation>();
+	pTransform.removeChild(m_entity);
 	m_rootTransformation = glm::mat4(1);
 
 	m_parent = Entity::EmptyEntity;

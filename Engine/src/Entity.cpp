@@ -46,24 +46,11 @@ Entity Entity::getParent()
 //    return component;
 //}
 
-Entity Entity::removeParent()
-{
-    auto parent = getParent();
-    setParent(EmptyEntity);
-    return parent;
-}
-
-void Entity::addChildren(Entity entity)
+void Entity::removeParent()
 {
     assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
     auto& transform = getComponent<Transformation>();
-    transform.addChild(entity);
-}
-void Entity::removeChildren(Entity entity)
-{
-    assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
-    auto& transform = getComponent<Transformation>();
-    transform.removeChild(entity);
+    return transform.removeParent();
 }
 
 std::unordered_map<entity_id, Entity> Entity::getChildren()

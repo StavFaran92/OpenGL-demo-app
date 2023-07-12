@@ -175,7 +175,7 @@ public:
     
 
     void setParent(Entity entity);
-    Entity removeParent();
+    void removeParent();
     Entity getParent();
     void addChildren(Entity entity);
     void removeChildren(Entity entity);

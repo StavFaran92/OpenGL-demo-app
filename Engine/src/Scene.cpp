@@ -153,7 +153,7 @@ void Scene::update(float deltaTime)
 
 		for (physx::PxRigidActor* actor : actors)
 		{
-			entity_id id = (entity_id)actor->userData;
+			entity_id id = static_cast<entity_id>(reinterpret_cast<uintptr_t>(actor->userData));
 			Entity e{ entt::entity(id), this };
 			auto& transform = e.getComponent<Transformation>();
 
@@ -469,7 +469,7 @@ void Scene::startSimulation()
 		assert(body);
 
 		m_PhysicsScene->addActor(*body);
-		body->userData = (void*)e.handlerID();
+		body->userData = reinterpret_cast<void*>(static_cast<uintptr_t>(e.handlerID()));
 	}
 
 	for (auto&& [entity, collider] : m_registry.view<CollisionSphereComponent>().each())
@@ -502,7 +502,7 @@ void Scene::startSimulation()
 		assert(body);
 
 		m_PhysicsScene->addActor(*body);
-		body->userData = (void*)e.handlerID();
+		body->userData = reinterpret_cast<void*>(static_cast<uintptr_t>(e.handlerID()));
 	}
 
 	for (auto&& [entity, collider] : m_registry.view<CollisionConvexMeshComponent>().each())
@@ -536,7 +536,7 @@ void Scene::startSimulation()
 		assert(body);
 
 		m_PhysicsScene->addActor(*body);
-		body->userData = (void*)e.handlerID();
+		body->userData = reinterpret_cast<void*>(static_cast<uintptr_t>(e.handlerID()));
 		//rb.simulatedBody = body;
 	}
 
