@@ -29,13 +29,6 @@ struct EngineAPI RenderableComponent : public TagComponent
 	
 };
 
-struct EngineAPI HierarchyComponent : public Component
-{
-	Entity parent;
-	std::unordered_map<entity_id,Entity> children{};
-	Scene* scene = nullptr;
-};
-
 struct EngineAPI NativeScriptComponent : public Component
 {
 	ScriptableEntity* script = nullptr;

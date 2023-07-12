@@ -58,10 +58,10 @@ void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams para
 		params.transform = nullptr;
 	}
 
-	auto& hierarchy = e.getComponent<HierarchyComponent>();
-	if (hierarchy.children.size() > 0)
+	auto children = e.getChildren();
+	if (children.size() > 0)
 	{
-		for (auto& [e, childEnt] : hierarchy.children)
+		for (auto& [e, childEnt] : children)
 		{
 			displayWireframeMesh(childEnt, params);
 		}
@@ -334,7 +334,6 @@ Entity Scene::createEntity()
 	entt::entity e = m_registry.create();
 	auto entityHandler = Entity(e, this);
 	entityHandler.addComponent<Transformation>(entityHandler);
-	entityHandler.addComponent<HierarchyComponent>();
 	return entityHandler;
 }
 

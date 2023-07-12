@@ -179,7 +179,7 @@ public:
     Entity getParent();
     void addChildren(Entity entity);
     void removeChildren(Entity entity);
-    auto getChildren();
+    std::unordered_map<entity_id, Entity> getChildren();
 
     /**
      * @brief Checks if the entity is valid

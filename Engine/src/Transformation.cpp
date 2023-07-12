@@ -32,42 +32,31 @@ void Transformation::getMatrix(glm::mat4& mat)
 
 }
 
-//void Transformation::addChild(Transformation* transform)
-//{
-//	m_children.push_back(transform);
-//}
-//
-//void Transformation::removeChild(Transformation* transform)
-//{
-//	auto it = std::find(m_children.begin(), m_children.end(), transform);
-//
-//	// If the element is found, remove it.
-//	if (it != m_children.end())
-//	{
-//		m_children.erase(it);
-//	}
-//}
-//
-//void Transformation::setParent(Transformation* transform)
-//{
-//	if (transform == this) 
-//	{
-//		logError("Attempting to set entity as its own parent is not allowed");
-//		return;
-//	}
-//	
-//	m_parent = transform;
-//}
-//
-//void Transformation::removeParent(Transformation* transform)
-//{
-//	m_parent = nullptr;
-//}
-//
-//Transformation* Transformation::getParent()
-//{
-//	return m_parent;
-//}
+void Transformation::setParent(Entity parent)
+{
+	m_parent = parent;
+	parent.addChildren(m_entity);
+}
+
+Entity Transformation::getParent() const
+{
+	return m_parent;
+}
+
+void Transformation::addChild(Entity entity)
+{
+	m_children[entity.handlerID()] = entity;
+}
+
+void Transformation::removeChild(Entity entity)
+{
+	m_children.erase(entity.handlerID());
+}
+
+std::unordered_map<entity_id, Entity> Transformation::getChildren()
+{
+	return m_children;
+}
 
 void Transformation::update(float deltaTime)
 {

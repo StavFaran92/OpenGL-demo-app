@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-#include "Component.h"
+#include "Transformation.h"
 #include <iostream>
 
 Entity Entity::EmptyEntity{};
@@ -9,17 +9,16 @@ void Entity::setParent(Entity entity)
 {
     assert(valid() && "Invalid entity.");
     assert(entity->valid() && "Invalid parent entity.");
-    assert(entity->HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
-    auto& hierarchy = getComponent<HierarchyComponent>();
-    hierarchy.parent = entity;
-    entity.addChildren(*this);
+    assert(entity->HasComponent<Transformation>() && "Entity does not contain HierarchyComponent.");
+    auto& transform = getComponent<Transformation>();
+    transform.setParent(entity);
 }
 
 Entity Entity::getParent()
 {
     assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
-    auto& hierarchy = getComponent<HierarchyComponent>();
-    return hierarchy.parent;
+    auto& transform = getComponent<Transformation>();
+    return transform.getParent();
 }
 
 //// Specialized version for ScriptableEntity
@@ -57,19 +56,19 @@ Entity Entity::removeParent()
 void Entity::addChildren(Entity entity)
 {
     assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
-    auto& hierarchy = getComponent<HierarchyComponent>();
-    hierarchy.children[entity.handlerID()] = entity;
+    auto& transform = getComponent<Transformation>();
+    transform.addChild(entity);
 }
 void Entity::removeChildren(Entity entity)
 {
     assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
-    auto& hierarchy = getComponent<HierarchyComponent>();
-    hierarchy.children.erase(entity.handlerID());
+    auto& transform = getComponent<Transformation>();
+    transform.removeChild(entity);
 }
 
-auto Entity::getChildren()
+std::unordered_map<entity_id, Entity> Entity::getChildren()
 {
     assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
-    auto& hierarchy = getComponent<HierarchyComponent>();
-    return hierarchy.children;
+    auto& transform = getComponent<Transformation>();
+    return transform.getChildren();
 }

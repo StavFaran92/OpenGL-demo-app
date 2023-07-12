@@ -71,6 +71,12 @@ public:
 	void rotateAroundLerp(glm::vec3 pivot, glm::vec3 axis, float angle, float t);
 	void getMatrix(glm::mat4& mat);
 
+	void setParent(Entity parent);
+	Entity getParent() const;
+	void addChild(Entity entity);
+	void removeChild(Entity entity);
+	std::unordered_map<entity_id, Entity> getChildren();
+
 private:
 	glm::vec3 m_translation;
 
@@ -82,7 +88,9 @@ private:
 
 	glm::mat4 m_transformation;
 
+	Entity m_parent;
 	Entity m_entity;
+	std::unordered_map<entity_id, Entity> m_children{};
 
 	bool m_change = false;
 };
