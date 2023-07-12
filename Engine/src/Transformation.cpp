@@ -5,6 +5,8 @@
 
 glm::mat4 Transformation::getMatrix() 
 {
+	update(0);
+
 	auto parent = m_entity.getParent();
 	if (parent.valid())
 	{
@@ -19,6 +21,8 @@ glm::mat4 Transformation::getMatrix()
 
 void Transformation::getMatrix(glm::mat4& mat)
 {
+	update(0);
+
 	auto parent = m_entity.getParent();
 	if (parent.valid())
 	{
@@ -34,8 +38,24 @@ void Transformation::getMatrix(glm::mat4& mat)
 
 void Transformation::setParent(Entity parent)
 {
+	if (m_parent != Entity::EmptyEntity)
+	{
+		removeParent();
+	}
+
+	auto& pTransform = parent.getComponent<Transformation>();
+	m_rootTransformation = glm::inverse(pTransform.getMatrix());
+
 	m_parent = parent;
 	parent.addChildren(m_entity);
+}
+
+void Transformation::removeParent()
+{
+	auto& pTransform = m_parent.getComponent<Transformation>();
+	m_rootTransformation = glm::mat4(1);
+
+	m_parent = Entity::EmptyEntity;
 }
 
 Entity Transformation::getParent() const
@@ -66,7 +86,7 @@ void Transformation::update(float deltaTime)
 		glm::mat4 rotationMatrix = glm::mat4_cast(m_orientation);
 		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), m_scale);
 
-		m_transformation = translationMatrix * rotationMatrix * scaleMatrix;
+		m_transformation = m_rootTransformation * translationMatrix * rotationMatrix * scaleMatrix;
 		m_change = false;
 	}
 }

@@ -195,6 +195,11 @@ public:
         return m_scene == other.m_scene && m_entity == other.m_entity;
     }
 
+    bool operator!=(const Entity& other)
+    {
+        return m_scene != other.m_scene || m_entity != other.m_entity;
+    }
+
     inline entt::entity handler() const
     {
         return m_entity;
