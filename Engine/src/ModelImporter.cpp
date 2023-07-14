@@ -83,11 +83,7 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 		aiMesh* aimesh = scene->mMeshes[node->mMeshes[i]];
 		std::string meshName = session.filepath + "_" + std::to_string(session.nodeIndex) + "_" + std::to_string(session.childIndex);
 		auto memoryManager = Engine::get()->getMemoryManagementSystem();
-		std::shared_ptr<Mesh> mesh = memoryManager->getMesh(meshName);
-		if (!mesh)
-		{
-			mesh = memoryManager->addMesh(meshName, processMesh(aimesh, scene, session));
-		}
+		std::shared_ptr<Mesh> mesh = memoryManager->getMesh(meshName, [&]() { return processMesh(aimesh, scene, session); });
 		entity.addComponent<MeshComponent>(mesh);
 
 		auto textureHandlers = new std::vector<TextureHandler*>();

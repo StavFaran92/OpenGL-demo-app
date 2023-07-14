@@ -171,6 +171,7 @@
     <ClCompile Include="src\Entity.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\MemoryPool.h" />
     <ClInclude Include="src\MeshFactory.h" />
     <ClInclude Include="src\PhysXUtils.h" />
     <ClInclude Include="src\Component.h" />

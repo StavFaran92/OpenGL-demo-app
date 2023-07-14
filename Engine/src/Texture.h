@@ -61,6 +61,8 @@ public:
 	 */
 	static TextureHandler* loadCubemapTexture(std::vector<std::string> faces);
 
+
+
 	/**
 	 * Converts a texture type to a string.
 	 * 

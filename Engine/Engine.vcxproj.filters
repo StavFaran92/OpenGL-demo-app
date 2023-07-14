@@ -433,6 +433,7 @@
     <ClInclude Include="src\PhysicsSystem.h" />
     <ClInclude Include="src\PhysXUtils.h" />
     <ClInclude Include="src\MeshFactory.h" />
+    <ClInclude Include="src\MemoryPool.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <unordered_map>
 #include <memory>
-#include <function>
+#include <string>
+#include <functional>
 
 class Texture;
 class Mesh;
@@ -14,17 +14,13 @@ class Mesh;
 class MemoryManagement
 {
 public:
-	bool isTextureInCache(const std::string& filename) const;
-	std::shared_ptr<Texture> getTextureFromCache(const std::string& filename) const;
-	void addTextureToCache(const std::string& filename, std::shared_ptr<Texture> texture);
-
-	std::shared_ptr<Mesh> getMesh(const std::string& meshName);
-	std::shared_ptr<Mesh> addMesh(const std::string& meshName, Mesh* mesh);
-
-	//template<typename T>
-	//std::shared_ptr<T> get(const std::string& resourceName, std::function<)
+	MemoryManagement();
+	~MemoryManagement();
+	std::shared_ptr<Texture> getTexture(const std::string& resourceName, std::function<Texture* ()> creationCallback);
+	std::shared_ptr<Mesh> getMesh(const std::string& resourceName, std::function<Mesh* ()> creationCallback);
 
 private:
-	std::unordered_map<std::string, std::weak_ptr<Texture>> m_texturesCache;
-	std::unordered_map<std::string, std::weak_ptr<Mesh>> m_meshCache;
+	struct MemoryManagementImpl;
+	MemoryManagementImpl* m_pimpl = nullptr;
 };
+
