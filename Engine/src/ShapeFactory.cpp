@@ -13,37 +13,53 @@
 #include "StandardShader.h"
 //#include "RenderableComponent.h"
 #include "Component.h"
+#include "MemoryManagement.h"
 
 Entity ShapeFactory::createEntity(Scene* scene)
 {
 	auto entity = scene->createEntity();
 	entity.addComponent<DefaultMaterial>(32.0f);
-	auto shader = Shader::create<StandardShader>();
-	entity.addComponent<StandardShader>(shader);
-	entity.addComponent<RenderableComponent>();
+	//auto shader = Shader::create<StandardShader>();
+	//entity.addComponent<StandardShader>(shader);
+	//entity.addComponent<RenderableComponent>();
 	return entity;
 }
 
 Entity ShapeFactory::createBox(Scene* scene)
 {
 	auto entity = createEntity(scene);
-	auto mesh = Box::createMesh();
-	entity.addComponent<Mesh>(mesh);
+	auto memoryManager = Engine::get()->getMemoryManagementSystem();
+	std::shared_ptr<Mesh> mesh = memoryManager->getMesh("SGE_BOX_MESH");
+	if (!mesh)
+	{
+		mesh = memoryManager->addMesh("SGE_BOX_MESH", Box::createMesh());
+	}
+	entity.addComponent<MeshComponent>(mesh);
 	return entity;
 }
 
 Entity ShapeFactory::createQuad(Scene* scene)
 {
 	auto entity = createEntity(scene);
-	auto mesh = Quad::createMesh();
-	entity.addComponent<Mesh>(mesh);
+	auto memoryManager = Engine::get()->getMemoryManagementSystem();
+	std::shared_ptr<Mesh> mesh = memoryManager->getMesh("SGE_QUAD_MESH");
+	if (!mesh)
+	{
+		mesh = memoryManager->addMesh("SGE_QUAD_MESH", Quad::createMesh());
+	}
+	entity.addComponent<MeshComponent>(mesh);
 	return entity;
 }
 
-Entity ShapeFactory::createSphere(Scene* scene, float radius, int sectors, int stacks)
+Entity ShapeFactory::createSphere(Scene* scene)
 {
 	auto entity = createEntity(scene);
-	auto mesh = Sphere::createMesh(radius, sectors, stacks);
-	entity.addComponent<Mesh>(mesh);
+	auto memoryManager = Engine::get()->getMemoryManagementSystem();
+	std::shared_ptr<Mesh> mesh = memoryManager->getMesh("SGE_SPHERE_MESH");
+	if (!mesh)
+	{
+		mesh = memoryManager->addMesh("SGE_SPHERE_MESH", Sphere::createMesh(1, 36, 36));
+	}
+	entity.addComponent<MeshComponent>(mesh);
 	return entity;
 }

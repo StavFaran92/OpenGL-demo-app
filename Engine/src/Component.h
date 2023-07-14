@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "Core.h"
 
 #include "ScriptableEntity.h"
@@ -7,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 class Scene;
+class Mesh;
 
 
 struct EngineAPI Component
@@ -98,5 +101,7 @@ struct EngineAPI CameraComponent : public Component
 
 struct EngineAPI MeshComponent : public Component
 {
-	Mesh* mesh = nullptr;
+	MeshComponent(std::shared_ptr<Mesh> mesh) : mesh(mesh) {}
+
+	std::shared_ptr<Mesh> mesh = nullptr;
 };

@@ -20,9 +20,6 @@ public:
 	/** Constructor */
 	TextureHandler(std::shared_ptr<Texture> texture);
 
-	/** Copy Constructor */
-	TextureHandler(const TextureHandler& textureHandler);
-
 	/** Binds the GPU to the assigned texture */
 	void bind() const;
 

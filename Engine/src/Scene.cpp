@@ -41,13 +41,13 @@
 
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
 {
-	auto mesh = e.tryGetComponent<Mesh>();
+	auto mesh = e.tryGetComponent<MeshComponent>();
 
 	if (mesh)
 	{
 		params.entity = &e;
 		params.shader = m_tempOutlineShader;
-		params.mesh = mesh;
+		params.mesh = mesh->mesh.get();
 		params.transform = &e.getComponent<Transformation>();
 
 		m_renderer->render(params);
@@ -202,11 +202,11 @@ void Scene::draw(float deltaTime)
 
 	// Render Phase
 	for (auto&& [entity, mesh, transform, renderable] : 
-		m_registry.view<Mesh, Transformation, RenderableComponent>().each())
+		m_registry.view<MeshComponent, Transformation, RenderableComponent>().each())
 	{
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;
-		params.mesh = &mesh;
+		params.mesh = mesh.mesh.get();
 		params.transform = &transform;
 			
 		for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_PRE_RENDER])
@@ -234,22 +234,22 @@ void Scene::draw(float deltaTime)
 
 	// POST Render Phase
 	// Iterate GPU instancing batches
-	for (auto&& [entity, mesh, instanceBatch] : m_registry.view<Mesh, InstanceBatch>().each())
+	for (auto&& [entity, mesh, instanceBatch] : m_registry.view<MeshComponent, InstanceBatch>().each())
 	{
 		// draw model
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;
-		params.mesh = &mesh;
+		params.mesh = mesh.mesh.get();
 		m_gpuInstancingRenderer->render(params);
 	}
 
 	// For some reason this group destroys the entities
 	for (auto&& [entity, skybox, mesh, transform, mat, shader] : 
-		m_registry.view<SkyboxComponent, Mesh, Transformation, DefaultMaterial, StandardShader>().each())
+		m_registry.view<SkyboxComponent, MeshComponent, Transformation, DefaultMaterial, StandardShader>().each())
 	{
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;
-		params.mesh = &mesh;
+		params.mesh = mesh.mesh.get();
 		params.transform = &transform;
 		params.shader = &shader;
 

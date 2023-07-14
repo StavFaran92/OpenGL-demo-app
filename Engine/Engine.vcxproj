@@ -98,6 +98,7 @@
   <ItemGroup>
     <ClCompile Include="src\InstanceBatch.cpp" />
     <ClCompile Include="src\GpuInstancingRenderer.cpp" />
+    <ClCompile Include="src\MeshFactory.cpp" />
     <ClCompile Include="src\ObjectFactory.cpp" />
     <ClCompile Include="src\ObjectManager.cpp" />
     <ClCompile Include="src\ObjectPicker.cpp" />
@@ -170,6 +171,7 @@
     <ClCompile Include="src\Entity.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\MeshFactory.h" />
     <ClInclude Include="src\PhysXUtils.h" />
     <ClInclude Include="src\Component.h" />
     <ClInclude Include="src\PhysicsSystem.h" />

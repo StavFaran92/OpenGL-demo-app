@@ -10,12 +10,6 @@ TextureHandler::TextureHandler(std::shared_ptr<Texture> texture)
 	m_texture = texture;
 }
 
-TextureHandler::TextureHandler(const TextureHandler& textureHandler)
-{
-	m_texture = textureHandler.m_texture;
-	m_type = textureHandler.m_type;
-}
-
 void TextureHandler::bind() const
 {
 	m_texture->bind();
