@@ -172,10 +172,10 @@ void Scene::update(float deltaTime)
 	//	PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
 	//}
 
-	for (auto&& [entity, transformation] : m_registry.view<Transformation>().each())
-	{
-		transformation.update(deltaTime);
-	}
+	//for (auto&& [entity, transformation] : m_registry.view<Transformation>().each())
+	//{
+	//	transformation.update(deltaTime);
+	//}
 }
 
 void Scene::draw(float deltaTime)
@@ -444,7 +444,7 @@ void Scene::startSimulation()
 		Entity e{ entity, this };
 		physx::PxRigidActor* body = nullptr;
 		auto& transform = e.getComponent<Transformation>();
-		auto scale = transform.getScale();
+		auto scale = transform.getLocalScale();
 
 		// Create rigid body
 		if (e.HasComponent<RigidBodyComponent>())
@@ -478,7 +478,7 @@ void Scene::startSimulation()
 		Entity e{ entity, this };
 		physx::PxRigidActor* body = nullptr;
 		auto& transform = e.getComponent<Transformation>();
-		auto scale = transform.getScale();
+		auto scale = transform.getLocalScale();
 
 		// Create rigid body
 		if (e.HasComponent<RigidBodyComponent>())
@@ -512,7 +512,7 @@ void Scene::startSimulation()
 		Entity e{ entity, this };
 		physx::PxRigidActor* body = nullptr;
 		auto& transform = e.getComponent<Transformation>();
-		auto scale = transform.getScale();
+		auto scale = transform.getLocalScale();
 
 		// Create rigid body
 		if (e.HasComponent<RigidBodyComponent>())
@@ -537,7 +537,7 @@ void Scene::startSimulation()
 		else
 		{
 			//continue;
-			std::vector<glm::vec3> apos = { {0,0,0}, {0,1,0}, {1,0,0} };
+			std::vector<glm::vec3> apos = { {0,10,0}, {0,11,0}, {1,10,0} };
 
 			shape = physicsSystem->createConvexMeshShape(apos);
 		}

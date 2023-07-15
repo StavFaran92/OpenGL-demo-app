@@ -8,8 +8,9 @@ class PhysXUtils
 public:
 	inline static physx::PxTransform toPhysXTransform(const Transformation& transform)
 	{
-		auto translation = transform.getPosition();
-		auto orientation = transform.getOrientation();
+		//auto translation = transform.getPosition();
+		auto translation = transform.getWorldPosition();
+		auto orientation = transform.getWorldRotation();
 
 		physx::PxVec3 pxTranslation(translation.x, translation.y, translation.z);
 		physx::PxQuat pxRotation(orientation.x, orientation.y, orientation.z, orientation.w);
@@ -19,8 +20,8 @@ public:
 
 	inline static void toPhysXTransform(const Transformation& transform, physx::PxTransform& pxTransform)
 	{
-		auto translation = transform.getPosition();
-		auto orientation = transform.getOrientation();
+		auto translation = transform.getWorldPosition();
+		auto orientation = transform.getWorldRotation();
 
 		physx::PxVec3 pxTranslation(translation.x, translation.y, translation.z);
 		physx::PxQuat pxRotation(orientation.x, orientation.y, orientation.z, orientation.w);
@@ -42,7 +43,7 @@ public:
 		glm::vec3 translation(pxTransform.p.x, pxTransform.p.y, pxTransform.p.z);
 		glm::quat rotation(pxTransform.q.w, pxTransform.q.x, pxTransform.q.y, pxTransform.q.z);
 
-		transform.setPosition(translation);
-		transform.setRotation(rotation);
+		transform.setWorldPosition(translation);
+		transform.setLocalRotation(rotation);
 	}
 };

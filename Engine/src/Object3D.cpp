@@ -14,7 +14,7 @@ Object3D::Object3D()
 
 void Object3D::update(float deltatime)
 {
-	m_transformation->update(deltatime);
+	//m_transformation->update(deltatime);
 }
 
 void Object3D::onSelected()
@@ -85,7 +85,7 @@ void Object3D::rotate(glm::vec3 axis, float angle) const
 		if (!child)
 			continue;
 
-		child->rotateAround(m_transformation->getPosition(), axis, angle);
+		child->rotateAround(m_transformation->getLocalPosition(), axis, angle);
 	}
 }
 
@@ -98,7 +98,7 @@ void Object3D::rotateLerp(glm::vec3 axis, float angle, float t) const
 		if (!child)
 			continue;
 
-		child->rotateAroundLerp(m_transformation->getPosition(), axis, angle, t);
+		child->rotateAroundLerp(m_transformation->getLocalPosition(), axis, angle, t);
 	}
 }
 

@@ -3,37 +3,32 @@
 #include "LinearAlgebraUtil.h"
 #include "Logger.h"
 
-glm::mat4 Transformation::getMatrix() 
+glm::mat4 Transformation::getWorldTransformation() 
 {
-	update(0);
-
 	auto parent = m_entity.getParent();
 	if (parent.valid())
 	{
 		auto& parentTransform = parent.getComponent<Transformation>();
-		return parentTransform.getMatrix() * m_transformation;
+		return parentTransform.getWorldTransformation() * getLocalTransformation();
 	}
 	else
 	{
-		return m_transformation;
+		return getLocalTransformation();
 	}
 }
 
-void Transformation::getMatrix(glm::mat4& mat)
+void Transformation::getWorldTransformation(glm::mat4& mat)
 {
-	update(0);
+	mat = getWorldTransformation();
+}
 
-	auto parent = m_entity.getParent();
-	if (parent.valid())
-	{
-		auto& parentTransform = parent.getComponent<Transformation>();
-		mat = parentTransform.getMatrix() * m_transformation;
-	}
-	else
-	{
-		mat = m_transformation;
-	}
+glm::mat4 Transformation::getLocalTransformation()
+{
+	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_translation);
+	glm::mat4 rotationMatrix = glm::mat4_cast(m_rotation);
+	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), m_scale);
 
+	return translationMatrix * rotationMatrix * scaleMatrix;
 }
 
 void Transformation::setParent(Entity parent)
@@ -44,7 +39,11 @@ void Transformation::setParent(Entity parent)
 	}
 
 	auto& pTransform = parent.getComponent<Transformation>();
-	m_rootTransformation = glm::inverse(pTransform.getMatrix());
+	//m_rootTransformation = glm::inverse(pTransform.getWorldTransformation());
+
+	setLocalPosition(getLocalPosition() - pTransform.getWorldPosition());
+	setLocalRotation(glm::inverse(pTransform.getLocalRotation()) * m_rotation);
+	setLocalScale(getLocalScale() / pTransform.getWorldScale());
 
 	m_parent = parent;
 	pTransform.addChild(m_entity);
@@ -84,54 +83,97 @@ std::unordered_map<entity_id, Entity> Transformation::getChildren()
 	return m_children;
 }
 
-void Transformation::update(float deltaTime)
-{
-	if (m_change)
-	{
-		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_translation);
-		glm::mat4 rotationMatrix = glm::mat4_cast(m_orientation);
-		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), m_scale);
-
-		m_transformation = m_rootTransformation * translationMatrix * rotationMatrix * scaleMatrix;
-		m_change = false;
-	}
-}
-void Transformation::setPosition(glm::vec3 pos)
+void Transformation::setLocalPosition(glm::vec3 pos)
 {
 	m_translation = pos;
 
 	m_change = true;
 }
-void Transformation::setRotation(float angle, glm::vec3 axis)
+void Transformation::setWorldPosition(glm::vec3 pos)
+{
+	auto parent = m_entity.getParent();
+	if (parent.valid())
+	{
+		auto& parentTransform = parent.getComponent<Transformation>();
+		setLocalPosition(pos - parentTransform.getWorldPosition());
+	}
+	else
+	{
+		setLocalPosition(pos);
+	}
+}
+void Transformation::setLocalRotation(float angle, glm::vec3 axis)
 {
 	m_change = true;
 }
-void Transformation::setRotation(glm::quat quat)
+void Transformation::setLocalRotation(glm::quat quat)
 {
-	m_orientation = quat;
+	m_rotation = quat;
 
 	m_change = true;
 }
-void Transformation::setScale(glm::vec3 scale)
+void Transformation::setLocalScale(glm::vec3 scale)
 {
 	m_scale = scale;
 
 	m_change = true;
 }
 
-glm::vec3 Transformation::getPosition() const
+glm::vec3 Transformation::getLocalPosition() const
 {
 	return m_translation;
 }
 
-glm::quat Transformation::getOrientation() const
+glm::vec3 Transformation::getWorldPosition() const
 {
-	return m_orientation;
+	auto parent = m_entity.getParent();
+	if (parent.valid())
+	{
+		auto& parentTransform = parent.getComponent<Transformation>();
+		return parentTransform.getWorldPosition() + m_translation;
+	}
+	else
+	{
+		return m_translation;
+	}
 }
 
-glm::vec3 Transformation::getScale() const
+glm::quat Transformation::getLocalRotation() const
+{
+	return m_rotation;
+}
+
+glm::quat Transformation::getWorldRotation() const
+{
+	auto parent = m_entity.getParent();
+	if (parent.valid())
+	{
+		auto& parentTransform = parent.getComponent<Transformation>();
+		return parentTransform.getWorldRotation() * m_rotation;
+	}
+	else
+	{
+		return m_rotation;
+	}
+}
+
+glm::vec3 Transformation::getLocalScale() const
 {
 	return m_scale;
+}
+
+glm::vec3 Transformation::getWorldScale() const
+{
+	auto parent = m_entity.getParent();
+	if (parent.valid())
+	{
+		auto& parentTransform = parent.getComponent<Transformation>();
+		return parentTransform.getWorldScale() * m_scale;
+	}
+	else
+	{
+		return m_scale;
+	}
 }
 
 void Transformation::translate(float x, float y, float z)
@@ -164,14 +206,14 @@ void Transformation::scale(glm::vec3 scaleFactor)
 
 void Transformation::rotate(glm::vec3 eulers)
 {
-	m_orientation = glm::quat(eulers) * m_orientation;
+	m_rotation = glm::quat(eulers) * m_rotation;
 
 	m_change = true;
 }
 
 void Transformation::rotateLerp(glm::vec3 axis, float angle, float t)
 {
-	m_orientation = glm::mix(m_orientation, glm::angleAxis(degToRad(angle), axis) * m_orientation, t);// *m_orientationLocal;
+	m_rotation = glm::mix(m_rotation, glm::angleAxis(degToRad(angle), axis) * m_rotation, t);// *m_orientationLocal;
 
 	m_change = true;
 }
@@ -179,7 +221,7 @@ void Transformation::rotateLerp(glm::vec3 axis, float angle, float t)
 
 void Transformation::rotate(glm::vec3 axis, float angle)
 {
-	m_orientation = glm::angleAxis(degToRad(angle), axis) * m_orientation;
+	m_rotation = glm::angleAxis(degToRad(angle), axis) * m_rotation;
 
 	m_change = true;
 }

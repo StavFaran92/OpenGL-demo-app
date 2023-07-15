@@ -87,7 +87,7 @@ public:
      * @return Reference to the requested component
      */
     template<typename T>
-    T& getComponent()
+    T& getComponent() const
     {
         assert(valid() && "Invalid entity.");
         assert(m_scene->getRegistry().has<T>(m_entity) && "Component does not exist.");
@@ -176,7 +176,7 @@ public:
 
     void setParent(Entity entity);
     void removeParent();
-    Entity getParent();
+    Entity getParent() const;
     void addChildren(Entity entity);
     void removeChildren(Entity entity);
     std::unordered_map<entity_id, Entity> getChildren();

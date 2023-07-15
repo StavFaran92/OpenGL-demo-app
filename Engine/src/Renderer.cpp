@@ -113,7 +113,7 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
 
     // Model
     if(renderParams.transform)
-        shaderToUse->setModelMatrix(renderParams.transform->getMatrix());
+        shaderToUse->setModelMatrix(renderParams.transform->getWorldTransformation());
 
     // View
     if(renderParams.camera)

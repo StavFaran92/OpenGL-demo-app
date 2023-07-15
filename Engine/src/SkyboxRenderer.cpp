@@ -40,7 +40,7 @@ void SkyboxRenderer::render(const DrawQueueRenderParams& renderParams)
     mat.getTextureHandlers()[0]->bind();
 
     //auto view = glm::mat4(glm::mat3(dynamic_cast<Renderer*>(renderer.get())->GetCamera()->getView())); // remove translation from the view matrix
-    shaderToUse->setValue("model", renderParams.transform->getMatrix());
+    shaderToUse->setValue("model", renderParams.transform->getWorldTransformation());
     shaderToUse->setValue("view", glm::mat4(glm::mat3(renderParams.camera->getView())));
     shaderToUse->setValue("projection", m_projection);
 

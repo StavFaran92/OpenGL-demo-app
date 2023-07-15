@@ -14,7 +14,7 @@ void Entity::setParent(Entity entity)
     transform.setParent(entity);
 }
 
-Entity Entity::getParent()
+Entity Entity::getParent() const
 {
     assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
     auto& transform = getComponent<Transformation>();

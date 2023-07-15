@@ -16,47 +16,45 @@ public:
 	Transformation(const Entity& entity) :
 		m_entity(entity),
 		m_translation(0, 0, 0),
-		m_orientation(1, 0, 0, 0),
+		m_rotation(1, 0, 0, 0),
 		m_scale(1, 1, 1),
-		m_transformation(1.f),
 		m_relativeRot(1.f)
 	{}
 
 	Transformation(const Entity& entity, glm::vec3 translation) :
 		m_entity(entity),
 		m_translation(translation),
-		m_orientation(1, 0, 0, 0),
+		m_rotation(1, 0, 0, 0),
 		m_scale(1, 1, 1),
-		m_transformation(1.f),
 		m_relativeRot(1.f)
 	{
 		m_change = true;
-		update(0);
 	}
 
 	Transformation(const Entity& entity, glm::vec3 translation, glm::quat rotation) :
 		m_entity(entity),
 		m_translation(translation),
-		m_orientation(rotation),
+		m_rotation(rotation),
 		m_scale(1, 1, 1),
-		m_transformation(1.f),
 		m_relativeRot(1.f)
 	{
 		m_change = true;
-		update(0);
 	}
 
-	void update(float deltaTime);
 
-	void setPosition(glm::vec3 pos);
-	void setRotation(float angle, glm::vec3 axis);
-	void setRotation(glm::quat quat);
-	void setScale(glm::vec3 scale);
+	void setLocalPosition(glm::vec3 pos);
+	void setWorldPosition(glm::vec3 pos);
+	void setLocalRotation(float angle, glm::vec3 axis);
+	void setLocalRotation(glm::quat quat);
+	void setLocalScale(glm::vec3 scale);
 
-	glm::mat4 getMatrix();
-	glm::vec3 getPosition() const;
-	glm::quat getOrientation() const;
-	glm::vec3 getScale() const;
+	glm::mat4 getWorldTransformation();
+	glm::vec3 getLocalPosition() const;
+	glm::vec3 getWorldPosition() const;
+	glm::quat getLocalRotation() const;
+	glm::quat getWorldRotation() const;
+	glm::vec3 getLocalScale() const;
+	glm::vec3 getWorldScale() const;
 
 	void translate(float x, float y, float z);
 	void translate(glm::vec3 translation);
@@ -69,7 +67,8 @@ public:
 	void rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle);
 	void rotateLerp(glm::vec3 axis, float angle, float t);
 	void rotateAroundLerp(glm::vec3 pivot, glm::vec3 axis, float angle, float t);
-	void getMatrix(glm::mat4& mat);
+	void getWorldTransformation(glm::mat4& mat);
+	glm::mat4 getLocalTransformation();
 
 	void setParent(Entity parent);
 	void removeParent();
@@ -83,13 +82,11 @@ private:
 private:
 	glm::vec3 m_translation;
 
-	glm::quat m_orientation;
+	glm::quat m_rotation;
 
 	glm::mat4 m_relativeRot;
 
 	glm::vec3 m_scale;
-
-	glm::mat4 m_transformation;
 
 	glm::mat4 m_rootTransformation{ 1.f };
 
