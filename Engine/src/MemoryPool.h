@@ -22,8 +22,11 @@ public:
         }
         else
         {
-            ptr = std::shared_ptr<T>(creationCallback());
-            m_cache[resourceName] = ptr;
+            if (creationCallback)
+            {
+                ptr = std::shared_ptr<T>(creationCallback());
+                m_cache[resourceName] = ptr;
+            }
         }
 
         return ptr;

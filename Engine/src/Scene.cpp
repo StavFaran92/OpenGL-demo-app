@@ -525,9 +525,25 @@ void Scene::startSimulation()
 			body = physicsSystem->createRigidBody(transform, RigidbodyType::Kinematic, 0);
 		}
 
-		// Create shape
-		std::vector<glm::vec3> pos = { {0,0,0}, {0,1,0}, {1,0,0} };
-		physx::PxShape* shape = physicsSystem->createConvexMeshShape(pos);
+		physx::PxShape* shape = nullptr;
+
+		auto meshComponent = e.tryGetComponent<MeshComponent>();
+		if (meshComponent)
+		{
+			const std::vector<glm::vec3>* apos = meshComponent->mesh->getPositions();
+
+			shape = physicsSystem->createConvexMeshShape(*apos);
+		}
+		else
+		{
+			//continue;
+			std::vector<glm::vec3> apos = { {0,0,0}, {0,1,0}, {1,0,0} };
+
+			shape = physicsSystem->createConvexMeshShape(apos);
+		}
+
+		assert(shape);
+		
 
 		// Attach shape
 		body->attachShape(*shape);

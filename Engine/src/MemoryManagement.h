@@ -6,6 +6,7 @@
 
 class Texture;
 class Mesh;
+class Shader;
 
 /**
  * This class is reponsible on holding all the shared heavy resources (Textures, Shaders, etc..) in memory.
@@ -16,8 +17,9 @@ class MemoryManagement
 public:
 	MemoryManagement();
 	~MemoryManagement();
-	std::shared_ptr<Texture> getTexture(const std::string& resourceName, std::function<Texture* ()> creationCallback);
-	std::shared_ptr<Mesh> getMesh(const std::string& resourceName, std::function<Mesh* ()> creationCallback);
+	std::shared_ptr<Texture> getTexture(const std::string& resourceName, std::function<Texture* ()> creationCallback = nullptr);
+	std::shared_ptr<Mesh> getMesh(const std::string& resourceName, std::function<Mesh* ()> creationCallback = nullptr);
+	std::shared_ptr<Shader> getShader(const std::string& resourceName, std::function<Shader* ()> creationCallback = nullptr);
 
 private:
 	struct MemoryManagementImpl;
