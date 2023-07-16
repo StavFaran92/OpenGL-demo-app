@@ -27,6 +27,7 @@ bool PhysicsSystem::init()
 #endif // SGE_DEBUG
 
     m_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_foundation, physx::PxTolerancesScale(), true, m_pvd);
+    PxInitExtensions(*m_physics, m_pvd);
 
     // Set up cooking parameters
     physx::PxCookingParams cookingParams(m_physics->getTolerancesScale());

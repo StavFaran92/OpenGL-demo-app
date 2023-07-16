@@ -46,6 +46,7 @@ public:
 	void setWorldPosition(glm::vec3 pos);
 	void setLocalRotation(float angle, glm::vec3 axis);
 	void setLocalRotation(glm::quat quat);
+	void setWorldRotation(glm::quat quat);
 	void setLocalScale(glm::vec3 scale);
 
 	glm::mat4 getWorldTransformation();

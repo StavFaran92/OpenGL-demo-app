@@ -44,6 +44,6 @@ public:
 		glm::quat rotation(pxTransform.q.w, pxTransform.q.x, pxTransform.q.y, pxTransform.q.z);
 
 		transform.setWorldPosition(translation);
-		transform.setLocalRotation(rotation);
+		transform.setWorldRotation(rotation);
 	}
 };

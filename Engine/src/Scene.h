@@ -37,6 +37,7 @@ class Transformation;
 class InstanceBatch;
 class SkyboxRenderer;
 class ICamera;
+class PhysicsSystem;
 namespace physx {
 	class PxScene;
 }
@@ -96,6 +97,7 @@ private:
 	void draw(float deltaTime);
 
 	void startSimulation();
+	void createSimulationActors(PhysicsSystem* physicsSystem);
 	void stopSimulation();
 	bool isSimulationActive() const;
 

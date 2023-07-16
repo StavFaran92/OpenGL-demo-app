@@ -77,13 +77,13 @@ public:
 		{
 
 			auto& sphereTransform = sphere.getComponent<Transformation>();
-			sphereTransform.setLocalPosition({ 0, 15, 0 });
+			sphereTransform.setLocalPosition({ 0, 12, 2 });
 			//boxTransform.rotate({ 0, 1, 0 }, 90);
 			//boxTransform.rotate({ 0, 0, 1 }, 180);
 
-			//auto& rb = sphere.addComponent<RigidBodyComponent>();
-			//rb.mass = 1;
-			//rb.type = RigidbodyType::Dynamic;
+			auto& rb = sphere.addComponent<RigidBodyComponent>();
+			rb.mass = 1;
+			rb.type = RigidbodyType::Dynamic;
 
 			auto& collisionBox = sphere.addComponent<CollisionSphereComponent>();
 			collisionBox.radius = 1.f;

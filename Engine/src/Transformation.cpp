@@ -58,7 +58,6 @@ void Transformation::removeParent()
 	//m_parent.removeChildren(m_entity);
 	auto& pTransform = m_parent.getComponent<Transformation>();
 	pTransform.removeChild(m_entity);
-	m_rootTransformation = glm::mat4(1);
 
 	m_parent = Entity::EmptyEntity;
 }
@@ -86,8 +85,6 @@ std::unordered_map<entity_id, Entity> Transformation::getChildren()
 void Transformation::setLocalPosition(glm::vec3 pos)
 {
 	m_translation = pos;
-
-	m_change = true;
 }
 void Transformation::setWorldPosition(glm::vec3 pos)
 {
@@ -104,19 +101,29 @@ void Transformation::setWorldPosition(glm::vec3 pos)
 }
 void Transformation::setLocalRotation(float angle, glm::vec3 axis)
 {
-	m_change = true;
+	throw std::runtime_error("Not yet implemented");
+	//m_change = true;
 }
 void Transformation::setLocalRotation(glm::quat quat)
 {
 	m_rotation = quat;
-
-	m_change = true;
+}
+void Transformation::setWorldRotation(glm::quat quat)
+{
+	auto parent = m_entity.getParent();
+	if (parent.valid())
+	{
+		auto& parentTransform = parent.getComponent<Transformation>();
+		setLocalRotation(glm::inverse(parentTransform.getWorldRotation() * quat));
+	}
+	else
+	{
+		setLocalRotation(quat);
+	}
 }
 void Transformation::setLocalScale(glm::vec3 scale)
 {
 	m_scale = scale;
-
-	m_change = true;
 }
 
 glm::vec3 Transformation::getLocalPosition() const
@@ -181,8 +188,6 @@ void Transformation::translate(float x, float y, float z)
 	m_translation.x += x;
 	m_translation.y += y;
 	m_translation.z += z;
-
-	m_change = true;
 }
 
 void Transformation::translate(glm::vec3 translation)
@@ -195,8 +200,6 @@ void Transformation::scale(float x, float y, float z)
 	m_scale.x *= x;
 	m_scale.y *= y;
 	m_scale.z *= z;
-
-	m_change = true;
 }
 
 void Transformation::scale(glm::vec3 scaleFactor)
@@ -207,23 +210,17 @@ void Transformation::scale(glm::vec3 scaleFactor)
 void Transformation::rotate(glm::vec3 eulers)
 {
 	m_rotation = glm::quat(eulers) * m_rotation;
-
-	m_change = true;
 }
 
 void Transformation::rotateLerp(glm::vec3 axis, float angle, float t)
 {
 	m_rotation = glm::mix(m_rotation, glm::angleAxis(degToRad(angle), axis) * m_rotation, t);// *m_orientationLocal;
-
-	m_change = true;
 }
 
 
 void Transformation::rotate(glm::vec3 axis, float angle)
 {
 	m_rotation = glm::angleAxis(degToRad(angle), axis) * m_rotation;
-
-	m_change = true;
 }
 
 void Transformation::rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle)
@@ -232,8 +229,6 @@ void Transformation::rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle)
 	auto pInv = glm::translate(glm::mat4(1.0f), -pivot);
 
 	m_relativeRot = p * glm::mat4_cast(glm::angleAxis(degToRad(angle), axis)) * pInv * m_relativeRot;
-
-	m_change = true;
 }
 
 
@@ -243,6 +238,4 @@ void Transformation::rotateAroundLerp(glm::vec3 pivot, glm::vec3 axis, float ang
 	auto pInv = glm::translate(glm::mat4(1.0f), -pivot);
 
 	m_relativeRot = p * glm::mat4_cast(glm::mix(glm::toQuat(m_relativeRot), glm::angleAxis(degToRad(angle), axis) * glm::toQuat(m_relativeRot), t)) * pInv;// *m_relativeRot;
-
-	m_change = true;
 }
