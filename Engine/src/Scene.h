@@ -40,6 +40,8 @@ class ICamera;
 class PhysicsSystem;
 namespace physx {
 	class PxScene;
+	class PxShape;
+	class PxRigidActor;
 }
 template<typename T> class ObjectHandler;
 
@@ -100,6 +102,7 @@ private:
 	void createSimulationActors(PhysicsSystem* physicsSystem);
 	void stopSimulation();
 	bool isSimulationActive() const;
+	void createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body, Entity e);
 
 	void init(Context* context);
 	void clear();

@@ -519,39 +519,15 @@ void Scene::createSimulationActors(PhysicsSystem* physicsSystem)
 		auto& transform = e.getComponent<Transformation>();
 		auto scale = transform.getWorldScale();
 		auto body = physicsSystem->createRigidBody(transform, rb.type, rb.mass);
-		physx::PxShape* shape = nullptr;
+		
 
-		if (e.HasComponent<CollisionBoxComponent>())
-		{
-			auto& collider = e.getComponent<CollisionBoxComponent>();
-			shape = physicsSystem->createBoxShape(collider.halfExtent * scale.x, collider.halfExtent * scale.y, collider.halfExtent * scale.z);
-		}
-		else if (e.HasComponent<CollisionSphereComponent>())
-		{
-			auto& collider = e.getComponent<CollisionSphereComponent>();
-			shape = physicsSystem->createSphereShape(collider.radius * std::max(std::max(scale.x, scale.y), scale.z));
-		}
-		else if (e.HasComponent<CollisionMeshComponent>())
-		{
-			auto meshComponent = e.tryGetComponent<MeshComponent>();
-			if (meshComponent)
-			{
-				const std::vector<glm::vec3>* apos = meshComponent->mesh->getPositions();
+		createShape(body, e, physicsSystem);
 
-				shape = physicsSystem->createConvexMeshShape(*apos);
-			}
-			else
-			{
-				std::vector<glm::vec3> apos = { { 0,10,0 },{ 0,11,0 },{ 1,10,0 } };
 
-				shape = physicsSystem->createConvexMeshShape(apos);
-			}
-		}
 
 		assert(shape);
 
-		body->attachShape(*shape);
-		shape->release();
+		
 
 		m_PhysicsScene->addActor(*body);
 		entity_id* id = new entity_id(e.handlerID());
@@ -695,4 +671,42 @@ void Scene::stopSimulation()
 bool Scene::isSimulationActive() const
 {
 	return m_isSimulationActive;
+}
+
+void Scene::createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body, Entity e)
+{
+	physx::PxShape* shape = nullptr;
+	auto& transform = e.getComponent<Transformation>();
+	auto scale = transform.getWorldScale();
+
+	if (e.HasComponent<CollisionBoxComponent>())
+	{
+		auto& collider = e.getComponent<CollisionBoxComponent>();
+		shape = physicsSystem->createBoxShape(collider.halfExtent * scale.x, collider.halfExtent * scale.y, collider.halfExtent * scale.z);
+	}
+	else if (e.HasComponent<CollisionSphereComponent>())
+	{
+		auto& collider = e.getComponent<CollisionSphereComponent>();
+		shape = physicsSystem->createSphereShape(collider.radius * std::max(std::max(scale.x, scale.y), scale.z));
+	}
+	else if (e.HasComponent<CollisionMeshComponent>())
+	{
+		auto meshComponent = e.tryGetComponent<MeshComponent>();
+		if (meshComponent)
+		{
+			const std::vector<glm::vec3>* apos = meshComponent->mesh->getPositions();
+			shape = physicsSystem->createConvexMeshShape(*apos);
+		}
+	}
+
+	if (shape)
+	{
+		body->attachShape(*shape);
+		shape->release();
+	}
+
+	for (auto [eid, child] : e.getChildren())
+	{
+		createShape(physicsSystem, body, child);
+	}
 }
