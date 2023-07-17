@@ -446,27 +446,27 @@ void Scene::startSimulation()
 
 	createSimulationActors(physicsSystem);
 
-	for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
-	{
-		Entity e{ entity, this };
-		for (auto [ec, child] : e.getChildren())
-		{
-			if (child.valid())
-			{
-				auto childRigidBody = child.tryGetComponent<RigidBodyComponent>();
-				if (!childRigidBody)
-				{
-					continue;
-				}
-				auto& transform = e.getComponent<Transformation>();
-				auto& parentTransform = child.getComponent<Transformation>();
-				
+	//for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
+	//{
+	//	Entity e{ entity, this };
+	//	for (auto [ec, child] : e.getChildren())
+	//	{
+	//		if (child.valid())
+	//		{
+	//			auto childRigidBody = child.tryGetComponent<RigidBodyComponent>();
+	//			if (!childRigidBody)
+	//			{
+	//				continue;
+	//			}
+	//			auto& transform = e.getComponent<Transformation>();
+	//			auto& parentTransform = child.getComponent<Transformation>();
+	//			
 
-				auto joint = physx::PxFixedJointCreate(*physicsSystem->getPhysics(), (physx::PxRigidActor*)rb.simulatedBody, PhysXUtils::toPhysXTransform(parentTransform), (physx::PxRigidActor*)childRigidBody->simulatedBody, PhysXUtils::toPhysXTransform(transform));
-				joint->setConstraintFlags(physx::PxConstraintFlag::eVISUALIZATION);
-			}
-		}
-	}
+	//			auto joint = physx::PxFixedJointCreate(*physicsSystem->getPhysics(), (physx::PxRigidActor*)rb.simulatedBody, PhysXUtils::toPhysXTransform(parentTransform), (physx::PxRigidActor*)childRigidBody->simulatedBody, PhysXUtils::toPhysXTransform(transform));
+	//			joint->setConstraintFlags(physx::PxConstraintFlag::eVISUALIZATION);
+	//		}
+	//	}
+	//}
 
 	//for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
 	//{
@@ -517,17 +517,9 @@ void Scene::createSimulationActors(PhysicsSystem* physicsSystem)
 		Entity e{ entity, this };
 
 		auto& transform = e.getComponent<Transformation>();
-		auto scale = transform.getWorldScale();
 		auto body = physicsSystem->createRigidBody(transform, rb.type, rb.mass);
-		
 
-		createShape(body, e, physicsSystem);
-
-
-
-		assert(shape);
-
-		
+		createShape(physicsSystem, body, e);		
 
 		m_PhysicsScene->addActor(*body);
 		entity_id* id = new entity_id(e.handlerID());
