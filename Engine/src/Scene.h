@@ -38,6 +38,7 @@ class InstanceBatch;
 class SkyboxRenderer;
 class ICamera;
 class PhysicsSystem;
+struct RigidBodyComponent;
 namespace physx {
 	class PxScene;
 	class PxShape;
@@ -100,9 +101,12 @@ private:
 
 	void startSimulation();
 	void createSimulationActors(PhysicsSystem* physicsSystem);
+	void createActor(entt::entity entity, PhysicsSystem* physicsSystem, RigidBodyComponent& rb);
 	void stopSimulation();
 	bool isSimulationActive() const;
 	void createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body, Entity e);
+
+	void onRigidBodyConstruct(entt::registry& registry, entt::entity entity);
 
 	void init(Context* context);
 	void clear();

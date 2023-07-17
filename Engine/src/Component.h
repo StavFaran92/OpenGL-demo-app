@@ -61,6 +61,8 @@ struct EngineAPI NativeScriptComponent : public Component
 
 struct EngineAPI RigidBodyComponent : public Component
 {
+	RigidBodyComponent(RigidbodyType type, float mass) : type(type), mass(mass) {};
+
 	RigidbodyType type = RigidbodyType::Static;
 	float mass = 0;
 	void* simulatedBody = nullptr;
@@ -68,11 +70,15 @@ struct EngineAPI RigidBodyComponent : public Component
 
 struct EngineAPI CollisionBoxComponent : public Component
 {
+	CollisionBoxComponent(float halfExtent) : halfExtent(halfExtent) {};
+
 	float halfExtent = 0;
 };
 
 struct EngineAPI CollisionSphereComponent : public Component
 {
+	CollisionSphereComponent(float radius) : radius(radius) {};
+
 	float radius = 0;
 };
 
