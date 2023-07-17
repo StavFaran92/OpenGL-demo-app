@@ -114,7 +114,7 @@ void Transformation::setWorldRotation(glm::quat quat)
 	if (parent.valid())
 	{
 		auto& parentTransform = parent.getComponent<Transformation>();
-		setLocalRotation(glm::inverse(parentTransform.getWorldRotation() * quat));
+		setLocalRotation(glm::inverse(parentTransform.getWorldRotation()) * quat);
 	}
 	else
 	{
