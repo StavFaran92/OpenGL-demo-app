@@ -1,6 +1,38 @@
 #include "EntryPoint.h"
 #include "sge.h"
 
+void createGuitar()
+{
+	auto importer = Engine::get()->getContext()->getModelImporter();
+	auto guitar = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", Engine::get()->getContext()->getActiveScene().get());
+
+	auto random = Engine::get()->getRandomSystem();
+	auto x = random->rand() * 10 - 5;
+	auto z = random->rand() * 10 - 5;
+
+	auto& guitarTransform = guitar.getComponent<Transformation>();
+	guitarTransform.setLocalPosition({ x, 10, z });
+	guitarTransform.rotate({ 0, 1, 0 }, 45);
+
+	auto& rb = guitar.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
+
+	guitar.addComponent<CollisionMeshComponent>();
+
+		for (auto& child : guitar.getChildren())
+			{
+				child.second.addComponent<CollisionMeshComponent>();
+				//auto& rb = child.second.addComponent<RigidBodyComponent>();
+				//rb.mass = 1;
+				//rb.type = RigidbodyType::Kinematic;
+
+				//auto& rb = child.second.addComponent<RigidBodyComponent>();
+				//rb.mass = 1;
+				//rb.type = RigidbodyType::Dynamic;
+			}
+		
+
+}
+
 void createSphere()
 {
 	auto sphere = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get());
@@ -60,9 +92,15 @@ class GUI_Helper : public GuiMenu
 		{
 			createBox();
 		}
+
 		if (ImGui::Button("Create Sphere"))
 		{
 			createSphere();
+		}
+
+		if (ImGui::Button("Create Guitar"))
+		{
+			createGuitar();
 		}
 
 		//static float amplitude = 0.5f;
