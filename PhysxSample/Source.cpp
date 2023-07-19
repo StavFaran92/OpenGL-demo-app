@@ -46,8 +46,7 @@ void createSphere()
 
 
 		auto& mat = sphere.addComponent<DefaultMaterial>(32.f);
-		auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg");
-		tex->setType(Texture::Type::Diffuse);
+		auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg", Texture::Type::Diffuse);
 		mat.addTextureHandler(tex);
 
 		auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
@@ -68,8 +67,7 @@ void createBox()
 		boxTransform.rotate({ 0, 1, 0 }, 45);
 
 		auto& mat = box.addComponent<DefaultMaterial>(32.f);
-		auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg");
-		tex->setType(Texture::Type::Diffuse);
+		auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg", Texture::Type::Diffuse);
 		mat.addTextureHandler(tex);
 
 		auto& rb = box.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
@@ -102,31 +100,6 @@ class GUI_Helper : public GuiMenu
 		{
 			createGuitar();
 		}
-
-		//static float amplitude = 0.5f;
-
-		//if (ImGui::InputFloat("amplitude", &amplitude))
-		//	m_shader->setValue("amplitude", amplitude);
-
-		//static auto waveDir = glm::vec2(1, 0);
-
-		//if (ImGui::InputFloat2("wave Direction (x,y)", glm::value_ptr(waveDir)))
-		//	m_shader->setValue("waveDirection", waveDir);
-
-		//static float waveLength = 2.0f;
-
-		//if (ImGui::InputFloat("wave Length", &waveLength))
-		//	m_shader->setValue("waveLength", waveLength);
-
-		//static float waveSpeed = 5.0f;
-
-		//if (ImGui::InputFloat("wave Speed", &waveSpeed))
-		//	m_shader->setValue("waveSpeed", waveSpeed);
-
-		//static float steepness = .5f;
-
-		//if (ImGui::SliderFloat("Steepness", &steepness, 0, 1))
-		//	m_shader->setValue("steepness", steepness);
 
 		ImGui::PopItemWidth();
 
@@ -236,8 +209,7 @@ public:
 			//groundTransfrom.rotate({ 0, 0, 1 }, 90);
 
 			auto& mat = ground.addComponent<DefaultMaterial>(32.f);
-			auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/floor.jpg");
-			tex->setType(Texture::Type::Diffuse);
+			auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/floor.jpg", Texture::Type::Diffuse);
 			mat.addTextureHandler(tex);
 			auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
 

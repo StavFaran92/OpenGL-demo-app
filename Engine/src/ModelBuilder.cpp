@@ -36,21 +36,19 @@ ObjectHandler<Model> ModelBuilder::build()
 	{
 		//TODO refactor
 		//TODO optimize: can load textuer on startup and simply assign texture Ptr / ID
-		auto texturediff = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png");
+		auto texturediff = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png", Texture::Type::Diffuse);
 		if (!texturediff)
 		{
 			logError("Failed to load resource");
 			return {};
 		}
-		texturediff->setType(Texture::Type::Diffuse);
 
-		auto textureSpec = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png");
+		auto textureSpec = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png", Texture::Type::Specular);
 		if (!textureSpec)
 		{
 			logError("Failed to load resource");
 			return {};
 		}
-		textureSpec->setType(Texture::Type::Specular);
 
 		material->addTextureHandler(texturediff);
 		material->addTextureHandler(textureSpec);

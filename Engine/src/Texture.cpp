@@ -51,7 +51,7 @@ TextureHandler* Texture::createEmptyTexture(int width, int height, int internalF
 	return textureHandler;
 }
 
-TextureHandler* Texture::loadTextureFromFile(const std::string& fileLocation)
+TextureHandler* Texture::loadTextureFromFile(const std::string& fileLocation, Texture::Type type)
 {
 	// Check if texture is already cached to optimize the load process
 	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
@@ -102,6 +102,7 @@ TextureHandler* Texture::loadTextureFromFile(const std::string& fileLocation)
 	});
 
 	auto textureHandler = new TextureHandler(texture);
+	textureHandler->setType(type);
 
 	return textureHandler;
 }
