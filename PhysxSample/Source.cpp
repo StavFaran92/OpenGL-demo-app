@@ -9,6 +9,12 @@ void createSphere()
 		auto& sphereTransform = sphere.getComponent<Transformation>();
 		sphereTransform.setLocalPosition({ 0, 12, 2 });
 
+
+		auto& mat = sphere.addComponent<DefaultMaterial>(32.f);
+		auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg");
+		tex->setType(Texture::Type::Diffuse);
+		mat.addTextureHandler(tex);
+
 		auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
 		auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);
 	}
@@ -22,6 +28,11 @@ void createBox()
 		auto& boxTransform = box.getComponent<Transformation>();
 		boxTransform.setLocalPosition({ 0, 10, .5f });
 		boxTransform.rotate({ 0, 1, 0 }, 45);
+
+		auto& mat = box.addComponent<DefaultMaterial>(32.f);
+		auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg");
+		tex->setType(Texture::Type::Diffuse);
+		mat.addTextureHandler(tex);
 
 		auto& rb = box.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
 		auto& collisionBox = box.addComponent<CollisionBoxComponent>(.5f);
@@ -124,17 +135,17 @@ public:
 		//}
 
 
-		auto box = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
-		{
+		//auto box = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+		//{
 
-			auto& boxTransform = box.getComponent<Transformation>();
-			boxTransform.setLocalPosition({ 0, 10, .5f });
-			boxTransform.rotate({ 0, 1, 0 }, 45);
-			//boxTransform.rotate({ 0, 0, 1 }, 180);
+		//	auto& boxTransform = box.getComponent<Transformation>();
+		//	boxTransform.setLocalPosition({ 0, 10, .5f });
+		//	boxTransform.rotate({ 0, 1, 0 }, 45);
+		//	//boxTransform.rotate({ 0, 0, 1 }, 180);
 
-			auto& rb = box.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
-			auto& collisionBox = box.addComponent<CollisionBoxComponent>(.5f);
-		}
+		//	auto& rb = box.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
+		//	auto& collisionBox = box.addComponent<CollisionBoxComponent>(.5f);
+		//}
 
 		//for(int i=0; i<100; i++)
 		//	for (int j = 0; j < 100; j++)
@@ -154,20 +165,21 @@ public:
 		//			//collisionBox.halfExtent = .5f;
 		//		}
 
-		auto sphere = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get());
-		{
+		//auto sphere = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get());
+		//{
+		//	
+		//	auto& sphereTransform = sphere.getComponent<Transformation>();
+		//	sphereTransform.setLocalPosition({ 0, 12, 2 });
+		//	//boxTransform.rotate({ 0, 1, 0 }, 90);
+		//	//boxTransform.rotate({ 0, 0, 1 }, 180);
 
-			auto& sphereTransform = sphere.getComponent<Transformation>();
-			sphereTransform.setLocalPosition({ 0, 12, 2 });
-			//boxTransform.rotate({ 0, 1, 0 }, 90);
-			//boxTransform.rotate({ 0, 0, 1 }, 180);
+		//	//auto& rb = sphere.addComponent<RigidBodyComponent>();
+		//	//rb.mass = 1;
+		//	//rb.type = RigidbodyType::Dynamic;
 
-			//auto& rb = sphere.addComponent<RigidBodyComponent>();
-			//rb.mass = 1;
-			//rb.type = RigidbodyType::Dynamic;
 
-			auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);
-		}
+		//	auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);
+		//}
 
 		//sphere.setParent(box);
 
@@ -179,6 +191,10 @@ public:
 			//groundTransfrom.rotate({ 0, 0, 1 }, 20);
 			//groundTransfrom.rotate({ 0, 0, 1 }, 90);
 
+			auto& mat = ground.addComponent<DefaultMaterial>(32.f);
+			auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/floor.jpg");
+			tex->setType(Texture::Type::Diffuse);
+			mat.addTextureHandler(tex);
 			auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
 
 

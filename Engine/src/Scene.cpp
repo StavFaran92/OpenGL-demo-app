@@ -271,7 +271,7 @@ void Scene::draw(float deltaTime)
 		params.shader = nullptr;
 	}
 
-#ifdef SGE_DEBUG
+#if 0
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glEnable(GL_POLYGON_OFFSET_LINE);
 	glPolygonOffset(-1.0, -1.0);
@@ -297,7 +297,7 @@ void Scene::draw(float deltaTime)
 	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDisable(GL_POLYGON_OFFSET_LINE);
-#endif //SGE_DEBUG
+#endif
 
 	for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_BEGIN])
 	{
