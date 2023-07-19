@@ -121,7 +121,10 @@ void Scene::init(Context* context)
 	m_tempBoxMesh = Box::createMesh();
 	m_tempOutlineShader = Shader::create<Shader>("Resources/Engine/Shaders/shader.vert", "Resources/Engine/Shaders/OutlineShader.frag");
 
-	m_registry.on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
+	m_registry.on_construct<RigidBodyComponent>().connect<&Scene::onPhysicsComponentConstruct>(this);
+	m_registry.on_construct<CollisionBoxComponent>().connect<&Scene::onPhysicsComponentConstruct>(this);
+	m_registry.on_construct<CollisionSphereComponent>().connect<&Scene::onPhysicsComponentConstruct>(this);
+	m_registry.on_construct<CollisionMeshComponent>().connect<&Scene::onPhysicsComponentConstruct>(this);
 }
 
 void Scene::update(float deltaTime)
@@ -589,11 +592,21 @@ void Scene::createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body,
 	}
 }
 
-void Scene::onRigidBodyConstruct(entt::registry& registry, entt::entity entity)
+void Scene::onPhysicsComponentConstruct(entt::registry& registry, entt::entity entity)
 {
-	auto& rb = registry.get<RigidBodyComponent>(entity);
-
-	auto physicsSystem = Engine::get()->getPhysicsSystem();
-
-	createActor(entity, physicsSystem, rb);
+	if (m_isSimulationActive)
+	{
+		Entity e(entity, this);
+		if (e.HasComponent<RigidBodyComponent>())
+		{
+			if (e.HasComponent<CollisionBoxComponent>() ||
+				e.HasComponent<CollisionSphereComponent>() ||
+				e.HasComponent<CollisionMeshComponent>())
+			{
+				auto& rb = registry.get<RigidBodyComponent>(entity);
+				auto physicsSystem = Engine::get()->getPhysicsSystem();
+				createActor(entity, physicsSystem, rb);
+			}
+		}
+	}
 }
