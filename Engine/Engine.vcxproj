@@ -176,6 +176,7 @@
     <ClInclude Include="src\PhysXUtils.h" />
     <ClInclude Include="src\Component.h" />
     <ClInclude Include="src\PhysicsSystem.h" />
+    <ClInclude Include="src\Random.h" />
     <ClInclude Include="src\RenderableComponent.h" />
     <ClInclude Include="src\ScriptableEntity.h" />
     <ClInclude Include="src\ShaderExtender.h" />

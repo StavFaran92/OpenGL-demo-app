@@ -19,6 +19,7 @@
 #include "ObjectFactory.h"
 #include "TimeManager.h"
 #include "PhysicsSystem.h"
+#include "Random.h"
 
 #include "Application.h"
 #include "SDL.h"
@@ -78,6 +79,8 @@ bool Engine::init()
         logError("Physics System init failed!");
         return false;
     }
+
+    m_randomSystem = std::make_shared<RandomNumberGenerator>();
 
     auto defaultScene = std::make_shared<Scene>(m_context.get());
     defaultScene->setPostProcess(true);
@@ -237,6 +240,11 @@ TimeManager* Engine::getTimeManager() const
 PhysicsSystem* Engine::getPhysicsSystem() const
 {
     return m_physicsSystem.get();
+}
+
+RandomNumberGenerator* Engine::getRandomSystem() const
+{
+    return m_randomSystem.get();
 }
 
 void Engine::pause()

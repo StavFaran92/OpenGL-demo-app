@@ -54,3 +54,4 @@
 #include "ShapeFactory.h"
 #include "Component.h"
 #include "DefaultMaterial.h"
+#include "Random.h"

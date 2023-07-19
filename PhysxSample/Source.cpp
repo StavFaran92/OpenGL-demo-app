@@ -5,9 +5,12 @@ void createSphere()
 {
 	auto sphere = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get());
 	{
+		auto random = Engine::get()->getRandomSystem();
+		auto x = random->rand() * 10 - 5;
+		auto z = random->rand() * 10 - 5;
 
 		auto& sphereTransform = sphere.getComponent<Transformation>();
-		sphereTransform.setLocalPosition({ 0, 12, 2 });
+		sphereTransform.setLocalPosition({ x, 10, z });
 
 
 		auto& mat = sphere.addComponent<DefaultMaterial>(32.f);
@@ -24,9 +27,12 @@ void createBox()
 {
 	auto box = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 	{
+		auto random = Engine::get()->getRandomSystem();
+		auto x = random->rand() * 10 - 5;
+		auto z = random->rand() * 10 - 5;
 
 		auto& boxTransform = box.getComponent<Transformation>();
-		boxTransform.setLocalPosition({ 0, 10, .5f });
+		boxTransform.setLocalPosition({ x, 10, z });
 		boxTransform.rotate({ 0, 1, 0 }, 45);
 
 		auto& mat = box.addComponent<DefaultMaterial>(32.f);
