@@ -582,6 +582,19 @@ void Scene::createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body,
 
 	if (shape)
 	{
+		
+		auto translation = transform.getWorldPosition();
+		auto orientation = transform.getWorldRotation();
+
+		physx::PxVec3 pxTranslation(translation.x, translation.y, translation.z);
+		pxTranslation -= body->getGlobalPose().p;
+		physx::PxQuat pxRotation(orientation.x, orientation.y, orientation.z, orientation.w);
+		pxRotation *= body->getGlobalPose().q.getConjugate();
+
+		auto physxTransform = physx::PxTransform(pxTranslation, pxRotation);
+
+		//auto physxTransform = PhysXUtils::toPhysXTransform(transform);
+		shape->setLocalPose(physxTransform);
 		body->attachShape(*shape);
 		shape->release();
 	}
