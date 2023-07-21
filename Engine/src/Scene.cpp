@@ -121,10 +121,10 @@ void Scene::init(Context* context)
 	m_tempBoxMesh = Box::createMesh();
 	m_tempOutlineShader = Shader::create<Shader>("Resources/Engine/Shaders/shader.vert", "Resources/Engine/Shaders/OutlineShader.frag");
 
-	m_registry.on_construct<RigidBodyComponent>().connect<&Scene::onPhysicsComponentConstruct>(this);
-	m_registry.on_construct<CollisionBoxComponent>().connect<&Scene::onPhysicsComponentConstruct>(this);
-	m_registry.on_construct<CollisionSphereComponent>().connect<&Scene::onPhysicsComponentConstruct>(this);
-	m_registry.on_construct<CollisionMeshComponent>().connect<&Scene::onPhysicsComponentConstruct>(this);
+	m_registry.on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
+	m_registry.on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
+	m_registry.on_construct<CollisionSphereComponent>().connect<&Scene::onCollisionConstruct>(this);
+	m_registry.on_construct<CollisionMeshComponent>().connect<&Scene::onCollisionConstruct>(this);
 }
 
 void Scene::update(float deltaTime)
@@ -530,7 +530,7 @@ void Scene::createActor(entt::entity entity, PhysicsSystem* physicsSystem, Rigid
 	auto& transform = e.getComponent<Transformation>();
 	auto body = physicsSystem->createRigidBody(transform, rb.type, rb.mass);
 
-	createShape(physicsSystem, body, e);
+	createShape(physicsSystem, body, e, true);
 
 	m_PhysicsScene->addActor(*body);
 	entity_id* id = new entity_id(e.handlerID());
@@ -554,7 +554,7 @@ bool Scene::isSimulationActive() const
 	return m_isSimulationActive;
 }
 
-void Scene::createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body, Entity e)
+void Scene::createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body, Entity e, bool recursive)
 {
 	physx::PxShape* shape = nullptr;
 	auto& transform = e.getComponent<Transformation>();
@@ -586,27 +586,44 @@ void Scene::createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body,
 		shape->release();
 	}
 
-	for (auto [eid, child] : e.getChildren())
+	if (recursive)
 	{
-		createShape(physicsSystem, body, child);
+		for (auto [eid, child] : e.getChildren())
+		{
+			createShape(physicsSystem, body, child, true);
+		}
 	}
 }
 
-void Scene::onPhysicsComponentConstruct(entt::registry& registry, entt::entity entity)
+void Scene::onRigidBodyConstruct(entt::registry& registry, entt::entity entity)
+{
+	// if add rigid body
+		// create actor
+			// create shape recursive
+	// if add collision
+		// look for rigid body in hierarchy
+			// if found add shape to body (not recursive)
+
+	if (m_isSimulationActive)
+	{
+		Entity e(entity, this);
+		auto physicsSystem = Engine::get()->getPhysicsSystem();
+		auto& rb = e.getComponent<RigidBodyComponent>();
+		createActor(entity, physicsSystem, rb);
+	}
+}
+
+void Scene::onCollisionConstruct(entt::registry& registry, entt::entity entity)
 {
 	if (m_isSimulationActive)
 	{
 		Entity e(entity, this);
-		if (e.HasComponent<RigidBodyComponent>())
+		auto rb = e.tryGetComponentInParent<RigidBodyComponent>(true);
+		if (rb)
 		{
-			if (e.HasComponent<CollisionBoxComponent>() ||
-				e.HasComponent<CollisionSphereComponent>() ||
-				e.HasComponent<CollisionMeshComponent>())
-			{
-				auto& rb = registry.get<RigidBodyComponent>(entity);
-				auto physicsSystem = Engine::get()->getPhysicsSystem();
-				createActor(entity, physicsSystem, rb);
-			}
+			auto physicsSystem = Engine::get()->getPhysicsSystem();
+			auto body = (physx::PxRigidActor*)rb->simulatedBody;
+			createShape(physicsSystem, body, e, false);
 		}
 	}
 }
