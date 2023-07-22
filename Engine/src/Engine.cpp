@@ -18,6 +18,8 @@
 #include "ObjectManager.h"
 #include "ObjectFactory.h"
 #include "TimeManager.h"
+#include "PhysicsSystem.h"
+#include "Random.h"
 
 #include "Application.h"
 #include "SDL.h"
@@ -57,12 +59,6 @@ bool Engine::init()
 
     m_context = std::make_shared<Context>();
 
-    auto defaultScene = std::make_shared<Scene>(m_context.get());
-    defaultScene->setPostProcess(true);
-
-    m_context->addScene(defaultScene);
-    m_context->setActiveScene(defaultScene->getID());
-
     //auto secondScene = std::make_shared<Scene>();
     //secondScene->setPostProcess(true);
     //m_context->addScene(secondScene);
@@ -77,6 +73,20 @@ bool Engine::init()
     m_modelImporter = std::make_shared<ModelImporter>();
 
     m_timeManager = std::make_shared<TimeManager>();
+    m_physicsSystem = std::make_shared<PhysicsSystem>();
+    if (!m_physicsSystem->init())
+    {
+        logError("Physics System init failed!");
+        return false;
+    }
+
+    m_randomSystem = std::make_shared<RandomNumberGenerator>();
+
+    auto defaultScene = std::make_shared<Scene>(m_context.get());
+    defaultScene->setPostProcess(true);
+
+    m_context->addScene(defaultScene);
+    m_context->setActiveScene(defaultScene->getID());
 
     m_isInit = true;
 
@@ -225,6 +235,16 @@ ObjectManager* Engine::getObjectManager() const
 TimeManager* Engine::getTimeManager() const
 {
     return m_timeManager.get();
+}
+
+PhysicsSystem* Engine::getPhysicsSystem() const
+{
+    return m_physicsSystem.get();
+}
+
+RandomNumberGenerator* Engine::getRandomSystem() const
+{
+    return m_randomSystem.get();
 }
 
 void Engine::pause()

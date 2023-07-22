@@ -33,11 +33,6 @@ glm::mat4 Renderer2D::getProjection() const
 //{
 //}
 
-std::shared_ptr<ICamera> Renderer2D::getCamera() const
-{
-	return nullptr;
-}
-
 void Renderer2D::render(const DrawQueueRenderParams& renderParams)
 {
 }

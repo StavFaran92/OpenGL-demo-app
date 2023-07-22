@@ -1,9 +1,12 @@
 #pragma once
 
-#include <unordered_map>
 #include <memory>
+#include <string>
+#include <functional>
 
 class Texture;
+class Mesh;
+class Shader;
 
 /**
  * This class is reponsible on holding all the shared heavy resources (Textures, Shaders, etc..) in memory.
@@ -12,10 +15,14 @@ class Texture;
 class MemoryManagement
 {
 public:
-	bool isTextureInCache(const std::string& filename) const;
-	std::shared_ptr<Texture> getTextureFromCache(const std::string& filename) const;
-	void addTextureToCache(const std::string& filename, std::shared_ptr<Texture> texture);
+	MemoryManagement();
+	~MemoryManagement();
+	std::shared_ptr<Texture> getTexture(const std::string& resourceName, std::function<Texture* ()> creationCallback = nullptr);
+	std::shared_ptr<Mesh> getMesh(const std::string& resourceName, std::function<Mesh* ()> creationCallback = nullptr);
+	std::shared_ptr<Shader> getShader(const std::string& resourceName, std::function<Shader* ()> creationCallback = nullptr);
 
 private:
-	std::unordered_map<std::string, std::weak_ptr<Texture>> m_texturesCache;
+	struct MemoryManagementImpl;
+	MemoryManagementImpl* m_pimpl = nullptr;
 };
+

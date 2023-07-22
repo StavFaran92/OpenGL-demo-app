@@ -15,6 +15,8 @@
 #include "Entity.h"
 #include "Component.h"
 #include "StandardShader.h"
+#include "Engine.h"
+#include "MemoryManagement.h"
 
 ModelImporter::ModelImporter()
 {
@@ -77,15 +79,20 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	// process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
-		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		entity.addComponent<Mesh>(processMesh(mesh, scene, session));
+		session.nodeIndex = i;
+		aiMesh* aimesh = scene->mMeshes[node->mMeshes[i]];
+		std::string meshName = session.filepath + "_" + std::to_string(session.nodeIndex) + "_" + std::to_string(session.childIndex);
+		auto memoryManager = Engine::get()->getMemoryManagementSystem();
+		std::shared_ptr<Mesh> mesh = memoryManager->getMesh(meshName, [&]() { return processMesh(aimesh, scene, session); });
+		entity.addComponent<MeshComponent>(mesh);
+
 		auto textureHandlers = new std::vector<TextureHandler*>();
 
 		auto& material = entity.addComponent<DefaultMaterial>(32.0f);
 		// process material
-		if (mesh->mMaterialIndex >= 0)
+		if (aimesh->mMaterialIndex >= 0)
 		{
-			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+			aiMaterial* material = scene->mMaterials[aimesh->mMaterialIndex];
 
 			auto diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, session);
 			textureHandlers->insert(textureHandlers->end(), diffuseMaps.begin(), diffuseMaps.end());
@@ -98,6 +105,8 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	// then do the same for each of its children
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
+		session.childIndex = i;
+
 		auto childEntity = pScene->createEntity();
 		childEntity.addComponent<RenderableComponent>();
 
@@ -175,13 +184,8 @@ std::vector<TextureHandler*> ModelImporter::loadMaterialTextures(aiMaterial* mat
 		auto textureName = str.C_Str();
 
 		// Texture not found in cache -> load it and add to cache
-		auto textureHandler = Texture::loadTextureFromFile(session.fileDir + "/" + textureName);
-		auto pType = getTextureType(type);
-		if (pType != Texture::Type::None)
-		{
-			textureHandler->setType(pType);
-			textureHandlers.push_back(textureHandler);
-		}
+		auto textureHandler = Texture::loadTextureFromFile(session.fileDir + "/" + textureName, getTextureType(type));
+		textureHandlers.push_back(textureHandler);
 	}
 	return textureHandlers;
 }

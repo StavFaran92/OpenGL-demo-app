@@ -190,6 +190,8 @@
     <ClCompile Include="src\DefaultMaterial.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\ShapeFactory.cpp" />
+    <ClCompile Include="src\PhysicsSystem.cpp" />
+    <ClCompile Include="src\MeshFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -428,6 +430,11 @@
     <ClInclude Include="src\RenderableComponent.h" />
     <ClInclude Include="src\Component.h" />
     <ClInclude Include="src\ScriptableEntity.h" />
+    <ClInclude Include="src\PhysicsSystem.h" />
+    <ClInclude Include="src\PhysXUtils.h" />
+    <ClInclude Include="src\MeshFactory.h" />
+    <ClInclude Include="src\MemoryPool.h" />
+    <ClInclude Include="src\Random.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

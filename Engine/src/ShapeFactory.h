@@ -11,8 +11,8 @@ class EngineAPI ShapeFactory
 {
 public:
 	static Entity createBox(Scene* scene);
-	static Entity createPlane(Scene* scene);
-	static Entity createSphere(Scene* scene, float radius, int sectors, int stacks);
+	static Entity createQuad(Scene* scene);
+	static Entity createSphere(Scene* scene);
 
 private:
 	static Entity createEntity(Scene* scene);

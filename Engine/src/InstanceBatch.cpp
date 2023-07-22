@@ -9,7 +9,7 @@ InstanceBatch::InstanceBatch(std::vector<Transformation>& transformations)
 
 	for (int i=0; i< m_amount; i++)
 	{
-		transformations[i].getMatrix(m_transformationMatrices[i]);
+		transformations[i].getWorldTransformation(m_transformationMatrices[i]);
 	}
 } 
 

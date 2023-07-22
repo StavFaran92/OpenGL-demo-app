@@ -303,8 +303,8 @@ void ShowModelCreatorWindow()
 
             auto entity = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str(), Engine::get()->getContext()->getActiveScene().get());
 
-            entity.getComponent<Transformation>().setPosition(pos);
-            entity.getComponent<Transformation>().setScale(scale);
+            entity.getComponent<Transformation>().setLocalPosition(pos);
+            entity.getComponent<Transformation>().setLocalScale(scale);
 
             showModelCreatorWindow = false;
 
@@ -421,8 +421,8 @@ void ShowPrimitiveCreatorWindow()
 
             if (entity.valid())
             {
-                entity.getComponent<Transformation>().setPosition(pos);
-                entity.getComponent<Transformation>().setScale(scale);
+                entity.getComponent<Transformation>().setLocalPosition(pos);
+                entity.getComponent<Transformation>().setLocalScale(scale);
 
                 logInfo("Added Entity successfully.");
             }

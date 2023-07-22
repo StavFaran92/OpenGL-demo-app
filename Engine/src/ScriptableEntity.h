@@ -4,6 +4,7 @@
 
 #include "Entity.h"
 
+struct NativeScriptComponent;
 class Scene;
 
 class EngineAPI ScriptableEntity
@@ -18,8 +19,6 @@ protected:
 	virtual void onUpdate(float deltaTime) {};
 	virtual void onDestroy() {};
 
-	friend class Scene;
-
-protected:
-
+	friend NativeScriptComponent;
+	friend Scene;
 };

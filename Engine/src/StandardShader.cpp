@@ -81,7 +81,7 @@ void StandardShader::updatePointLights(entt::registry& registry)
 		{
 			auto& pLight = view.get<PointLight>(*it);
 			auto& transform = view.get<Transformation>(*it);
-			setValue("pointLights[" + std::to_string(i) + "]" + ".position", transform.getPosition());
+			setValue("pointLights[" + std::to_string(i) + "]" + ".position", transform.getLocalPosition());
 			pLight.useLight(*this, i);
 		}
 		setPointLightCount(i);

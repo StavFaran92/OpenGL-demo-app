@@ -34,6 +34,8 @@ public:
 	{
 		std::string filepath;
 		std::string fileDir;
+		int nodeIndex = 0;
+		int childIndex = 0;
 	};
 
 	/** Constructor */

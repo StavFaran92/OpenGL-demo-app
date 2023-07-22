@@ -12,6 +12,7 @@
 
 #include "Object3D.h"
 #include "Scene.h"
+#include "Engine.h"
 
 #include "Logger.h"
 
@@ -122,6 +123,11 @@ void Context::update(float deltaTime)
 {
 	if (m_activeScene == -1)
 		return;
+
+	if (!m_scenes[m_activeScene]->isSimulationActive())
+	{
+		m_scenes[m_activeScene]->startSimulation();
+	}
 
 	m_scenes[m_activeScene]->update(deltaTime);
 }

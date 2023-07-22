@@ -51,62 +51,58 @@ TextureHandler* Texture::createEmptyTexture(int width, int height, int internalF
 	return textureHandler;
 }
 
-TextureHandler* Texture::loadTextureFromFile(const std::string& fileLocation)
+TextureHandler* Texture::loadTextureFromFile(const std::string& fileLocation, Texture::Type type)
 {
 	// Check if texture is already cached to optimize the load process
 	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
-	if (memoryManagementSystem->isTextureInCache(fileLocation))
-	{
-		return new TextureHandler(memoryManagementSystem->getTextureFromCache(fileLocation));
-	}
+	auto texture = memoryManagementSystem->getTexture(fileLocation, [&]() {
+		auto texture = new Texture();
 
-	auto texture = new Texture();
+		texture->m_target = GL_TEXTURE_2D;
 
-	texture->m_target = GL_TEXTURE_2D;
+		// flip the image
+		stbi_set_flip_vertically_on_load(FLIP_TEXTURE);
 
-	// flip the image
-	stbi_set_flip_vertically_on_load(FLIP_TEXTURE);
+		// load texture from file
+		unsigned char* data = stbi_load(fileLocation.c_str(), &texture->m_width, &texture->m_height, &texture->m_bitDepth, 0);
 
-	// load texture from file
-	unsigned char* data = stbi_load(fileLocation.c_str(), &texture->m_width, &texture->m_height, &texture->m_bitDepth, 0);
+		// load validation
+		if (!data) {
+			logError("Failed to find: {}", fileLocation.c_str());
+			return texture;
+		}
 
-	// load validation
-	if (!data) {
-		logError("Failed to find: {}", fileLocation.c_str());
-		return nullptr;
-	}
+		// generate texture and bind it
+		glGenTextures(1, &texture->m_id);
+		texture->bind();
 
-	// generate texture and bind it
-	glGenTextures(1, &texture->m_id);
-	texture->bind();
+		GLenum format = GL_RGB;
+		if (texture->m_bitDepth == 1)
+			format = GL_RED;
+		else if (texture->m_bitDepth == 3)
+			format = GL_RGB;
+		else if (texture->m_bitDepth == 4)
+			format = GL_RGBA;
 
-	GLenum format = GL_RGB;
-	if (texture->m_bitDepth == 1)
-		format = GL_RED;
-	else if (texture->m_bitDepth == 3)
-		format = GL_RGB;
-	else if (texture->m_bitDepth == 4)
-		format = GL_RGBA;
+		// sets the texture parameters
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	// sets the texture parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		// generate texture and mipmaps
+		glTexImage2D(GL_TEXTURE_2D, 0, format, texture->m_width, texture->m_height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
 
-	// generate texture and mipmaps
-	glTexImage2D(GL_TEXTURE_2D, 0, format, texture->m_width, texture->m_height, 0, format, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
+		// unbind texture and release the image.
+		texture->unbind();
+		stbi_image_free(data);
 
-	// unbind texture and release the image.
-	texture->unbind();
-	stbi_image_free(data);
+		return texture;
+	});
 
-	// Cache texture
-	auto texturePtr = std::shared_ptr<Texture>(texture);
-	memoryManagementSystem->addTextureToCache(fileLocation, texturePtr);
-
-	auto textureHandler = new TextureHandler(texturePtr);
+	auto textureHandler = new TextureHandler(texture);
+	textureHandler->setType(type);
 
 	return textureHandler;
 }

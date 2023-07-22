@@ -14,6 +14,7 @@
 #include "DefaultMaterial.h"
 #include "Component.h"
 #include "Context.h"
+#include "Engine.h"
 
 #include "EditorCamera.h"
 #include "Resources/Engine/Primitives/cube.h"

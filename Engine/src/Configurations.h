@@ -41,3 +41,10 @@ const std::vector<LayoutAttribute> g_defaultLayoutAttributes =
 	LayoutAttribute::Normals,
 	LayoutAttribute::Texcoords,
 };
+
+enum class RigidbodyType
+{
+	Static,
+	Dynamic,
+	Kinematic
+};

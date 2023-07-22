@@ -3,123 +3,184 @@
 #include "LinearAlgebraUtil.h"
 #include "Logger.h"
 
-glm::mat4 Transformation::getMatrix() 
+glm::mat4 Transformation::getWorldTransformation() 
 {
 	auto parent = m_entity.getParent();
 	if (parent.valid())
 	{
 		auto& parentTransform = parent.getComponent<Transformation>();
-		return parentTransform.getMatrix() * m_transformation;
+		return parentTransform.getWorldTransformation() * getLocalTransformation();
 	}
 	else
 	{
-		return m_transformation;
+		return getLocalTransformation();
 	}
 }
 
-void Transformation::getMatrix(glm::mat4& mat)
+void Transformation::getWorldTransformation(glm::mat4& mat)
 {
-	auto parent = m_entity.getParent();
-	if (parent.valid())
-	{
-		auto& parentTransform = parent.getComponent<Transformation>();
-		mat = parentTransform.getMatrix() * m_transformation;
-	}
-	else
-	{
-		mat = m_transformation;
-	}
-
+	mat = getWorldTransformation();
 }
 
-//void Transformation::addChild(Transformation* transform)
-//{
-//	m_children.push_back(transform);
-//}
-//
-//void Transformation::removeChild(Transformation* transform)
-//{
-//	auto it = std::find(m_children.begin(), m_children.end(), transform);
-//
-//	// If the element is found, remove it.
-//	if (it != m_children.end())
-//	{
-//		m_children.erase(it);
-//	}
-//}
-//
-//void Transformation::setParent(Transformation* transform)
-//{
-//	if (transform == this) 
-//	{
-//		logError("Attempting to set entity as its own parent is not allowed");
-//		return;
-//	}
-//	
-//	m_parent = transform;
-//}
-//
-//void Transformation::removeParent(Transformation* transform)
-//{
-//	m_parent = nullptr;
-//}
-//
-//Transformation* Transformation::getParent()
-//{
-//	return m_parent;
-//}
-
-void Transformation::update(float deltaTime)
+glm::mat4 Transformation::getLocalTransformation()
 {
-	if (m_change)
-	{
+	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_translation);
+	glm::mat4 rotationMatrix = glm::mat4_cast(m_rotation);
+	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), m_scale);
 
-		glm::mat4 identity(1.0f);
-		auto translate = glm::translate(glm::mat4(1.0f), m_translation);
-		auto scale = glm::scale(glm::mat4(1.0f), m_scale);
-
-		auto finalRotation = glm::mat4_cast(m_orientationLocal) * m_relativeRot * identity;
-
-		m_transformation = scale * finalRotation * translate * identity;
-
-		m_change = false;
-	}
+	return translationMatrix * rotationMatrix * scaleMatrix;
 }
-void Transformation::setPosition(glm::vec3 pos)
+
+void Transformation::setParent(Entity parent)
+{
+	if (m_parent != Entity::EmptyEntity)
+	{
+		removeParent();
+	}
+
+	auto& pTransform = parent.getComponent<Transformation>();
+	//m_rootTransformation = glm::inverse(pTransform.getWorldTransformation());
+
+	setLocalPosition(getLocalPosition() - pTransform.getWorldPosition());
+	setLocalRotation(glm::inverse(pTransform.getLocalRotation()) * m_rotation);
+	setLocalScale(getLocalScale() / pTransform.getWorldScale());
+
+	m_parent = parent;
+	pTransform.addChild(m_entity);
+	//parent.addChildren(m_entity);
+}
+
+void Transformation::removeParent()
+{
+	if (m_parent == Entity::EmptyEntity)
+		return;
+
+	//m_parent.removeChildren(m_entity);
+	auto& pTransform = m_parent.getComponent<Transformation>();
+	pTransform.removeChild(m_entity);
+
+	m_parent = Entity::EmptyEntity;
+}
+
+Entity Transformation::getParent() const
+{
+	return m_parent;
+}
+
+void Transformation::addChild(Entity entity)
+{
+	m_children[entity.handlerID()] = entity;
+}
+
+void Transformation::removeChild(Entity entity)
+{
+	m_children.erase(entity.handlerID());
+}
+
+std::unordered_map<entity_id, Entity> Transformation::getChildren()
+{
+	return m_children;
+}
+
+void Transformation::setLocalPosition(glm::vec3 pos)
 {
 	m_translation = pos;
-
-	m_change = true;
 }
-void Transformation::setRotation(float angle, glm::vec3 axis)
+void Transformation::setWorldPosition(glm::vec3 pos)
 {
-	m_change = true;
+	auto parent = m_entity.getParent();
+	if (parent.valid())
+	{
+		auto& parentTransform = parent.getComponent<Transformation>();
+		setLocalPosition(pos - parentTransform.getWorldPosition());
+	}
+	else
+	{
+		setLocalPosition(pos);
+	}
 }
-void Transformation::setScale(glm::vec3 scale)
+void Transformation::setLocalRotation(float angle, glm::vec3 axis)
+{
+	throw std::runtime_error("Not yet implemented");
+	//m_change = true;
+}
+void Transformation::setLocalRotation(glm::quat quat)
+{
+	m_rotation = quat;
+}
+void Transformation::setWorldRotation(glm::quat quat)
+{
+	auto parent = m_entity.getParent();
+	if (parent.valid())
+	{
+		auto& parentTransform = parent.getComponent<Transformation>();
+		setLocalRotation(glm::inverse(parentTransform.getWorldRotation()) * quat);
+	}
+	else
+	{
+		setLocalRotation(quat);
+	}
+}
+void Transformation::setLocalScale(glm::vec3 scale)
 {
 	m_scale = scale;
-
-	m_change = true;
 }
 
-glm::vec3 Transformation::getPosition() const
+glm::vec3 Transformation::getLocalPosition() const
 {
 	return m_translation;
 }
 
-glm::quat Transformation::getLocalOrientation() const
+glm::vec3 Transformation::getWorldPosition() const
 {
-	return m_orientationLocal;
+	auto parent = m_entity.getParent();
+	if (parent.valid())
+	{
+		auto& parentTransform = parent.getComponent<Transformation>();
+		return parentTransform.getWorldPosition() + m_translation;
+	}
+	else
+	{
+		return m_translation;
+	}
 }
 
-glm::quat Transformation::getWorldOrientation() const
+glm::quat Transformation::getLocalRotation() const
 {
-	return m_orientationWorld;
+	return m_rotation;
 }
 
-glm::vec3 Transformation::getScale() const
+glm::quat Transformation::getWorldRotation() const
+{
+	auto parent = m_entity.getParent();
+	if (parent.valid())
+	{
+		auto& parentTransform = parent.getComponent<Transformation>();
+		return parentTransform.getWorldRotation() * m_rotation;
+	}
+	else
+	{
+		return m_rotation;
+	}
+}
+
+glm::vec3 Transformation::getLocalScale() const
 {
 	return m_scale;
+}
+
+glm::vec3 Transformation::getWorldScale() const
+{
+	auto parent = m_entity.getParent();
+	if (parent.valid())
+	{
+		auto& parentTransform = parent.getComponent<Transformation>();
+		return parentTransform.getWorldScale() * m_scale;
+	}
+	else
+	{
+		return m_scale;
+	}
 }
 
 void Transformation::translate(float x, float y, float z)
@@ -127,8 +188,6 @@ void Transformation::translate(float x, float y, float z)
 	m_translation.x += x;
 	m_translation.y += y;
 	m_translation.z += z;
-
-	m_change = true;
 }
 
 void Transformation::translate(glm::vec3 translation)
@@ -141,8 +200,6 @@ void Transformation::scale(float x, float y, float z)
 	m_scale.x *= x;
 	m_scale.y *= y;
 	m_scale.z *= z;
-
-	m_change = true;
 }
 
 void Transformation::scale(glm::vec3 scaleFactor)
@@ -152,24 +209,18 @@ void Transformation::scale(glm::vec3 scaleFactor)
 
 void Transformation::rotate(glm::vec3 eulers)
 {
-	m_orientationLocal = glm::quat(eulers) * m_orientationLocal;
-
-	m_change = true;
+	m_rotation = glm::quat(eulers) * m_rotation;
 }
 
 void Transformation::rotateLerp(glm::vec3 axis, float angle, float t)
 {
-	m_orientationLocal = glm::mix(m_orientationLocal, glm::angleAxis(degToRad(angle), axis) * m_orientationLocal, t);// *m_orientationLocal;
-
-	m_change = true;
+	m_rotation = glm::mix(m_rotation, glm::angleAxis(degToRad(angle), axis) * m_rotation, t);// *m_orientationLocal;
 }
 
 
 void Transformation::rotate(glm::vec3 axis, float angle)
 {
-	m_orientationLocal = glm::angleAxis(degToRad(angle), axis) * m_orientationLocal;
-
-	m_change = true;
+	m_rotation = glm::angleAxis(degToRad(angle), axis) * m_rotation;
 }
 
 void Transformation::rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle)
@@ -178,8 +229,6 @@ void Transformation::rotateAround(glm::vec3 pivot, glm::vec3 axis, float angle)
 	auto pInv = glm::translate(glm::mat4(1.0f), -pivot);
 
 	m_relativeRot = p * glm::mat4_cast(glm::angleAxis(degToRad(angle), axis)) * pInv * m_relativeRot;
-
-	m_change = true;
 }
 
 
@@ -189,6 +238,4 @@ void Transformation::rotateAroundLerp(glm::vec3 pivot, glm::vec3 axis, float ang
 	auto pInv = glm::translate(glm::mat4(1.0f), -pivot);
 
 	m_relativeRot = p * glm::mat4_cast(glm::mix(glm::toQuat(m_relativeRot), glm::angleAxis(degToRad(angle), axis) * glm::toQuat(m_relativeRot), t)) * pInv;// *m_relativeRot;
-
-	m_change = true;
 }

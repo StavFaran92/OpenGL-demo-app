@@ -8,21 +8,19 @@ DefaultMaterial::DefaultMaterial(float shine = 0) : Material(shine)
 {
 	//TODO refactor
 //TODO optimize: can load textuer on startup and simply assign texture Ptr / ID
-	auto texturediff = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png");
+	auto texturediff = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png", Texture::Type::Diffuse);
 	if (!texturediff)
 	{
 		logError("Failed to load resource");
 		return;
 	}
-	texturediff->setType(Texture::Type::Diffuse);
 
-	auto textureSpec = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png");
+	auto textureSpec = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png", Texture::Type::Specular);
 	if (!textureSpec)
 	{
 		logError("Failed to load resource");
 		return;
 	}
-	textureSpec->setType(Texture::Type::Specular);
 
 	// Init the default material with default textures
 	m_defaultTextureHandlers.push_back(std::shared_ptr<TextureHandler>(texturediff));

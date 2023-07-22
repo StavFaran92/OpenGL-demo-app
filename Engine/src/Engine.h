@@ -19,6 +19,8 @@ class ModelImporter;
 class MemoryManagement;
 class ObjectManager;
 class TimeManager;
+class PhysicsSystem;
+class RandomNumberGenerator;
 
 class EngineAPI Engine
 {
@@ -37,6 +39,10 @@ public:
     MemoryManagement* getMemoryManagementSystem() const;
     ObjectManager* getObjectManager() const;
     TimeManager* getTimeManager() const;
+    PhysicsSystem* getPhysicsSystem() const;
+    RandomNumberGenerator* getRandomSystem() const;
+
+    
 
     void pause();
     void resume();
@@ -80,6 +86,8 @@ protected:
     std::shared_ptr<MemoryManagement> m_memoryManagementSystem;
     std::shared_ptr<ObjectManager> m_objectManager;
     std::shared_ptr<TimeManager> m_timeManager;
+    std::shared_ptr<PhysicsSystem> m_physicsSystem;
+    std::shared_ptr<RandomNumberGenerator> m_randomSystem;
 
 
 };

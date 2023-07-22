@@ -1,6 +1,7 @@
 #include "Entity.h"
 
-#include "Component.h"
+#include "Transformation.h"
+#include <iostream>
 
 Entity Entity::EmptyEntity{};
 
@@ -8,52 +9,53 @@ void Entity::setParent(Entity entity)
 {
     assert(valid() && "Invalid entity.");
     assert(entity->valid() && "Invalid parent entity.");
-    assert(entity->HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
-    auto& hierarchy = getComponent<HierarchyComponent>();
-    hierarchy.parent = entity;
+    assert(entity->HasComponent<Transformation>() && "Entity does not contain HierarchyComponent.");
+    auto& transform = getComponent<Transformation>();
+    transform.setParent(entity);
 }
 
-Entity Entity::getParent()
+Entity Entity::getParent() const
 {
     assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
-    auto& hierarchy = getComponent<HierarchyComponent>();
-    return hierarchy.parent;
+    auto& transform = getComponent<Transformation>();
+    return transform.getParent();
 }
 
-// Specialized version for ScriptableEntity
-template<>
-ScriptableEntity& Entity::getComponent<ScriptableEntity>()
-{
-    assert(valid() && "Invalid entity.");
-    assert(m_scene->getRegistry().has<NativeScriptComponent>(m_entity) && "Component does not exist.");
-    auto script = m_scene->getRegistry().get<NativeScriptComponent>(m_entity).script;
-    assert(script && "No script available.");
-    return *script;
-}
+//// Specialized version for ScriptableEntity
+//template<>
+//ScriptableEntity& Entity::getComponent()
+//{
+//    assert(valid() && "Invalid entity.");
+//    assert(m_scene->getRegistry().has<NativeScriptComponent>(m_entity) && "Component does not exist.");
+//    auto script = m_scene->getRegistry().get<NativeScriptComponent>(m_entity).script;
+//    assert(script && "No script available.");
+//    return *script;
+//}
+//
+//template<>
+//NativeScriptComponent& Entity::addComponent<NativeScriptComponent>(NativeScriptComponent* nsc)
+//{
+//    assert(valid() && "Invalid entity.");
+//    NativeScriptComponent& component = m_scene->getRegistry().emplace_or_replace<NativeScriptComponent>(m_entity, *nsc);
+//    component.entity = Entity(m_entity, m_scene);
+//
+//    std::cout << "test \n";
+//
+//    m_components.insert(typeid(nsc).name());
+//
+//    return component;
+//}
 
-Entity Entity::removeParent()
-{
-    auto parent = getParent();
-    setParent(EmptyEntity);
-    return parent;
-}
-
-void Entity::addChildren(Entity entity)
+void Entity::removeParent()
 {
     assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
-    auto& hierarchy = getComponent<HierarchyComponent>();
-    hierarchy.children[entity.handlerID()] = entity;
-}
-void Entity::removeChildren(Entity entity)
-{
-    assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
-    auto& hierarchy = getComponent<HierarchyComponent>();
-    hierarchy.children.erase(entity.handlerID());
+    auto& transform = getComponent<Transformation>();
+    return transform.removeParent();
 }
 
-auto Entity::getChildren()
+std::unordered_map<entity_id, Entity> Entity::getChildren()
 {
     assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
-    auto& hierarchy = getComponent<HierarchyComponent>();
-    return hierarchy.children;
+    auto& transform = getComponent<Transformation>();
+    return transform.getChildren();
 }

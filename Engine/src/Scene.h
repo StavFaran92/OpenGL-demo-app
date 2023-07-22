@@ -36,6 +36,14 @@ class Mesh;
 class Transformation;
 class InstanceBatch;
 class SkyboxRenderer;
+class ICamera;
+class PhysicsSystem;
+struct RigidBodyComponent;
+namespace physx {
+	class PxScene;
+	class PxShape;
+	class PxRigidActor;
+}
 template<typename T> class ObjectHandler;
 
 class EngineAPI Scene
@@ -66,14 +74,11 @@ public:
 
 	uint32_t getID() const { return m_id; }
 
-	bool isSelected(uint32_t id) const;
 	bool isObjectSelectionEnabled() const;
 	void enableObjectSelection(bool isEnabled);
 	void selectObject(uint32_t id);
 	void clearObjectSelection();
 	bool isPickingPhaseActive() const;
-
-	//void addGUI();
 
 	RenderCallback* addRenderCallback(RenderPhase renderPhase, RenderCallback renderCallback);
 	void removeRenderCallback(RenderCallback* callback);
@@ -82,8 +87,10 @@ public:
 
 	Entity createEntity();
 	void removeEntity(const Entity& e);
-	
 
+	ICamera* getActiveCamera() const;
+	
+	void displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params);
 
 private:
 	// -------------------- Methods -------------------- //
@@ -91,6 +98,16 @@ private:
 	void update(float deltaTime);
 	inline void SetID(uint32_t id) { m_id = id; }
 	void draw(float deltaTime);
+
+	void startSimulation();
+	void createSimulationActors(PhysicsSystem* physicsSystem);
+	void createActor(entt::entity entity, PhysicsSystem* physicsSystem, RigidBodyComponent& rb);
+	void stopSimulation();
+	bool isSimulationActive() const;
+	void createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body, Entity e, bool recursive);
+
+	void onRigidBodyConstruct(entt::registry& registry, entt::entity entity);
+	void onCollisionConstruct(entt::registry& registry, entt::entity entity);
 
 	void init(Context* context);
 	void clear();
@@ -114,4 +131,13 @@ private:
 
 	entt::registry m_registry;
 	std::map<RenderPhase, std::vector<RenderCallback>> m_renderCallbacks;
+
+	physx::PxScene* m_PhysicsScene = nullptr;
+
+	bool m_isSimulationActive = false;
+
+	Mesh* m_tempBoxMesh = nullptr;
+	Shader* m_tempOutlineShader = nullptr;
+
+	ICamera* m_activeCamera = nullptr;
 };

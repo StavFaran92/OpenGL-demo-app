@@ -12,6 +12,7 @@
 #include "ObjectHandler.h"
 #include "Scene.h"
 #include "Entity.h"
+#include "Component.h"
 
 PostProcessProjector::PostProcessProjector(Scene* scene)
 {
@@ -104,9 +105,9 @@ void PostProcessProjector::draw()
 
 	m_renderer->SetDrawType(Renderer::DrawType::Triangles);
 	
-	auto& mesh = m_quad.getComponent<Mesh>();
+	auto& mesh = m_quad.getComponent<MeshComponent>();
 
-	mesh.render(*m_screenShader, *m_renderer);
+	mesh.mesh->render(*m_screenShader, *m_renderer);
 
 	m_textureHandler->unbind();
 }

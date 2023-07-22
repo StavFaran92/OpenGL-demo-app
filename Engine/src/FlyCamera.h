@@ -1,24 +1,24 @@
 #pragma once
-#include "ICamera.h"
+#include "ScriptableEntity.h"
 
 #include "Core.h"
 
 #include "Keyboard.h"
 
-class EngineAPI FlyCamera : public ICamera
+class EngineAPI FlyCamera : public ScriptableEntity
 {
 public:
 	FlyCamera(glm::vec3 startPosition, float startYaw, float startPitch, float startMoveSpeed, float startTurnSpeed);
 
-	void keyControl(double deltaTime) override;
-	void OnMouseMotion(float xChange, float yChange) override;
-	void OnMousePressed(SDL_MouseButtonEvent& e) override;
-	void OnMouseReleased(SDL_MouseButtonEvent& e) override;
+	void keyControl(double deltaTime);
+	void OnMouseMotion(float xChange, float yChange);
+	void OnMousePressed(SDL_MouseButtonEvent& e);
+	void OnMouseReleased(SDL_MouseButtonEvent& e);
 
-	inline glm::mat4 getView() override { return glm::lookAt(m_position, m_position + m_front, m_up); }
-	inline glm::vec3 getPosition() override { return m_position; }
+	//inline glm::mat4 getView() override { return glm::lookAt(m_position, m_position + m_front, m_up); }
+	//inline glm::vec3 getPosition() override { return m_position; }
 
-	void update(float deltaTime) override;
+	//void update(float deltaTime) override;
 
 	~FlyCamera();
 private:

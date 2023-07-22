@@ -27,20 +27,14 @@
 
 Renderer::Renderer()
 {
-	//m_camera = std::make_shared<FlyCamera>(glm::vec3(0.0f, 0.0f, 0.0f), -90.0f, 0.0f, 1.0f, .5f);
-	m_camera = std::make_shared<EditorCamera>(glm::vec3(5.0f, 5.0f, 5.0f), 1.0f, .5f);
 	m_projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
-}
-
-Renderer::Renderer(const Renderer& other)
-{
-	m_camera = other.m_camera;
-	m_projection = other.m_projection;
 }
 
 void Renderer::draw(const VertexArrayObject& vao, Shader& shader) const
 {
-	SetMVP(shader);
+   //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	//SetMVP(shader);
 
 	vao.Bind();
 
@@ -53,22 +47,9 @@ void Renderer::draw(const VertexArrayObject& vao, Shader& shader) const
 		glDrawElements(m_drawType, vao.GetIndexCount(), GL_UNSIGNED_INT, 0);
 	}
 
-}
 
-void Renderer::SetMVP(Shader& shader) const
-{
-	shader.setProjectionMatrix(m_projection);
-	shader.setViewMatrix(m_camera->getView());
-}
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-std::shared_ptr<ICamera> Renderer::getCamera() const
-{
-	return m_camera;
-}
-
-void Renderer::setCamera(std::shared_ptr<ICamera> camera)
-{
-	m_camera = camera;
 }
 
 glm::mat4 Renderer::getProjection() const
@@ -130,9 +111,15 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
     //    }
     //}
 
-    // Set model matrix
+    // Model
     if(renderParams.transform)
-        shaderToUse->setModelMatrix(renderParams.transform->getMatrix());
+        shaderToUse->setModelMatrix(renderParams.transform->getWorldTransformation());
+
+    // View
+    if(renderParams.camera)
+        shaderToUse->setViewMatrix(renderParams.camera->getView());
+
+    shaderToUse->setProjectionMatrix(m_projection);
 
     // Set time elapsed
     auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
@@ -160,6 +147,11 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
     }
 
     shaderToUse->release();
+}
+
+void Renderer::enableWireframeMode(bool enable)
+{
+    m_wireFrameMode = enable;
 }
 
 void Renderer::clear() const

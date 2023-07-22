@@ -5,7 +5,9 @@
 #include "Scene.h"
 //#include "Component.h"
 
+
 using entity_id = entt::id_type;
+struct NativeScriptComponent;
 
 /**
  * @class Entity
@@ -42,6 +44,12 @@ public:
     T& addComponent(T* componentInstance)
     {
         assert(valid() && "Invalid entity.");
+
+        if constexpr (std::is_same_v<T, NativeScriptComponent>)
+        {
+            componentInstance->entity = Entity(m_entity, m_scene);
+        }
+
         T& component = m_scene->getRegistry().emplace_or_replace<T>(m_entity, *componentInstance);
 
         m_components.insert(typeid(T).name());
@@ -60,7 +68,13 @@ public:
     T& addComponent(Args&&... args)
     {
         assert(valid() && "Invalid entity.");
+
         T& component = m_scene->getRegistry().emplace_or_replace<T>(m_entity, std::forward<Args>(args)...);
+
+        if constexpr (std::is_same_v<T, NativeScriptComponent>)
+        {
+            component.entity = Entity(m_entity, m_scene);
+        }
 
         m_components.insert(typeid(T).name());
 
@@ -73,7 +87,7 @@ public:
      * @return Reference to the requested component
      */
     template<typename T>
-    T& getComponent()
+    T& getComponent() const
     {
         assert(valid() && "Invalid entity.");
         assert(m_scene->getRegistry().has<T>(m_entity) && "Component does not exist.");
@@ -158,12 +172,14 @@ public:
 
     }
 
+    
+
     void setParent(Entity entity);
-    Entity removeParent();
-    Entity getParent();
+    void removeParent();
+    Entity getParent() const;
     void addChildren(Entity entity);
     void removeChildren(Entity entity);
-    auto getChildren();
+    std::unordered_map<entity_id, Entity> getChildren();
 
     /**
      * @brief Checks if the entity is valid
@@ -177,6 +193,11 @@ public:
     bool operator==(const Entity& other)
     {
         return m_scene == other.m_scene && m_entity == other.m_entity;
+    }
+
+    bool operator!=(const Entity& other)
+    {
+        return m_scene != other.m_scene || m_entity != other.m_entity;
     }
 
     inline entt::entity handler() const
@@ -197,3 +218,4 @@ private:
     std::set<std::string> m_components;
 
 };
+
