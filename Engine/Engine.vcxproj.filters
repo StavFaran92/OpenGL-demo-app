@@ -192,6 +192,7 @@
     <ClCompile Include="src\ShapeFactory.cpp" />
     <ClCompile Include="src\PhysicsSystem.cpp" />
     <ClCompile Include="src\MeshFactory.cpp" />
+    <ClCompile Include="src\ShadowSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">

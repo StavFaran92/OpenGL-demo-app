@@ -78,3 +78,10 @@ void FrameBufferObject::attachTexture(uint32_t textureID)
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
 }
+
+void FrameBufferObject::attachTexture(uint32_t textureID, uint32_t attachementType)
+{
+	VALIDATE_BIND;
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, attachementType, GL_TEXTURE_2D, textureID, 0);
+}

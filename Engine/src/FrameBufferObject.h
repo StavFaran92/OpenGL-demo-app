@@ -23,6 +23,7 @@ public:
 
 	void attachRenderBuffer(uint32_t renderBufferID, AttachmentType type);
 	void attachTexture(uint32_t textureID);
+	void attachTexture(uint32_t textureID, uint32_t attachementType);
 
 private:
 	uint32_t m_id = 0;

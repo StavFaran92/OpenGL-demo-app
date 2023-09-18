@@ -37,6 +37,7 @@
 #include "PhysXUtils.h"
 #include "Box.h"
 #include "EditorCamera.h"
+#include "ShadowSystem.h"
 #include <GL/glew.h>
 
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
@@ -108,6 +109,11 @@ void Scene::init(Context* context)
 	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 1.0f);
 	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LIMITS, 1.0f);
 
+	m_shadowSystem = std::make_shared<ShadowSystem>();
+	if (!m_shadowSystem->init(this))
+	{
+		logError("Shadow System init failed!");
+	}
 	
 #endif // SGE_DEBUG
 

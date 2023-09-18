@@ -38,6 +38,7 @@ class InstanceBatch;
 class SkyboxRenderer;
 class ICamera;
 class PhysicsSystem;
+class ShadowSystem;
 struct RigidBodyComponent;
 namespace physx {
 	class PxScene;
@@ -128,6 +129,7 @@ private:
 	std::shared_ptr<PostProcessProjector> m_postProcessProjector = nullptr;
 	std::shared_ptr<CoroutineSystem> m_coroutineManager = nullptr;
 	std::shared_ptr<ObjectPicker> m_objectPicker = nullptr;
+	std::shared_ptr<ShadowSystem> m_shadowSystem;
 
 	entt::registry m_registry;
 	std::map<RenderPhase, std::vector<RenderCallback>> m_renderCallbacks;

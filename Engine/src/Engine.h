@@ -89,6 +89,5 @@ protected:
     std::shared_ptr<PhysicsSystem> m_physicsSystem;
     std::shared_ptr<RandomNumberGenerator> m_randomSystem;
 
-
 };
 

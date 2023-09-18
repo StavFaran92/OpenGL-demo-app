@@ -20,6 +20,7 @@
 #include "TimeManager.h"
 #include "PhysicsSystem.h"
 #include "Random.h"
+#include "ShadowSystem.h"
 
 #include "Application.h"
 #include "SDL.h"
