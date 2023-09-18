@@ -6,6 +6,10 @@
 #include "Logger.h"
 #include "Scene.h"
 #include "IRenderer.h"
+#include "Component.h"
+#include "Engine.h"
+#include "Window.h"
+#include "DirectionalLight.h"
 
 const unsigned int SHADOW_WIDTH = 1024;
 const unsigned int SHADOW_HEIGHT = 1024;
@@ -53,18 +57,43 @@ void ShadowSystem::renderToDepthMap(const IRenderer::Params* params)
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	// Configure Shadow pass matrices
+	auto entt = params->registry->view<DirectionalLight>().front();
+	Entity e{ entt, params->scene };
+	auto& dirLight = e.getComponent<DirectionalLight>();
 
-	// Render Scene
-	for (auto&& [entity, mesh, transform, renderable] :
-		params->registry.view<MeshComponent, Transformation, RenderableComponent>().each())
+	//todo verify exists
+
+	// Generate Orthogonal projection
+	float near_plane = 1.0f, far_plane = 7.5f;
+	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+
+	glm::mat4 dirLightView = glm::lookAt(
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		dirLight.getDirection(),
+		glm::vec3(0.0f, 1.0f, 0.0f));
+
+	glm::mat4 lightSpaceMatrix = lightProjection * dirLightView;
+
+	// Render Scene 
+	for (auto&& [entity, mesh, transform, renderable] : 
+		params->registry->view<MeshComponent, Transformation, RenderableComponent>().each())
 	{
+		auto drawQueueRenderParams = (IRenderer::DrawQueueRenderParams*)params;
+
+		Entity entityhandler{ entity, m_scene };
+		drawQueueRenderParams->entity = &entityhandler;
+		drawQueueRenderParams->mesh = mesh.mesh.get();
+		drawQueueRenderParams->transform = &transform;
+
 		// draw model
-		params->renderer->render(params);
+		params->renderer->render(*drawQueueRenderParams);
 	};
 
 	// Unbind FBO
 	m_fbo.unbind();
 
-	// Set viewport back to default
-	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+	// Set viewport back to normal
+	auto width = Engine::get()->getWindow()->getWidth();
+	auto height = Engine::get()->getWindow()->getHeight();
+	glViewport(0, 0, width, height);
 }

@@ -20,6 +20,8 @@ public:
 
 	void useLight(Shader& shader, int index) override;
 
+	glm::vec3 getDirection() const;
+
 private:
 	glm::vec3 m_direction;
 };

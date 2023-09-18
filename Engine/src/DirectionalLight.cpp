@@ -9,3 +9,8 @@ void DirectionalLight::useLight(Shader& shader, int index)
 
 	shader.setValue(m_name + "[" + std::to_string(index) + "]" + ".direction", m_direction);
 }
+
+glm::vec3 DirectionalLight::getDirection() const
+{
+	return m_direction;
+}
