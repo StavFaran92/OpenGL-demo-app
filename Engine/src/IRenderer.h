@@ -36,6 +36,7 @@ public:
 		Mesh* mesh = nullptr;
 		Transformation* transform = nullptr;
 		Shader* shader = nullptr;
+		glm::mat4* projection = nullptr;
 	};
 	enum class DrawType {
 		Lines,

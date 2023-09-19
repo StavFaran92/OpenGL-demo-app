@@ -112,14 +112,27 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
     //}
 
     // Model
-    if(renderParams.transform)
+    if (renderParams.transform)
+    {
         shaderToUse->setModelMatrix(renderParams.transform->getWorldTransformation());
+    }
 
     // View
-    if(renderParams.camera)
+    if (renderParams.camera)
+    {
         shaderToUse->setViewMatrix(renderParams.camera->getView());
+    }
 
-    shaderToUse->setProjectionMatrix(m_projection);
+    if (renderParams.projection)
+    {
+        shaderToUse->setProjectionMatrix(*renderParams.projection);
+    }
+    else
+    {
+        // no projection specified, use default perspective projection instead
+        shaderToUse->setProjectionMatrix(m_projection);
+    }
+    
 
     // Set time elapsed
     auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
