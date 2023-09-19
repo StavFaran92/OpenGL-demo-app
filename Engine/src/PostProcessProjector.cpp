@@ -18,7 +18,7 @@ PostProcessProjector::PostProcessProjector(Scene* scene)
 {
 	m_scene = scene;
 
-	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const IRenderer::Params* params) {
+	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const IRenderer::DrawQueueRenderParams* params) {
 
 		// Post process Enable writing
 		if (isEnabled())
@@ -27,7 +27,7 @@ PostProcessProjector::PostProcessProjector(Scene* scene)
 		}
 	});
 
-	scene->addRenderCallback(Scene::RenderPhase::POST_RENDER_END, [=](const IRenderer::Params* params) {
+	scene->addRenderCallback(Scene::RenderPhase::POST_RENDER_END, [=](const IRenderer::DrawQueueRenderParams* params) {
 
 		// Post process Enable writing
 		if (isEnabled())

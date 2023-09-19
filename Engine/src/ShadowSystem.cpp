@@ -10,6 +10,7 @@
 #include "Engine.h"
 #include "Window.h"
 #include "DirectionalLight.h"
+#include "Transformation.h"
 
 const unsigned int SHADOW_WIDTH = 1024;
 const unsigned int SHADOW_HEIGHT = 1024;
@@ -18,7 +19,7 @@ bool ShadowSystem::init(Scene* scene)
 {
 	m_scene = scene;
 
-	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const IRenderer::Params* params) {
+	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const IRenderer::DrawQueueRenderParams* params) {
 
 		renderToDepthMap(params);
 	});
@@ -45,7 +46,7 @@ bool ShadowSystem::init(Scene* scene)
 	return true;
 }
 
-void ShadowSystem::renderToDepthMap(const IRenderer::Params* params)
+void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* params)
 {
 	// Set shadow map viewport
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
@@ -84,7 +85,7 @@ void ShadowSystem::renderToDepthMap(const IRenderer::Params* params)
 		Entity entityhandler{ entity, m_scene };
 		drawQueueRenderParams->entity = &entityhandler;
 		drawQueueRenderParams->mesh = mesh.mesh.get();
-		drawQueueRenderParams->transform = &transform;
+		drawQueueRenderParams->model = transform.getWorldTransformation();
 
 		// draw model
 		params->renderer->render(*drawQueueRenderParams);

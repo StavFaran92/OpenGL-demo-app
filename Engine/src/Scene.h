@@ -60,7 +60,7 @@ public:
 		POST_RENDER_END
 	};
 
-	using RenderCallback = std::function<void(const IRenderer::Params*)>;
+	using RenderCallback = std::function<void(const IRenderer::DrawQueueRenderParams*)>;
 public:
 	// -------------------- Methods -------------------- //
 	Scene(Context* context);

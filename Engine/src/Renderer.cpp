@@ -112,26 +112,13 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
     //}
 
     // Model
-    if (renderParams.transform)
-    {
-        shaderToUse->setModelMatrix(renderParams.transform->getWorldTransformation());
-    }
+    shaderToUse->setModelMatrix(renderParams.model);
 
     // View
-    if (renderParams.camera)
-    {
-        shaderToUse->setViewMatrix(renderParams.camera->getView());
-    }
+    shaderToUse->setViewMatrix(renderParams.view);
 
-    if (renderParams.projection)
-    {
-        shaderToUse->setProjectionMatrix(*renderParams.projection);
-    }
-    else
-    {
-        // no projection specified, use default perspective projection instead
-        shaderToUse->setProjectionMatrix(m_projection);
-    }
+    // Projection
+    shaderToUse->setProjectionMatrix(renderParams.projection);
     
 
     // Set time elapsed

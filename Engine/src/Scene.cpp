@@ -49,14 +49,13 @@ void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams para
 		params.entity = &e;
 		params.shader = m_tempOutlineShader;
 		params.mesh = mesh->mesh.get();
-		params.transform = &e.getComponent<Transformation>();
+		params.model = e.getComponent<Transformation>().getWorldTransformation();
 
 		m_renderer->render(params);
 
 		params.entity = nullptr;
 		params.shader = nullptr;
 		params.mesh = nullptr;
-		params.transform = nullptr;
 	}
 
 	auto children = e.getChildren();
@@ -109,11 +108,11 @@ void Scene::init(Context* context)
 	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 1.0f);
 	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LIMITS, 1.0f);
 
-	m_shadowSystem = std::make_shared<ShadowSystem>();
-	if (!m_shadowSystem->init(this))
-	{
-		logError("Shadow System init failed!");
-	}
+	//m_shadowSystem = std::make_shared<ShadowSystem>();
+	//if (!m_shadowSystem->init(this))
+	//{
+	//	logError("Shadow System init failed!");
+	//}
 	
 #endif // SGE_DEBUG
 
@@ -203,7 +202,8 @@ void Scene::draw(float deltaTime)
 	params.context = m_context;
 	params.registry = &m_registry;
 	params.renderer = m_renderer.get();
-	params.camera = m_activeCamera;
+	params.view = m_activeCamera->getView();
+	params.projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);;
 
 	// PRE Render Phase
 	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])
@@ -223,7 +223,7 @@ void Scene::draw(float deltaTime)
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;
 		params.mesh = mesh.mesh.get();
-		params.transform = &transform;
+		params.model = transform.getWorldTransformation();
 			
 		for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_PRE_RENDER])
 		{
@@ -245,7 +245,6 @@ void Scene::draw(float deltaTime)
 
 		params.entity = nullptr;
 		params.mesh = nullptr;
-		params.transform = nullptr;
 	};
 
 	// POST Render Phase
@@ -266,14 +265,13 @@ void Scene::draw(float deltaTime)
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;
 		params.mesh = mesh.mesh.get();
-		params.transform = &transform;
+		params.model = transform.getWorldTransformation();
 		params.shader = &shader;
 
 		m_skyboxRenderer->render(params);
 
 		params.entity = nullptr;
 		params.mesh = nullptr;
-		params.transform = nullptr;
 		params.shader = nullptr;
 	}
 

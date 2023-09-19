@@ -3,9 +3,9 @@
 #include "Core.h"
 
 #include "FrameBufferObject.h"
+#include "IRenderer.h"
 
 class Scene;
-class IRenderer;
 
 class EngineAPI ShadowSystem
 {
@@ -18,7 +18,7 @@ public:
 
 	bool init(Scene* scene);
 
-	void renderToDepthMap(const IRenderer::Params* params);
+	void renderToDepthMap(const IRenderer::DrawQueueRenderParams* params);
 private:
 	bool m_isInit = false;
 

@@ -21,22 +21,22 @@ class ICamera;
 
 class EngineAPI IRenderer {
 public:
-	struct Params
+	struct DrawQueueRenderParams
 	{
 		Scene* scene = nullptr;
 		Context* context = nullptr;
 		IRenderer* renderer = nullptr;
 		entt::registry* registry = nullptr;
-		ICamera* camera = nullptr;
-	};
+		
 
-	struct DrawQueueRenderParams : public Params
-	{
 		Entity* entity = nullptr;
 		Mesh* mesh = nullptr;
-		Transformation* transform = nullptr;
 		Shader* shader = nullptr;
-		glm::mat4* projection = nullptr;
+
+		// MVP
+		glm::mat4 model;
+		glm::mat4 view;
+		glm::mat4 projection;
 	};
 	enum class DrawType {
 		Lines,
