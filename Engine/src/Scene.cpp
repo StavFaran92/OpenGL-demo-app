@@ -49,13 +49,15 @@ void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams para
 		params.entity = &e;
 		params.shader = m_tempOutlineShader;
 		params.mesh = mesh->mesh.get();
-		params.model = e.getComponent<Transformation>().getWorldTransformation();
+		auto tempModel = e.getComponent<Transformation>().getWorldTransformation();
+		params.model = &tempModel;
 
 		m_renderer->render(params);
 
 		params.entity = nullptr;
 		params.shader = nullptr;
 		params.mesh = nullptr;
+		params.model = nullptr;
 	}
 
 	auto children = e.getChildren();
@@ -108,11 +110,13 @@ void Scene::init(Context* context)
 	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 1.0f);
 	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LIMITS, 1.0f);
 
-	//m_shadowSystem = std::make_shared<ShadowSystem>();
-	//if (!m_shadowSystem->init(this))
-	//{
-	//	logError("Shadow System init failed!");
-	//}
+	m_shadowSystem = std::make_shared<ShadowSystem>();
+	if (!m_shadowSystem->init(this))
+	{
+		logError("Shadow System init failed!");
+	}
+
+	m_defaultPerspectiveProjection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
 	
 #endif // SGE_DEBUG
 
@@ -202,8 +206,9 @@ void Scene::draw(float deltaTime)
 	params.context = m_context;
 	params.registry = &m_registry;
 	params.renderer = m_renderer.get();
-	params.view = m_activeCamera->getView();
-	params.projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);;
+	auto tempView = m_activeCamera->getView();
+	params.view = &tempView;
+	params.projection = &m_defaultPerspectiveProjection;
 
 	// PRE Render Phase
 	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])
@@ -223,7 +228,8 @@ void Scene::draw(float deltaTime)
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;
 		params.mesh = mesh.mesh.get();
-		params.model = transform.getWorldTransformation();
+		auto tempModel = transform.getWorldTransformation();
+		params.model = &tempModel;
 			
 		for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_PRE_RENDER])
 		{
@@ -245,6 +251,7 @@ void Scene::draw(float deltaTime)
 
 		params.entity = nullptr;
 		params.mesh = nullptr;
+		params.model = nullptr;
 	};
 
 	// POST Render Phase
@@ -265,7 +272,8 @@ void Scene::draw(float deltaTime)
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;
 		params.mesh = mesh.mesh.get();
-		params.model = transform.getWorldTransformation();
+		auto tempModel = transform.getWorldTransformation();
+		params.model = &tempModel;
 		params.shader = &shader;
 
 		m_skyboxRenderer->render(params);
@@ -273,6 +281,7 @@ void Scene::draw(float deltaTime)
 		params.entity = nullptr;
 		params.mesh = nullptr;
 		params.shader = nullptr;
+		params.model = nullptr;
 	}
 
 #if 0

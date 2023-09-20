@@ -11,6 +11,7 @@
 #include "Window.h"
 #include "DirectionalLight.h"
 #include "Transformation.h"
+#include "Shader.h"
 
 const unsigned int SHADOW_WIDTH = 1024;
 const unsigned int SHADOW_HEIGHT = 1024;
@@ -42,6 +43,8 @@ bool ShadowSystem::init(Scene* scene)
 	}
 
 	m_fbo.unbind();
+
+	m_simpleDepthShader = Shader::createShared<Shader>("Resources/Content/Shaders/SimpleDepthShader.vert", "Resources/Content/Shaders/SimpleDepthShader.frag");
 
 	return true;
 }
@@ -76,19 +79,27 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 
 	glm::mat4 lightSpaceMatrix = lightProjection * dirLightView;
 
+	auto drawQueueRenderParams = *params;
+
+	drawQueueRenderParams.shader = m_simpleDepthShader.get();
+	drawQueueRenderParams.shader->setValue("lightSpaceMatrix", lightSpaceMatrix);
+
 	// Render Scene 
 	for (auto&& [entity, mesh, transform, renderable] : 
 		params->registry->view<MeshComponent, Transformation, RenderableComponent>().each())
 	{
-		auto drawQueueRenderParams = (IRenderer::DrawQueueRenderParams*)params;
+		
 
 		Entity entityhandler{ entity, m_scene };
-		drawQueueRenderParams->entity = &entityhandler;
-		drawQueueRenderParams->mesh = mesh.mesh.get();
-		drawQueueRenderParams->model = transform.getWorldTransformation();
+		drawQueueRenderParams.entity = &entityhandler;
+		drawQueueRenderParams.mesh = mesh.mesh.get();
+		drawQueueRenderParams.shader->setModelMatrix(transform.getWorldTransformation());
+		drawQueueRenderParams.model = nullptr;
+		drawQueueRenderParams.view = nullptr;
+		drawQueueRenderParams.projection = nullptr;
 
 		// draw model
-		params->renderer->render(*drawQueueRenderParams);
+		params->renderer->render(drawQueueRenderParams);
 	};
 
 	// Unbind FBO

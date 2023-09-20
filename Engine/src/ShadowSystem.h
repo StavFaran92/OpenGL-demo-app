@@ -5,6 +5,7 @@
 #include "FrameBufferObject.h"
 #include "IRenderer.h"
 
+class Shader;
 class Scene;
 
 class EngineAPI ShadowSystem
@@ -26,4 +27,5 @@ private:
 
 	FrameBufferObject m_fbo;
 	Scene* m_scene = nullptr;
+	std::shared_ptr<Shader> m_simpleDepthShader = nullptr;
 };

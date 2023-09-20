@@ -142,4 +142,6 @@ private:
 	Shader* m_tempOutlineShader = nullptr;
 
 	ICamera* m_activeCamera = nullptr;
+
+	glm::mat4 m_defaultPerspectiveProjection;
 };

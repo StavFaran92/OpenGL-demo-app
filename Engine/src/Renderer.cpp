@@ -112,13 +112,22 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
     //}
 
     // Model
-    shaderToUse->setModelMatrix(renderParams.model);
+    if (renderParams.model)
+    {
+        shaderToUse->setModelMatrix(*renderParams.model);
+    }
 
     // View
-    shaderToUse->setViewMatrix(renderParams.view);
+    if (renderParams.view)
+    {
+        shaderToUse->setViewMatrix(*renderParams.view);
+    }
 
     // Projection
-    shaderToUse->setProjectionMatrix(renderParams.projection);
+    if (renderParams.projection)
+    {
+        shaderToUse->setProjectionMatrix(*renderParams.projection);
+    }
     
 
     // Set time elapsed

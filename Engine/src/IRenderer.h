@@ -34,9 +34,9 @@ public:
 		Shader* shader = nullptr;
 
 		// MVP
-		glm::mat4 model;
-		glm::mat4 view;
-		glm::mat4 projection;
+		glm::mat4* model = nullptr;
+		glm::mat4* view = nullptr;
+		glm::mat4* projection = nullptr;
 	};
 	enum class DrawType {
 		Lines,

@@ -40,9 +40,23 @@ void SkyboxRenderer::render(const DrawQueueRenderParams& renderParams)
     mat.getTextureHandlers()[0]->bind();
 
     //auto view = glm::mat4(glm::mat3(dynamic_cast<Renderer*>(renderer.get())->GetCamera()->getView())); // remove translation from the view matrix
-    shaderToUse->setValue("model", renderParams.model);
-    shaderToUse->setValue("view", glm::mat4(glm::mat3(renderParams.view)));
-    shaderToUse->setValue("projection", renderParams.projection);
+    // Model
+    if (renderParams.model)
+    {
+        shaderToUse->setModelMatrix(*renderParams.model);
+    }
+
+    // View
+    if (renderParams.view)
+    {
+        shaderToUse->setViewMatrix(glm::mat4(glm::mat3(*renderParams.view)));
+    }
+
+    // Projection
+    if (renderParams.projection)
+    {
+        shaderToUse->setProjectionMatrix(*renderParams.projection);
+    }
 
     SetDrawType(Renderer::DrawType::Triangles);
 
