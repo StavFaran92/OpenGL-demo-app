@@ -118,6 +118,7 @@
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Context.cpp" />
     <ClCompile Include="src\Quad.cpp" />
+    <ClCompile Include="src\ScreenBufferDisplay.cpp" />
     <ClCompile Include="src\ShadowSystem.cpp" />
     <ClCompile Include="src\ShapeFactory.cpp" />
     <ClCompile Include="src\Sphere.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="src\PhysicsSystem.h" />
     <ClInclude Include="src\Random.h" />
     <ClInclude Include="src\RenderableComponent.h" />
+    <ClInclude Include="src\ScreenBufferDisplay.h" />
     <ClInclude Include="src\ScriptableEntity.h" />
     <ClInclude Include="src\ShaderExtender.h" />
     <ClInclude Include="src\InstanceBatch.h" />

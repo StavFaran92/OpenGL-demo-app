@@ -92,7 +92,7 @@ void Scene::init(Context* context)
 	{
 		logError("Post process projector failed to init!");
 	}
-	m_postProcessProjector->setEnabled(true);
+	m_postProcessProjector->setEnabled(false);
 
 	m_coroutineManager = std::make_shared<CoroutineSystem>();
 
@@ -319,7 +319,7 @@ void Scene::draw(float deltaTime)
 
 	for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_END])
 	{
-		cb(&params);
+		//cb(&params);
 	}
 }
 

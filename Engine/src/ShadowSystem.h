@@ -7,6 +7,8 @@
 
 class Shader;
 class Scene;
+class ScreenBufferDisplay;
+class TextureHandler;
 
 class EngineAPI ShadowSystem
 {
@@ -28,4 +30,7 @@ private:
 	FrameBufferObject m_fbo;
 	Scene* m_scene = nullptr;
 	std::shared_ptr<Shader> m_simpleDepthShader = nullptr;
+	TextureHandler* m_depthMapTexture = nullptr;
+
+	std::shared_ptr<ScreenBufferDisplay> m_bufferDisplay;
 };

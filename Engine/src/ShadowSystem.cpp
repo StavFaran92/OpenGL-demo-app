@@ -12,6 +12,7 @@
 #include "DirectionalLight.h"
 #include "Transformation.h"
 #include "Shader.h"
+#include "ScreenBufferDisplay.h"
 
 const unsigned int SHADOW_WIDTH = 1024;
 const unsigned int SHADOW_HEIGHT = 1024;
@@ -28,10 +29,10 @@ bool ShadowSystem::init(Scene* scene)
 	m_fbo.bind();
 
 	// Generate 2D texture
-	auto textureHandler = Texture::createEmptyTexture(SHADOW_WIDTH, SHADOW_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
+	m_depthMapTexture = Texture::createEmptyTexture(SHADOW_WIDTH, SHADOW_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
 
 	// Attach texture to FBO
-	m_fbo.attachTexture(textureHandler->getID(), GL_DEPTH_ATTACHMENT);
+	m_fbo.attachTexture(m_depthMapTexture->getID(), GL_DEPTH_ATTACHMENT);
 
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
@@ -45,6 +46,9 @@ bool ShadowSystem::init(Scene* scene)
 	m_fbo.unbind();
 
 	m_simpleDepthShader = Shader::createShared<Shader>("Resources/Content/Shaders/SimpleDepthShader.vert", "Resources/Content/Shaders/SimpleDepthShader.frag");
+
+	m_bufferDisplay = std::make_shared<ScreenBufferDisplay>(m_scene);
+	m_bufferDisplay->init(Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
 
 	return true;
 }
@@ -109,4 +113,6 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 	auto width = Engine::get()->getWindow()->getWidth();
 	auto height = Engine::get()->getWindow()->getHeight();
 	glViewport(0, 0, width, height);
+
+	m_bufferDisplay->draw(m_depthMapTexture);
 }
