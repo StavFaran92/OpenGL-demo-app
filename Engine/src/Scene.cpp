@@ -319,7 +319,7 @@ void Scene::draw(float deltaTime)
 
 	for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_END])
 	{
-		//cb(&params);
+		cb(&params);
 	}
 }
 

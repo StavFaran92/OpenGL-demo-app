@@ -84,7 +84,7 @@ bool Engine::init()
     m_randomSystem = std::make_shared<RandomNumberGenerator>();
 
     auto defaultScene = std::make_shared<Scene>(m_context.get());
-    defaultScene->setPostProcess(true);
+    //defaultScene->setPostProcess(true);
 
     m_context->addScene(defaultScene);
     m_context->setActiveScene(defaultScene->getID());
