@@ -242,7 +242,7 @@ void Scene::draw(float deltaTime)
 		shader.setViewPos(m_activeCamera->getPosition());
 
 		// draw model
-		m_renderer->render(params);
+		//m_renderer->render(params);
 
 		for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_POST_RENDER])
 		{

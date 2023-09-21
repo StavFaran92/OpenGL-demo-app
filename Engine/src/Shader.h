@@ -61,7 +61,7 @@ public:
 	static Shader* PhongShader();
 	static Shader* SolidColorShader();
 
-	~Shader();
+	virtual ~Shader();
 
 protected:
 	Shader();

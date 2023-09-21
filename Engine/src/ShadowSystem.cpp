@@ -55,6 +55,8 @@ bool ShadowSystem::init(Scene* scene)
 
 void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* params)
 {
+	glEnable(GL_DEPTH_TEST);
+
 	// Set shadow map viewport
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 
@@ -77,8 +79,8 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 
 	// Generate lookAt light matrix 
 	glm::mat4 dirLightView = glm::lookAt(
+		glm::vec3(1.0f, 4.0f, 1.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
-		dirLight.getDirection(),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 
 	glm::mat4 lightSpaceMatrix = lightProjection * dirLightView;
@@ -97,7 +99,8 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 		Entity entityhandler{ entity, m_scene };
 		drawQueueRenderParams.entity = &entityhandler;
 		drawQueueRenderParams.mesh = mesh.mesh.get();
-		drawQueueRenderParams.shader->setModelMatrix(transform.getWorldTransformation());
+		drawQueueRenderParams.shader->setValue("model", transform.getWorldTransformation());
+		//auto tempModel = transform.getWorldTransformation();
 		drawQueueRenderParams.model = nullptr;
 		drawQueueRenderParams.view = nullptr;
 		drawQueueRenderParams.projection = nullptr;
@@ -114,5 +117,7 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 	auto height = Engine::get()->getWindow()->getHeight();
 	glViewport(0, 0, width, height);
 
+
 	m_bufferDisplay->draw(m_depthMapTexture);
+	glDisable(GL_DEPTH_TEST);
 }
