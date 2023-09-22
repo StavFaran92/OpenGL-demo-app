@@ -3,7 +3,7 @@
 #include "ICamera.h"
 #include "Entity.h"
 #include "Context.h"
-#include "StandardShader.h"
+#include "Shader.h"
 #include "Mesh.h"
 #include "Transformation.h"
 #include "DefaultMaterial.h"
@@ -22,9 +22,9 @@ void SkyboxRenderer::render(const DrawQueueRenderParams& renderParams)
     {
         shaderToUse = renderParams.shader;
     }
-    else if (renderParams.entity->HasComponent<StandardShader>())
+    else if (renderParams.entity->HasComponent<Shader>())
     {
-        shaderToUse = &renderParams.entity->getComponent<StandardShader>();
+        shaderToUse = &renderParams.entity->getComponent<Shader>();
     }
     else
     {

@@ -10,7 +10,7 @@
 #include "Sphere.h"
 #include "Scene.h"
 #include "Transformation.h"
-#include "StandardShader.h"
+#include "Shader.h"
 //#include "RenderableComponent.h"
 #include "Component.h"
 #include "MemoryManagement.h"
@@ -19,8 +19,8 @@ Entity ShapeFactory::createEntity(Scene* scene)
 {
 	auto entity = scene->createEntity();
 	entity.addComponent<DefaultMaterial>(32.0f);
-	auto shader = Shader::create<StandardShader>();
-	entity.addComponent<StandardShader>(shader);
+	auto shader = Shader::create<Shader>();
+	entity.addComponent<Shader>(shader);
 	entity.addComponent<RenderableComponent>();
 	return entity;
 }

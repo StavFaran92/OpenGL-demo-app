@@ -2,55 +2,34 @@
 
 #include "PointLight.h"
 #include "DirectionalLight.h"
+#include "Transformation.h"
 
-PhongShader::PhongShader() : Shader("Resources/Engine/Shaders/shader.vert", "Resources/Engine/Shaders/shader.frag")
-{
-	m_enableLight = true;
-	m_enableTexture = true;
-	m_enableMaterial = true;
-	m_enableColors = true;
-}
-
-void PhongShader::setDirLightCount(int count)
-{
-	setValue("dirLightCount", count);
-}
-
-void PhongShader::setPointLightCount(int count)
-{
-	setValue("pointLightCount", count);
-}
-
-void PhongShader::setUseColors(bool enable)
-{
-	setValue("useColors", enable);
-}
-void PhongShader::setViewPos(glm::vec3 viewPosition)
-{
-	setValue("viewPos", viewPosition);
-}
-
-void PhongShader::setColorMul(glm::vec4 colorMul)
-{
-	setValue("colorMul", colorMul);
-}
-
-void PhongShader::updateDirLights(std::unordered_map<uint32_t, std::shared_ptr<DirectionalLight>>& dirLights)
+void PhongShader::updateDirLights(Shader* shader, entt::registry& registry)
 {
 	// Use all point lights
+	auto view = registry.view<DirectionalLight>();
+
 	int i = 0;
-	for (auto it = dirLights.begin(); it != dirLights.end(); ++i, ++it) {
-		it->second->useLight(*this, i);
+	for (auto it = view.begin(); it != view.end(); ++it, ++i)
+	{
+		auto& pLight = view.get<DirectionalLight>(*it);
+		pLight.useLight(*shader, i);
 	}
-	setDirLightCount(dirLights.size());
+	shader->setValue("dirLightCount", i);
 }
 
-void PhongShader::updatePointLights(std::unordered_map<uint32_t, std::shared_ptr<PointLight>>& pointLights)
+void PhongShader::updatePointLights(Shader* shader, entt::registry& registry)
 {
-	// Use all directional lights
+	// Use all point lights
+	auto view = registry.view<PointLight, Transformation>();
+
 	int i = 0;
-	for (auto it = pointLights.begin(); it != pointLights.end(); ++it, ++i) {
-		it->second->useLight(*this, i);
+	for (auto it = view.begin(); it != view.end(); ++it, ++i)
+	{
+		auto& pLight = view.get<PointLight>(*it);
+		auto& transform = view.get<Transformation>(*it);
+		shader->setValue("pointLights[" + std::to_string(i) + "]" + ".position", transform.getLocalPosition());
+		pLight.useLight(*shader, i);
 	}
-	setPointLightCount(pointLights.size());
+	shader->setValue("pointLightCount", i);
 }

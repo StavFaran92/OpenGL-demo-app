@@ -57,8 +57,8 @@ Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 
 	//create new model
 	auto entity = pScene->createEntity();
-	StandardShader* shader = Shader::create<StandardShader>();
-	entity.addComponent<StandardShader>(shader);
+	Shader* shader = Shader::create<Shader>();
+	entity.addComponent<Shader>(shader);
 	entity.addComponent<RenderableComponent>();
 
 	// create new model session

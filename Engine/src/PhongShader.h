@@ -3,21 +3,15 @@
 #include <memory>
 
 #include "Shader.h"
+#include <entt/entt.hpp>
 
 class DirectionalLight;
 class PointLight;
 
-class PhongShader : public Shader
+class PhongShader
 {
 public:
-	PhongShader();
-
-	void setDirLightCount(int count);
-	void setPointLightCount(int count);
-	void setUseColors(bool enable);
-	void setViewPos(glm::vec3 viewPosition);
-	void setColorMul(glm::vec4 colorMul);
-	void updateDirLights(std::unordered_map<uint32_t, std::shared_ptr<DirectionalLight>>& dirLights);
-	void updatePointLights(std::unordered_map<uint32_t, std::shared_ptr<PointLight>>& pointLights);
+	static void updateDirLights(Shader* shader, entt::registry& registry);
+	static void updatePointLights(Shader* shader, entt::registry& registry);
 };
 

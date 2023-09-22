@@ -19,13 +19,13 @@ public:
 		//planeModel.object()->rotate({0,1,0}, 90);
 		//plane.object()->scale(10, 1, 10);
 
-		StandardShader* shader = Shader::create<StandardShader>("Resources/Content/Shaders/OceanVertexShader.vert", "Resources/Content/Shaders/OceanFragmentShader.frag");
+		Shader* shader = Shader::create<Shader>("Resources/Content/Shaders/OceanVertexShader.vert", "Resources/Content/Shaders/OceanFragmentShader.frag");
 		shader->setValue("amplitude", .5f);
 		shader->setValue("waveDirection", glm::vec2(1,0));
 		shader->setValue("waveLength", 2.f);
 		shader->setValue("waveSpeed", 5.0f);
 		shader->setValue("steepness", .5f);
-		auto& shaderRef = quad.addComponent<StandardShader>(shader);
+		auto& shaderRef = quad.addComponent<Shader>(shader);
 
 		auto dLight = getContext()->getActiveScene()->createEntity();
 		dLight.addComponent<PointLight>(glm::vec3{ 1,1,1 }, 1.f, 1.f, Attenuation());

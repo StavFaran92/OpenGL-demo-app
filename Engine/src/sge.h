@@ -49,7 +49,7 @@
 #include "ObjectHandler.h"
 #include "GuiMenu.h"
 #include "InstanceBatch.h"
-#include "StandardShader.h"
+#include "Shader.h"
 #include "Entity.h"
 #include "ShapeFactory.h"
 #include "Component.h"

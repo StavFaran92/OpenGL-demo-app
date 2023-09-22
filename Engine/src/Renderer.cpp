@@ -21,7 +21,7 @@
 #include "Transformation.h"
 #include "Material.h"
 #include "DefaultMaterial.h"
-#include "StandardShader.h"
+#include "Shader.h"
 #include "Component.h"
 
 
@@ -65,7 +65,7 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
 
     if(!shaderToUse)
     {
-        shaderToUse = renderParams.entity->tryGetComponentInParent<StandardShader>();
+        shaderToUse = renderParams.entity->tryGetComponentInParent<Shader>();
     }
    
     if (!shaderToUse)

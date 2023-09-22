@@ -9,7 +9,7 @@
 #include "ModelBuilder.h"
 #include "TextureHandler.h"
 #include "ObjectHandler.h"
-#include "StandardShader.h"
+#include "Shader.h"
 #include "ShapeFactory.h"
 #include "DefaultMaterial.h"
 #include "Component.h"
@@ -25,7 +25,7 @@ Entity Skybox::CreateSkybox(Scene* scene)
     {
         scene = Engine::get()->getContext()->getActiveScene().get();
     }
-    auto shader = Shader::create<StandardShader>("Resources/Engine/Shaders/SkyboxShader.vert", "Resources/Engine/Shaders/SkyboxShader.frag");
+    auto shader = Shader::create<Shader>("Resources/Engine/Shaders/SkyboxShader.vert", "Resources/Engine/Shaders/SkyboxShader.frag");
 
     std::vector<std::string> faces
     {
@@ -41,7 +41,7 @@ Entity Skybox::CreateSkybox(Scene* scene)
 
     auto entity = ShapeFactory::createBox(scene);
 
-    entity.addComponent<StandardShader>(shader);
+    entity.addComponent<Shader>(shader);
     entity.RemoveComponent<RenderableComponent>();
     entity.getComponent<DefaultMaterial>().addTextureHandler(textureHandler);
     entity.addComponent<SkyboxComponent>();

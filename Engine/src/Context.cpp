@@ -8,7 +8,7 @@
 #include "ICamera.h"
 #include "PhongShader.h"
 #include "PickingShader.h"
-#include "StandardShader.h"
+#include "Shader.h"
 
 #include "Object3D.h"
 #include "Scene.h"
@@ -28,7 +28,7 @@ Context::Context() : m_shaderCounter(0)
 	m_refractiveShader->SetEnableMaterials(false);
 	m_refractiveShader->SetEnableTextures(false);
 
-	m_phongShader = Shader::createShared<StandardShader>("Resources/Engine/Shaders/shader.vert", "Resources/Engine/Shaders/shader.frag");
+	m_phongShader = Shader::createShared<Shader>("Resources/Engine/Shaders/shader.vert", "Resources/Engine/Shaders/shader.frag");
 	m_pickingShader = Shader::createShared<PickingShader>();
 	//m_normalDisplayShader = std::make_shared<Shader>("Resources\\Shaders\\normalDisplayShader.vert", "Resources\\Shaders\\normalDisplayShader.frag", "Resources\\Shaders\\normalDisplayShader.geom");
 

@@ -21,7 +21,7 @@
 #include "Configurations.h"
 #include "GpuInstancingRenderer.h"
 #include "InstanceBatch.h"
-#include "StandardShader.h"
+#include "Shader.h"
 #include "Entity.h"
 #include "Transformation.h"
 #include "Mesh.h"
@@ -236,10 +236,9 @@ void Scene::draw(float deltaTime)
 			cb(&params);
 		}
 
-		auto& shader = entityhandler.getComponentInParent<StandardShader>();
-		shader.updateDirLights(m_registry);
-		shader.updatePointLights(m_registry);
-		shader.setViewPos(m_activeCamera->getPosition());
+		auto phongShader = m_context->getStandardShader();
+		PhongShader::updateDirLights(phongShader, m_registry);
+		PhongShader::updatePointLights(phongShader, m_registry);
 
 		// draw model
 		//m_renderer->render(params);
@@ -267,7 +266,7 @@ void Scene::draw(float deltaTime)
 
 	// For some reason this group destroys the entities
 	for (auto&& [entity, skybox, mesh, transform, mat, shader] : 
-		m_registry.view<SkyboxComponent, MeshComponent, Transformation, DefaultMaterial, StandardShader>().each())
+		m_registry.view<SkyboxComponent, MeshComponent, Transformation, DefaultMaterial, Shader>().each())
 	{
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;
