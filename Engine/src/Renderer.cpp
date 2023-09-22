@@ -129,12 +129,6 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
         shaderToUse->setProjectionMatrix(*renderParams.projection);
     }
     
-
-    // Set time elapsed
-    auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
-    shaderToUse->setTime(elapsed);
-
-    
     DefaultMaterial* mat = nullptr;
     if (shaderToUse->IsMaterialsEnabled())
     {

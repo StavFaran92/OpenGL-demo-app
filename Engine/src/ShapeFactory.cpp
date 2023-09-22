@@ -19,8 +19,8 @@ Entity ShapeFactory::createEntity(Scene* scene)
 {
 	auto entity = scene->createEntity();
 	entity.addComponent<DefaultMaterial>(32.0f);
-	auto shader = Shader::create<Shader>();
-	entity.addComponent<Shader>(shader);
+	//auto shader = Shader::create<Shader>();
+	//entity.addComponent<Shader>(shader);
 	entity.addComponent<RenderableComponent>();
 	return entity;
 }

@@ -38,6 +38,8 @@
 #include "Box.h"
 #include "EditorCamera.h"
 #include "ShadowSystem.h"
+#include "Engine.h"
+#include "TimeManager.h"
 #include <GL/glew.h>
 
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
@@ -239,6 +241,10 @@ void Scene::draw(float deltaTime)
 		auto phongShader = m_context->getStandardShader();
 		PhongShader::updateDirLights(phongShader, m_registry);
 		PhongShader::updatePointLights(phongShader, m_registry);
+
+		// Set time elapsed
+		auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
+		phongShader->setTime(elapsed);
 
 		// draw model
 		//m_renderer->render(params);
