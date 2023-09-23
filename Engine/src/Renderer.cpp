@@ -61,6 +61,8 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
 {
     //model->draw(*this, shader);
 
+    glEnable(GL_DEPTH_TEST);
+
     Shader* shaderToUse = renderParams.shader;
 
     if(!shaderToUse)

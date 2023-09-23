@@ -111,7 +111,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec2 aTexCoord)
 	vec3 specular = light.specular * spec * vec3(texture(material.texture_specular1, aTexCoord)); 
 	
 	float shadow = shadowCalculations(FragPosInDirLightSpace);
-	return (ambient + (1.0f - shadow) * (diffuse + specular)) * light.color; 
+	return (ambient + (1.0 - shadow) * (diffuse + specular)) * light.color; 
 }
 
 float shadowCalculations(vec4 fragPos)
@@ -125,7 +125,8 @@ float shadowCalculations(vec4 fragPos)
 	
 	float currentDepth = projCoords.z;
 	
-	return (currentDepth > closestDepth) ? 1.0 : 0.0;
+	float bias = 0.005;
+	return (currentDepth - bias > closestDepth) ? 1.0 : 0.0;
 }
  
 void main() 

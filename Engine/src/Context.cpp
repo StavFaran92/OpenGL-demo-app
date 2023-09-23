@@ -29,6 +29,9 @@ Context::Context() : m_shaderCounter(0)
 	m_refractiveShader->SetEnableTextures(false);
 
 	m_phongShader = Shader::createShared<Shader>("Resources/Engine/Shaders/PhongShader.vert", "Resources/Engine/Shaders/PhongShader.frag");
+	m_phongShader->SetEnableMaterials(true);
+	m_phongShader->SetEnableTextures(true);
+	m_phongShader->SetEnableLights(true);
 	m_pickingShader = Shader::createShared<PickingShader>();
 	//m_normalDisplayShader = std::make_shared<Shader>("Resources\\Shaders\\normalDisplayShader.vert", "Resources\\Shaders\\normalDisplayShader.frag", "Resources\\Shaders\\normalDisplayShader.geom");
 
