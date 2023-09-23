@@ -127,8 +127,8 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 
 	//TODO Fix
 	// set Depth map texture in shader
-	phongShader->setValue("shadowMap", 1);
-	m_depthMapTexture->setSlot(1);
+	phongShader->setValue("shadowMap", 2);
+	m_depthMapTexture->setSlot(2);
 	m_depthMapTexture->bind();
 
 	//m_bufferDisplay->draw(m_depthMapTexture);
