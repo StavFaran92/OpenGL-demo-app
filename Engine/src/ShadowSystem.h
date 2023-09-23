@@ -19,7 +19,9 @@ public:
 		CSM
 	};
 
-	bool init(Scene* scene);
+	ShadowSystem(Context* context, Scene* scene);
+
+	bool init();
 
 	void renderToDepthMap(const IRenderer::DrawQueueRenderParams* params);
 private:
@@ -33,4 +35,6 @@ private:
 	TextureHandler* m_depthMapTexture = nullptr;
 
 	std::shared_ptr<ScreenBufferDisplay> m_bufferDisplay;
+
+	Context* m_context = nullptr;
 };

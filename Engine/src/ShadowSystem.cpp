@@ -13,15 +13,18 @@
 #include "Transformation.h"
 #include "Shader.h"
 #include "ScreenBufferDisplay.h"
+#include "Context.h"
 
 const unsigned int SHADOW_WIDTH = 1024;
 const unsigned int SHADOW_HEIGHT = 1024;
 
-bool ShadowSystem::init(Scene* scene)
-{
-	m_scene = scene;
+ShadowSystem::ShadowSystem(Context* context, Scene* scene)
+	: m_context(context), m_scene(scene)
+{}
 
-	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const IRenderer::DrawQueueRenderParams* params) {
+bool ShadowSystem::init()
+{
+	m_scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const IRenderer::DrawQueueRenderParams* params) {
 
 		renderToDepthMap(params);
 	});
@@ -47,8 +50,8 @@ bool ShadowSystem::init(Scene* scene)
 
 	m_simpleDepthShader = Shader::createShared<Shader>("Resources/Content/Shaders/SimpleDepthShader.vert", "Resources/Content/Shaders/SimpleDepthShader.frag");
 
-	m_bufferDisplay = std::make_shared<ScreenBufferDisplay>(m_scene);
-	m_bufferDisplay->init(Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
+	//m_bufferDisplay = std::make_shared<ScreenBufferDisplay>(m_scene);
+	//m_bufferDisplay->init(Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
 
 	return true;
 }
@@ -117,7 +120,17 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 	auto height = Engine::get()->getWindow()->getHeight();
 	glViewport(0, 0, width, height);
 
+	auto phongShader = m_context->getStandardShader();
 
-	m_bufferDisplay->draw(m_depthMapTexture);
+	// set lightSpaceMatrix in shader
+	phongShader->setValue("lightSpaceMatrix", lightSpaceMatrix);
+
+	//TODO Fix
+	// set Depth map texture in shader
+	phongShader->setValue("shadowMap", 1);
+	m_depthMapTexture->setSlot(1);
+	m_depthMapTexture->bind();
+
+	//m_bufferDisplay->draw(m_depthMapTexture);
 	glDisable(GL_DEPTH_TEST);
 }

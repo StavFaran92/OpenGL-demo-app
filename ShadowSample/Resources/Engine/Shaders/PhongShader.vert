@@ -4,36 +4,41 @@ layout (location = 0) in vec3 pos;
 layout (location = 1) in vec3 norm;
 layout (location = 2) in vec2 tex;
 layout (location = 3) in vec3 color;
-layout (location = 6) in mat4 instanceMatrix;
+
+// ----- Definitions ----- //
+
+// ----- Structs ----- //
+
+// ----- Out ----- //
 
 out vec3 Color;
 out vec2 texCoord;
 out vec3 Normal;
 out vec3 FragPos;
+out vec4 FragPosInDirLightSpace;
+
+// ----- Uniforms ----- //
 
 uniform mat4 model;
 uniform mat4 projection;
 uniform mat4 view;
+uniform mat4 lightSpaceMatrix;
+uniform float time;
 
-uniform bool isGpuInstanced = false;
+// ----- Forward Declerations ----- //
+
+// ----- Methods ----- //
 
 void main()
 {
-	mat4 modelMatrix;
-	if(!isGpuInstanced)
-	{
-		modelMatrix =  model;
-	}
-	else
-	{
-		modelMatrix = instanceMatrix;
-	}
-	gl_Position = projection * view * modelMatrix * vec4(pos, 1.0);
+	gl_Position = projection * view * model * vec4(pos, 1.0);
 	Color = color;
 	
 	texCoord = tex;
 
-	Normal = mat3(transpose(inverse(modelMatrix))) * norm;
+	Normal = mat3(transpose(inverse(model))) * norm;
 
-	FragPos = (modelMatrix * vec4(pos, 1.0)).xyz;
+	FragPos = (model * vec4(pos, 1.0)).xyz;
+	
+	FragPosInDirLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0f);
 }

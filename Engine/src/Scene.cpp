@@ -112,11 +112,11 @@ void Scene::init(Context* context)
 	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 1.0f);
 	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LIMITS, 1.0f);
 
-	m_shadowSystem = std::make_shared<ShadowSystem>();
-	if (!m_shadowSystem->init(this))
+	m_shadowSystem = std::make_shared<ShadowSystem>(m_context, this);
+	if (!m_shadowSystem->init())
 	{
 		logError("Shadow System init failed!");
-	}
+	} 
 
 	m_defaultPerspectiveProjection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
 	
@@ -223,6 +223,14 @@ void Scene::draw(float deltaTime)
 		cb(&params);
 	}
 
+	auto phongShader = m_context->getStandardShader();
+	PhongShader::updateDirLights(phongShader, m_registry);
+	PhongShader::updatePointLights(phongShader, m_registry);
+
+	// Set time elapsed
+	auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
+	phongShader->setTime(elapsed);
+
 	// Render Phase
 	for (auto&& [entity, mesh, transform, renderable] : 
 		m_registry.view<MeshComponent, Transformation, RenderableComponent>().each())
@@ -238,16 +246,8 @@ void Scene::draw(float deltaTime)
 			cb(&params);
 		}
 
-		auto phongShader = m_context->getStandardShader();
-		PhongShader::updateDirLights(phongShader, m_registry);
-		PhongShader::updatePointLights(phongShader, m_registry);
-
-		// Set time elapsed
-		auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
-		phongShader->setTime(elapsed);
-
 		// draw model
-		//m_renderer->render(params);
+		m_renderer->render(params);
 
 		for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_POST_RENDER])
 		{
