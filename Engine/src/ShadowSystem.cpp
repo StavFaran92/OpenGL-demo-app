@@ -48,7 +48,7 @@ bool ShadowSystem::init()
 
 	m_fbo.unbind();
 
-	m_simpleDepthShader = Shader::createShared<Shader>("Resources/Content/Shaders/SimpleDepthShader.vert", "Resources/Content/Shaders/SimpleDepthShader.frag");
+	m_simpleDepthShader = Shader::createShared<Shader>("Resources/Engine/Shaders/SimpleDepthShader.vert", "Resources/Engine/Shaders/SimpleDepthShader.frag");
 
 	//m_bufferDisplay = std::make_shared<ScreenBufferDisplay>(m_scene);
 	//m_bufferDisplay->init(Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
@@ -59,6 +59,7 @@ bool ShadowSystem::init()
 void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* params)
 {
 	glEnable(GL_DEPTH_TEST);
+	glCullFace(GL_FRONT);
 
 	// Set shadow map viewport
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
@@ -133,4 +134,5 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 
 	//m_bufferDisplay->draw(m_depthMapTexture);
 	glDisable(GL_DEPTH_TEST);
+	glCullFace(GL_BACK);
 }
