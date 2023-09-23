@@ -92,7 +92,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec2 aTexCoord)
                                 
 void main()                         
 {                                 
-    vec3 result = vec3(0.0f, 0.329f, 0.576f);         
+    vec3 result;         
   
 	// properties                                                                                        
 	vec3 norm = normalize(Normal);                                                                       
