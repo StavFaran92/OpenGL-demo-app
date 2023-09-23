@@ -1,14 +1,14 @@
 #include "EntryPoint.h"
 #include "sge.h"
 
-//class CustomBoxBehaviour : public ScriptableEntity
-//{
-//	virtual void onUpdate(float dt) override
-//	{
-//		auto& transform = entity.getComponent<Transformation>();
-//		transform.translate({ 0, .01f, 0 });
-//	}
-//};
+class CustomBoxBehaviour : public ScriptableEntity
+{
+	virtual void onUpdate(float dt) override
+	{
+		auto& transform = entity.getComponent<Transformation>();
+		transform.translate({ 0, .01f, 0 });
+	}
+};
 
 class Sandbox : public Application
 {
@@ -24,9 +24,10 @@ public:
 			auto& mat = box.addComponent<DefaultMaterial>(32.f);
 			auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg", Texture::Type::Diffuse);
 			mat.addTextureHandler(tex);
+			//auto& nsc = box.addComponent<NativeScriptComponent>();
+			//nsc.bind<CustomBoxBehaviour>();
 		}
-		//auto& nsc = box.addComponent<NativeScriptComponent>();
-		//nsc.bind<CustomBoxBehaviour>();
+
 
 		{
 			auto ground = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());

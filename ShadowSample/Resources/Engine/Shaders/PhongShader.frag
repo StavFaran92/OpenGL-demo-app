@@ -121,6 +121,11 @@ float shadowCalculations(vec4 fragPos)
 	
 	projCoords = projCoords * 0.5 + 0.5; 
 	
+	if(projCoords.x > 1.0 || projCoords.x < 0.0 ||
+		projCoords.y > 1.0 || projCoords.y < 0.0 ||
+		projCoords.z > 1.0 || projCoords.z < 0.0)
+        return 0.0;
+	
 	float closestDepth = texture(shadowMap, projCoords.xy).r;
 	
 	float currentDepth = projCoords.z;
