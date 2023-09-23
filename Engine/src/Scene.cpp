@@ -229,7 +229,7 @@ void Scene::draw(float deltaTime)
 
 	// Set time elapsed
 	auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
-	phongShader->setTime(elapsed);
+	phongShader->setValue("time", elapsed);
 
 	// Render Phase
 	for (auto&& [entity, mesh, transform, renderable] : 
