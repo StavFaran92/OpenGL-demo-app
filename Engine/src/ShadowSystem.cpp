@@ -34,6 +34,11 @@ bool ShadowSystem::init()
 	// Generate 2D texture
 	m_depthMapTexture = Texture::createEmptyTexture(SHADOW_WIDTH, SHADOW_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
 	// Attach texture to FBO
 	m_fbo.attachTexture(m_depthMapTexture->getID(), GL_DEPTH_ATTACHMENT);
 
@@ -78,16 +83,16 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 	//todo verify exists
 
 	// Generate Orthogonal projection
-	float near_plane = 1.0f, far_plane = 7.5f;
-	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+	float near_plane = 1.0f, far_plane = 20.f;
+	glm::mat4 lightProjection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);
 
 	auto right = glm::normalize(glm::cross(dirLight.getDirection(), { 0,0,1 }));
 	auto up = glm::normalize(glm::cross(dirLight.getDirection(), right));
 
 	// Generate lookAt light matrix 
 	glm::mat4 dirLightView = glm::lookAt(
-		glm::vec3(0.0f, 5.0f, 0.0f),
-		glm::vec3(0.0f, 5.0f, 0.0f) + dirLight.getDirection(),
+		glm::vec3(0.0f, 10.0f, 0.0f),
+		glm::vec3(0.0f, 10.0f, 0.0f) + dirLight.getDirection(),
 		up);
 
 	glm::mat4 lightSpaceMatrix = lightProjection * dirLightView;

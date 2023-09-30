@@ -42,8 +42,7 @@ public:
 
 		auto entt = Engine::get()->getContext()->getActiveScene()->getRegistry().view<DirectionalLight>().front();
 		Entity e{ entt, Engine::get()->getContext()->getActiveScene().get() };
-		auto& nsc = e.addComponent<NativeScriptComponent>();
-		nsc.bind<CustomBoxBehaviour>();
+		e.addComponent<NativeScriptComponent>().bind<CustomBoxBehaviour>();
 
 		
 

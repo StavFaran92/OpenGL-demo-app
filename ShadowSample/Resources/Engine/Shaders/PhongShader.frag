@@ -119,17 +119,21 @@ float shadowCalculations(vec4 fragPos)
 	// perform perspective divide
     vec3 projCoords = fragPos.xyz / fragPos.w;
 	
+	vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+	
 	projCoords = projCoords * 0.5 + 0.5; 
 	
-	if(projCoords.x > 1.0 || projCoords.x < 0.0 ||
-		projCoords.y > 1.0 || projCoords.y < 0.0 ||
-		projCoords.z > 1.0 || projCoords.z < 0.0)
+	float borderBias =  max(texelSize.x, texelSize.y) * 2;
+	
+	if(projCoords.x >= 1.0 - borderBias || projCoords.x <= borderBias ||
+		projCoords.y >= 1.0 - borderBias || projCoords.y <= borderBias ||
+		projCoords.z >= 1.0 - borderBias || projCoords.z <= borderBias)
         return 0.0;
 	
 	float shadow = 0;
 	float bias = 0.005;
 	float currentDepth = projCoords.z;
-	vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+	
 	
 	for(int x = -1; x <= 1; ++x)
 	{
