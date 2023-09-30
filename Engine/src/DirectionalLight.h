@@ -22,6 +22,8 @@ public:
 
 	glm::vec3 getDirection() const;
 
+	void setDirection(glm::vec3 dir);
+
 private:
 	glm::vec3 m_direction;
 };

@@ -5,8 +5,10 @@ class CustomBoxBehaviour : public ScriptableEntity
 {
 	virtual void onUpdate(float dt) override
 	{
-		auto& transform = entity.getComponent<Transformation>();
-		transform.translate({ 0, .01f, 0 });
+		static float theta = 0;
+		theta += .01f;
+		auto& dirLight = entity.getComponent<DirectionalLight>();
+		dirLight.setDirection({ cos(theta), -1, sin(theta) });
 	}
 };
 
@@ -37,6 +39,13 @@ public:
 			auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/floor.jpg", Texture::Type::Diffuse);
 			mat.addTextureHandler(tex);
 		}
+
+		auto entt = Engine::get()->getContext()->getActiveScene()->getRegistry().view<DirectionalLight>().front();
+		Entity e{ entt, Engine::get()->getContext()->getActiveScene().get() };
+		auto& nsc = e.addComponent<NativeScriptComponent>();
+		nsc.bind<CustomBoxBehaviour>();
+
+		
 
 		//postProcess(PostProcess::grayscale());
 	}

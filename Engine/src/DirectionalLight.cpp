@@ -14,3 +14,8 @@ glm::vec3 DirectionalLight::getDirection() const
 {
 	return m_direction;
 }
+
+void DirectionalLight::setDirection(glm::vec3 dir)
+{
+	m_direction = dir;
+}
