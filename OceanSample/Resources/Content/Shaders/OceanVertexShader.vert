@@ -13,7 +13,11 @@ out vec3 FragPos;
 uniform mat4 model;
 uniform mat4 projection;
 uniform mat4 view;
-uniform float time;
+
+layout (std140) uniform Time
+{
+    float time;
+};
 
 uniform float amplitude;
 uniform vec2 waveDirection;

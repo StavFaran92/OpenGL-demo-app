@@ -3,6 +3,7 @@
 
 #include "GUIHandler.h"
 
+
 class Sandbox : public Application
 {
 public:
@@ -20,6 +21,9 @@ public:
 		//plane.object()->scale(10, 1, 10);
 
 		Shader* shader = Shader::create<Shader>("Resources/Content/Shaders/OceanVertexShader.vert", "Resources/Content/Shaders/OceanFragmentShader.frag");
+		shader->SetEnableLights(true);
+		shader->SetEnableMaterials(true);
+		shader->SetEnableTextures(true);
 		shader->setValue("amplitude", .5f);
 		shader->setValue("waveDirection", glm::vec2(1,0));
 		shader->setValue("waveLength", 2.f);

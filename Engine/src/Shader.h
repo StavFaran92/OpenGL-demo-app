@@ -58,6 +58,8 @@ public:
 	void setTime(float time);
 	void init();
 
+	void bindUniformBlockToBindPoint(const std::string& uniformBlockName, int bindPointIndex);
+
 	static Shader* PhongShader();
 	static Shader* SolidColorShader();
 

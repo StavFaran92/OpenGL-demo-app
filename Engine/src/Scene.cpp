@@ -40,6 +40,7 @@
 #include "ShadowSystem.h"
 #include "Engine.h"
 #include "TimeManager.h"
+#include "UniformBufferObject.h"
 #include <GL/glew.h>
 
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
@@ -131,6 +132,9 @@ void Scene::init(Context* context)
 
 	m_tempBoxMesh = Box::createMesh();
 	m_tempOutlineShader = Shader::create<Shader>("Resources/Engine/Shaders/shader.vert", "Resources/Engine/Shaders/OutlineShader.frag");
+
+	m_uboTime = std::make_shared<UniformBufferObject>(sizeof(float));
+	m_uboTime->attachToBindPoint(0);
 
 	m_registry.on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
 	m_registry.on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
@@ -229,7 +233,7 @@ void Scene::draw(float deltaTime)
 
 	// Set time elapsed
 	auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
-	phongShader->setValue("time", elapsed);
+	m_uboTime->setData(0, sizeof(float), &elapsed);
 
 	// Render Phase
 	for (auto&& [entity, mesh, transform, renderable] : 

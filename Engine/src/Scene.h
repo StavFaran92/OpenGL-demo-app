@@ -39,6 +39,7 @@ class SkyboxRenderer;
 class ICamera;
 class PhysicsSystem;
 class ShadowSystem;
+class UniformBufferObject;
 struct RigidBodyComponent;
 namespace physx {
 	class PxScene;
@@ -144,4 +145,6 @@ private:
 	ICamera* m_activeCamera = nullptr;
 
 	glm::mat4 m_defaultPerspectiveProjection;
+
+	std::shared_ptr<UniformBufferObject> m_uboTime;
 };

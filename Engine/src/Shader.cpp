@@ -39,6 +39,12 @@ void Shader::init()
 	BuildShaders(vertexCode, fragmentCode, geometryCode);
 }
 
+void Shader::bindUniformBlockToBindPoint(const std::string& uniformBlockName, int bindPointIndex)
+{
+	unsigned int uniformBlockIndex = glGetUniformBlockIndex(m_id, uniformBlockName.c_str());
+	glUniformBlockBinding(m_id, uniformBlockIndex, bindPointIndex);
+}
+
 void Shader::BuildShaders(const std::string& vertexCode, const std::string& fragmentCode, const std::string& geometryCode) 
 {
 	//Create a new shader program

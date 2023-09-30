@@ -155,6 +155,7 @@
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\TextureHandler.cpp" />
     <ClCompile Include="src\Transformation.cpp" />
+    <ClCompile Include="src\UniformBufferObject.cpp" />
     <ClCompile Include="src\Utils.cpp" />
     <ClCompile Include="src\VertexArrayObject.cpp" />
     <ClCompile Include="src\VertexBufferLayout.cpp" />
@@ -248,6 +249,7 @@
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\TextureHandler.h" />
     <ClInclude Include="src\Transformation.h" />
+    <ClInclude Include="src\UniformBufferObject.h" />
     <ClInclude Include="src\Utils.h" />
     <ClInclude Include="src\VertexArrayObject.h" />
     <ClInclude Include="src\VertexBufferElement.h" />

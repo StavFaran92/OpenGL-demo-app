@@ -130,6 +130,8 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
     {
         shaderToUse->setProjectionMatrix(*renderParams.projection);
     }
+
+    shaderToUse->bindUniformBlockToBindPoint("Time", 0);
     
     DefaultMaterial* mat = nullptr;
     if (shaderToUse->IsMaterialsEnabled())

@@ -2,7 +2,9 @@
 
 #include <chrono>
 
-class TimeManager
+#include "Core.h"
+
+class EngineAPI TimeManager
 {
 public:
 	enum class Duration

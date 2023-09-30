@@ -194,6 +194,7 @@
     <ClCompile Include="src\MeshFactory.cpp" />
     <ClCompile Include="src\ShadowSystem.cpp" />
     <ClCompile Include="src\ScreenBufferDisplay.cpp" />
+    <ClCompile Include="src\UniformBufferObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -438,6 +439,7 @@
     <ClInclude Include="src\MemoryPool.h" />
     <ClInclude Include="src\Random.h" />
     <ClInclude Include="src\ScreenBufferDisplay.h" />
+    <ClInclude Include="src\UniformBufferObject.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
