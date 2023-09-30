@@ -23,7 +23,11 @@ uniform mat4 model;
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 lightSpaceMatrix;
-uniform float time;
+
+layout (std140) uniform Time
+{
+    float time;
+};
 
 // ----- Forward Declerations ----- //
 
