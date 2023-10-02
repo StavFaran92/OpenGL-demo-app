@@ -3,9 +3,42 @@
 #include "Logger.h"
 #include <GL\glew.h>
 
+//auto texturediff = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png", Texture::Type::Diffuse);
+//if (!texturediff)
+//{
+//	logError("Failed to load resource");
+//	return;
+//}
+//
+//auto textureSpec = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png", Texture::Type::Specular);
+//if (!textureSpec)
+//{
+//	logError("Failed to load resource");
+//	return;
+//}
+//
+//// Init the default material with default textures
+//m_defaultTextureHandlers.push_back(std::shared_ptr<TextureHandler>(texturediff));
+//m_defaultTextureHandlers.push_back(std::shared_ptr<TextureHandler>(textureSpec));
+//}
+
+//void DefaultMaterial::use(Shader& shader)
+//{
+//	Material::use(shader);
+//
+//	shader.setValue("material.shininess", m_shininess);
+
 Material::Material(float shine)
 : m_shininess(shine)
 {
+	auto texturediff = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png", Texture::Type::Diffuse);
+	if (!texturediff)
+	{
+		logError("Failed to load resource");
+		return;
+	}
+
+	setTexture(Texture::Type::Diffuse, ;
 }
 
 void Material::use(Shader& shader)
@@ -24,88 +57,114 @@ void Material::use(Shader& shader)
 
 void Material::release()
 {
-	auto textures = m_textureHandlers;
-
-	if (textures.size() == 0)
-	{
-		textures = m_defaultTextureHandlers;
-	}
-
-	for (auto i = 0; i < textures.size(); i++)
+	for (auto i = 0; i < 3; i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
 
-std::vector<const TextureHandler*> Material::getTextureHandlers() const
+std::shared_ptr<TextureHandler> Material::getTexture(Texture::Type textureType) const
 {
-	std::vector<const TextureHandler*> textureHandlers;
-
-	for (auto textureHandler : m_textureHandlers)
-	{
-		textureHandlers.emplace_back(textureHandler.get());
-	}
-
-	return textureHandlers;
+	return m_textures.at(textureType);
 }
 
-void Material::addTextureHandler(TextureHandler* textureHandler)
-{
-	if (textureHandler == nullptr)
-	{
-		logError("Cannot add a null texture Handler to material.");
-		return;
-	}
+//void Material::addTextureHandler(TextureHandler* textureHandler)
+//{
+//	if (textureHandler == nullptr)
+//	{
+//		logError("Cannot add a null texture Handler to material.");
+//		return;
+//	}
+//
+//	m_textureHandlers.push_back(std::shared_ptr<TextureHandler>(textureHandler));
+//}
+//
+//void Material::addTextureHandlers(std::vector<TextureHandler*>& texturesHandlers)
+//{
+//	for (auto textureHandler : texturesHandlers)
+//	{
+//		addTextureHandler(textureHandler);
+//	}
+//}
 
-	m_textureHandlers.push_back(std::shared_ptr<TextureHandler>(textureHandler));
-}
-
-void Material::addTextureHandlers(std::vector<TextureHandler*>& texturesHandlers)
-{
-	for (auto textureHandler : texturesHandlers)
-	{
-		addTextureHandler(textureHandler);
-	}
-}
-
-void Material::SetTexturesInShader(Shader & shader)
+void Material::SetTexturesInShader(Shader& shader)
 {
 	// Initialized counters
-	uint32_t diffuseNr = 1;
-	uint32_t specularNr = 1;
+	//uint32_t diffuseNr = 1;
+	//uint32_t specularNr = 1;
 
-	auto textures = m_textureHandlers;
+	//auto textures = m_textureHandlers;
 
-	if (textures.size() == 0)
+	//if (textures.size() == 0)
+	//{
+	//	textures = m_defaultTextureHandlers;
+	//}
+
+	auto diffTexture = m_textures[Texture::Type::Diffuse];
+	if (diffTexture)
 	{
-		textures = m_defaultTextureHandlers;
+		// Activate texture unit i
+		glActiveTexture(GL_TEXTURE0);
+
+		// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
+		glBindTexture(GL_TEXTURE_2D, diffTexture->getID());
+
+		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
+		shader.setValue(("material." + Constants::g_textureDiffuse).c_str(), 0);
+	}
+
+	auto specTexture = m_textures[Texture::Type::Specular];
+	if (specTexture)
+	{
+		// Activate texture unit i
+		glActiveTexture(GL_TEXTURE0 + 1);
+
+		// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
+		glBindTexture(GL_TEXTURE_2D, specTexture->getID());
+
+		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
+		shader.setValue(("material." + Constants::g_textureSpecular).c_str(), 1);
+	}
+
+	auto normalTexture = m_textures[Texture::Type::Normal];
+	if (normalTexture)
+	{
+		// Activate texture unit i
+		glActiveTexture(GL_TEXTURE0 + 2);
+
+		// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
+		glBindTexture(GL_TEXTURE_2D, normalTexture->getID());
+
+		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
+		shader.setValue(("material." + Constants::g_textureNormal).c_str(), 2);
+		shader.setValue("material.useNormal", true);
 	}
 
 	// This causes skybox to not render
 	// Iterate the mesh's textures
-	for (auto i = 0; i < textures.size(); i++)
-	{
-		// get type count
-		std::string count;
-		auto type = textures[i]->getType();
-		if (type == Texture::Type::Diffuse)
-			count = std::to_string(diffuseNr++);
-		else if (type == Texture::Type::Specular)
-			count = std::to_string(specularNr++);
+	//for (auto i = 0; i < textures.size(); i++)
+	//{
+	//	// get type count
+	//	std::string count;
+	//	auto type = textures[i]->getType();
+	//	if (type == Texture::Type::Diffuse)
+	//		count = std::to_string(diffuseNr++);
+	//	else if (type == Texture::Type::Specular)
+	//		count = std::to_string(specularNr++);
 
-		// Get type as string
-		auto typeStr = Texture::textureTypeToString(type);
+	//	// Get type as string
+	//	auto typeStr = Texture::textureTypeToString(type);
 
-		// Activate texture unit i
-		glActiveTexture(GL_TEXTURE0 + i);
+	//	// Activate texture unit i
+	//	glActiveTexture(GL_TEXTURE0 + i);
 
-		// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
-		glBindTexture(GL_TEXTURE_2D, textures[i]->getID());
+	//	// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
+	//	glBindTexture(GL_TEXTURE_2D, textures[i]->getID());
 
-		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
-		shader.setValue(("material." + typeStr + count).c_str(), i);
-	}
+	//	// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
+	//	shader.setValue(("material." + typeStr + count).c_str(), i);
+	//}
 }
 
 void Material::setReflection(bool enable)
@@ -116,6 +175,11 @@ void Material::setReflection(bool enable)
 void Material::setRefraction(bool enable)
 {
 	m_isRefractive = enable;
+}
+
+void Material::setTexture(Texture::Type textureType, std::shared_ptr<TextureHandler> textureHandler)
+{
+	m_textures[textureType] = textureHandler;
 }
 
 bool Material::isReflective() const

@@ -16,6 +16,7 @@ public:
 	{
 		Diffuse,
 		Specular,
+		Normal,
 
 		None
 	};

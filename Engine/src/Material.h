@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <map>
 #include "Core.h"
 
 #include "TextureHandler.h"
@@ -9,35 +10,37 @@
 class EngineAPI Material
 {
 public:
-	Material(float shine = 0);
+	Material(float shine = 32.f);
 
 	virtual void use(Shader& shader);
 
 	virtual void release();
 
-	/**
-	 * Add a texture to the mesh.
-	 *
-	 * \param texture	a texture raw pointer
-	 */
-	void addTextureHandler(TextureHandler* texture);
+	///**
+	// * Add a texture to the mesh.
+	// *
+	// * \param texture	a texture raw pointer
+	// */
+	//void addTextureHandler(TextureHandler* texture);
 
-	/**
-	 * Add multiple textures to the mesh.
-	 *
-	 * \param textures
-	 */
-	void addTextureHandlers(std::vector<TextureHandler*>& textures);
+	///**
+	// * Add multiple textures to the mesh.
+	// *
+	// * \param textures
+	// */
+	//void addTextureHandlers(std::vector<TextureHandler*>& textures);
 
 	/**
 	 * Gets the mesh's Textures.
 	 *
 	 * \param colors
 	 */
-	std::vector<const TextureHandler*> getTextureHandlers() const;
+	std::shared_ptr < TextureHandler >getTexture(Texture::Type textureType) const;
 
 	void setReflection(bool enable);
 	void setRefraction(bool enable);
+
+	void setTexture(Texture::Type textureType, std::shared_ptr<TextureHandler> textureHandler);
 
 	bool isReflective() const;
 	bool isRefractive() const;
@@ -50,8 +53,10 @@ protected:
 	float m_shininess;
 
 	/** Material texture Handlers */
-	std::vector<std::shared_ptr<TextureHandler>>  m_defaultTextureHandlers;
-	std::vector<std::shared_ptr<TextureHandler>>  m_textureHandlers;
+	//std::vector<std::shared_ptr<TextureHandler>>  m_defaultTextureHandlers;
+	//std::vector<std::shared_ptr<TextureHandler>>  m_textureHandlers;
+
+	std::map<Texture::Type, std::shared_ptr<TextureHandler>> m_textures;
 
 	bool m_isReflective = false;
 	bool m_isRefractive = false;

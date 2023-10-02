@@ -22,11 +22,11 @@ out vec4 colour;
 struct Material 
 { 
 	// textures 
-	sampler2D texture_diffuse1; 
-	sampler2D texture_diffuse2; 
-	sampler2D texture_specular1; 
-	sampler2D texture_specular2; 
-	float shininess; 
+	sampler2D texture_diffuse; 
+	sampler2D texture_specular; 
+	sampler2D texture_normal;
+	bool useNormal = false;
+	float shininess = 0; 
 }; 
 
 struct PointLight 
@@ -85,9 +85,9 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, v
 	light.quadratic * (distance * distance)); 
 	
 	// combine results 
-	vec3 ambient = light.ambient * vec3(texture(material.texture_diffuse1, aTexCoord)); 
-	vec3 diffuse = light.diffuse * diff * vec3(texture(material.texture_diffuse1, aTexCoord)); 
-	vec3 specular = light.specular * spec * vec3(texture(material.texture_specular1, aTexCoord)); 
+	vec3 ambient = light.ambient * vec3(texture(material.texture_diffuse, aTexCoord)); 
+	vec3 diffuse = light.diffuse * diff * vec3(texture(material.texture_diffuse, aTexCoord)); 
+	vec3 specular = light.specular * spec * vec3(texture(material.texture_specular, aTexCoord)); 
 	ambient *= attenuation; 
 	diffuse *= attenuation; 
 	specular *= attenuation; 
@@ -106,9 +106,9 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec2 aTexCoord)
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess); 
 	
 	// combine results 
-	vec3 ambient = light.ambient * vec3(texture(material.texture_diffuse1, aTexCoord)); 
-	vec3 diffuse = light.diffuse * diff * vec3(texture(material.texture_diffuse1, aTexCoord)); 
-	vec3 specular = light.specular * spec * vec3(texture(material.texture_specular1, aTexCoord)); 
+	vec3 ambient = light.ambient * vec3(texture(material.texture_diffuse, aTexCoord)); 
+	vec3 diffuse = light.diffuse * diff * vec3(texture(material.texture_diffuse, aTexCoord)); 
+	vec3 specular = light.specular * spec * vec3(texture(material.texture_specular, aTexCoord)); 
 	
 	float shadow = shadowCalculations(FragPosInDirLightSpace);
 	return (ambient + (1.0 - shadow) * (diffuse + specular)) * light.color; 
