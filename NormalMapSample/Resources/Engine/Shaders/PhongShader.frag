@@ -153,8 +153,17 @@ void main()
 { 
 	vec3 result; 
 	
-	// properties 
-	vec3 norm = normalize(Normal); 
+	vec3 norm;
+	if(material.useNormal)
+	{
+		norm = texture(material.texture_normal, texCoord).rgb;
+		norm = normalize(norm * 2.0 - 1.0); 
+ 
+	}
+	else
+	{
+		norm = normalize(Normal);
+	}
 	vec3 viewDir = normalize(viewPos - FragPos); 
 	
 	// Directional lighting 
