@@ -31,7 +31,6 @@
 #include "InstanceBatch.h"
 #include "SkyboxRenderer.h"
 #include "Material.h"
-#include "DefaultMaterial.h"
 #include "ScriptableEntity.h"
 #include "PhysicsSystem.h"
 #include "PhysXUtils.h"
@@ -276,7 +275,7 @@ void Scene::draw(float deltaTime)
 
 	// For some reason this group destroys the entities
 	for (auto&& [entity, skybox, mesh, transform, mat, shader] : 
-		m_registry.view<SkyboxComponent, MeshComponent, Transformation, DefaultMaterial, Shader>().each())
+		m_registry.view<SkyboxComponent, MeshComponent, Transformation, Material, Shader>().each())
 	{
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;

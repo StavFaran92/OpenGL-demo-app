@@ -3,31 +3,6 @@
 #include "Logger.h"
 #include <GL\glew.h>
 
-//auto texturediff = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png", Texture::Type::Diffuse);
-//if (!texturediff)
-//{
-//	logError("Failed to load resource");
-//	return;
-//}
-//
-//auto textureSpec = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png", Texture::Type::Specular);
-//if (!textureSpec)
-//{
-//	logError("Failed to load resource");
-//	return;
-//}
-//
-//// Init the default material with default textures
-//m_defaultTextureHandlers.push_back(std::shared_ptr<TextureHandler>(texturediff));
-//m_defaultTextureHandlers.push_back(std::shared_ptr<TextureHandler>(textureSpec));
-//}
-
-//void DefaultMaterial::use(Shader& shader)
-//{
-//	Material::use(shader);
-//
-//	shader.setValue("material.shininess", m_shininess);
-
 Material::Material(float shine)
 : m_shininess(shine)
 {
@@ -38,7 +13,16 @@ Material::Material(float shine)
 		return;
 	}
 
-	setTexture(Texture::Type::Diffuse, ;
+	setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(texturediff));
+
+	auto textureSpec = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png", Texture::Type::Specular);
+	if (!textureSpec)
+	{
+		logError("Failed to load resource");
+		return;
+	}
+
+	setTexture(Texture::Type::Specular, std::shared_ptr<TextureHandler>(textureSpec));
 }
 
 void Material::use(Shader& shader)
@@ -48,6 +32,8 @@ void Material::use(Shader& shader)
 		logError("Shader does not support material");
 		return;
 	}
+
+	shader.setValue("material.shininess", m_shininess);
 
 	if (shader.IsTexturesEnabled())
 	{

@@ -6,7 +6,7 @@
 #include "Shader.h"
 #include "Mesh.h"
 #include "Transformation.h"
-#include "DefaultMaterial.h"
+#include "Material.h"
 #include <GL/glew.h>
 #include "Component.h"
 #include "Engine.h"
@@ -36,8 +36,8 @@ void SkyboxRenderer::render(const DrawQueueRenderParams& renderParams)
     shaderToUse->use();
 
 
-    auto& mat = renderParams.entity->getComponent<DefaultMaterial>();
-    mat.getTextureHandlers()[0]->bind();
+    auto& mat = renderParams.entity->getComponent<Material>();
+    mat.getTexture(Texture::Type::Diffuse)->bind();
 
     //auto view = glm::mat4(glm::mat3(dynamic_cast<Renderer*>(renderer.get())->GetCamera()->getView())); // remove translation from the view matrix
     // Model
@@ -62,7 +62,7 @@ void SkyboxRenderer::render(const DrawQueueRenderParams& renderParams)
 
     renderParams.mesh->render(*shaderToUse, *this);
 
-    mat.getTextureHandlers()[0]->unbind();
+    mat.getTexture(Texture::Type::Diffuse)->unbind();
     shaderToUse->release();
 
     glDepthMask(GL_TRUE);

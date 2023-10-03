@@ -9,9 +9,8 @@
 #include "MeshBuilder.h"
 #include "TextureHandler.h"
 #include "ObjectFactory.h"
-#include "Model.h"
 #include "ObjectHandler.h"
-#include "DefaultMaterial.h"
+#include "Material.h"
 #include "Entity.h"
 #include "Component.h"
 #include "StandardShader.h"
@@ -86,7 +85,7 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 
 		auto textureHandlers = new std::vector<TextureHandler*>();
 
-		auto& material = entity.addComponent<DefaultMaterial>(32.0f);
+		auto& sgeMaterial = entity.addComponent<Material>();
 		// process material
 		if (aimesh->mMaterialIndex >= 0)
 		{
@@ -95,10 +94,21 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 			auto diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, session);
 			textureHandlers->insert(textureHandlers->end(), diffuseMaps.begin(), diffuseMaps.end());
 
+			if (diffuseMaps.size() > 0)
+			{
+				sgeMaterial.setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(diffuseMaps[0]));
+			}
+
 			auto specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, session);
 			textureHandlers->insert(textureHandlers->end(), specularMaps.begin(), specularMaps.end());
+
+			//TODO fix
+			if (specularMaps.size() > 0)
+			{
+				sgeMaterial.setTexture(Texture::Type::Specular, std::shared_ptr<TextureHandler>(specularMaps[0]));
+			}
 		}
-		material.addTextureHandlers(*textureHandlers);
+		
 	}
 	// then do the same for each of its children
 	for (unsigned int i = 0; i < node->mNumChildren; i++)

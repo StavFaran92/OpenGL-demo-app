@@ -1,6 +1,5 @@
 #include "Context.h"
 
-#include "Model.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "Skybox.h"

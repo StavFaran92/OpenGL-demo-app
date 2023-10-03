@@ -4,7 +4,7 @@
 #include "Context.h"
 #include "Mesh.h"
 #include "Entity.h"
-#include "DefaultMaterial.h"
+#include "Material.h"
 #include "Box.h"
 #include "Quad.h"
 #include "Sphere.h"
@@ -18,7 +18,7 @@
 Entity ShapeFactory::createEntity(Scene* scene)
 {
 	auto entity = scene->createEntity();
-	entity.addComponent<DefaultMaterial>(32.0f);
+	entity.addComponent<Material>();
 	//auto shader = Shader::create<Shader>();
 	//entity.addComponent<Shader>(shader);
 	entity.addComponent<RenderableComponent>();

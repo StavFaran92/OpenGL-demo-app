@@ -10,7 +10,6 @@
 #include "SkyboxRenderer.h"
 #include "Logger.h"
 #include "Mesh.h"
-//#include "Model.h"
 #include "Entity.h"
 #include "Engine.h"
 #include "Context.h"
@@ -20,7 +19,6 @@
 #include "Skybox.h"
 #include "Transformation.h"
 #include "Material.h"
-#include "DefaultMaterial.h"
 #include "Shader.h"
 #include "Component.h"
 
@@ -133,10 +131,10 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
 
     shaderToUse->bindUniformBlockToBindPoint("Time", 0);
     
-    DefaultMaterial* mat = nullptr;
+    Material* mat = nullptr;
     if (shaderToUse->IsMaterialsEnabled())
     {
-        mat = renderParams.entity->tryGetComponentInParent<DefaultMaterial>();
+        mat = renderParams.entity->tryGetComponentInParent<Material>();
         
         if (mat)
         {

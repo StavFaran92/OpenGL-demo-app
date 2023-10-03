@@ -13,7 +13,6 @@
 #include "IRenderer.h"
 #include "ICamera.h"
 #include "PickingShader.h"
-#include "Model.h"
 #include "Entity.h"
 
 #include "Logger.h"

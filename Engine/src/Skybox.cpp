@@ -11,7 +11,7 @@
 #include "ObjectHandler.h"
 #include "Shader.h"
 #include "ShapeFactory.h"
-#include "DefaultMaterial.h"
+#include "Material.h"
 #include "Component.h"
 #include "Context.h"
 #include "Engine.h"
@@ -43,7 +43,7 @@ Entity Skybox::CreateSkybox(Scene* scene)
 
     entity.addComponent<Shader>(shader);
     entity.RemoveComponent<RenderableComponent>();
-    entity.getComponent<DefaultMaterial>().addTextureHandler(textureHandler);
+    entity.getComponent<Material>().setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(textureHandler));
     entity.addComponent<SkyboxComponent>();
 
     return entity;

@@ -8,7 +8,6 @@
 #include "Configurations.h"
 
 #include "Mesh.h"
-#include "Model.h"
 #include "VertexLayout.h"
 
 class ModelBuilder;

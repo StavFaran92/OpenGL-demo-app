@@ -2,7 +2,6 @@
 
 #include <gl/glew.h>
 
-#include "Model.h"
 #include "Shader.h"
 #include "Transformation.h"
 #include "VertexArrayObject.h"

@@ -6,7 +6,6 @@
 #include <string>
 
 #include "Core.h"
-#include "Model.h"
 #include "Mesh.h"
 #include "Texture.h"
 #include "Entity.h"

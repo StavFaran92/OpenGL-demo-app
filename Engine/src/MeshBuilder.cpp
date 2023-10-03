@@ -1,6 +1,5 @@
 #include "MeshBuilder.h"
 
-#include "Model.h"
 #include "Logger.h"
 #include "VertexLayout.h"
 

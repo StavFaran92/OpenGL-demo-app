@@ -112,7 +112,6 @@
     <ClCompile Include="src\IRenderer.cpp" />
     <ClCompile Include="src\MemoryManagement.cpp" />
     <ClCompile Include="src\MeshBuilder.cpp" />
-    <ClCompile Include="src\ModelBuilder.cpp" />
     <ClCompile Include="src\ModelImporter.cpp" />
     <ClCompile Include="src\PostProcess.cpp" />
     <ClCompile Include="src\Application.cpp" />
@@ -138,7 +137,6 @@
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Menu.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
-    <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Mouse.cpp" />
     <ClCompile Include="src\Object3D.cpp" />
     <ClCompile Include="src\ObjectSelection.cpp" />
@@ -170,7 +168,6 @@
     <ClCompile Include="src\StandardShader.cpp" />
     <ClCompile Include="src\TimeManager.cpp" />
     <ClCompile Include="src\ShaderExtender.cpp" />
-    <ClCompile Include="src\DefaultMaterial.cpp" />
     <ClCompile Include="src\Entity.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -199,7 +196,6 @@
     <ClInclude Include="src\Configurations.h" />
     <ClInclude Include="src\MemoryManagement.h" />
     <ClInclude Include="src\MeshBuilder.h" />
-    <ClInclude Include="src\ModelBuilder.h" />
     <ClInclude Include="src\ModelImporter.h" />
     <ClInclude Include="src\Box.h" />
     <ClInclude Include="src\Quad.h" />
@@ -232,7 +228,6 @@
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Menu.h" />
     <ClInclude Include="src\Mesh.h" />
-    <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\Mouse.h" />
     <ClInclude Include="src\Object3D.h" />
     <ClInclude Include="src\ObjectSelection.h" />
@@ -271,7 +266,6 @@
     <ClInclude Include="src\Vertex.h" />
     <ClInclude Include="src\TimeManager.h" />
     <ClInclude Include="src\StandardShader.h" />
-    <ClInclude Include="src\DefaultMaterial.h" />
     <ClInclude Include="src\Entity.h" />
   </ItemGroup>
   <ItemGroup>

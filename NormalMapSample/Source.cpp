@@ -15,9 +15,9 @@ public:
 			auto ground = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 			auto& groundTransfrom = ground.getComponent<Transformation>();
 			groundTransfrom.setLocalScale({ 10, .1f, 10 });
-			auto& mat = ground.addComponent<DefaultMaterial>(32.f);
+			auto& mat = ground.addComponent<Material>();
 			auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/floor.jpg", Texture::Type::Diffuse);
-			mat.addTextureHandler(tex);
+			mat.setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(tex));
 		}
 
 

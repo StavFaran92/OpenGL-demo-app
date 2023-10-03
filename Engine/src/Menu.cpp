@@ -9,6 +9,7 @@
 #include "ObjectHandler.h"
 #include "ShapeFactory.h"
 #include "Entity.h"
+#include "Transformation.h"
 
 enum class PrimitiveType
 {
