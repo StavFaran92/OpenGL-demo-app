@@ -98,6 +98,7 @@
   <ItemGroup>
     <ClCompile Include="src\InstanceBatch.cpp" />
     <ClCompile Include="src\GpuInstancingRenderer.cpp" />
+    <ClCompile Include="src\LightSystem.cpp" />
     <ClCompile Include="src\MeshFactory.cpp" />
     <ClCompile Include="src\ObjectFactory.cpp" />
     <ClCompile Include="src\ObjectManager.cpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="src\Entity.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\LightSystem.h" />
     <ClInclude Include="src\MemoryPool.h" />
     <ClInclude Include="src\MeshFactory.h" />
     <ClInclude Include="src\PhysXUtils.h" />
@@ -200,6 +202,7 @@
     <ClInclude Include="src\Box.h" />
     <ClInclude Include="src\Quad.h" />
     <ClInclude Include="src\ISelectable.h" />
+    <ClInclude Include="src\ShadowSystem.h" />
     <ClInclude Include="src\ShapeFactory.h" />
     <ClInclude Include="src\Sphere.h" />
     <ClInclude Include="src\Core.h" />

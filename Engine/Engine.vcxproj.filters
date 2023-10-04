@@ -46,9 +46,6 @@
     <ClCompile Include="src\Mesh.cpp">
       <Filter>src\Graphics\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="src\Model.cpp">
-      <Filter>src\Graphics\Models</Filter>
-    </ClCompile>
     <ClCompile Include="src\Mouse.cpp">
       <Filter>src\IO</Filter>
     </ClCompile>
@@ -160,9 +157,6 @@
     <ClCompile Include="src\MeshBuilder.cpp">
       <Filter>src\Utils\Builders</Filter>
     </ClCompile>
-    <ClCompile Include="src\ModelBuilder.cpp">
-      <Filter>src\Utils\Builders</Filter>
-    </ClCompile>
     <ClCompile Include="src\EventSystem.cpp">
       <Filter>src\Services</Filter>
     </ClCompile>
@@ -187,7 +181,6 @@
     <ClCompile Include="src\StandardShader.cpp" />
     <ClCompile Include="src\TimeManager.cpp" />
     <ClCompile Include="src\ShaderExtender.cpp" />
-    <ClCompile Include="src\DefaultMaterial.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\ShapeFactory.cpp" />
     <ClCompile Include="src\PhysicsSystem.cpp" />
@@ -195,6 +188,7 @@
     <ClCompile Include="src\ShadowSystem.cpp" />
     <ClCompile Include="src\ScreenBufferDisplay.cpp" />
     <ClCompile Include="src\UniformBufferObject.cpp" />
+    <ClCompile Include="src\LightSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -270,9 +264,6 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="src\Mesh.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Model.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="src\Mouse.h">
@@ -398,9 +389,6 @@
     <ClInclude Include="src\VertexLayout.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\ModelBuilder.h">
-      <Filter>headers</Filter>
-    </ClInclude>
     <ClInclude Include="src\CoroutineSystem.h">
       <Filter>headers</Filter>
     </ClInclude>
@@ -427,7 +415,6 @@
     <ClInclude Include="src\ShaderExtender.h" />
     <ClInclude Include="src\TimeManager.h" />
     <ClInclude Include="src\StandardShader.h" />
-    <ClInclude Include="src\DefaultMaterial.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\ShapeFactory.h" />
     <ClInclude Include="src\RenderableComponent.h" />
@@ -440,6 +427,8 @@
     <ClInclude Include="src\Random.h" />
     <ClInclude Include="src\ScreenBufferDisplay.h" />
     <ClInclude Include="src\UniformBufferObject.h" />
+    <ClInclude Include="src\LightSystem.h" />
+    <ClInclude Include="src\ShadowSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

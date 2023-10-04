@@ -44,7 +44,8 @@ void LightSystem::setLightsInUBO(const IRenderer::DrawQueueRenderParams* params)
 			auto& pLight = view.get<DirectionalLight>(*it);
 			pLight.useLight(*shader, i);
 		}
-		shader->setValue("dirLightCount", i);
+
+		m_uboLights->setData(0, sizeof(float), &elapsed);
 	}
 
 	{
