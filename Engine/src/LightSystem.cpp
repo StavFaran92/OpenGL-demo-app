@@ -69,8 +69,30 @@ bool LightSystem::init()
 
 void LightSystem::setLightsInUBO(const IRenderer::DrawQueueRenderParams* params)
 {
+	m_uboLights->bind();
+
 	{
 		// Use all point lights
+		auto view = params->registry->view<PointLight, Transformation>();
+
+		int i = 0;
+		for (auto it = view.begin(); it != view.end(); ++it, ++i)
+		{
+			auto& pLight = view.get<PointLight>(*it);
+			auto& transform = view.get<Transformation>(*it);
+
+			PointLightUBORep pointLightUBO;
+			pointLightUBO.position = { transform.getLocalPosition(), 1.f };
+			pointLightUBO.color = { pLight.getColor(), 1.f };
+
+			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * i, sizeof(PointLightUBORep), glm::value_ptr(transform.getLocalPosition()));
+			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * i + 4, sizeof(PointLightUBORep), glm::value_ptr(pointLightUBO.color));
+		}
+		m_uboLights->setData(0, sizeof(int), &i);
+	}
+
+	{
+		// Use all Directional lights
 		auto view = params->registry->view<DirectionalLight>();
 
 		int i = 0;
@@ -83,30 +105,14 @@ void LightSystem::setLightsInUBO(const IRenderer::DrawQueueRenderParams* params)
 			dirLightUBO.color = { dLight.getColor(), 1.f };
 			dirLightUBO.direction = { dLight.getDirection() , 1.f };
 
-			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * i, sizeof(PointLightUBORep), glm::value_ptr(dirLightUBO.direction));
-			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * i + 4, sizeof(PointLightUBORep), glm::value_ptr(dirLightUBO.color));
+			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * NR_POINT_LIGHTS + sizeof(DirLightUBORep) * i, sizeof(PointLightUBORep), glm::value_ptr(dirLightUBO.direction));
+			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * NR_POINT_LIGHTS + sizeof(DirLightUBORep) * i + 4, sizeof(PointLightUBORep), glm::value_ptr(dirLightUBO.color));
 		}
 
-		m_uboLights->setData(0, sizeof(int), &i);
-	}
-
-	{
-		// Use all point lights
-		auto view = params->registry->view<PointLight, Transformation>();
-
-		int i = 0;
-		for (auto it = view.begin(); it != view.end(); ++it, ++i)
-		{
-			auto& pLight = view.get<PointLight>(*it);
-			auto& transform = view.get<Transformation>(*it);
-			
-			PointLightUBORep pointLightUBO;
-			pointLightUBO.position = { transform.getLocalPosition(), 1.f };
-			pointLightUBO.color = { pLight.getColor(), 1.f };
-
-			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * i, sizeof(PointLightUBORep), glm::value_ptr(transform.getLocalPosition()));
-			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * i + 4, sizeof(PointLightUBORep), glm::value_ptr(pointLightUBO.color));
-		}
 		m_uboLights->setData(sizeof(int), sizeof(int), &i);
 	}
+
+	m_uboLights->unbind();
+
+
 }
