@@ -93,8 +93,8 @@ void LightSystem::setLightsInUBO(const IRenderer::DrawQueueRenderParams* params)
 			pointLightUBO.position = { transform.getLocalPosition(), 1.f };
 			pointLightUBO.color = { pLight.getColor(), 1.f };
 
-			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * i, sizeof(PointLightUBORep), glm::value_ptr(transform.getLocalPosition()));
-			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * i + 4, sizeof(PointLightUBORep), glm::value_ptr(pointLightUBO.color));
+			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * i, sizeof(pointLightUBO.position), glm::value_ptr(pointLightUBO.position));
+			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * i + 4, sizeof(pointLightUBO.color), glm::value_ptr(pointLightUBO.color));
 		}
 		m_uboLights->setData(0, sizeof(int), &i);
 	}
@@ -113,8 +113,8 @@ void LightSystem::setLightsInUBO(const IRenderer::DrawQueueRenderParams* params)
 			dirLightUBO.color = { dLight.getColor(), 1.f };
 			dirLightUBO.direction = { dLight.getDirection() , 1.f };
 
-			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * NR_POINT_LIGHTS + sizeof(DirLightUBORep) * i, sizeof(PointLightUBORep), glm::value_ptr(dirLightUBO.direction));
-			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * NR_POINT_LIGHTS + sizeof(DirLightUBORep) * i + 4, sizeof(PointLightUBORep), glm::value_ptr(dirLightUBO.color));
+			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * NR_POINT_LIGHTS + sizeof(DirLightUBORep) * i, sizeof(dirLightUBO.direction), glm::value_ptr(dirLightUBO.direction));
+			m_uboLights->setData(2 * sizeof(int) + 8 + sizeof(PointLightUBORep) * NR_POINT_LIGHTS + sizeof(DirLightUBORep) * i + 4, sizeof(dirLightUBO.color), glm::value_ptr(dirLightUBO.color));
 		}
 
 		m_uboLights->setData(sizeof(int), sizeof(int), &i);
