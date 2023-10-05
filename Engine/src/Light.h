@@ -17,6 +17,7 @@ public:
 	void SetAmbientIntensity(float intensity);
 	void SetDiffuseIntensity(float intensity);
 	void SetColor(glm::vec3 color);
+	glm::vec3 getColor() const;
 
 	virtual ~Light();
 

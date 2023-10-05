@@ -36,6 +36,11 @@ void Light::SetColor(glm::vec3 color)
 	m_color = color;
 }
 
+glm::vec3 Light::getColor() const
+{
+	return m_color;
+}
+
 Light::~Light()
 {
 }

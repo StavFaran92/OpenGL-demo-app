@@ -15,6 +15,11 @@ void PointLight::SetAttenuation(Attenuation attenuation)
 	m_attenuation = attenuation;
 }
 
+glm::vec3 PointLight::getColor() const
+{
+	return m_color;
+}
+
 void PointLight::useLight(Shader& shader, int index)
 {
 	Light::useLight(shader, index);
