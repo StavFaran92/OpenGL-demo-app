@@ -62,7 +62,9 @@ bool LightSystem::init()
 		** The 8 at the end is used for padding **
  
 	*/
-	m_uboLights = std::make_shared<UniformBufferObject>(NR_DIR_LIGHTS * sizeof(DirLightUBORep) + NR_POINT_LIGHTS * sizeof(PointLightUBORep) + 2 * sizeof(int) + 8);
+
+	unsigned int bufferSize = NR_DIR_LIGHTS * sizeof(DirLightUBORep) + NR_POINT_LIGHTS * sizeof(PointLightUBORep) + 2 * sizeof(int) + 8;
+	m_uboLights = std::make_shared<UniformBufferObject>(bufferSize);
 	m_uboLights->attachToBindPoint(1);
 
 	m_scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const IRenderer::DrawQueueRenderParams* params) {
