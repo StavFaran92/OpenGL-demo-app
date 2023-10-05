@@ -37,6 +37,7 @@
 #include "Box.h"
 #include "EditorCamera.h"
 #include "ShadowSystem.h"
+#include "LightSystem.h"
 #include "Engine.h"
 #include "TimeManager.h"
 #include "UniformBufferObject.h"
@@ -117,6 +118,12 @@ void Scene::init(Context* context)
 	{
 		logError("Shadow System init failed!");
 	} 
+
+	m_lightSystem = std::make_shared<LightSystem>(m_context, this);
+	if (!m_lightSystem->init())
+	{
+		logError("Light System init failed!");
+	}
 
 	m_defaultPerspectiveProjection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
 	

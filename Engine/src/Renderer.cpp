@@ -77,8 +77,7 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
 
     shaderToUse->use();
 
-    unsigned int shaderID = shaderToUse->getID();
-    glUniformBlockBinding(shaderID, glGetUniformBlockIndex(shaderID, "Lights"), 1);
+
 
     //auto context = Engine::get()->getContext();
     //if (context->getActiveScene()->getSkybox() && entity->HasComponent<Material>())
@@ -133,6 +132,7 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
     }
 
     shaderToUse->bindUniformBlockToBindPoint("Time", 0);
+    shaderToUse->bindUniformBlockToBindPoint("Lights", 1);
     
     Material* mat = nullptr;
     if (shaderToUse->IsMaterialsEnabled())

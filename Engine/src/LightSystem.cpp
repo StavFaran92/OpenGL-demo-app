@@ -70,7 +70,7 @@ bool LightSystem::init()
 		setLightsInUBO(params);
 		});
 
-    return false;
+    return true;
 }
 
 void LightSystem::setLightsInUBO(const IRenderer::DrawQueueRenderParams* params)

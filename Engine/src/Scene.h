@@ -40,6 +40,7 @@ class ICamera;
 class PhysicsSystem;
 class ShadowSystem;
 class UniformBufferObject;
+class LightSystem;
 struct RigidBodyComponent;
 namespace physx {
 	class PxScene;
@@ -131,6 +132,7 @@ private:
 	std::shared_ptr<CoroutineSystem> m_coroutineManager = nullptr;
 	std::shared_ptr<ObjectPicker> m_objectPicker = nullptr;
 	std::shared_ptr<ShadowSystem> m_shadowSystem;
+	std::shared_ptr<LightSystem> m_lightSystem;
 
 	entt::registry m_registry;
 	std::map<RenderPhase, std::vector<RenderCallback>> m_renderCallbacks;
