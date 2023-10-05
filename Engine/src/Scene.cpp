@@ -239,7 +239,10 @@ void Scene::draw(float deltaTime)
 
 	// Set time elapsed
 	auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
+
+	m_uboTime->bind();
 	m_uboTime->setData(0, sizeof(float), &elapsed);
+	m_uboTime->unbind();
 
 	// Render Phase
 	for (auto&& [entity, mesh, transform, renderable] : 
