@@ -226,9 +226,9 @@ void Scene::draw(float deltaTime)
 		cb(&params);
 	}
 
-	auto phongShader = m_context->getStandardShader();
-	PhongShader::updateDirLights(phongShader, m_registry);
-	PhongShader::updatePointLights(phongShader, m_registry);
+	//auto phongShader = m_context->getStandardShader();
+	//PhongShader::updateDirLights(phongShader, m_registry);
+	//PhongShader::updatePointLights(phongShader, m_registry);
 
 	// Set time elapsed
 	auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;

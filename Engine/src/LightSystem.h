@@ -19,5 +19,7 @@ private:
 	bool m_isInit = false;
 
 	std::shared_ptr<UniformBufferObject> m_uboLights;
+	Context* m_context = nullptr;
+	Scene* m_scene = nullptr;
 };
 

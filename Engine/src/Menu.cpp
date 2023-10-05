@@ -5,7 +5,6 @@
 #include "Quad.h"
 #include "Box.h"
 #include "ModelImporter.h"
-#include "ModelBuilder.h"
 #include "ObjectHandler.h"
 #include "ShapeFactory.h"
 #include "Entity.h"

@@ -24,6 +24,7 @@ struct DirLightUBORep
 };
 
 LightSystem::LightSystem(Context* context, Scene* scene)
+	: m_context(context), m_scene(scene)
 {
 }
 
@@ -63,6 +64,11 @@ bool LightSystem::init()
 	*/
 	m_uboLights = std::make_shared<UniformBufferObject>(NR_DIR_LIGHTS * sizeof(DirLightUBORep) + NR_POINT_LIGHTS * sizeof(PointLightUBORep) + 2 * sizeof(int) + 8);
 	m_uboLights->attachToBindPoint(1);
+
+	m_scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const IRenderer::DrawQueueRenderParams* params) {
+
+		setLightsInUBO(params);
+		});
 
     return false;
 }

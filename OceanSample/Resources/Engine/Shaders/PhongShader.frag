@@ -50,10 +50,10 @@ uniform sampler2D shadowMap;
 
 layout (std140) uniform Lights
 {
-	PointLight pointLights[NR_POINT_LIGHTS];
-	DirLight dirLight[NR_DIR_LIGHT]; 
 	int pointLightCount;
 	int dirLightCount;
+	PointLight pointLights[NR_POINT_LIGHTS];
+	DirLight dirLight[NR_DIR_LIGHT]; 
 };
  
 // ----- Forward Declerations ----- //
@@ -69,6 +69,10 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, v
 	float constant = 1.f;
 	float linear = .35f;
 	float quadratic = .44f;
+
+	float lightAmbient = .2f;
+	float lightDiffuse = .5f;
+	float lightSpecular = 1.f;
 	
 	vec3 lightDir = normalize(light.position.rgb - fragPos); 
 	
@@ -84,9 +88,9 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, v
 	float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance)); 
 	
 	// combine results 
-	vec3 ambient = light.ambient * vec3(texture(material.texture_diffuse, aTexCoord)); 
-	vec3 diffuse = light.diffuse * diff * vec3(texture(material.texture_diffuse, aTexCoord)); 
-	vec3 specular = light.specular * spec * vec3(texture(material.texture_specular, aTexCoord)); 
+	vec3 ambient = lightAmbient * vec3(texture(material.texture_diffuse, aTexCoord)); 
+	vec3 diffuse = lightDiffuse * diff * vec3(texture(material.texture_diffuse, aTexCoord)); 
+	vec3 specular = lightSpecular * spec * vec3(texture(material.texture_specular, aTexCoord)); 
 	ambient *= attenuation; 
 	diffuse *= attenuation; 
 	specular *= attenuation; 
@@ -170,16 +174,15 @@ void main()
 	vec3 viewDir = normalize(viewPos - FragPos); 
 	
 	// Directional lighting 
-	for (int i = 0; i < Lights.dirLightCount; i++) 
+	for (int i = 0; i < dirLightCount; i++) 
 	{
-		result += CalcDirLight(Lights.dirLight[i], norm, viewDir, texCoord); 
+		result += CalcDirLight(dirLight[i], norm, viewDir, texCoord); 
 	}
 	
-	// Point lights 
-	// for (int i = 0; i < Lights.pointLightCount; i++) 
-	// {
-	// 	result += CalcPointLight(Lights.pointLights[i], norm, FragPos, viewDir, texCoord); 
-	// }
+	for (int i = 0; i < pointLightCount; i++) 
+	{
+		result += CalcPointLight(pointLights[i], norm, FragPos, viewDir, texCoord); 
+	}
  
 	colour = vec4(result,1.0); 
 } 

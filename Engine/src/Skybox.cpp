@@ -6,7 +6,6 @@
 #include "Renderer.h"
 #include "Mesh.h"
 #include "Box.h"
-#include "ModelBuilder.h"
 #include "TextureHandler.h"
 #include "ObjectHandler.h"
 #include "Shader.h"

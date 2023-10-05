@@ -4,7 +4,6 @@
 #include "Renderer.h"
 #include "Mesh.h"
 #include "Quad.h"
-#include "ModelBuilder.h"
 #include "ObjectHandler.h"
 #include "ShapeFactory.h"
 #include "Entity.h"

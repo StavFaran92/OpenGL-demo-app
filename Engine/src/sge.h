@@ -40,7 +40,6 @@
 #include "Box.h"
 #include "Sphere.h"
 #include "Configurations.h"
-#include "ModelBuilder.h"
 #include "MeshBuilder.h"
 #include "ModelImporter.h"
 #include "TextureHandler.h"
