@@ -1,5 +1,10 @@
 // ----- Uniforms buffers ----- //
 
+layout (std140) uniform Time
+{
+    float time;
+};
+
 layout (std140) uniform Lights
 {
 	int pointLightCount;
@@ -11,3 +16,7 @@ layout (std140) uniform Lights
 // ----- Uniforms ----- //
 
 uniform sampler2D shadowMap;
+uniform mat4 model;
+uniform mat4 projection;
+uniform mat4 view;
+uniform mat4 lightSpaceMatrix;
