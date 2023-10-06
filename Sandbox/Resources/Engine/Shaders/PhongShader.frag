@@ -2,6 +2,11 @@
 
 // ----- Definitions ----- //
 
+#include ../../../../Engine/Resources/Engine/Shaders/include/defines.glsl
+#include ../../../../Engine/Resources/Engine/Shaders/include/structs.glsl
+#include ../../../../Engine/Resources/Engine/Shaders/include/uniforms.glsl
+#include ../../../../Engine/Resources/Engine/Shaders/include/functions.glsl
+
 // ----- In ----- //
 
 in vec3 Color; 
@@ -13,13 +18,6 @@ in vec4 FragPosInDirLightSpace;
 // ----- Out ----- //
 
 out vec4 colour; 
-
-// ----- Includes ----- //
-
-#include ../../../../Engine/Resources/Engine/Shaders/include/defines.glsl
-#include ../../../../Engine/Resources/Engine/Shaders/include/structs.glsl
-#include ../../../../Engine/Resources/Engine/Shaders/include/uniforms.glsl
-#include ../../../../Engine/Resources/Engine/Shaders/include/functions.glsl
 
 // ----- Uniforms ----- //
 
@@ -50,7 +48,7 @@ void main()
 	// Directional lighting 
 	for (int i = 0; i < dirLightCount; i++) 
 	{
-		result += CalcDirLight(dirLight[i], norm, viewDir, texCoord, material); 
+		result += CalcDirLight(dirLight[i], norm, viewDir, texCoord, material, FragPosInDirLightSpace); 
 	}
 	
 	for (int i = 0; i < pointLightCount; i++) 

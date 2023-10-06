@@ -8,14 +8,6 @@ float shadowCalculations(vec4 fragPos);
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec2 aTexCoord, Material material) 
 { 
-	float constant = 1.f;
-	float linear = .35f;
-	float quadratic = .44f;
-
-	float lightAmbient = .2f;
-	float lightDiffuse = .5f;
-	float lightSpecular = 1.f;
-	
 	vec3 lightDir = normalize(light.position.rgb - fragPos); 
 	
 	// diffuse shading 
@@ -39,12 +31,8 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, v
 	return (ambient + diffuse + specular) * light.color.rgb; 
 } 
  
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec2 aTexCoord, Material material) 
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec2 aTexCoord, Material material, vec4 fragPos) 
 { 
-	float lightAmbient = .2f;
-	float lightDiffuse = .5f;
-	float lightSpecular = 1.f;
-	
 	vec3 lightDir = normalize(-light.direction.rgb); 
 	
 	// diffuse shading 
@@ -59,7 +47,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec2 aTexCoord, Mat
 	vec3 diffuse = lightDiffuse * diff * vec3(texture(material.texture_diffuse, aTexCoord)); 
 	vec3 specular = lightSpecular * spec * vec3(texture(material.texture_specular, aTexCoord)); 
 	
-	float shadow = shadowCalculations(FragPosInDirLightSpace);
+	float shadow = shadowCalculations(fragPos);
 	return (ambient + (1.0 - shadow) * (diffuse + specular)) * light.color.rgb; 
 }
 
