@@ -178,9 +178,7 @@
     <ClCompile Include="src\ObjectFactory.cpp" />
     <ClCompile Include="src\GpuInstancingRenderer.cpp" />
     <ClCompile Include="src\InstanceBatch.cpp" />
-    <ClCompile Include="src\StandardShader.cpp" />
     <ClCompile Include="src\TimeManager.cpp" />
-    <ClCompile Include="src\ShaderExtender.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\ShapeFactory.cpp" />
     <ClCompile Include="src\PhysicsSystem.cpp" />
@@ -189,6 +187,8 @@
     <ClCompile Include="src\ScreenBufferDisplay.cpp" />
     <ClCompile Include="src\UniformBufferObject.cpp" />
     <ClCompile Include="src\LightSystem.cpp" />
+    <ClCompile Include="src\ShaderLoader.cpp" />
+    <ClCompile Include="src\ShaderParser_tntmeijsImpl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -414,7 +414,6 @@
     <ClInclude Include="src\InstanceBatch.h" />
     <ClInclude Include="src\ShaderExtender.h" />
     <ClInclude Include="src\TimeManager.h" />
-    <ClInclude Include="src\StandardShader.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\ShapeFactory.h" />
     <ClInclude Include="src\RenderableComponent.h" />
@@ -429,6 +428,9 @@
     <ClInclude Include="src\UniformBufferObject.h" />
     <ClInclude Include="src\LightSystem.h" />
     <ClInclude Include="src\ShadowSystem.h" />
+    <ClInclude Include="src\ShaderLoader.h" />
+    <ClInclude Include="src\ShaderParser_tntmeijsImpl.h" />
+    <ClInclude Include="src\Shadinclude.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

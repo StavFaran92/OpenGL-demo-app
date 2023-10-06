@@ -1,5 +1,7 @@
 #version 330 
 
+#include ../../../Engine/Resources/Engine/Shaders/test.incl
+
 // ----- Definitions ----- //
 
 #define NR_POINT_LIGHTS 8 
@@ -66,6 +68,7 @@ float shadowCalculations(vec4 fragPos);
  
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec2 aTexCoord) 
 { 
+	foo();
 	float constant = 1.f;
 	float linear = .35f;
 	float quadratic = .44f;

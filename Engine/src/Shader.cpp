@@ -6,7 +6,8 @@
 
 #include "Utils.h"
 #include "Logger.h"
-#include "ShaderExtender.h"
+#include "ShaderLoader.h"
+#include "Engine.h"
 
 uint32_t Shader::s_activeShader = 0;
 
@@ -25,14 +26,17 @@ Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFil
 void Shader::init()
 {
 	// Parse shaders
-	std::string vertexCode = Utils::ReadFile(m_vertexShaderFilepath);
-	std::string fragmentCode = Utils::ReadFile(m_FragmentShaderFilepath);
+	std::string vertexCode = Engine::get()->getShaderLoader()->readShader(m_vertexShaderFilepath);
+	//std::string vertexCode = Utils::ReadFile(m_vertexShaderFilepath);
+	std::string fragmentCode = Engine::get()->getShaderLoader()->readShader(m_FragmentShaderFilepath);
+	//std::string fragmentCode = Utils::ReadFile(m_FragmentShaderFilepath);
 
 	std::string geometryCode;
 
 	if (!m_geometryShaderFilepath.empty())
 	{
-		geometryCode = Utils::ReadFile(m_geometryShaderFilepath);
+		geometryCode = Engine::get()->getShaderLoader()->readShader(m_geometryShaderFilepath);
+		//geometryCode = Utils::ReadFile(m_geometryShaderFilepath);
 	}
 
 	// Build shaders
@@ -51,8 +55,11 @@ void Shader::BuildShaders(const std::string& vertexCode, const std::string& frag
 	m_id = glCreateProgram();
 
 	// Validate shader program creation
-	if (!ValidateRenderer())
+	if (!m_id)
+	{
+		logError("Error creating program");
 		return;
+	}
 
 	// Create and attach vertex shader to program
 	GLuint vertexShader = AddShader(vertexCode, GL_VERTEX_SHADER);
@@ -86,16 +93,6 @@ void Shader::BuildShaders(const std::string& vertexCode, const std::string& frag
 
 	if (geometryShader)
 		glDeleteShader(geometryShader);
-}
-
-bool Shader::ValidateRenderer()
-{
-	if (!m_id)
-	{
-		logError("Error creating program");
-		return false;
-	}
-	return true;
 }
 
 bool Shader::ValidateProgramLink()

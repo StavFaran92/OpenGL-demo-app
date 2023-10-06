@@ -21,6 +21,7 @@ class ObjectManager;
 class TimeManager;
 class PhysicsSystem;
 class RandomNumberGenerator;
+class ShaderLoader;
 
 class EngineAPI Engine
 {
@@ -41,6 +42,7 @@ public:
     TimeManager* getTimeManager() const;
     PhysicsSystem* getPhysicsSystem() const;
     RandomNumberGenerator* getRandomSystem() const;
+    ShaderLoader* getShaderLoader() const;
 
     
 
@@ -88,6 +90,7 @@ protected:
     std::shared_ptr<TimeManager> m_timeManager;
     std::shared_ptr<PhysicsSystem> m_physicsSystem;
     std::shared_ptr<RandomNumberGenerator> m_randomSystem;
+    std::shared_ptr<ShaderLoader> m_shaderLoader;
 
 };
 

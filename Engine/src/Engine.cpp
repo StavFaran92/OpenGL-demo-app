@@ -21,6 +21,8 @@
 #include "PhysicsSystem.h"
 #include "Random.h"
 #include "ShadowSystem.h"
+#include "ShaderLoader.h"
+#include "ShaderParser_tntmeijsImpl.h"
 
 #include "Application.h"
 #include "SDL.h"
@@ -57,6 +59,12 @@ bool Engine::init()
 
     m_input = std::make_shared<Input>();
     m_input->init();
+
+    auto shaderParser = std::make_shared<ShaderParser_tntmeijs>();
+
+    ShaderLoader::LoadParams lParams;
+    lParams.extendShader = true;
+    m_shaderLoader = std::make_shared<ShaderLoader>(shaderParser, lParams);
 
     m_context = std::make_shared<Context>();
 
@@ -246,6 +254,11 @@ PhysicsSystem* Engine::getPhysicsSystem() const
 RandomNumberGenerator* Engine::getRandomSystem() const
 {
     return m_randomSystem.get();
+}
+
+ShaderLoader* Engine::getShaderLoader() const
+{
+    return m_shaderLoader.get();
 }
 
 void Engine::pause()

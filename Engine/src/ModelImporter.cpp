@@ -13,7 +13,7 @@
 #include "Material.h"
 #include "Entity.h"
 #include "Component.h"
-#include "StandardShader.h"
+#include "Shader.h"
 #include "Engine.h"
 #include "MemoryManagement.h"
 
