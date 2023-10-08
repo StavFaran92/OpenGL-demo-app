@@ -42,7 +42,7 @@ void main()
 	if(material.useNormal)
 	{
 		norm = texture(material.texture_normal, fs_in.texCoord).rgb;
-		norm = norm * 2.0 - 1.0; 
+		norm = normalize(norm * 2.0 - 1.0); 
 		// norm = normalize(fs_in.TBN * norm); 
  
 	}
