@@ -192,7 +192,7 @@ MeshBuilder& MeshBuilder::setColors(const float* colors, size_t size)
 	}
 
 	enableAttribute(LayoutAttribute::Colors);
-	setNumOfVertices(size);
+	setNumOfVertices(size); // todo verift instead of write
 
 	return *this;
 }
@@ -207,6 +207,22 @@ MeshBuilder& MeshBuilder::setIndices(std::vector<unsigned int>& indices, bool co
 	{
 		m_indices = std::shared_ptr<std::vector<unsigned int>>(&indices);
 	}
+
+	return *this;
+}
+
+MeshBuilder& MeshBuilder::setTangents(std::vector<glm::vec3>& tangents, bool copy)
+{
+	if (copy)
+	{
+		m_tangents = std::make_shared<std::vector<glm::vec3>>(tangents);
+	}
+	else
+	{
+		m_tangents = std::shared_ptr<std::vector<glm::vec3>>(&tangents);
+	}
+
+	enableAttribute(LayoutAttribute::Tangents);
 
 	return *this;
 }
@@ -240,6 +256,7 @@ MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, VertexLayout lay
 	auto normals = new std::vector<glm::vec3>();
 	auto texcoords = new std::vector<glm::vec2>();
 	auto colors = new std::vector<glm::vec3>();
+	auto tangents = new std::vector<glm::vec3>();
 
 	for (auto entry : layout.attribs)
 	{
@@ -307,6 +324,22 @@ MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, VertexLayout lay
 			setColors(*colors);
 		}
 
+		// Parse Tangents
+		else if (LayoutAttribute::Tangents == entry)
+		{
+			tangents->reserve(layout.numOfVertices * getAttributeSize(entry));
+			for (int i = 0; i < layout.numOfVertices; i++)
+			{
+				glm::vec3 tangent;
+				for (int j = 0; j < getAttributeSize(entry); j++)
+				{
+					tangent[j] = vertices[stride * i + j + offset];
+				}
+				colors->emplace_back(tangent);
+			}
+			setTangents(*tangents);
+		}
+
 		offset += getAttributeSize(entry);
 	}
 
@@ -360,6 +393,9 @@ Mesh* MeshBuilder::build()
 
 	if (m_indices)
 		mesh->setIndices(m_indices);
+
+	if (m_tangents)
+		mesh->setTangents(m_tangents);
 
 	std::sort(m_layout.attribs.begin(), m_layout.attribs.end(),
 		[](LayoutAttribute l1, LayoutAttribute l2)

@@ -74,6 +74,7 @@ public:
 	 * \param normals
 	 */
 	void setNormals(std::shared_ptr<std::vector<glm::vec3>> normals);
+	void setTangents(std::shared_ptr<std::vector<glm::vec3>> tangents);
 
 	/**
 	 * Gets the mesh's Normals vertices.
@@ -168,6 +169,7 @@ private:
 
 	/** Mesh normals */
 	std::shared_ptr<std::vector<glm::vec3>>       m_normals;
+	std::shared_ptr<std::vector<glm::vec3>>       m_tangents;
 
 	/** Mesh texCoords */
 	std::shared_ptr<std::vector<glm::vec2>>       m_texcoords;

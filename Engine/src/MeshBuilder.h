@@ -37,6 +37,8 @@ public:
 
 	MeshBuilder& setRawIndices(const unsigned int* indices, size_t size);
 
+	MeshBuilder& setTangents(std::vector<glm::vec3>& tangents, bool copy = false);
+
 	
 	
 
@@ -61,6 +63,7 @@ private:
 	size_t m_numOfVertices = 0;
 	std::shared_ptr<std::vector<glm::vec3>> m_positions = nullptr;
 	std::shared_ptr<std::vector<glm::vec3>> m_normals = nullptr;
+	std::shared_ptr<std::vector<glm::vec3>> m_tangents = nullptr;
 	std::shared_ptr<std::vector<glm::vec2>> m_texCoords = nullptr;
 	std::shared_ptr<std::vector<glm::vec3>> m_colors = nullptr;
 	std::shared_ptr<std::vector<unsigned int>> m_indices = nullptr;

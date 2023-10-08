@@ -18,6 +18,7 @@ in VS_OUT {
     vec3 TangentDirLightPos[NR_DIR_LIGHT];
     vec3 TangentViewPos[NR_POINT_LIGHTS];
     vec3 TangentFragPos;
+	mat3 TBN;
 } fs_in;
 
 // ----- Out ----- //
@@ -41,7 +42,8 @@ void main()
 	if(material.useNormal)
 	{
 		norm = texture(material.texture_normal, fs_in.texCoord).rgb;
-		norm = normalize(norm * 2.0 - 1.0); 
+		norm = norm * 2.0 - 1.0; 
+		norm = normalize(fs_in.TBN * norm); 
  
 	}
 	else

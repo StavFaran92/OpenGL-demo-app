@@ -107,6 +107,12 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 			{
 				sgeMaterial.setTexture(Texture::Type::Specular, std::shared_ptr<TextureHandler>(specularMaps[0]));
 			}
+
+			auto normalMap = loadMaterialTextures(material, aiTextureType_HEIGHT, session);
+			if (normalMap.size() > 0)
+			{
+				sgeMaterial.setTexture(Texture::Type::Normal, std::shared_ptr<TextureHandler>(normalMap[0]));
+			}
 		}
 		
 	}
@@ -128,6 +134,7 @@ Mesh* ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImport
 {
 	auto positions = new std::vector<glm::vec3>();
 	auto normals = new std::vector<glm::vec3>();
+	auto tangents = new std::vector<glm::vec3>();
 	auto texcoords = new std::vector<glm::vec2>();
 	auto indices = new std::vector<unsigned int>();
 
@@ -163,6 +170,11 @@ Mesh* ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImport
 		{
 			texcoords->emplace_back(glm::vec2(0.0f, 0.0f));
 		}
+
+		if (mesh->HasTangentsAndBitangents())
+		{
+			tangents->emplace_back(glm::vec3{ mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z });
+		}
 	}
 	// process indices
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -177,6 +189,7 @@ Mesh* ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImport
 		.setNormals(*normals)
 		.setTexcoords(*texcoords)
 		.setIndices(*indices)
+		.setTangents(*tangents)
 		.build();
 }
 
@@ -206,6 +219,8 @@ Texture::Type ModelImporter::getTextureType(aiTextureType type)
 		return Texture::Type::Diffuse;
 	case aiTextureType::aiTextureType_SPECULAR:
 		return Texture::Type::Specular;
+	case aiTextureType::aiTextureType_HEIGHT:
+		return Texture::Type::Normal;
 	default:
 		logError("Unsupported type: " + type);
 		return Texture::Type::None;

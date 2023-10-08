@@ -12,7 +12,8 @@ enum class LayoutAttribute
 	Positions,
 	Normals,
 	Texcoords,
-	Colors
+	Colors,
+	Tangents,
 };
 
 const std::map<LayoutAttribute, size_t> g_attributeToSizeMap =
@@ -21,6 +22,7 @@ const std::map<LayoutAttribute, size_t> g_attributeToSizeMap =
 	{ LayoutAttribute::Normals, 3 },
 	{ LayoutAttribute::Texcoords, 2 },
 	{ LayoutAttribute::Colors, 3 },
+	{ LayoutAttribute::Tangents, 3 },
 };
 
 size_t getAttributeSize(LayoutAttribute attribute);
@@ -31,6 +33,7 @@ const std::map<LayoutAttribute, size_t> g_attributeToLocationMap =
 	{ LayoutAttribute::Normals, 1 },
 	{ LayoutAttribute::Texcoords, 2 },
 	{ LayoutAttribute::Colors, 3 },
+	{ LayoutAttribute::Tangents, 4 },
 };
 
 size_t getAttributeLocationInShader(LayoutAttribute attribute);

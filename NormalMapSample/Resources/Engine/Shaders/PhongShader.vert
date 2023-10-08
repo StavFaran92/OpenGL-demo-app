@@ -5,7 +5,6 @@ layout (location = 1) in vec3 norm;
 layout (location = 2) in vec2 tex;
 layout (location = 3) in vec3 color;
 layout (location = 4) in vec3 aTangent;
-layout (location = 5) in vec3 aBitangent;  
 
 // ----- Definitions ----- //
 
@@ -27,6 +26,7 @@ out VS_OUT {
     vec3 TangentDirLightPos[NR_DIR_LIGHT];
     vec3 TangentViewPos[NR_POINT_LIGHTS];
     vec3 TangentFragPos;
+	mat3 TBN;
 } vs_out;
 
 // ----- Uniforms ----- //
@@ -38,9 +38,16 @@ out VS_OUT {
 void main()
 {
 	vec3 T = normalize(vec3(model * vec4(aTangent, 0.f)));
-	vec3 B = normalize(vec3(model * vec4(aBitangent, 0.f)));
 	vec3 N = normalize(vec3(model * vec4(norm, 0.f)));
-	mat3 TBN = transpose(mat3(T, B, N));
+
+	// Re-orthogonalize T using gram-schmidt procedure
+	T = normalize(T - dot(T, N) * N);
+	
+	vec3 B = cross(T, N);
+	
+	// mat3 TBN = transpose(mat3(T, B, N));
+	mat3 TBN = mat3(T, B, N);
+	vs_out.TBN = TBN;
 
 	vs_out.Color = color;
 	vs_out.texCoord = tex;

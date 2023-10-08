@@ -35,6 +35,11 @@ void Mesh::setNormals(std::shared_ptr<std::vector<glm::vec3>> normals)
 	m_normals = normals;
 }
 
+void Mesh::setTangents(std::shared_ptr<std::vector<glm::vec3>> tangents)
+{
+	m_tangents = tangents;
+}
+
 const std::vector<glm::vec3>* Mesh::getNormals() const
 {
 	return m_normals.get();
@@ -170,6 +175,18 @@ bool Mesh::build()
 				vertices[stride * i + offset + 0] = color.x;
 				vertices[stride * i + offset + 1] = color.y;
 				vertices[stride * i + offset + 2] = color.z;
+			}
+		}
+
+		// Parse colors
+		else if (LayoutAttribute::Tangents == entry)
+		{
+			for (int i = 0; i < m_layout.numOfVertices; i++)
+			{
+				auto tangent = m_tangents->at(i);
+				vertices[stride * i + offset + 0] = tangent.x;
+				vertices[stride * i + offset + 1] = tangent.y;
+				vertices[stride * i + offset + 2] = tangent.z;
 			}
 		}
 
