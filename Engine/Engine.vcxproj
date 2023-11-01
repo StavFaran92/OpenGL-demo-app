@@ -96,6 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DeferredRenderer.cpp" />
     <ClCompile Include="src\InstanceBatch.cpp" />
     <ClCompile Include="src\GpuInstancingRenderer.cpp" />
     <ClCompile Include="src\LightSystem.cpp" />
@@ -172,6 +173,7 @@
     <ClCompile Include="src\Entity.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\DeferredRenderer.h" />
     <ClInclude Include="src\LightSystem.h" />
     <ClInclude Include="src\MemoryPool.h" />
     <ClInclude Include="src\MeshFactory.h" />
