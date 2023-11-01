@@ -36,3 +36,7 @@ glm::mat4 Renderer2D::getProjection() const
 void Renderer2D::render(const DrawQueueRenderParams& renderParams)
 {
 }
+
+void Renderer2D::renderScene(DrawQueueRenderParams& renderParams)
+{
+}

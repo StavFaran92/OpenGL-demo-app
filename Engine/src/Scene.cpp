@@ -244,33 +244,35 @@ void Scene::draw(float deltaTime)
 	m_uboTime->setData(0, sizeof(float), &elapsed);
 	m_uboTime->unbind();
 
+	m_renderer->renderScene(params);
+
 	// Render Phase
-	for (auto&& [entity, mesh, transform, renderable] : 
-		m_registry.view<MeshComponent, Transformation, RenderableComponent>().each())
-	{
-		Entity entityhandler{ entity, this };
-		params.entity = &entityhandler;
-		params.mesh = mesh.mesh.get();
-		auto tempModel = transform.getWorldTransformation();
-		params.model = &tempModel;
-			
-		for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_PRE_RENDER])
-		{
-			cb(&params);
-		}
+	//for (auto&& [entity, mesh, transform, renderable] : 
+	//	m_registry.view<MeshComponent, Transformation, RenderableComponent>().each())
+	//{
+	//	Entity entityhandler{ entity, this };
+	//	params.entity = &entityhandler;
+	//	params.mesh = mesh.mesh.get();
+	//	auto tempModel = transform.getWorldTransformation();
+	//	params.model = &tempModel;
+	//		
+	//	for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_PRE_RENDER])
+	//	{
+	//		cb(&params);
+	//	}
 
-		// draw model
-		m_renderer->render(params);
+	//	// draw model
+	//	m_renderer->render(params);
 
-		for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_POST_RENDER])
-		{
-			cb(&params);
-		}
+	//	for (const auto& cb : m_renderCallbacks[RenderPhase::DRAW_QUEUE_POST_RENDER])
+	//	{
+	//		cb(&params);
+	//	}
 
-		params.entity = nullptr;
-		params.mesh = nullptr;
-		params.model = nullptr;
-	};
+	//	params.entity = nullptr;
+	//	params.mesh = nullptr;
+	//	params.model = nullptr;
+	//};
 
 	// POST Render Phase
 	// Iterate GPU instancing batches

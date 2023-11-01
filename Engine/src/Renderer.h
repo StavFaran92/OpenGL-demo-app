@@ -27,10 +27,15 @@ public:
 	void render(const DrawQueueRenderParams& renderParams);
 
 	void enableWireframeMode(bool enable);
+	// Inherited via IRenderer
+	void renderScene(DrawQueueRenderParams& renderParams) override;
 protected:
 	glm::mat4 m_projection;
 
 	bool m_wireFrameMode = false;
+
+
+
 
 
 };

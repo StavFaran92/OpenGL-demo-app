@@ -21,5 +21,8 @@ public:
 
 	// Inherited via IRenderer
 	virtual void render(const DrawQueueRenderParams& renderParams) override;
+
+	// Inherited via IRenderer
+	void renderScene(DrawQueueRenderParams& renderParams) override;
 };
 

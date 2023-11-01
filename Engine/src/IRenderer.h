@@ -52,6 +52,7 @@ public:
 
 	virtual glm::mat4 getProjection() const = 0;
 	virtual void render(const DrawQueueRenderParams& renderParams) = 0;
+	virtual void renderScene(DrawQueueRenderParams& renderParams) = 0;
 
 	void SetDrawType(DrawType drawType);
 

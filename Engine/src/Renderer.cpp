@@ -162,6 +162,27 @@ void Renderer::enableWireframeMode(bool enable)
     m_wireFrameMode = enable;
 }
 
+void Renderer::renderScene(DrawQueueRenderParams& renderParams)
+{
+    // Render Phase
+    for (auto&& [entity, mesh, transform, renderable] :
+        renderParams.registry->view<MeshComponent, Transformation, RenderableComponent>().each())
+    {
+        Entity entityhandler{ entity, renderParams.scene };
+        renderParams.entity = &entityhandler;
+        renderParams.mesh = mesh.mesh.get();
+        auto tempModel = transform.getWorldTransformation();
+        renderParams.model = &tempModel;
+
+        // draw model
+        render(renderParams);
+
+        renderParams.entity = nullptr;
+        renderParams.mesh = nullptr;
+        renderParams.model = nullptr;
+    };
+}
+
 void Renderer::clear() const
 {
 	// Clear window
