@@ -47,7 +47,7 @@ public:
 		SetDrawType(DrawType::Triangles);
 	};
 
-	virtual bool init() {};
+	virtual bool init() { return true; };
 	virtual void draw(const VertexArrayObject& vao, Shader& shader) const = 0;
 	virtual void clear() const = 0;
 
