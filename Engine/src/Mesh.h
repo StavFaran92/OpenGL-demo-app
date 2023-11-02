@@ -33,14 +33,6 @@ public:
 	Mesh();
 
 	/**
-	 * Renders the mesh to the screen using a speicifed shader and a renderer.
-	 * 
-	 * \param shader
-	 * \param renderer
-	 */
-	void render(Shader& shader, IRenderer& renderer);
-
-	/**
 	 * Sets the number of vertices in the mesh.
 	 *
 	 * \param size	Number of vertices the mesh contains
@@ -143,6 +135,8 @@ public:
 	 * \return The mesh's Vertex layout
 	 */
 	VertexLayout getVertexLayout();
+
+	VertexArrayObject* getVAO() const;
 
 	/**
 	 * Build the mesh using the specified vertices data.

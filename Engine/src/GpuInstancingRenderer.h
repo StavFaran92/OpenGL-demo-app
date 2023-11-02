@@ -14,7 +14,7 @@ class GpuInstancingRenderer : public Renderer
 public:
 	GpuInstancingRenderer();
 	void render(const DrawQueueRenderParams& renderParams);
-	void draw(const VertexArrayObject& vao, Shader& shader) const override;
+	void draw(const VertexArrayObject& vao) const override;
 private:
 	size_t m_amount = 0;
 	std::shared_ptr<VertexBufferObject> m_vbo;

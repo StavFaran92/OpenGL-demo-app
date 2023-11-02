@@ -18,6 +18,7 @@ class Entity;
 class Scene;
 class Context;
 class ICamera;
+class Material;
 
 class EngineAPI IRenderer {
 public:
@@ -32,6 +33,7 @@ public:
 		Entity* entity = nullptr;
 		Mesh* mesh = nullptr;
 		Shader* shader = nullptr;
+		Material* material = nullptr;
 
 		// MVP
 		glm::mat4* model = nullptr;
@@ -48,10 +50,9 @@ public:
 	};
 
 	virtual bool init() { return true; };
-	virtual void draw(const VertexArrayObject& vao, Shader& shader) const = 0;
+	virtual void draw(const VertexArrayObject& vao) const = 0;
 	virtual void clear() const = 0;
 
-	virtual glm::mat4 getProjection() const = 0;
 	virtual void render(const DrawQueueRenderParams& renderParams) = 0;
 	virtual void renderScene(DrawQueueRenderParams& renderParams) = 0;
 

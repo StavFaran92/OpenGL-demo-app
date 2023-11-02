@@ -61,7 +61,7 @@ bool DeferredRenderer::init()
     return true;
 }
 
-void DeferredRenderer::draw(const VertexArrayObject& vao, Shader& shader) const
+void DeferredRenderer::draw(const VertexArrayObject& vao) const
 {
 }
 
@@ -69,11 +69,6 @@ void DeferredRenderer::clear() const
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-}
-
-glm::mat4 DeferredRenderer::getProjection() const
-{
-    return glm::mat4();
 }
 
 void DeferredRenderer::render(const DrawQueueRenderParams& renderParams)
@@ -124,7 +119,10 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	// render to quad
 	auto& mesh = m_quad.getComponent<MeshComponent>();
 
-	mesh.mesh->render(*m_screenShader, *m_2DRenderer);
+	DrawQueueRenderParams renderParams2D;
+	renderParams2D.mesh = mesh.mesh.get();
+	renderParams2D.shader = m_screenShader.get();
+	m_2DRenderer->render(renderParams2D);
 
 	m_positionTexture->unbind();
 	m_normalTexture->unbind();

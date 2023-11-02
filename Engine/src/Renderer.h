@@ -21,14 +21,16 @@ public:
 	Renderer();
 
 	//Overrides
-	void draw(const VertexArrayObject& vao, Shader& shader) const override;
+	void draw(const VertexArrayObject& vao) const override;
  	void clear() const override;
-	glm::mat4 getProjection() const override;
 	void render(const DrawQueueRenderParams& renderParams);
 
 	void enableWireframeMode(bool enable);
 	// Inherited via IRenderer
 	void renderScene(DrawQueueRenderParams& renderParams) override;
+
+private:
+	void setUniforms(const DrawQueueRenderParams& renderParams);
 protected:
 	glm::mat4 m_projection;
 

@@ -10,16 +10,6 @@ Mesh::Mesh()
 	logInfo(__FUNCTION__);
 }
 
-void Mesh::render(Shader& shader, IRenderer& renderer)
-{
-	if (shader.isSupportColors())
-	{
-		shader.setValue("useColors", m_useColors);
-	}
-
-	renderer.draw(*m_vao, shader);
-}
-
 void Mesh::setPositions(std::shared_ptr<std::vector<glm::vec3>> positions)
 {
 	m_positions = positions;
@@ -262,6 +252,11 @@ void Mesh::setVertexLayout(VertexLayout layout)
 VertexLayout Mesh::getVertexLayout()
 {
 	return m_layout;
+}
+
+VertexArrayObject* Mesh::getVAO() const
+{
+	return m_vao.get();
 }
 
 Mesh::~Mesh()

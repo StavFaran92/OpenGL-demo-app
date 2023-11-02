@@ -15,9 +15,8 @@ class DeferredRenderer : public IRenderer
 	DeferredRenderer(Scene* scene);
 	// Inherited via IRenderer
 	bool init() override;
-	void draw(const VertexArrayObject& vao, Shader& shader) const override;
+	void draw(const VertexArrayObject& vao) const override;
 	void clear() const override;
-	glm::mat4 getProjection() const override;
 	void render(const DrawQueueRenderParams& renderParams) override;
 	void renderScene(DrawQueueRenderParams& renderParams) override;
 

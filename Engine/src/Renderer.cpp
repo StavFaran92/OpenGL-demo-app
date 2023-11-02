@@ -28,11 +28,9 @@ Renderer::Renderer()
 	m_projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
 }
 
-void Renderer::draw(const VertexArrayObject& vao, Shader& shader) const
+void Renderer::draw(const VertexArrayObject& vao) const
 {
    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	//SetMVP(shader);
 
 	vao.Bind();
 
@@ -50,34 +48,70 @@ void Renderer::draw(const VertexArrayObject& vao, Shader& shader) const
 
 }
 
-glm::mat4 Renderer::getProjection() const
-{
-	return m_projection;
-}
-
 void Renderer::render(const DrawQueueRenderParams& renderParams)
 {
-    //model->draw(*this, shader);
+    // Setup
+    renderParams.shader->use();
+    setUniforms(renderParams);
 
+    // Draw
+    draw(*renderParams.mesh->getVAO());
+
+    // Release
+    if (renderParams.material)
+    {
+        renderParams.material->release();
+    }
+
+    renderParams.shader->release();
+}
+
+void Renderer::enableWireframeMode(bool enable)
+{
+    m_wireFrameMode = enable;
+}
+
+void Renderer::renderScene(DrawQueueRenderParams& renderParams)
+{
     glEnable(GL_DEPTH_TEST);
+    SetDrawType(Renderer::DrawType::Triangles);
 
-    Shader* shaderToUse = renderParams.shader;
-
-    if(!shaderToUse)
+    // Render Phase
+    for (auto&& [entity, mesh, transform, renderable] :
+        renderParams.registry->view<MeshComponent, Transformation, RenderableComponent>().each())
     {
-        shaderToUse = renderParams.entity->tryGetComponentInParent<Shader>();
-    }
-   
-    if (!shaderToUse)
-    {
-        shaderToUse = Engine::get()->getContext()->getStandardShader();
-    }
+        Entity entityhandler{ entity, renderParams.scene };
+        renderParams.entity = &entityhandler;
+        renderParams.mesh = mesh.mesh.get();
+        auto tempModel = transform.getWorldTransformation();
+        renderParams.model = &tempModel;
+        renderParams.shader = Engine::get()->getContext()->getStandardShader();
 
-    assert(shaderToUse);
+        // TODO rethink this feature
+        Shader* attachedShader = renderParams.entity->tryGetComponentInParent<Shader>();
+        if (attachedShader)
+        {
+            renderParams.shader = attachedShader;
+        }
 
-    shaderToUse->use();
+        Material* mat = renderParams.entity->tryGetComponentInParent<Material>();
 
+        if (mat)
+        {
+            renderParams.material = mat;
+        }
 
+        // draw model
+        render(renderParams);
+
+        renderParams.entity = nullptr;
+        renderParams.mesh = nullptr;
+        renderParams.model = nullptr;
+    };
+}
+
+void Renderer::setUniforms(const DrawQueueRenderParams& renderParams)
+{
 
     //auto context = Engine::get()->getContext();
     //if (context->getActiveScene()->getSkybox() && entity->HasComponent<Material>())
@@ -116,71 +150,30 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
     // Model
     if (renderParams.model)
     {
-        shaderToUse->setModelMatrix(*renderParams.model);
+        renderParams.shader->setModelMatrix(*renderParams.model);
     }
 
     // View
     if (renderParams.view)
     {
-        shaderToUse->setViewMatrix(*renderParams.view);
+        renderParams.shader->setViewMatrix(*renderParams.view);
     }
 
     // Projection
     if (renderParams.projection)
     {
-        shaderToUse->setProjectionMatrix(*renderParams.projection);
+        renderParams.shader->setProjectionMatrix(*renderParams.projection);
     }
 
-    shaderToUse->bindUniformBlockToBindPoint("Time", 0);
-    shaderToUse->bindUniformBlockToBindPoint("Lights", 1);
-    
-    Material* mat = nullptr;
-    if (shaderToUse->IsMaterialsEnabled())
+    if (renderParams.material)
     {
-        mat = renderParams.entity->tryGetComponentInParent<Material>();
-        
-        if (mat)
-        {
-            mat->use(*shaderToUse);
-        }
+        renderParams.material->use(*renderParams.shader);
     }
 
-    SetDrawType(Renderer::DrawType::Triangles);
+    renderParams.shader->bindUniformBlockToBindPoint("Time", 0);
+    renderParams.shader->bindUniformBlockToBindPoint("Lights", 1);
 
-    renderParams.mesh->render(*shaderToUse, *this);
 
-    if (mat)
-    {
-        mat->release();
-    }
-
-    shaderToUse->release();
-}
-
-void Renderer::enableWireframeMode(bool enable)
-{
-    m_wireFrameMode = enable;
-}
-
-void Renderer::renderScene(DrawQueueRenderParams& renderParams)
-{
-    // Render Phase
-    for (auto&& [entity, mesh, transform, renderable] :
-        renderParams.registry->view<MeshComponent, Transformation, RenderableComponent>().each())
-    {
-        Entity entityhandler{ entity, renderParams.scene };
-        renderParams.entity = &entityhandler;
-        renderParams.mesh = mesh.mesh.get();
-        auto tempModel = transform.getWorldTransformation();
-        renderParams.model = &tempModel;
-
-        // draw model
-        render(renderParams);
-
-        renderParams.entity = nullptr;
-        renderParams.mesh = nullptr;
-        renderParams.model = nullptr;
-    };
 }
 
 void Renderer::clear() const
