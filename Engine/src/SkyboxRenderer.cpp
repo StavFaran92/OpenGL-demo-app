@@ -16,54 +16,34 @@ void SkyboxRenderer::render(const DrawQueueRenderParams& renderParams)
 	glDepthMask(GL_FALSE);
     glDepthFunc(GL_LEQUAL);
 
-    Shader* shaderToUse = nullptr;
+    //auto& mat = renderParams.entity->getComponent<Material>();
+    //mat.getTexture(Texture::Type::Diffuse)->bind();
 
-    if (renderParams.shader)
-    {
-        shaderToUse = renderParams.shader;
-    }
-    else if (renderParams.entity->HasComponent<Shader>())
-    {
-        shaderToUse = &renderParams.entity->getComponent<Shader>();
-    }
-    else
-    {
-        shaderToUse = Engine::get()->getContext()->getStandardShader();
-    }
+    ////auto view = glm::mat4(glm::mat3(dynamic_cast<Renderer*>(renderer.get())->GetCamera()->getView())); // remove translation from the view matrix
+    //// Model
+    //if (renderParams.model)
+    //{
+    //    renderParams.shader->setModelMatrix(*renderParams.model);
+    //}
 
-    assert(shaderToUse);
+    //// View
+    //if (renderParams.view)
+    //{
+    //    renderParams.shader->setViewMatrix(glm::mat4(glm::mat3(*renderParams.view)));
+    //}
 
-    shaderToUse->use();
+    //// Projection
+    //if (renderParams.projection)
+    //{
+    //    renderParams.shader->setProjectionMatrix(*renderParams.projection);
+    //}
 
+    //SetDrawType(Renderer::DrawType::Triangles);
 
-    auto& mat = renderParams.entity->getComponent<Material>();
-    mat.getTexture(Texture::Type::Diffuse)->bind();
+    ////renderParams.mesh->render(*shaderToUse, *this);
 
-    //auto view = glm::mat4(glm::mat3(dynamic_cast<Renderer*>(renderer.get())->GetCamera()->getView())); // remove translation from the view matrix
-    // Model
-    if (renderParams.model)
-    {
-        shaderToUse->setModelMatrix(*renderParams.model);
-    }
-
-    // View
-    if (renderParams.view)
-    {
-        shaderToUse->setViewMatrix(glm::mat4(glm::mat3(*renderParams.view)));
-    }
-
-    // Projection
-    if (renderParams.projection)
-    {
-        shaderToUse->setProjectionMatrix(*renderParams.projection);
-    }
-
-    SetDrawType(Renderer::DrawType::Triangles);
-
-    renderParams.mesh->render(*shaderToUse, *this);
-
-    mat.getTexture(Texture::Type::Diffuse)->unbind();
-    shaderToUse->release();
+    //mat.getTexture(Texture::Type::Diffuse)->unbind();
+    //shaderToUse->release();
 
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LESS);

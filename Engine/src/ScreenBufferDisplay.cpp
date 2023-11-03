@@ -46,7 +46,12 @@ void ScreenBufferDisplay::draw(TextureHandler* textureHandler)
 	
 	auto& mesh = m_quad.getComponent<MeshComponent>();
 
-	mesh.mesh->render(*m_screenShader, *m_renderer);
+	IRenderer::DrawQueueRenderParams renderParams;
+	renderParams.mesh = mesh.mesh.get();
+	renderParams.shader = m_screenShader.get();
+	m_renderer->render(renderParams);
+
+	//mesh.mesh->render(*m_screenShader, *m_renderer);
 
 	textureHandler->unbind();
 }

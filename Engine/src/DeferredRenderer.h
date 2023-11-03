@@ -30,5 +30,7 @@ private:
 	Scene* m_scene = nullptr;
 	std::shared_ptr<IRenderer> m_2DRenderer;
 	std::shared_ptr<Shader> m_screenShader;
+	std::shared_ptr<Shader> m_gBufferShader;
+	std::shared_ptr<Shader> m_lightPassShader;
 };
 

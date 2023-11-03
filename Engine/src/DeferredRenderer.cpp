@@ -84,7 +84,7 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_gBuffer.bind();
 
 	// bind vShader 
-	m_gBufferShader.use();
+	m_gBufferShader->use();
 
 	// Render all objects
 	for (auto&& [entity, mesh, transform, renderable] :
@@ -114,7 +114,7 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_albedoSpecularTexture->bind();
 
 	// bind fShader
-	m_lightPassShader.use();
+	m_lightPassShader->use();
 
 	// render to quad
 	auto& mesh = m_quad.getComponent<MeshComponent>();
