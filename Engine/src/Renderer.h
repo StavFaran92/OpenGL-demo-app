@@ -1,5 +1,5 @@
 #pragma once
-#include "IRenderer.h"
+#include "RendererIntermediate.h"
 
 #include "Core.h"
 
@@ -14,16 +14,13 @@ class Entity;
 class Mesh;
 
 
-class EngineAPI Renderer : public IRenderer
+class EngineAPI Renderer : public RendererIntermediate
 {
 public:
 	// Constructor
 	Renderer();
 
-	//Overrides
-	void draw(const VertexArrayObject& vao) const override;
- 	void clear() const override;
-	void render(const DrawQueueRenderParams& renderParams);
+	void render(const IRenderer::DrawQueueRenderParams& renderParams);
 
 	void enableWireframeMode(bool enable);
 	// Inherited via IRenderer

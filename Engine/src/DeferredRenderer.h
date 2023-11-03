@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IRenderer.h"
+#include "RendererIntermediate.h"
 
 #include "FrameBufferObject.h"
 #include "RenderBufferObject.h"
@@ -10,13 +10,11 @@
 class FrameBufferObject;
 class RenderBufferObject;
 
-class DeferredRenderer : public IRenderer
+class DeferredRenderer : public RendererIntermediate
 {
 	DeferredRenderer(Scene* scene);
 	// Inherited via IRenderer
 	bool init() override;
-	void draw(const VertexArrayObject& vao) const override;
-	void clear() const override;
 	void render(const DrawQueueRenderParams& renderParams) override;
 	void renderScene(DrawQueueRenderParams& renderParams) override;
 

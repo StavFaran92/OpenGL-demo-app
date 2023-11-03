@@ -190,6 +190,7 @@
     <ClCompile Include="src\ShaderLoader.cpp" />
     <ClCompile Include="src\ShaderParser_tntmeijsImpl.cpp" />
     <ClCompile Include="src\DeferredRenderer.cpp" />
+    <ClCompile Include="src\RendererIntermediate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -433,6 +434,7 @@
     <ClInclude Include="src\ShaderParser_tntmeijsImpl.h" />
     <ClInclude Include="src\Shadinclude.hpp" />
     <ClInclude Include="src\DeferredRenderer.h" />
+    <ClInclude Include="src\RendererIntermediate.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

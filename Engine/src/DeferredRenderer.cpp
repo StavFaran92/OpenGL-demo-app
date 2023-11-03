@@ -58,17 +58,7 @@ bool DeferredRenderer::init()
 	// Generate screen renderer
 	m_2DRenderer = std::make_shared<Renderer2D>();
 
-    return true;
-}
-
-void DeferredRenderer::draw(const VertexArrayObject& vao) const
-{
-}
-
-void DeferredRenderer::clear() const
-{
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	return true;
 }
 
 void DeferredRenderer::render(const DrawQueueRenderParams& renderParams)

@@ -81,8 +81,8 @@ void Scene::init(Context* context)
 	auto height = Engine::get()->getWindow()->getHeight();
 
 	m_renderer = std::make_shared<Renderer>();
-	m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
-	m_gpuInstancingRenderer = std::make_shared<GpuInstancingRenderer>();
+	//m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
+	//m_gpuInstancingRenderer = std::make_shared<GpuInstancingRenderer>();
 	m_objectSelection = std::make_shared<ObjectSelection>(m_context, this);
 	m_objectPicker = std::make_shared<ObjectPicker>(m_context, this);
 	if (!m_objectPicker->init(width, height))
@@ -233,10 +233,6 @@ void Scene::draw(float deltaTime)
 		cb(&params);
 	}
 
-	//auto phongShader = m_context->getStandardShader();
-	//PhongShader::updateDirLights(phongShader, m_registry);
-	//PhongShader::updatePointLights(phongShader, m_registry);
-
 	// Set time elapsed
 	auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
 
@@ -244,7 +240,41 @@ void Scene::draw(float deltaTime)
 	m_uboTime->setData(0, sizeof(float), &elapsed);
 	m_uboTime->unbind();
 
-	m_renderer->renderScene(params);
+	glEnable(GL_DEPTH_TEST);
+	m_renderer->SetDrawType(Renderer::DrawType::Triangles);
+
+	// Render Phase
+	for (auto&& [entity, mesh, transform, renderable] :
+		m_registry.view<MeshComponent, Transformation, RenderableComponent>().each())
+	{
+		Entity entityhandler{ entity, params.scene };
+		params.entity = &entityhandler;
+		params.mesh = mesh.mesh.get();
+		auto tempModel = transform.getWorldTransformation();
+		params.model = &tempModel;
+		params.shader = Engine::get()->getContext()->getStandardShader();
+
+		// TODO rethink this feature
+		Shader* attachedShader = params.entity->tryGetComponentInParent<Shader>();
+		if (attachedShader)
+		{
+			params.shader = attachedShader;
+		}
+
+		Material* mat = params.entity->tryGetComponentInParent<Material>();
+
+		if (mat)
+		{
+			params.material = mat;
+		}
+
+		// draw model
+		m_renderer->render(params);
+
+		params.entity = nullptr;
+		params.mesh = nullptr;
+		params.model = nullptr;
+	};
 
 	// POST Render Phase
 	// Iterate GPU instancing batches
@@ -254,10 +284,12 @@ void Scene::draw(float deltaTime)
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;
 		params.mesh = mesh.mesh.get();
-		m_gpuInstancingRenderer->render(params);
+		m_renderer->render(params);
 	}
 
 	// For some reason this group destroys the entities
+	glDepthMask(GL_FALSE);
+	glDepthFunc(GL_LEQUAL);
 	for (auto&& [entity, skybox, mesh, transform, mat, shader] : 
 		m_registry.view<SkyboxComponent, MeshComponent, Transformation, Material, Shader>().each())
 	{
@@ -268,13 +300,15 @@ void Scene::draw(float deltaTime)
 		params.model = &tempModel;
 		params.shader = &shader;
 
-		m_skyboxRenderer->render(params);
+		m_renderer->render(params);
 
 		params.entity = nullptr;
 		params.mesh = nullptr;
 		params.shader = nullptr;
 		params.model = nullptr;
 	}
+	glDepthMask(GL_TRUE);
+	glDepthFunc(GL_LESS);
 
 #if 0
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

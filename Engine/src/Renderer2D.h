@@ -1,20 +1,14 @@
 #pragma once
 
-#include "IRenderer.h"
+#include "RendererIntermediate.h"
 
 class Model;
 class ICamera;
 
-class Renderer2D : public IRenderer
+class Renderer2D : public RendererIntermediate
 {
 public:
 	Renderer2D() = default;
-	// Inherited via IRenderer
-	void draw(const VertexArrayObject& vao) const override;
-	void clear() const override;
-
-	// Inherited via IRenderer
-	//virtual void render(Model* model, Shader* shader = nullptr) override;
 
 	// Inherited via IRenderer
 	virtual void render(const DrawQueueRenderParams& renderParams) override;

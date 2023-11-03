@@ -28,26 +28,6 @@ Renderer::Renderer()
 	m_projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
 }
 
-void Renderer::draw(const VertexArrayObject& vao) const
-{
-   //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	vao.Bind();
-
-	if (vao.GetIndexCount() == 0)
-	{
-		glDrawArrays(m_drawType, 0, vao.GetVerticesCount());
-	}
-	else 
-	{
-		glDrawElements(m_drawType, vao.GetIndexCount(), GL_UNSIGNED_INT, 0);
-	}
-
-
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-}
-
 void Renderer::render(const DrawQueueRenderParams& renderParams)
 {
     // Setup
@@ -73,41 +53,7 @@ void Renderer::enableWireframeMode(bool enable)
 
 void Renderer::renderScene(DrawQueueRenderParams& renderParams)
 {
-    glEnable(GL_DEPTH_TEST);
-    SetDrawType(Renderer::DrawType::Triangles);
 
-    // Render Phase
-    for (auto&& [entity, mesh, transform, renderable] :
-        renderParams.registry->view<MeshComponent, Transformation, RenderableComponent>().each())
-    {
-        Entity entityhandler{ entity, renderParams.scene };
-        renderParams.entity = &entityhandler;
-        renderParams.mesh = mesh.mesh.get();
-        auto tempModel = transform.getWorldTransformation();
-        renderParams.model = &tempModel;
-        renderParams.shader = Engine::get()->getContext()->getStandardShader();
-
-        // TODO rethink this feature
-        Shader* attachedShader = renderParams.entity->tryGetComponentInParent<Shader>();
-        if (attachedShader)
-        {
-            renderParams.shader = attachedShader;
-        }
-
-        Material* mat = renderParams.entity->tryGetComponentInParent<Material>();
-
-        if (mat)
-        {
-            renderParams.material = mat;
-        }
-
-        // draw model
-        render(renderParams);
-
-        renderParams.entity = nullptr;
-        renderParams.mesh = nullptr;
-        renderParams.model = nullptr;
-    };
 }
 
 void Renderer::setUniforms(const DrawQueueRenderParams& renderParams)
@@ -174,12 +120,4 @@ void Renderer::setUniforms(const DrawQueueRenderParams& renderParams)
     renderParams.shader->bindUniformBlockToBindPoint("Lights", 1);
 
 
-}
-
-void Renderer::clear() const
-{
-	// Clear window
-	//glClearStencil(0);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
