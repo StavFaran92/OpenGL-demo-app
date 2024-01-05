@@ -81,7 +81,8 @@ void Scene::init(Context* context)
 	auto width = Engine::get()->getWindow()->getWidth();
 	auto height = Engine::get()->getWindow()->getHeight();
 
-	m_renderer = std::make_shared<Renderer>();
+	m_renderer = std::make_shared<DeferredRenderer>(this);
+	m_renderer->init();
 	//m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
 	//m_gpuInstancingRenderer = std::make_shared<GpuInstancingRenderer>();
 	m_objectSelection = std::make_shared<ObjectSelection>(m_context, this);

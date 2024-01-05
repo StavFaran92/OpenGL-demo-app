@@ -54,7 +54,17 @@ bool DeferredRenderer::init()
 	m_quad = ScreenQuad::GenerateScreenQuad(m_scene);
 
 	// Generate screen shader
-	m_screenShader = Shader::createShared<Shader>("Resources/Engine/Shaders/PostProcess/PostProcessShader_default.vert", "Resources/Engine/Shaders/PostProcess/PostProcessShader_default.frag");
+	m_screenShader = Shader::createShared<Shader>(
+		"Resources/Engine/Shaders/PostProcess/PostProcessShader_default.vert", 
+		"Resources/Engine/Shaders/PostProcess/PostProcessShader_default.frag");
+
+	m_gBufferShader = Shader::createShared<Shader>(
+		"Resources/Engine/Shaders/GBufferShader.vert", 
+		"Resources/Engine/Shaders/GBufferShader.frag");
+
+	m_lightPassShader = Shader::createShared<Shader>(
+		"Resources/Engine/Shaders/GBufferShader.vert",
+		"Resources/Engine/Shaders/GBufferShader.frag");
 
 	// Generate screen renderer
 	m_2DRenderer = std::make_shared<Renderer2D>();
@@ -65,7 +75,7 @@ bool DeferredRenderer::init()
 void DeferredRenderer::render(const DrawQueueRenderParams& renderParams)
 {
 	// Setup
-	renderParams.shader->use();
+	//renderParams.shader->use();
 	    // Model
     if (renderParams.model)
     {
@@ -101,7 +111,7 @@ void DeferredRenderer::render(const DrawQueueRenderParams& renderParams)
 		renderParams.material->release();
 	}
 
-	renderParams.shader->release();
+	//renderParams.shader->release();
 }
 
 void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
@@ -138,22 +148,22 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 
 	// bind textures
 	// Todo solve slots issue
-	m_positionTexture->bind();
-	m_normalTexture->bind();
-	m_albedoSpecularTexture->bind();
+	//m_positionTexture->bind();
+	//m_normalTexture->bind();
+	//m_albedoSpecularTexture->bind();
 
-	// bind fShader
-	m_lightPassShader->use();
+	//// bind fShader
+	//m_lightPassShader->use();
 
-	// render to quad
-	auto& mesh = m_quad.getComponent<MeshComponent>();
+	//// render to quad
+	//auto& mesh = m_quad.getComponent<MeshComponent>();
 
-	DrawQueueRenderParams renderParams2D;
-	renderParams2D.mesh = mesh.mesh.get();
-	renderParams2D.shader = m_screenShader.get();
-	m_2DRenderer->render(renderParams2D);
+	//DrawQueueRenderParams renderParams2D;
+	//renderParams2D.mesh = mesh.mesh.get();
+	//renderParams2D.shader = m_screenShader.get();
+	//m_2DRenderer->render(renderParams2D);
 
-	m_positionTexture->unbind();
-	m_normalTexture->unbind();
-	m_albedoSpecularTexture->unbind();
+	//m_positionTexture->unbind();
+	//m_normalTexture->unbind();
+	//m_albedoSpecularTexture->unbind();
 }
