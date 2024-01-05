@@ -12,6 +12,7 @@ class RenderBufferObject;
 
 class DeferredRenderer : public RendererIntermediate
 {
+public:
 	DeferredRenderer(Scene* scene);
 	// Inherited via IRenderer
 	bool init() override;

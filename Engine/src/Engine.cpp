@@ -126,7 +126,7 @@ void Engine::SetWindow(std::shared_ptr<Window> window)
     m_window = window;
 }
 
-Renderer* Engine::getRenderer() const
+IRenderer* Engine::getRenderer() const
 {
     return m_context->getActiveScene()->getRenderer().get();
 }

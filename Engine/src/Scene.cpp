@@ -41,6 +41,7 @@
 #include "Engine.h"
 #include "TimeManager.h"
 #include "UniformBufferObject.h"
+#include "DeferredRenderer.h"
 #include <GL/glew.h>
 
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
@@ -269,7 +270,7 @@ void Scene::draw(float deltaTime)
 		}
 
 		// draw model
-		m_renderer->render(params);
+		m_renderer->renderScene(params);
 
 		params.entity = nullptr;
 		params.mesh = nullptr;
@@ -407,7 +408,7 @@ Scene::Scene(Context* context)
 	init(context);
 }
 
-std::shared_ptr<Renderer> Scene::getRenderer() const
+std::shared_ptr<IRenderer> Scene::getRenderer() const
 {
 	return m_renderer;
 }

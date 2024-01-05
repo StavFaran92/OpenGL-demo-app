@@ -152,7 +152,7 @@ Window* Context::getWindow() const
 	return Engine::get()->getWindow();
 }
 
-Renderer* Context::getRenderer() const
+IRenderer* Context::getRenderer() const
 {
 	return Engine::get()->getRenderer();
 }

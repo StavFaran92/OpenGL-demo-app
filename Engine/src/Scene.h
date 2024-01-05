@@ -73,7 +73,7 @@ public:
 	void addCoroutine(const std::function<bool(float)>& coroutine);
 	void removeCoroutine(std::function<bool(float)> coroutine);
 
-	std::shared_ptr<Renderer> getRenderer() const;
+	std::shared_ptr<IRenderer> getRenderer() const;
 
 	uint32_t getID() const { return m_id; }
 
@@ -122,7 +122,7 @@ private:
 	Context* m_context = nullptr;
 
 	// Renderers
-	std::shared_ptr<Renderer> m_renderer = nullptr;
+	std::shared_ptr<IRenderer> m_renderer = nullptr;
 	//std::shared_ptr<GpuInstancingRenderer> m_gpuInstancingRenderer = nullptr;
 	//std::shared_ptr<SkyboxRenderer> m_skyboxRenderer = nullptr;
 

@@ -5,7 +5,7 @@
 
 
 class Context;
-class Renderer;
+class IRenderer;
 class SkyboxRenderer;
 class Window;
 class ImguiHandler;
@@ -31,7 +31,7 @@ public:
     static Engine* get();
 
     Window* getWindow() const;
-    Renderer* getRenderer() const;
+    IRenderer* getRenderer() const;
     Context* getContext() const;
     ImguiHandler* getImguiHandler() const;
     Input* getInput() const;

@@ -6,7 +6,7 @@
 
 class Model;
 class Shader;
-class Renderer;
+class IRenderer;
 class PointLight;
 class DirectionalLight;
 class Skybox;
@@ -44,7 +44,7 @@ public:
 	Shader* getNormalDisplayShader() const;
 
 	Window* getWindow() const;
-	Renderer* getRenderer() const;
+	IRenderer* getRenderer() const;
 	ImguiHandler* getImguiHandler() const;
 	Input* getInput() const;
 	EventSystem* getEventSystem() const;

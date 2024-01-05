@@ -10,6 +10,7 @@
 #include "ScreenQuad.h"
 #include "Scene.h"
 #include "Renderer2D.h"
+#include "Material.h"
 
 DeferredRenderer::DeferredRenderer(Scene* scene)
 	: m_scene(scene)
@@ -63,6 +64,44 @@ bool DeferredRenderer::init()
 
 void DeferredRenderer::render(const DrawQueueRenderParams& renderParams)
 {
+	// Setup
+	renderParams.shader->use();
+	    // Model
+    if (renderParams.model)
+    {
+        renderParams.shader->setModelMatrix(*renderParams.model);
+    }
+
+    // View
+    if (renderParams.view)
+    {
+        renderParams.shader->setViewMatrix(*renderParams.view);
+    }
+
+    // Projection
+    if (renderParams.projection)
+    {
+        renderParams.shader->setProjectionMatrix(*renderParams.projection);
+    }
+
+    if (renderParams.material)
+    {
+        renderParams.material->use(*renderParams.shader);
+    }
+
+    renderParams.shader->bindUniformBlockToBindPoint("Time", 0);
+    renderParams.shader->bindUniformBlockToBindPoint("Lights", 1);
+
+	// Draw
+	draw(*renderParams.mesh->getVAO());
+
+	// Release
+	if (renderParams.material)
+	{
+		renderParams.material->release();
+	}
+
+	renderParams.shader->release();
 }
 
 void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)

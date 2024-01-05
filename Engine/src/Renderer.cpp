@@ -53,7 +53,7 @@ void Renderer::enableWireframeMode(bool enable)
 
 void Renderer::renderScene(DrawQueueRenderParams& renderParams)
 {
-
+    render(renderParams);
 }
 
 void Renderer::setUniforms(const DrawQueueRenderParams& renderParams)
