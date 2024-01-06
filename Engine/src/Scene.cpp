@@ -242,41 +242,7 @@ void Scene::draw(float deltaTime)
 	m_uboTime->setData(0, sizeof(float), &elapsed);
 	m_uboTime->unbind();
 
-	glEnable(GL_DEPTH_TEST);
-	m_renderer->SetDrawType(Renderer::DrawType::Triangles);
-
-	// Render Phase
-	for (auto&& [entity, mesh, transform, renderable] :
-		m_registry.view<MeshComponent, Transformation, RenderableComponent>().each())
-	{
-		Entity entityhandler{ entity, params.scene };
-		params.entity = &entityhandler;
-		params.mesh = mesh.mesh.get();
-		auto tempModel = transform.getWorldTransformation();
-		params.model = &tempModel;
-		params.shader = Engine::get()->getContext()->getStandardShader();
-
-		// TODO rethink this feature
-		Shader* attachedShader = params.entity->tryGetComponentInParent<Shader>();
-		if (attachedShader)
-		{
-			params.shader = attachedShader;
-		}
-
-		Material* mat = params.entity->tryGetComponentInParent<Material>();
-
-		if (mat)
-		{
-			params.material = mat;
-		}
-
-		// draw model
-		m_renderer->renderScene(params);
-
-		params.entity = nullptr;
-		params.mesh = nullptr;
-		params.model = nullptr;
-	};
+	m_renderer->renderScene(params);
 
 	// POST Render Phase
 	// Iterate GPU instancing batches

@@ -21,6 +21,7 @@
 #include "Material.h"
 #include "Shader.h"
 #include "Component.h"
+#include "Transformation.h"
 
 
 Renderer::Renderer()
@@ -53,7 +54,41 @@ void Renderer::enableWireframeMode(bool enable)
 
 void Renderer::renderScene(DrawQueueRenderParams& renderParams)
 {
-    render(renderParams);
+    glEnable(GL_DEPTH_TEST);
+    SetDrawType(Renderer::DrawType::Triangles);
+
+    // Render Phase
+    for (auto&& [entity, mesh, transform, renderable] :
+        renderParams.registry->view<MeshComponent, Transformation, RenderableComponent>().each())
+    {
+        Entity entityhandler{ entity, renderParams.scene };
+        renderParams.entity = &entityhandler;
+        renderParams.mesh = mesh.mesh.get();
+        auto tempModel = transform.getWorldTransformation();
+        renderParams.model = &tempModel;
+        renderParams.shader = Engine::get()->getContext()->getStandardShader();
+
+        // TODO rethink this feature
+        Shader* attachedShader = renderParams.entity->tryGetComponentInParent<Shader>();
+        if (attachedShader)
+        {
+            renderParams.shader = attachedShader;
+        }
+
+        Material* mat = renderParams.entity->tryGetComponentInParent<Material>();
+
+        if (mat)
+        {
+            renderParams.material = mat;
+        }
+
+        // draw model
+        render(renderParams);
+
+        renderParams.entity = nullptr;
+        renderParams.mesh = nullptr;
+        renderParams.model = nullptr;
+    };
 }
 
 void Renderer::setUniforms(const DrawQueueRenderParams& renderParams)
