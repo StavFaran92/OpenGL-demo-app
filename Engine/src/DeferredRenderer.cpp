@@ -61,6 +61,9 @@ bool DeferredRenderer::init()
 	m_gBufferShader = Shader::createShared<Shader>(
 		"Resources/Engine/Shaders/GBufferShader.vert", 
 		"Resources/Engine/Shaders/GBufferShader.frag");
+	m_gBufferShader->SetEnableMaterials(true);
+	m_gBufferShader->SetEnableTextures(true);
+	m_gBufferShader->SetEnableLights(true);
 
 	m_lightPassShader = Shader::createShared<Shader>(
 		"Resources/Engine/Shaders/GBufferShader.vert",
@@ -75,7 +78,7 @@ bool DeferredRenderer::init()
 void DeferredRenderer::render(const DrawQueueRenderParams& renderParams)
 {
 	// Setup
-	//renderParams.shader->use();
+	renderParams.shader->use();
 	    // Model
     if (renderParams.model)
     {
@@ -123,7 +126,7 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_gBuffer.bind();
 
 	// bind vShader 
-	m_gBufferShader->use();
+	//m_gBufferShader->use();
 
 	// Render all objects
 	for (auto&& [entity, mesh, transform, renderable] :
@@ -134,6 +137,7 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 		renderParams.mesh = mesh.mesh.get();
 		auto tempModel = transform.getWorldTransformation();
 		renderParams.model = &tempModel;
+		renderParams.shader = m_gBufferShader.get();
 
 		// draw model
 		render(renderParams);
