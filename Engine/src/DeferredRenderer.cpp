@@ -171,6 +171,9 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	// bind fShader
 	m_lightPassShader->use();
 
+	m_lightPassShader->bindUniformBlockToBindPoint("Time", 0);
+	m_lightPassShader->bindUniformBlockToBindPoint("Lights", 1);
+
 	// render to quad
 	auto& mesh = m_quad.getComponent<MeshComponent>();
 
