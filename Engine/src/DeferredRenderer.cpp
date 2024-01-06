@@ -66,8 +66,8 @@ bool DeferredRenderer::init()
 	m_gBufferShader->SetEnableLights(true);
 
 	m_lightPassShader = Shader::createShared<Shader>(
-		"Resources/Engine/Shaders/GBufferShader.vert",
-		"Resources/Engine/Shaders/GBufferShader.frag");
+		"Resources/Engine/Shaders/LightPassShader.vert",
+		"Resources/Engine/Shaders/LightPassShader.frag");
 
 	// Generate screen renderer
 	m_2DRenderer = std::make_shared<Renderer2D>();
@@ -77,9 +77,7 @@ bool DeferredRenderer::init()
 
 void DeferredRenderer::render(const DrawQueueRenderParams& renderParams)
 {
-	// Setup
-	renderParams.shader->use();
-	    // Model
+	// Model
     if (renderParams.model)
     {
         renderParams.shader->setModelMatrix(*renderParams.model);
@@ -126,7 +124,7 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_gBuffer.bind();
 
 	// bind vShader 
-	//m_gBufferShader->use();
+	m_gBufferShader->use();
 
 	// Render all objects
 	for (auto&& [entity, mesh, transform, renderable] :
@@ -138,6 +136,12 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 		auto tempModel = transform.getWorldTransformation();
 		renderParams.model = &tempModel;
 		renderParams.shader = m_gBufferShader.get();
+		Material* mat = renderParams.entity->tryGetComponentInParent<Material>();
+
+		if (mat)
+		{
+			renderParams.material = mat;
+		}
 
 		// draw model
 		render(renderParams);
@@ -152,22 +156,30 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 
 	// bind textures
 	// Todo solve slots issue
-	//m_positionTexture->bind();
-	//m_normalTexture->bind();
-	//m_albedoSpecularTexture->bind();
+	m_positionTexture->setSlot(0);
+	m_positionTexture->bind();
+	m_lightPassShader->setValue("gPosition", 0);
 
-	//// bind fShader
-	//m_lightPassShader->use();
+	m_normalTexture->setSlot(1);
+	m_normalTexture->bind();
+	m_lightPassShader->setValue("gNormal", 1);
 
-	//// render to quad
-	//auto& mesh = m_quad.getComponent<MeshComponent>();
+	m_albedoSpecularTexture->setSlot(2);
+	m_albedoSpecularTexture->bind();
+	m_lightPassShader->setValue("gAlbedoSpec", 2);
 
-	//DrawQueueRenderParams renderParams2D;
-	//renderParams2D.mesh = mesh.mesh.get();
-	//renderParams2D.shader = m_screenShader.get();
-	//m_2DRenderer->render(renderParams2D);
+	// bind fShader
+	m_lightPassShader->use();
 
-	//m_positionTexture->unbind();
-	//m_normalTexture->unbind();
-	//m_albedoSpecularTexture->unbind();
+	// render to quad
+	auto& mesh = m_quad.getComponent<MeshComponent>();
+
+	DrawQueueRenderParams renderParams2D;
+	renderParams2D.mesh = mesh.mesh.get();
+	renderParams2D.shader = m_screenShader.get();
+	m_2DRenderer->render(renderParams2D);
+
+	m_positionTexture->unbind();
+	m_normalTexture->unbind();
+	m_albedoSpecularTexture->unbind();
 }

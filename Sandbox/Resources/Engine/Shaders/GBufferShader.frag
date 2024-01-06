@@ -36,5 +36,5 @@ void main()
 	
 	albedoSpec.rgb = texture(material.texture_diffuse, fs_in.texCoord).rgb;
 	
-	//albedoSpec.a = texture(material.texture_specular, fs_in.texCoord).r;
+	albedoSpec.a = texture(material.texture_specular, fs_in.texCoord).r;
 } 
