@@ -117,7 +117,7 @@ void DeferredRenderer::render(const DrawQueueRenderParams& renderParams)
 
 void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 {
-	
+	glEnable(GL_DEPTH_TEST);
 
 	// bind gBuffer
 	m_gBuffer.bind();
@@ -155,6 +155,8 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 
 	// unbind gBuffer
 	m_gBuffer.unbind();
+
+	glDisable(GL_DEPTH_TEST);
 
 	// bind textures
 	// Todo solve slots issue

@@ -133,7 +133,9 @@ void Scene::init(Context* context)
 
 	// Add default dir light
 	createEntity().addComponent<DirectionalLight>();
-	createEntity().addComponent<PointLight>();
+	auto pLight = createEntity();
+	pLight.addComponent<PointLight>();
+	pLight.getComponent<Transformation>().setLocalPosition({ 0,1,0 });
 
 	auto editorCamera = createEntity();
 	editorCamera.addComponent<CameraComponent>();
