@@ -41,6 +41,7 @@ class PhysicsSystem;
 class ShadowSystem;
 class UniformBufferObject;
 class LightSystem;
+class DeferredRenderer;
 struct RigidBodyComponent;
 namespace physx {
 	class PxScene;
@@ -122,7 +123,8 @@ private:
 	Context* m_context = nullptr;
 
 	// Renderers
-	std::shared_ptr<IRenderer> m_renderer = nullptr;
+	std::shared_ptr<DeferredRenderer> m_deferredRenderer = nullptr;
+	std::shared_ptr<Renderer> m_forwardRenderer = nullptr;
 	//std::shared_ptr<GpuInstancingRenderer> m_gpuInstancingRenderer = nullptr;
 	//std::shared_ptr<SkyboxRenderer> m_skyboxRenderer = nullptr;
 

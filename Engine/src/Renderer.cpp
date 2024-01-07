@@ -26,7 +26,45 @@
 
 Renderer::Renderer()
 {
-	m_projection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
+}
+
+bool Renderer::init()
+{
+    //m_gBuffer.bind();
+
+    //auto width = Engine::get()->getWindow()->getWidth();
+    //auto height = Engine::get()->getWindow()->getHeight();
+
+    //// Generate Texture for Position data
+    //m_positionTexture = Texture::createEmptyTexture(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
+    //m_gBuffer.attachTexture(m_positionTexture->getID(), GL_COLOR_ATTACHMENT0);
+
+    //unsigned int attachments[1] = { GL_COLOR_ATTACHMENT0 };
+    //glDrawBuffers(1, attachments);
+
+    //// Create RBO and attach to FBO
+    //m_gBuffer.attachRenderBuffer(m_renderBuffer.GetID(), FrameBufferObject::AttachmentType::Depth_Stencil);
+
+    //if (!m_gBuffer.isComplete())
+    //{
+    //    logError("FBO is not complete!");
+    //    return false;
+    //}
+
+    //m_gBuffer.unbind();
+
+    //// Generate screen quad
+    //m_quad = ScreenQuad::GenerateScreenQuad(m_scene);
+
+    //// Generate screen shader
+    //m_screenShader = Shader::createShared<Shader>(
+    //    "Resources/Engine/Shaders/PostProcess/PostProcessShader_default.vert",
+    //    "Resources/Engine/Shaders/PostProcess/PostProcessShader_default.frag");
+
+    //// Generate screen renderer
+    //m_2DRenderer = std::make_shared<Renderer2D>();
+
+    return true;
 }
 
 void Renderer::render(const DrawQueueRenderParams& renderParams)

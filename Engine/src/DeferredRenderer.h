@@ -19,8 +19,15 @@ public:
 	void render(const DrawQueueRenderParams& renderParams) override;
 	void renderScene(DrawQueueRenderParams& renderParams) override;
 
+	const FrameBufferObject& getGBuffer() const;
+
+private:
+	bool setupGBuffer();
+	bool setupRenderTarget();
+
 private:
 	FrameBufferObject m_gBuffer;
+	FrameBufferObject m_renderTarget;
 	RenderBufferObject m_renderBuffer;
 	TextureHandler* m_positionTexture = nullptr;
 	TextureHandler* m_normalTexture = nullptr;

@@ -56,7 +56,7 @@ void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams para
 		auto tempModel = e.getComponent<Transformation>().getWorldTransformation();
 		params.model = &tempModel;
 
-		m_renderer->render(params);
+		m_deferredRenderer->render(params);
 
 		params.entity = nullptr;
 		params.shader = nullptr;
@@ -81,8 +81,12 @@ void Scene::init(Context* context)
 	auto width = Engine::get()->getWindow()->getWidth();
 	auto height = Engine::get()->getWindow()->getHeight();
 
-	m_renderer = std::make_shared<DeferredRenderer>(this);
-	m_renderer->init();
+	m_deferredRenderer = std::make_shared<DeferredRenderer>(this);
+	m_deferredRenderer->init();
+
+	m_forwardRenderer = std::make_shared<Renderer>();
+	m_forwardRenderer->init();
+
 	//m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
 	//m_gpuInstancingRenderer = std::make_shared<GpuInstancingRenderer>();
 	m_objectSelection = std::make_shared<ObjectSelection>(m_context, this);
@@ -135,7 +139,7 @@ void Scene::init(Context* context)
 	createEntity().addComponent<DirectionalLight>();
 	auto pLight = createEntity();
 	pLight.addComponent<PointLight>();
-	pLight.getComponent<Transformation>().setLocalPosition({ 0,1,0 });
+	pLight.getComponent<Transformation>().setLocalPosition({ 0,1,1 });
 
 	auto editorCamera = createEntity();
 	editorCamera.addComponent<CameraComponent>();
@@ -216,13 +220,13 @@ void Scene::update(float deltaTime)
 
 void Scene::draw(float deltaTime)
 {
-	m_renderer->clear();
+	m_deferredRenderer->clear();
 
 	IRenderer::DrawQueueRenderParams params;
 	params.scene = this;
 	params.context = m_context;
 	params.registry = &m_registry;
-	params.renderer = m_renderer.get();
+	params.renderer = m_deferredRenderer.get();
 	auto tempView = m_activeCamera->getView();
 	params.view = &tempView;
 	params.projection = &m_defaultPerspectiveProjection;
@@ -245,8 +249,27 @@ void Scene::draw(float deltaTime)
 	m_uboTime->setData(0, sizeof(float), &elapsed);
 	m_uboTime->unbind();
 
-	m_renderer->renderScene(params);
+	m_deferredRenderer->renderScene(params);
 
+	const FrameBufferObject& rTarget = m_deferredRenderer->getGBuffer();
+
+	// Bind G-Buffer as src
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, rTarget.getID());
+
+	// Bind default buffer as dest
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+	auto width = Engine::get()->getWindow()->getWidth();
+	auto height = Engine::get()->getWindow()->getHeight();
+
+	// Copy src to dest
+	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//m_forwardRenderer->renderScene(params);
+
+#if 0
 	// POST Render Phase
 	// Iterate GPU instancing batches
 	for (auto&& [entity, mesh, instanceBatch] : m_registry.view<MeshComponent, InstanceBatch>().each())
@@ -255,7 +278,7 @@ void Scene::draw(float deltaTime)
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;
 		params.mesh = mesh.mesh.get();
-		m_renderer->render(params);
+		m_deferredRenderer->render(params);
 	}
 
 	// For some reason this group destroys the entities
@@ -271,7 +294,7 @@ void Scene::draw(float deltaTime)
 		params.model = &tempModel;
 		params.shader = &shader;
 
-		m_renderer->render(params);
+		m_deferredRenderer->render(params);
 
 		params.entity = nullptr;
 		params.mesh = nullptr;
@@ -280,6 +303,8 @@ void Scene::draw(float deltaTime)
 	}
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);
+
+#endif
 
 #if 0
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -380,7 +405,7 @@ Scene::Scene(Context* context)
 
 std::shared_ptr<IRenderer> Scene::getRenderer() const
 {
-	return m_renderer;
+	return m_deferredRenderer;
 }
 
 void Scene::close()

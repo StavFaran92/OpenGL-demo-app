@@ -20,6 +20,8 @@ public:
 	// Constructor
 	Renderer();
 
+	bool init() override;
+
 	void render(const IRenderer::DrawQueueRenderParams& renderParams);
 
 	void enableWireframeMode(bool enable);

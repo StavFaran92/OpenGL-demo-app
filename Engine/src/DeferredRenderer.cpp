@@ -17,7 +17,7 @@ DeferredRenderer::DeferredRenderer(Scene* scene)
 {
 }
 
-bool DeferredRenderer::init()
+bool DeferredRenderer::setupGBuffer()
 {
 	m_gBuffer.bind();
 
@@ -50,16 +50,8 @@ bool DeferredRenderer::init()
 
 	m_gBuffer.unbind();
 
-	// Generate screen quad
-	m_quad = ScreenQuad::GenerateScreenQuad(m_scene);
-
-	// Generate screen shader
-	m_screenShader = Shader::createShared<Shader>(
-		"Resources/Engine/Shaders/PostProcess/PostProcessShader_default.vert", 
-		"Resources/Engine/Shaders/PostProcess/PostProcessShader_default.frag");
-
 	m_gBufferShader = Shader::createShared<Shader>(
-		"Resources/Engine/Shaders/GBufferShader.vert", 
+		"Resources/Engine/Shaders/GBufferShader.vert",
 		"Resources/Engine/Shaders/GBufferShader.frag");
 	m_gBufferShader->SetEnableMaterials(true);
 	m_gBufferShader->SetEnableTextures(true);
@@ -69,8 +61,57 @@ bool DeferredRenderer::init()
 		"Resources/Engine/Shaders/LightPassShader.vert",
 		"Resources/Engine/Shaders/LightPassShader.frag");
 
+	return true;
+}
+
+bool DeferredRenderer::setupRenderTarget()
+{
+	m_renderTargetFBO.bind();
+
+	auto width = Engine::get()->getWindow()->getWidth();
+	auto height = Engine::get()->getWindow()->getHeight();
+
+	// Generate Texture for Position data
+	m_renderTargetTexture = Texture::createEmptyTexture(width, height);
+	m_renderTargetFBO.attachTexture(m_renderTargetTexture->getID(), GL_COLOR_ATTACHMENT0);
+
+	unsigned int attachments[1] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, attachments);
+
+	// Create RBO and attach to FBO
+	m_renderTargetFBO.attachRenderBuffer(m_renderTargetRBO.GetID(), FrameBufferObject::AttachmentType::Depth_Stencil);
+
+	if (!m_renderTargetFBO.isComplete())
+	{
+		logError("FBO is not complete!");
+		return false;
+	}
+
+	m_renderTargetFBO.unbind();
+
+	return true;
+}
+
+bool DeferredRenderer::init()
+{
+	setupGBuffer();
+
+	setupRenderTarget();
+
+	// Generate screen quad
+	m_quad = ScreenQuad::GenerateScreenQuad(m_scene);
+
+	// Generate screen shader
+	m_screenShader = Shader::createShared<Shader>(
+		"Resources/Engine/Shaders/PostProcess/PostProcessShader_default.vert", 
+		"Resources/Engine/Shaders/PostProcess/PostProcessShader_default.frag");
+
+	
+
 	// Generate screen renderer
 	m_2DRenderer = std::make_shared<Renderer2D>();
+
+
 
 	return true;
 }
@@ -189,4 +230,9 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_positionTexture->unbind();
 	m_normalTexture->unbind();
 	m_albedoSpecularTexture->unbind();
+}
+
+const FrameBufferObject& DeferredRenderer::getGBuffer() const
+{
+	return m_gBuffer;
 }
