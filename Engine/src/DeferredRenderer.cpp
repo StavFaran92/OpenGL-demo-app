@@ -117,11 +117,13 @@ void DeferredRenderer::render(const DrawQueueRenderParams& renderParams)
 
 void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 {
-	// clear color and buffers
-	clear();
+	
 
 	// bind gBuffer
 	m_gBuffer.bind();
+
+	// clear color and buffers
+	clear();
 
 	// bind vShader 
 	m_gBufferShader->use();
