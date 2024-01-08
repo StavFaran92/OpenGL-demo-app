@@ -12,7 +12,7 @@ class InstanceBatch;
 class GpuInstancingRenderer : public Renderer
 {
 public:
-	GpuInstancingRenderer();
+	GpuInstancingRenderer(Scene* scene);
 	void render(const DrawQueueRenderParams& renderParams);
 	void draw(const VertexArrayObject& vao) const override;
 private:

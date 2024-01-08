@@ -84,7 +84,7 @@ void Scene::init(Context* context)
 	m_deferredRenderer = std::make_shared<DeferredRenderer>(this);
 	m_deferredRenderer->init();
 
-	m_forwardRenderer = std::make_shared<Renderer>();
+	m_forwardRenderer = std::make_shared<Renderer>(this);
 	m_forwardRenderer->init();
 
 	//m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
@@ -251,13 +251,14 @@ void Scene::draw(float deltaTime)
 
 	m_deferredRenderer->renderScene(params);
 
-	const FrameBufferObject& rTarget = m_deferredRenderer->getGBuffer();
+	const FrameBufferObject& gBuffer = m_deferredRenderer->getGBuffer();
+	auto rTarget = m_forwardRenderer->getRenderTarget();
 
 	// Bind G-Buffer as src
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, rTarget.getID());
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer.getID());
 
 	// Bind default buffer as dest
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, rTarget);
 
 	auto width = Engine::get()->getWindow()->getWidth();
 	auto height = Engine::get()->getWindow()->getHeight();
@@ -265,7 +266,20 @@ void Scene::draw(float deltaTime)
 	// Copy src to dest
 	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 
+	glBindFramebuffer(GL_FRAMEBUFFER, rTarget);
+
+
+#if 0
+
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, rTarget);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+#endif 
+
+
+
 
 	//m_forwardRenderer->renderScene(params);
 

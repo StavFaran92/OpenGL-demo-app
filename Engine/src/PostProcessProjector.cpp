@@ -13,6 +13,8 @@
 #include "Entity.h"
 #include "Component.h"
 
+#include "GL/glew.h"
+
 PostProcessProjector::PostProcessProjector(Scene* scene)
 {
 	m_scene = scene;

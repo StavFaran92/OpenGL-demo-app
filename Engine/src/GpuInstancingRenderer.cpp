@@ -7,7 +7,8 @@
 #include "VertexArrayObject.h"
 #include "InstanceBatch.h"
 
-GpuInstancingRenderer::GpuInstancingRenderer()
+GpuInstancingRenderer::GpuInstancingRenderer(Scene* scene)
+	: Renderer(scene)
 {
 	glGenBuffers(1, &buffer);
 }

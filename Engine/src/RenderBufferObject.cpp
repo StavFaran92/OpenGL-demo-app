@@ -1,5 +1,7 @@
 #include "RenderBufferObject.h"
 
+#include "GL/glew.h"
+
 RenderBufferObject::RenderBufferObject()
 {
 	glGenRenderbuffers(1, &m_id);

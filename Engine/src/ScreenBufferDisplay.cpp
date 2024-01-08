@@ -13,6 +13,8 @@
 #include "Entity.h"
 #include "Component.h"
 
+#include "GL/glew.h"
+
 ScreenBufferDisplay::ScreenBufferDisplay(Scene* scene)
 {
 	m_scene = scene;

@@ -12,7 +12,7 @@
 #include "Renderer2D.h"
 #include "Material.h"
 
-DeferredRenderer::DeferredRenderer(Scene* scene)
+DeferredRenderer::DeferredRenderer(Scene* scene) 
 	: m_scene(scene)
 {
 }
@@ -64,54 +64,11 @@ bool DeferredRenderer::setupGBuffer()
 	return true;
 }
 
-bool DeferredRenderer::setupRenderTarget()
-{
-	m_renderTargetFBO.bind();
-
-	auto width = Engine::get()->getWindow()->getWidth();
-	auto height = Engine::get()->getWindow()->getHeight();
-
-	// Generate Texture for Position data
-	m_renderTargetTexture = Texture::createEmptyTexture(width, height);
-	m_renderTargetFBO.attachTexture(m_renderTargetTexture->getID(), GL_COLOR_ATTACHMENT0);
-
-	unsigned int attachments[1] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, attachments);
-
-	// Create RBO and attach to FBO
-	m_renderTargetFBO.attachRenderBuffer(m_renderTargetRBO.GetID(), FrameBufferObject::AttachmentType::Depth_Stencil);
-
-	if (!m_renderTargetFBO.isComplete())
-	{
-		logError("FBO is not complete!");
-		return false;
-	}
-
-	m_renderTargetFBO.unbind();
-
-	return true;
-}
-
 bool DeferredRenderer::init()
 {
 	setupGBuffer();
 
-	setupRenderTarget();
-
-	// Generate screen quad
-	m_quad = ScreenQuad::GenerateScreenQuad(m_scene);
-
-	// Generate screen shader
-	m_screenShader = Shader::createShared<Shader>(
-		"Resources/Engine/Shaders/PostProcess/PostProcessShader_default.vert", 
-		"Resources/Engine/Shaders/PostProcess/PostProcessShader_default.frag");
-
-	
-
-	// Generate screen renderer
-	m_2DRenderer = std::make_shared<Renderer2D>();
-
-
+	setupRenderTarget(m_scene);
 
 	return true;
 }
@@ -197,6 +154,8 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	// unbind gBuffer
 	m_gBuffer.unbind();
 
+	m_renderTargetFBO.bind();
+
 	glDisable(GL_DEPTH_TEST);
 
 	// bind textures
@@ -226,6 +185,8 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	renderParams2D.mesh = mesh.mesh.get();
 	renderParams2D.shader = m_screenShader.get();
 	m_2DRenderer->render(renderParams2D);
+
+	m_renderTargetFBO.unbind();
 
 	m_positionTexture->unbind();
 	m_normalTexture->unbind();

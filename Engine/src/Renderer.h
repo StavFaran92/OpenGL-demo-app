@@ -18,7 +18,7 @@ class EngineAPI Renderer : public RendererIntermediate
 {
 public:
 	// Constructor
-	Renderer();
+	Renderer(Scene* scene);
 
 	bool init() override;
 
@@ -31,12 +31,7 @@ public:
 private:
 	void setUniforms(const DrawQueueRenderParams& renderParams);
 protected:
-	glm::mat4 m_projection;
-
 	bool m_wireFrameMode = false;
 
-
-
-
-
+	Scene* m_scene = nullptr;
 };
