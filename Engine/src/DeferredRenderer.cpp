@@ -12,8 +12,8 @@
 #include "Renderer2D.h"
 #include "Material.h"
 
-DeferredRenderer::DeferredRenderer(Scene* scene) 
-	: m_scene(scene)
+DeferredRenderer::DeferredRenderer(std::shared_ptr<FrameBufferObject> renderTarget, Scene* scene) 
+	: m_renderTargetFBO(renderTarget), m_scene(scene)
 {
 }
 
@@ -68,7 +68,16 @@ bool DeferredRenderer::init()
 {
 	setupGBuffer();
 
-	setupRenderTarget(m_scene);
+	// Generate screen quad
+	m_quad = ScreenQuad::GenerateScreenQuad(m_scene);
+
+	// Generate screen shader
+	m_screenShader = Shader::createShared<Shader>(
+		"Resources/Engine/Shaders/PostProcess/PostProcessShader_default.vert",
+		"Resources/Engine/Shaders/PostProcess/PostProcessShader_default.frag");
+
+	// Generate screen renderer
+	m_2DRenderer = std::make_shared<Renderer2D>();
 
 	return true;
 }
@@ -152,7 +161,7 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	// unbind gBuffer
 	m_gBuffer.unbind();
 
-	m_renderTargetFBO.bind();
+	m_renderTargetFBO->bind();
 
 	glDisable(GL_DEPTH_TEST);
 
@@ -184,11 +193,16 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	renderParams2D.shader = m_screenShader.get();
 	m_2DRenderer->render(renderParams2D);
 
-	m_renderTargetFBO.unbind();
+	m_renderTargetFBO->unbind();
 
 	m_positionTexture->unbind();
 	m_normalTexture->unbind();
 	m_albedoSpecularTexture->unbind();
+}
+
+uint32_t DeferredRenderer::getRenderTarget() const
+{
+	return m_renderTargetFBO->getID();
 }
 
 const FrameBufferObject& DeferredRenderer::getGBuffer() const

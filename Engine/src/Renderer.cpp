@@ -24,15 +24,13 @@
 #include "Transformation.h"
 
 
-Renderer::Renderer(Scene* scene)
-    : m_scene(scene)
+Renderer::Renderer(std::shared_ptr<FrameBufferObject> renderTarget, Scene* scene)
+    : m_renderTargetFBO(renderTarget), m_scene(scene)
 {
 }
 
 bool Renderer::init()
 {
-    setupRenderTarget(m_scene);
-
     return true;
 }
 
@@ -64,7 +62,7 @@ void Renderer::renderScene(DrawQueueRenderParams& renderParams)
     glEnable(GL_DEPTH_TEST);
     SetDrawType(Renderer::DrawType::Triangles);
 
-    m_renderTargetFBO.bind();
+    m_renderTargetFBO->bind();
 
     // Render Phase
     for (auto& entityHandler : *renderParams.entityGroup)
@@ -97,7 +95,7 @@ void Renderer::renderScene(DrawQueueRenderParams& renderParams)
         renderParams.model = nullptr;
     };
 
-    m_renderTargetFBO.unbind();
+    m_renderTargetFBO->unbind();
 }
 
 void Renderer::setUniforms(const DrawQueueRenderParams& renderParams)
@@ -164,4 +162,9 @@ void Renderer::setUniforms(const DrawQueueRenderParams& renderParams)
     renderParams.shader->bindUniformBlockToBindPoint("Lights", 1);
 
 
+}
+
+uint32_t Renderer::getRenderTarget() const
+{
+    return m_renderTargetFBO->getID();
 }

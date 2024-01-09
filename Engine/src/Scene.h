@@ -42,6 +42,9 @@ class ShadowSystem;
 class UniformBufferObject;
 class LightSystem;
 class DeferredRenderer;
+class FrameBufferObject;
+class RenderBufferObject;
+class TextureHandler;
 struct RigidBodyComponent;
 namespace physx {
 	class PxScene;
@@ -151,4 +154,8 @@ private:
 	glm::mat4 m_defaultPerspectiveProjection;
 
 	std::shared_ptr<UniformBufferObject> m_uboTime;
+
+	std::shared_ptr<FrameBufferObject> m_renderTargetFBO;
+	std::shared_ptr<RenderBufferObject> m_renderTargetRBO;
+	TextureHandler* m_renderTargetTexture = nullptr;
 };

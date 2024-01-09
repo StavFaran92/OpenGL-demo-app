@@ -17,14 +17,14 @@ protected:
 	void draw(const VertexArrayObject& vao) const override;
 
 
-	bool setupRenderTarget(Scene* scene);
+	//bool setupRenderTarget(Scene* scene);
 
 protected:
-	FrameBufferObject m_renderTargetFBO;
-	RenderBufferObject m_renderTargetRBO;
-	TextureHandler* m_renderTargetTexture = nullptr;
-	Entity m_quad;
-	std::shared_ptr<IRenderer> m_2DRenderer;
-	std::shared_ptr<Shader> m_screenShader;
+	//FrameBufferObject m_renderTargetFBO;
+	//RenderBufferObject m_renderTargetRBO;
+	//TextureHandler* m_renderTargetTexture = nullptr;
+	//Entity m_quad;
+	//std::shared_ptr<IRenderer> m_2DRenderer;
+	//std::shared_ptr<Shader> m_screenShader;
 };
 

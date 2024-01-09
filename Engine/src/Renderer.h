@@ -18,7 +18,7 @@ class EngineAPI Renderer : public RendererIntermediate
 {
 public:
 	// Constructor
-	Renderer(Scene* scene);
+	Renderer(std::shared_ptr<FrameBufferObject> renderTarget, Scene* scene);
 
 	bool init() override;
 
@@ -28,10 +28,14 @@ public:
 	// Inherited via IRenderer
 	void renderScene(DrawQueueRenderParams& renderParams) override;
 
+	uint32_t getRenderTarget() const override;
+
 private:
 	void setUniforms(const DrawQueueRenderParams& renderParams);
 protected:
 	bool m_wireFrameMode = false;
 
 	Scene* m_scene = nullptr;
+
+	std::shared_ptr<FrameBufferObject> m_renderTargetFBO;
 };

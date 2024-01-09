@@ -81,10 +81,33 @@ void Scene::init(Context* context)
 	auto width = Engine::get()->getWindow()->getWidth();
 	auto height = Engine::get()->getWindow()->getHeight();
 
-	m_deferredRenderer = std::make_shared<DeferredRenderer>(this);
+	m_renderTargetFBO = std::make_shared<FrameBufferObject>();
+	m_renderTargetRBO = std::make_shared<RenderBufferObject>();
+
+	m_renderTargetFBO->bind();
+
+	// Generate Texture for Position data
+	m_renderTargetTexture = Texture::createEmptyTexture(width, height);
+	m_renderTargetFBO->attachTexture(m_renderTargetTexture->getID(), GL_COLOR_ATTACHMENT0);
+
+	unsigned int attachments[1] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, attachments);
+
+	// Create RBO and attach to FBO
+	m_renderTargetFBO->attachRenderBuffer(m_renderTargetRBO->GetID(), FrameBufferObject::AttachmentType::Depth_Stencil);
+
+	if (!m_renderTargetFBO->isComplete())
+	{
+		logError("FBO is not complete!");
+		return;
+	}
+
+	m_renderTargetFBO->unbind();
+
+	m_deferredRenderer = std::make_shared<DeferredRenderer>(m_renderTargetFBO, this);
 	m_deferredRenderer->init();
 
-	m_forwardRenderer = std::make_shared<Renderer>(this);
+	m_forwardRenderer = std::make_shared<Renderer>(m_renderTargetFBO, this);
 	m_forwardRenderer->init();
 
 	//m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
@@ -302,7 +325,7 @@ void Scene::draw(float deltaTime)
 
 #if 1
 	
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_deferredRenderer->getRenderTarget());
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_forwardRenderer->getRenderTarget());
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
