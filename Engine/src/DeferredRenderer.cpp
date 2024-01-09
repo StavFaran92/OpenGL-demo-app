@@ -127,13 +127,11 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_gBufferShader->use();
 
 	// Render all objects
-	for (auto&& [entity, mesh, transform, renderable] :
-		renderParams.registry->view<MeshComponent, Transformation, RenderableComponent>().each())
+	for (auto& entityHandler : renderParams.entityGroup)
 	{
-		Entity entityhandler{ entity, renderParams.scene };
-		renderParams.entity = &entityhandler;
-		renderParams.mesh = mesh.mesh.get();
-		auto tempModel = transform.getWorldTransformation();
+		renderParams.entity = &entityHandler;
+		renderParams.mesh = entityHandler.getComponent<MeshComponent>().mesh.get();
+		auto tempModel = entityHandler.getComponent<Transformation>().getWorldTransformation();
 		renderParams.model = &tempModel;
 		renderParams.shader = m_gBufferShader.get();
 		Material* mat = renderParams.entity->tryGetComponentInParent<Material>();

@@ -249,6 +249,16 @@ void Scene::draw(float deltaTime)
 	m_uboTime->setData(0, sizeof(float), &elapsed);
 	m_uboTime->unbind();
 
+
+	auto view = m_registry.view<MeshComponent, Transformation, RenderableComponent>();
+	params.entityGroup.reserve(view.size_hint());
+
+	for (auto&& [entity, mesh, transform, renderable] : view.each())
+	{
+		Entity entityhandler{ entity, this };
+		params.entityGroup.push_back(entityhandler);
+	};
+
 	m_deferredRenderer->renderScene(params);
 
 	const FrameBufferObject& gBuffer = m_deferredRenderer->getGBuffer();
