@@ -24,8 +24,21 @@ public:
 		//auto box2 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 
 
+		//auto importer = getContext()->getModelImporter();
+		//auto guitar_deferred = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());
+		//auto guitar_forward = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());
+		//guitar_forward.getComponent<Transformation>().setLocalPosition({ 0,0,3 });
+		//auto& renderable = guitar_forward.getComponent<RenderableComponent>();
+		//renderable.renderTechnique = RenderableComponent::Forward;
+
 		auto importer = getContext()->getModelImporter();
-		auto guitar = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());
+		auto guitar_deferred = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+		auto guitar_forward = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+		guitar_forward.getComponent<Transformation>().setLocalPosition({ 0,0,3 });
+		auto& renderable = guitar_forward.getComponent<RenderableComponent>();
+		renderable.renderTechnique = RenderableComponent::Forward;
+
+
 
 		//auto& transform = guitar->getComponent<Transformation>();
 		//transform.translate({ 10, 0,0 });
