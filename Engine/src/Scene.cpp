@@ -253,11 +253,14 @@ void Scene::draw(float deltaTime)
 	auto view = m_registry.view<MeshComponent, Transformation, RenderableComponent>();
 	params.entityGroup.reserve(view.size_hint());
 
-	for (auto&& [entity, mesh, transform, renderable] : view.each())
+	auto iter = view.begin();
+	while (iter != view.end())
 	{
-		Entity entityhandler{ entity, this };
+		Entity entityhandler{ *iter, this };
 		params.entityGroup.push_back(entityhandler);
-	};
+
+		iter++;
+	}
 
 	m_deferredRenderer->renderScene(params);
 

@@ -64,14 +64,14 @@ void Renderer::renderScene(DrawQueueRenderParams& renderParams)
     glEnable(GL_DEPTH_TEST);
     SetDrawType(Renderer::DrawType::Triangles);
 
+    m_renderTargetFBO.bind();
+
     // Render Phase
-    for (auto&& [entity, mesh, transform, renderable] :
-        renderParams.registry->view<MeshComponent, Transformation, RenderableComponent>().each())
-    {
-        Entity entityhandler{ entity, renderParams.scene };
-        renderParams.entity = &entityhandler;
-        renderParams.mesh = mesh.mesh.get();
-        auto tempModel = transform.getWorldTransformation();
+    for (auto& entityHandler : renderParams.entityGroup)
+	{
+        renderParams.entity = &entityHandler;
+        renderParams.mesh = entityHandler.getComponent<MeshComponent>().mesh.get();
+        auto tempModel = entityHandler.getComponent<Transformation>().getWorldTransformation();
         renderParams.model = &tempModel;
         renderParams.shader = Engine::get()->getContext()->getStandardShader();
 
@@ -96,6 +96,8 @@ void Renderer::renderScene(DrawQueueRenderParams& renderParams)
         renderParams.mesh = nullptr;
         renderParams.model = nullptr;
     };
+
+    m_renderTargetFBO.unbind();
 }
 
 void Renderer::setUniforms(const DrawQueueRenderParams& renderParams)
