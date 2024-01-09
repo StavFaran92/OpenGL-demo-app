@@ -27,9 +27,15 @@ struct EngineAPI SkyboxComponent : public TagComponent
 	
 };
 
-struct EngineAPI RenderableComponent : public TagComponent
+struct EngineAPI RenderableComponent : public Component
 {
-	
+	enum RenderTechnique
+	{
+		Forward,
+		Deferred
+	};
+
+	RenderTechnique renderTechnique = RenderTechnique::Deferred;
 };
 
 struct EngineAPI NativeScriptComponent : public Component

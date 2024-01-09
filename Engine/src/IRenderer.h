@@ -29,7 +29,7 @@ public:
 		IRenderer* renderer = nullptr;
 		entt::registry* registry = nullptr;
 		
-		std::vector<Entity> entityGroup;
+		std::vector<Entity>* entityGroup;
 
 		Entity* entity = nullptr;
 		Mesh* mesh = nullptr;

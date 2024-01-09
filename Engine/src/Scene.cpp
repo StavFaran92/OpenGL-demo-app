@@ -251,16 +251,30 @@ void Scene::draw(float deltaTime)
 
 
 	auto view = m_registry.view<MeshComponent, Transformation, RenderableComponent>();
-	params.entityGroup.reserve(view.size_hint());
+	params.entityGroup->reserve(view.size_hint());
 
+	// TODO consider optimizing this
+	std::vector<Entity> deferredRendererEntityGroup;
+	std::vector<Entity> forwardRendererEntityGroup;
 	auto iter = view.begin();
 	while (iter != view.end())
 	{
 		Entity entityhandler{ *iter, this };
-		params.entityGroup.push_back(entityhandler);
+
+		auto& renderable = entityhandler.getComponent<RenderableComponent>();
+		if (renderable.renderTechnique == RenderableComponent::Deferred)
+		{
+			deferredRendererEntityGroup.push_back(entityhandler);
+		}
+		else if (renderable.renderTechnique == RenderableComponent::Forward)
+		{
+			forwardRendererEntityGroup.push_back(entityhandler);
+		}
 
 		iter++;
 	}
+
+	params.entityGroup = &deferredRendererEntityGroup;
 
 	m_deferredRenderer->renderScene(params);
 
@@ -281,6 +295,10 @@ void Scene::draw(float deltaTime)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, rTarget);
 
+	params.entityGroup = &forwardRendererEntityGroup;
+
+	m_forwardRenderer->renderScene(params);
+
 
 #if 1
 	
@@ -290,11 +308,6 @@ void Scene::draw(float deltaTime)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 #endif 
-
-
-
-
-	//m_forwardRenderer->renderScene(params);
 
 #if 0
 	// POST Render Phase

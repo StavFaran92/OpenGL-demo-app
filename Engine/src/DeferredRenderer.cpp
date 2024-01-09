@@ -127,7 +127,7 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_gBufferShader->use();
 
 	// Render all objects
-	for (auto& entityHandler : renderParams.entityGroup)
+	for (auto& entityHandler : *renderParams.entityGroup)
 	{
 		renderParams.entity = &entityHandler;
 		renderParams.mesh = entityHandler.getComponent<MeshComponent>().mesh.get();

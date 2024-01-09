@@ -67,7 +67,7 @@ void Renderer::renderScene(DrawQueueRenderParams& renderParams)
     m_renderTargetFBO.bind();
 
     // Render Phase
-    for (auto& entityHandler : renderParams.entityGroup)
+    for (auto& entityHandler : *renderParams.entityGroup)
 	{
         renderParams.entity = &entityHandler;
         renderParams.mesh = entityHandler.getComponent<MeshComponent>().mesh.get();
