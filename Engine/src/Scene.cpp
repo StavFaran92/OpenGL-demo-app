@@ -42,6 +42,8 @@
 #include "TimeManager.h"
 #include "UniformBufferObject.h"
 #include "DeferredRenderer.h"
+#include "Random.h"
+#include "ShapeFactory.h"
 #include <GL/glew.h>
 
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
@@ -160,9 +162,18 @@ void Scene::init(Context* context)
 
 	// Add default dir light
 	createEntity().addComponent<DirectionalLight>();
-	auto pLight = createEntity();
-	pLight.addComponent<PointLight>();
-	pLight.getComponent<Transformation>().setLocalPosition({ 0,1,1 });
+
+	
+
+	for (int i = 0; i < 32; i++)
+	{
+		auto rand_x = Engine::get()->getRandomSystem()->rand() * 12 - 6;
+		auto rand_y = Engine::get()->getRandomSystem()->rand() * 12 - 6;
+		auto pLight = ShapeFactory::createBox(this);
+		pLight.addComponent<PointLight>();
+		pLight.getComponent<Transformation>().setLocalPosition({ rand_x , 0, rand_y });
+		pLight.getComponent<RenderableComponent>().renderTechnique = RenderableComponent::Forward;
+	}
 
 	auto editorCamera = createEntity();
 	editorCamera.addComponent<CameraComponent>();

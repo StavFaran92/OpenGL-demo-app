@@ -1,6 +1,6 @@
 // ----- Definitions ----- //
 
-#define NR_POINT_LIGHTS 8 
+#define NR_POINT_LIGHTS 32 
 #define NR_DIR_LIGHT 8 
 
 const float constant = 1.f;
