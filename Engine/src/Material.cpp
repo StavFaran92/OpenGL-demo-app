@@ -33,7 +33,7 @@ void Material::use(Shader& shader)
 		return;
 	}
 
-	shader.setValue("material.shininess", m_shininess);
+	//shader.setValue("material.shininess", m_shininess);
 
 	if (shader.IsTexturesEnabled())
 	{
@@ -124,7 +124,7 @@ void Material::SetTexturesInShader(Shader& shader)
 
 		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
 		shader.setValue(("material." + Constants::g_textureNormal).c_str(), 2);
-		shader.setValue("material.useNormal", true);
+		//shader.setValue("material.useNormal", true);
 	}
 
 	// This causes skybox to not render

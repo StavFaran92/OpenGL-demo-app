@@ -32,7 +32,7 @@ void main()
 { 	
 	gPosition = fs_in.FragPos;
 	
-	normal = normalize(fs_in.Normal);
+	normal = texture(material.texture_normal, fs_in.texCoord).rgb;
 	
 	albedoSpec.rgb = texture(material.texture_diffuse, fs_in.texCoord).rgb;
 	

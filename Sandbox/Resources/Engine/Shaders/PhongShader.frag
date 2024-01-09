@@ -38,7 +38,7 @@ void main()
 	vec3 result; 
 	
 	vec3 norm;
-	if(material.useNormal)
+	if(true)
 	{
 		norm = texture(material.texture_normal, fs_in.texCoord).rgb;
 		norm = normalize(norm * 2.0 - 1.0); 

@@ -32,11 +32,16 @@ public:
 		//renderable.renderTechnique = RenderableComponent::Forward;
 
 		auto importer = getContext()->getModelImporter();
-		auto guitar_deferred = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
-		auto guitar_forward = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
-		guitar_forward.getComponent<Transformation>().setLocalPosition({ 0,0,3 });
-		auto& renderable = guitar_forward.getComponent<RenderableComponent>();
-		renderable.renderTechnique = RenderableComponent::Forward;
+
+		for (int i = -1; i < 2; i++)
+		{
+			for (int j = -1; j < 2; j++)
+			{
+				auto guitar_deferred = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());
+				guitar_deferred.getComponent<Transformation>().setLocalPosition({ i * 4,0,j*4 });
+			}
+		}
+
 
 
 
