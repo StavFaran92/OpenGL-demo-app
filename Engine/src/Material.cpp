@@ -33,7 +33,7 @@ void Material::use(Shader& shader)
 		return;
 	}
 
-	//shader.setValue("material.shininess", m_shininess);
+	shader.setValue("material.shininess", m_shininess);
 
 	if (shader.IsTexturesEnabled())
 	{

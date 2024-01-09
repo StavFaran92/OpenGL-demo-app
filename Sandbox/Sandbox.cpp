@@ -42,7 +42,7 @@ public:
 				guitar_deferred.getComponent<Transformation>().setLocalPosition({ i * 4,0,j*4 });
 			}
 		}
-
+	
 
 
 

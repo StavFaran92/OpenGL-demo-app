@@ -8,7 +8,7 @@
 #include "PointLight.h"
 #include "Transformation.h"
 
-#define NR_POINT_LIGHTS 8
+#define NR_POINT_LIGHTS 32
 #define NR_DIR_LIGHTS 8
 
 struct PointLightUBORep

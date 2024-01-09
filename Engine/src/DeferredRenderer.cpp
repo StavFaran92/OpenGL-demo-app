@@ -195,9 +195,9 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 
 	m_renderTargetFBO->unbind();
 
-	m_positionTexture->unbind();
-	m_normalTexture->unbind();
-	m_albedoSpecularTexture->unbind();
+	//m_positionTexture->unbind();
+	//m_normalTexture->unbind();
+	//m_albedoSpecularTexture->unbind();
 }
 
 uint32_t DeferredRenderer::getRenderTarget() const
