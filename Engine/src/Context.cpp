@@ -18,15 +18,12 @@
 Context::Context() : m_shaderCounter(0)
 {
 	m_reflectionShader = Shader::createShared<Shader>("Resources/Engine/Shaders/ReflectionShader.vert", "Resources/Engine/Shaders/ReflectionShader.frag");
-	m_reflectionShader->SetEnableMaterials(false);
 	m_reflectionShader->SetEnableTextures(false);
 
 	m_refractiveShader = Shader::createShared<Shader>("Resources/Engine/Shaders/RefractionShader.vert", "Resources/Engine/Shaders/RefractionShader.frag");
-	m_refractiveShader->SetEnableMaterials(false);
 	m_refractiveShader->SetEnableTextures(false);
 
 	m_phongShader = Shader::createShared<Shader>("Resources/Engine/Shaders/PhongShader.vert", "Resources/Engine/Shaders/PhongShader.frag");
-	m_phongShader->SetEnableMaterials(true);
 	m_phongShader->SetEnableTextures(true);
 	m_pickingShader = Shader::createShared<PickingShader>();
 	//m_normalDisplayShader = std::make_shared<Shader>("Resources\\Shaders\\normalDisplayShader.vert", "Resources\\Shaders\\normalDisplayShader.frag", "Resources\\Shaders\\normalDisplayShader.geom");

@@ -27,12 +27,6 @@ Material::Material(float shine)
 
 void Material::use(Shader& shader)
 {
-	if (!shader.IsMaterialsEnabled())
-	{
-		logError("Shader does not support material");
-		return;
-	}
-
 	if (shader.IsTexturesEnabled())
 	{
 		SetTexturesInShader(shader);

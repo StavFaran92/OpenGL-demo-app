@@ -53,7 +53,6 @@ bool DeferredRenderer::setupGBuffer()
 	m_gBufferShader = Shader::createShared<Shader>(
 		"Resources/Engine/Shaders/GBufferShader.vert",
 		"Resources/Engine/Shaders/GBufferShader.frag");
-	m_gBufferShader->SetEnableMaterials(true);
 	m_gBufferShader->SetEnableTextures(true);
 
 	m_lightPassShader = Shader::createShared<Shader>(
