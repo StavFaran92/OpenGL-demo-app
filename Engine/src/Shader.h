@@ -43,8 +43,6 @@ public:
 
 	int getUniformLocation(const std::string& name);
 
-	inline bool IsLightsEnabled() { return m_enableLight; }
-	inline void SetEnableLights(bool value) { m_enableLight = value; }
 	inline bool IsTexturesEnabled() { return m_enableTexture; }
 	inline void SetEnableTextures(bool value) { m_enableTexture = value; }
 	inline bool IsMaterialsEnabled() { return m_enableMaterial; }
@@ -102,7 +100,6 @@ private:
 protected:
 	unsigned int m_id;
 	std::unordered_map<std::string, int> m_uniformLocationCache;
-	bool m_enableLight = false;
 	bool m_enableMaterial = false;
 	bool m_enableTexture = false;
 	bool m_enableColors = false;
