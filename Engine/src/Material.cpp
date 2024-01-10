@@ -47,25 +47,6 @@ std::shared_ptr<TextureHandler> Material::getTexture(Texture::Type textureType) 
 	return m_textures.at(textureType);
 }
 
-//void Material::addTextureHandler(TextureHandler* textureHandler)
-//{
-//	if (textureHandler == nullptr)
-//	{
-//		logError("Cannot add a null texture Handler to material.");
-//		return;
-//	}
-//
-//	m_textureHandlers.push_back(std::shared_ptr<TextureHandler>(textureHandler));
-//}
-//
-//void Material::addTextureHandlers(std::vector<TextureHandler*>& texturesHandlers)
-//{
-//	for (auto textureHandler : texturesHandlers)
-//	{
-//		addTextureHandler(textureHandler);
-//	}
-//}
-
 void Material::SetTexturesInShader(Shader& shader)
 {
 	auto diffTexture = m_textures[Texture::Type::Diffuse];

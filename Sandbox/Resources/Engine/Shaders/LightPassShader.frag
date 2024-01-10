@@ -31,20 +31,37 @@ uniform sampler2D gAlbedoSpec;
 void main() 
 { 
     // retrieve data from G-buffer
-    vec3 FragPos = texture(gPosition, TexCoords).rgb;
-    vec3 Normal = texture(gNormal, TexCoords).rgb;
+    vec3 fragPos = texture(gPosition, TexCoords).rgb;
+    vec3 normal = texture(gNormal, TexCoords).rgb;
     vec3 Albedo = texture(gAlbedoSpec, TexCoords).rgb;
-    float Specular = texture(gAlbedoSpec, TexCoords).a;
+    float gSpecular = texture(gAlbedoSpec, TexCoords).a;
     
     // then calculate lighting as usual
-    vec3 lighting = Albedo * 0.1; // hard-coded ambient component
-    vec3 viewDir = normalize(viewPos - FragPos);
-    for(int i = 0; i < NR_POINT_LIGHTS; ++i)
-    {
-        // diffuse
-        vec3 lightDir = normalize(pointLights[i].position.rgb - FragPos);
-        vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Albedo * pointLights[i].color.rgb;
-        lighting += diffuse;
+    vec3 lighting;
+    vec3 viewDir = normalize(viewPos - fragPos);
+    for(int i = 0; i < pointLightCount; ++i)
+    {	
+		vec3 lightDir = normalize(pointLights[i].position.rgb - fragPos); 
+		
+		// diffuse shading 
+		float diff = max(dot(normal, lightDir), 0.0); 
+		
+		// specular shading 
+		vec3 reflectDir = reflect(-lightDir, normal); 
+		float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0f); 
+		
+		// attenuation 
+		float distance = length(pointLights[i].position.rgb - fragPos); 
+		float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance)); 
+		
+		// combine results 
+		vec3 ambient = lightAmbient * Albedo * pointLights[i].color.rgb ;
+		vec3 diffuse = lightDiffuse * diff * Albedo * pointLights[i].color.rgb ;
+		//vec3 specular = lightSpecular * spec * gSpecular * pointLights[i].color.rgb;
+		ambient *= attenuation; 
+		diffuse *= attenuation; 
+		//specular *= attenuation; 
+		lighting += (ambient + diffuse) * pointLights[i].color.rgb;
     }
     
     FragColor = vec4(lighting, 1.0);
