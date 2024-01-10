@@ -32,7 +32,7 @@ void main()
 { 	
 	gPosition = fs_in.fragPos;
 	
-	gNormal = texture(material.texture_normal, fs_in.texCoord).rgb;
+	gNormal = fs_in.normal * texture(material.texture_normal, fs_in.texCoord).rgb;
 	
 	albedoSpec.rgb = texture(material.texture_diffuse, fs_in.texCoord).rgb;
 	
