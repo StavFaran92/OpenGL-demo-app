@@ -27,10 +27,7 @@ Material::Material(float shine)
 
 void Material::use(Shader& shader)
 {
-	if (shader.IsTexturesEnabled())
-	{
-		SetTexturesInShader(shader);
-	}
+	SetTexturesInShader(shader);
 }
 
 void Material::release()

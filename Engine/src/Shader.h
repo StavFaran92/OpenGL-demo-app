@@ -43,11 +43,6 @@ public:
 
 	int getUniformLocation(const std::string& name);
 
-	inline bool IsTexturesEnabled() { return m_enableTexture; }
-	inline void SetEnableTextures(bool value) { m_enableTexture = value; }
-	inline bool isSupportColors() { return m_enableColors; }
-	inline void setEnableColors(bool value) { m_enableColors = value; }
-
 	void setModelMatrix(glm::mat4 model);
 	void setViewMatrix(glm::mat4 view);
 	void setProjectionMatrix(glm::mat4 projection);
@@ -98,8 +93,6 @@ private:
 protected:
 	unsigned int m_id;
 	std::unordered_map<std::string, int> m_uniformLocationCache;
-	bool m_enableTexture = false;
-	bool m_enableColors = false;
 	std::string m_vertexShaderFilepath;
 	std::string m_FragmentShaderFilepath;
 	std::string m_geometryShaderFilepath;
