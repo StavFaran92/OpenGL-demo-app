@@ -68,11 +68,6 @@ bool DeferredRenderer::init()
 	// Generate screen quad
 	m_quad = ScreenQuad::GenerateScreenQuad(m_scene);
 
-	// Generate screen shader
-	m_screenShader = Shader::createShared<Shader>(
-		"Resources/Engine/Shaders/PostProcess/PostProcessShader_default.vert",
-		"Resources/Engine/Shaders/PostProcess/PostProcessShader_default.frag");
-
 	// Generate screen renderer
 	m_2DRenderer = std::make_shared<Renderer2D>();
 
@@ -193,10 +188,6 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_2DRenderer->render(renderParams2D);
 
 	m_renderTargetFBO->unbind();
-
-	//m_positionTexture->unbind();
-	//m_normalTexture->unbind();
-	//m_albedoSpecularTexture->unbind();
 }
 
 uint32_t DeferredRenderer::getRenderTarget() const
