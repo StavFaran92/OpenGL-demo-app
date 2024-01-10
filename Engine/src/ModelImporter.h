@@ -60,4 +60,6 @@ private:
 	//std::unordered_map<std::string, std::weak_ptr<Texture>> m_texturesCache;
 	std::map<uint32_t, ModelImportSession> m_sessions;
 	std::shared_ptr<Assimp::Importer> m_importer = nullptr;
+
+	std::string m_lastLoadedSceneName;
 };

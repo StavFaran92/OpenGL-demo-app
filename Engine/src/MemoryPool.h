@@ -10,6 +10,7 @@ class MemoryPool
 public:
     std::shared_ptr<T> get(const std::string& resourceName, std::function<T* ()> creationCallback)
     {
+        bool isFound = false;
         std::shared_ptr<T> ptr;
         auto it = m_cache.find(resourceName);
         if (it != m_cache.end())
@@ -19,8 +20,13 @@ public:
             {
                 m_cache.erase(it);
             }
+            else
+            {
+                isFound = true;
+            }
         }
-        else
+
+        if (!isFound)
         {
             if (creationCallback)
             {
@@ -28,6 +34,7 @@ public:
                 m_cache[resourceName] = ptr;
             }
         }
+
 
         return ptr;
     }

@@ -44,15 +44,28 @@ Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 		return Entity::EmptyEntity;
 	}
 
-	// read scene from file
-	const aiScene* scene = m_importer->ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals
-		| aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+	const aiScene* scene = nullptr;
 
-	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	// If the scene was previously loaded last, we can optimize the load since it is already in memory.
+	if (path == m_lastLoadedSceneName)
 	{
-		logError("ERROR::ASSIMP::{}", m_importer->GetErrorString());
-		return Entity::EmptyEntity;
+		scene = m_importer->GetScene();
 	}
+	else
+	{
+
+		// read scene from file
+		scene = m_importer->ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals
+			| aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+
+		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+		{
+			logError("ERROR::ASSIMP::{}", m_importer->GetErrorString());
+			return Entity::EmptyEntity;
+		}
+	}
+
+	m_lastLoadedSceneName = path;
 
 	//create new model
 	auto entity = pScene->createEntity();
