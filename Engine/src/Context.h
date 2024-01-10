@@ -20,6 +20,7 @@ class ImguiHandler;
 class Input;
 class EventSystem;
 class ModelImporter;
+class TextureHandler;
 
 
 
@@ -55,7 +56,7 @@ public:
 
 	void setActiveScene(uint32_t index);
 
-
+	std::shared_ptr<TextureHandler> getDummyTexture();
 
 private:
 	friend class Engine;
@@ -74,6 +75,7 @@ private:
 	std::shared_ptr<Shader> m_phongShader = nullptr;
 	std::shared_ptr<PickingShader> m_pickingShader = nullptr;
 	std::shared_ptr<Shader> m_normalDisplayShader = nullptr;
+	std::shared_ptr<TextureHandler> m_dummyTexture;
 };
 
 

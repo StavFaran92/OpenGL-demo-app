@@ -145,6 +145,34 @@ TextureHandler* Texture::loadCubemapTexture(std::vector<std::string> faces)
 	return textureHandler;
 }
 
+TextureHandler* Texture::createDummyTexture()
+{
+	auto texture = new Texture();
+
+	texture->m_target = GL_TEXTURE_2D;
+	texture->m_width = 1;
+	texture->m_height = 1;
+
+	// generate texture
+	glGenTextures(1, &texture->m_id);
+	texture->bind();
+
+	unsigned char data[3] = { 255, 255, 255 }; // RGB values for white
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	texture->unbind();
+
+	auto textureHandler = new TextureHandler(texture);
+
+	return textureHandler;
+}
+
 std::string Texture::textureTypeToString(Type type)
 {
 	switch (type)

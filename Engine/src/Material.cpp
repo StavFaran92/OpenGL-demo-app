@@ -3,6 +3,9 @@
 #include "Logger.h"
 #include <GL\glew.h>
 
+#include "Engine.h"
+#include "Context.h"
+
 Material::Material(float shine)
 : m_shininess(shine)
 {
@@ -65,56 +68,53 @@ std::shared_ptr<TextureHandler> Material::getTexture(Texture::Type textureType) 
 
 void Material::SetTexturesInShader(Shader& shader)
 {
-	// Initialized counters
-	//uint32_t diffuseNr = 1;
-	//uint32_t specularNr = 1;
-
-	//auto textures = m_textureHandlers;
-
-	//if (textures.size() == 0)
-	//{
-	//	textures = m_defaultTextureHandlers;
-	//}
-
 	auto diffTexture = m_textures[Texture::Type::Diffuse];
-	if (diffTexture)
+	if (!diffTexture)
 	{
-		// Activate texture unit i
-		glActiveTexture(GL_TEXTURE0);
-
-		// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
-		glBindTexture(GL_TEXTURE_2D, diffTexture->getID());
-
-		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
-		shader.setValue(("material." + Constants::g_textureDiffuse).c_str(), 0);
+		diffTexture = Engine::get()->getContext()->getDummyTexture();
 	}
+
+	// Activate texture unit i
+	glActiveTexture(GL_TEXTURE0);
+
+	// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
+	glBindTexture(GL_TEXTURE_2D, diffTexture->getID());
+
+	// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
+	shader.setValue(("material." + Constants::g_textureDiffuse).c_str(), 0);
 
 	auto specTexture = m_textures[Texture::Type::Specular];
-	if (specTexture)
+	if (!specTexture)
 	{
-		// Activate texture unit i
-		glActiveTexture(GL_TEXTURE0 + 1);
-
-		// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
-		glBindTexture(GL_TEXTURE_2D, specTexture->getID());
-
-		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
-		shader.setValue(("material." + Constants::g_textureSpecular).c_str(), 1);
+		specTexture = Engine::get()->getContext()->getDummyTexture();
 	}
+
+	// Activate texture unit i
+	glActiveTexture(GL_TEXTURE0 + 1);
+
+	// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
+	glBindTexture(GL_TEXTURE_2D, specTexture->getID());
+
+	// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
+	shader.setValue(("material." + Constants::g_textureSpecular).c_str(), 1);
+	
 
 	auto normalTexture = m_textures[Texture::Type::Normal];
-	if (normalTexture)
+	if (!normalTexture)
 	{
-		// Activate texture unit i
-		glActiveTexture(GL_TEXTURE0 + 2);
-
-		// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
-		glBindTexture(GL_TEXTURE_2D, normalTexture->getID());
-
-		// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
-		shader.setValue(("material." + Constants::g_textureNormal).c_str(), 2);
-		//shader.setValue("material.useNormal", true);
+		normalTexture = Engine::get()->getContext()->getDummyTexture();
 	}
+
+	// Activate texture unit i
+	glActiveTexture(GL_TEXTURE0 + 2);
+
+	// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
+	glBindTexture(GL_TEXTURE_2D, normalTexture->getID());
+
+	// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
+	shader.setValue(("material." + Constants::g_textureNormal).c_str(), 2);
+	//shader.setValue("material.useNormal", true);
+	
 
 	// This causes skybox to not render
 	// Iterate the mesh's textures

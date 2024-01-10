@@ -24,6 +24,8 @@ Context::Context() : m_shaderCounter(0)
 	m_phongShader = Shader::createShared<Shader>("Resources/Engine/Shaders/PhongShader.vert", "Resources/Engine/Shaders/PhongShader.frag");
 
 	m_pickingShader = Shader::createShared<PickingShader>();
+
+	m_dummyTexture = std::shared_ptr<TextureHandler>(Texture::createDummyTexture());
 	//m_normalDisplayShader = std::make_shared<Shader>("Resources\\Shaders\\normalDisplayShader.vert", "Resources\\Shaders\\normalDisplayShader.frag", "Resources\\Shaders\\normalDisplayShader.geom");
 
 	//std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
@@ -111,6 +113,11 @@ void Context::setActiveScene(uint32_t index)
 	}
 
 	m_activeScene = index;
+}
+
+std::shared_ptr<TextureHandler> Context::getDummyTexture()
+{
+	return m_dummyTexture;
 }
 
 void Context::update(float deltaTime)
