@@ -10,15 +10,15 @@
 // ----- In ----- //
 
 in VS_OUT {
-    vec3 FragPos;
-	vec3 Normal;
+    vec3 fragPos;
+	vec3 normal;
     vec2 texCoord;
 } fs_in;
 
 // ----- Out ----- //
 
 layout (location = 0) out vec3 gPosition;
-layout (location = 1) out vec3 normal;
+layout (location = 1) out vec3 gNormal;
 layout (location = 2) out vec4 albedoSpec;
 
 // ----- Uniforms ----- //
@@ -30,9 +30,9 @@ uniform Material material;
  
 void main() 
 { 	
-	gPosition = fs_in.FragPos;
+	gPosition = fs_in.fragPos;
 	
-	normal = texture(material.texture_normal, fs_in.texCoord).rgb;
+	gNormal = texture(material.texture_normal, fs_in.texCoord).rgb;
 	
 	albedoSpec.rgb = texture(material.texture_diffuse, fs_in.texCoord).rgb;
 	

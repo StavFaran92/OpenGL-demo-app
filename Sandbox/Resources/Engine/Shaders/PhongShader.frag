@@ -26,7 +26,6 @@ out vec4 colour;
 
 // ----- Uniforms ----- //
 
-uniform vec3 viewPos; 
 uniform Material material; 
 
 // ----- Forward Declerations ----- //
@@ -48,6 +47,7 @@ void main()
 	{
 		norm = normalize(fs_in.Normal);
 	}
+	vec3 viewPos = vec3(view[0][3], view[1][3], view[2][3]);
 	vec3 viewDir = normalize(viewPos - fs_in.FragPos); 
 	
 	// Directional lighting 

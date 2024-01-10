@@ -16,8 +16,7 @@ in vec2 TexCoords;
 out vec4 FragColor;
 
 // ----- Uniforms ----- //
-
-uniform vec3 viewPos; 
+ 
 uniform Material material; 
 
 uniform sampler2D gPosition;
@@ -38,6 +37,7 @@ void main()
     
     // then calculate lighting as usual
     vec3 lighting;
+	vec3 viewPos = vec3(view[0][3] * time, view[1][3], view[2][3]);
     vec3 viewDir = normalize(viewPos - fragPos);
     for(int i = 0; i < pointLightCount; ++i)
     {	
@@ -55,12 +55,12 @@ void main()
 		float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance)); 
 		
 		// combine results 
-		vec3 ambient = lightAmbient * Albedo * pointLights[i].color.rgb ;
-		vec3 diffuse = lightDiffuse * diff * Albedo * pointLights[i].color.rgb ;
-		//vec3 specular = lightSpecular * spec * gSpecular * pointLights[i].color.rgb;
+		vec3 ambient = lightAmbient * Albedo;
+		vec3 diffuse = lightDiffuse * diff * Albedo;
+		vec3 specular = lightSpecular * spec * gSpecular * vec3(1.0f);
 		ambient *= attenuation; 
 		diffuse *= attenuation; 
-		//specular *= attenuation; 
+		specular *= attenuation; 
 		lighting += (ambient + diffuse) * pointLights[i].color.rgb;
     }
     
