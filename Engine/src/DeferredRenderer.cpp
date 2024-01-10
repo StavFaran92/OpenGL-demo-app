@@ -182,12 +182,14 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_lightPassShader->bindUniformBlockToBindPoint("Time", 0);
 	m_lightPassShader->bindUniformBlockToBindPoint("Lights", 1);
 
+	m_lightPassShader->setValue("view", *renderParams.view);
+
 	// render to quad
 	auto& mesh = m_quad.getComponent<MeshComponent>();
 
 	DrawQueueRenderParams renderParams2D;
 	renderParams2D.mesh = mesh.mesh.get();
-	renderParams2D.shader = m_screenShader.get();
+
 	m_2DRenderer->render(renderParams2D);
 
 	m_renderTargetFBO->unbind();

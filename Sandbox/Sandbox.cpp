@@ -37,8 +37,8 @@ public:
 		{
 			for (int j = -1; j < 2; j++)
 			{
-				auto guitar_deferred = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
-				//auto guitar_deferred = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());
+				//auto guitar_deferred = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+				auto guitar_deferred = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());
 				guitar_deferred.getComponent<Transformation>().setLocalPosition({ i * 4,0,j*4 });
 			}
 		}

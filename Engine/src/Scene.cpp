@@ -169,7 +169,10 @@ void Scene::init(Context* context)
 	{
 		auto rand_x = Engine::get()->getRandomSystem()->rand() * 12 - 6;
 		auto rand_y = Engine::get()->getRandomSystem()->rand() * 12 - 6;
-		auto pLight = ShapeFactory::createBox(this);
+		auto pLight = createEntity();
+		//auto pLight = ShapeFactory::createSphere(this);
+		pLight.addComponent<Material>();
+		pLight.addComponent<RenderableComponent>();
 		pLight.addComponent<PointLight>();
 		pLight.getComponent<Transformation>().setLocalPosition({ rand_x , 0, rand_y });
 		pLight.getComponent<RenderableComponent>().renderTechnique = RenderableComponent::Forward;

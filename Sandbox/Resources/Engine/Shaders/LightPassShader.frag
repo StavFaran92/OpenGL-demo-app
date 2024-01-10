@@ -37,7 +37,7 @@ void main()
     
     // then calculate lighting as usual
     vec3 lighting;
-	vec3 viewPos = vec3(view[0][3] * time, view[1][3], view[2][3]);
+	vec3 viewPos = vec3(view[0][3], view[1][3], view[2][3]);
     vec3 viewDir = normalize(viewPos - fragPos);
     for(int i = 0; i < pointLightCount; ++i)
     {	
@@ -61,7 +61,7 @@ void main()
 		ambient *= attenuation; 
 		diffuse *= attenuation; 
 		specular *= attenuation; 
-		lighting += (ambient + diffuse) * pointLights[i].color.rgb;
+		lighting += (ambient + diffuse + specular) * pointLights[i].color.rgb;
     }
     
     FragColor = vec4(lighting, 1.0);
