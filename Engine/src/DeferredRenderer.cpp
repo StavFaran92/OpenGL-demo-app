@@ -11,6 +11,12 @@
 #include "Scene.h"
 #include "Renderer2D.h"
 #include "Material.h"
+#include "Random.h"
+
+static float lerp(float a, float b, float t)
+{
+	return a + t * (b - a);
+}
 
 DeferredRenderer::DeferredRenderer(std::shared_ptr<FrameBufferObject> renderTarget, Scene* scene) 
 	: m_renderTargetFBO(renderTarget), m_scene(scene)
@@ -57,6 +63,22 @@ bool DeferredRenderer::setupGBuffer()
 	m_lightPassShader = Shader::createShared<Shader>(
 		"Resources/Engine/Shaders/LightPassShader.vert",
 		"Resources/Engine/Shaders/LightPassShader.frag");
+
+	// Generate SSAO kernel
+	std::vector<glm::vec3> ssaoKernel;
+	ssaoKernel.reserve(64);
+	auto rand = Engine::get()->getRandomSystem();
+
+	for (int i = 0; i < 64; i++)
+	{
+		glm::vec3 sample(rand->rand() * 2, rand->rand() * 2, rand->rand());
+		sample = glm::normalize(sample);
+		sample *= rand->rand();
+		float scale = (float)i / 64;
+		scale = lerp(0.1f, 1.0f, scale * scale);
+		sample *= scale;
+		ssaoKernel.push_back(sample);
+	}
 
 	return true;
 }
