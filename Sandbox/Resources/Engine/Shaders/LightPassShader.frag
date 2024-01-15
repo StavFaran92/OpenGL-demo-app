@@ -37,8 +37,7 @@ void main()
     
     // then calculate lighting as usual
     vec3 lighting;
-	vec3 viewPos = vec3(view[0][3], view[1][3], view[2][3]);
-    vec3 viewDir = normalize(viewPos - fragPos);
+    vec3 viewDir = normalize(-fragPos);
     for(int i = 0; i < pointLightCount; ++i)
     {	
 		vec3 lightDir = normalize(pointLights[i].position.rgb - fragPos); 

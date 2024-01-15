@@ -29,9 +29,10 @@ out VS_OUT {
 
 void main()
 {
+	mat4 modelViewMat = view * model;
 	vs_out.texCoord = tex;
-	vs_out.normal = mat3(transpose(inverse(model))) * norm;
-	vs_out.fragPos = (model * vec4(pos, 1.0)).xyz;
+	vs_out.normal = mat3(transpose(inverse(modelViewMat))) * norm;
+	vs_out.fragPos = (modelViewMat * vec4(pos, 1.0)).xyz;
 
-	gl_Position = projection * view * model * vec4(pos, 1.0);
+	gl_Position = projection * modelViewMat * vec4(pos, 1.0);
 }
