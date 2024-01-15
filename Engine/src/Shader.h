@@ -99,5 +99,5 @@ protected:
 
 	static uint32_t s_activeShader;
 
-	std::queue<std::pair<std::string, Value>> m_delayedProperties;
+	std::unordered_map<std::string, Value> m_delayedProperties;
 };

@@ -126,12 +126,12 @@ void Shader::use()
 
 	glUseProgram(m_id);
 
-	while (!m_delayedProperties.empty())
+	for (auto it = m_delayedProperties.begin(); it != m_delayedProperties.end(); ++it)
 	{
-		auto& [name, value] = m_delayedProperties.front();
-		setValue(name, value);
-		m_delayedProperties.pop();
+		setValue(it->first, it->second);
 	}
+
+	m_delayedProperties.clear();
 }
 
 void Shader::release() const
@@ -205,7 +205,7 @@ void Shader::setValue(const std::string& name, const Value& v)
 {
 	if (s_activeShader != m_id)
 	{
-		m_delayedProperties.push({ name, v });
+		m_delayedProperties[name] = v;
 		return;
 	}
 
