@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 
 #include "Core.h"
 #include "ApplicationConstants.h"

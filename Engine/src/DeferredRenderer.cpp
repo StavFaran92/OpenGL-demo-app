@@ -70,8 +70,7 @@ bool DeferredRenderer::setupGBuffer()
 bool DeferredRenderer::setupSSAO()
 {
 	// Generate SSAO kernel
-	std::vector<glm::vec3> ssaoKernel;
-	ssaoKernel.reserve(64);
+	m_ssaoKernel.reserve(64);
 	auto rand = Engine::get()->getRandomSystem();
 
 	for (int i = 0; i < 64; i++)
@@ -82,9 +81,10 @@ bool DeferredRenderer::setupSSAO()
 		float scale = (float)i / 64;
 		scale = lerp(0.1f, 1.0f, scale * scale);
 		sample *= scale;
-		ssaoKernel.push_back(sample);
+		m_ssaoKernel.push_back(sample);
 	}
 
+	// Generate SSAO Noise
 	std::vector<glm::vec3> ssaoNoise;
 	ssaoNoise.reserve(16);
 	for (int i = 0; i < 16; i++)
@@ -110,6 +110,7 @@ bool DeferredRenderer::setupSSAO()
 	auto width = Engine::get()->getWindow()->getWidth();
 	auto height = Engine::get()->getWindow()->getHeight();
 
+	// Initialize SSAO FBO
 	m_ssaoFBO.bind();
 
 	m_ssaoColorBuffer = Texture::createEmptyTexture(width, height, GL_RED, GL_RED, GL_FLOAT);
@@ -245,7 +246,21 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 
 	m_ssaoNoiseTexture->setSlot(2);
 	m_ssaoNoiseTexture->bind();
-	m_ssaoPassShader->setValue("ssaoNoise", 2);
+	m_ssaoPassShader->setValue("gSSAONoise", 2);
+
+	// TODO remove
+	auto width = Engine::get()->getWindow()->getWidth();
+	auto height = Engine::get()->getWindow()->getHeight();
+
+	m_ssaoPassShader->setValue("screenWidth", width);
+	m_ssaoPassShader->setValue("screenHeight", height);
+
+	for (unsigned int i = 0; i < 64; ++i)
+	{
+		m_ssaoPassShader->setValue("ssaoKernel[" + std::to_string(i) + "]", m_ssaoKernel[i]);
+	}
+
+	m_ssaoPassShader->setValue("projection", *renderParams.projection);
 
 	m_ssaoPassShader->use();
 

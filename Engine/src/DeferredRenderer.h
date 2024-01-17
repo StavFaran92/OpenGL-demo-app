@@ -53,5 +53,6 @@ private:
 	TextureHandler* m_ssaoNoiseTexture = nullptr;
 	TextureHandler* m_ssaoColorBuffer = nullptr;
 	std::shared_ptr<Shader> m_ssaoPassShader;
+	std::vector<glm::vec3> m_ssaoKernel;
 };
 
