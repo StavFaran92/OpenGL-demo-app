@@ -33,12 +33,12 @@ void main()
     // retrieve data from G-buffer
     vec3 fragPos = texture(gPosition, TexCoords).rgb;
     vec3 normal = texture(gNormal, TexCoords).rgb;
-    vec3 Albedo = texture(gAlbedoSpec, TexCoords).rgb;
+    vec3 albedo = texture(gAlbedoSpec, TexCoords).rgb;
     float gSpecular = texture(gAlbedoSpec, TexCoords).a;
     float ambientOcclusion = texture(gSSAOColorBuffer, TexCoords).r;
     
     // then calculate lighting as usual
-    vec3 lighting;
+    vec3 lighting = vec3(0.3 * albedo * ambientOcclusion);;
     vec3 viewDir = normalize(-fragPos);
     for(int i = 0; i < pointLightCount; ++i)
     {	
@@ -56,13 +56,11 @@ void main()
 		float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance)); 
 		
 		// combine results 
-		vec3 ambient = lightAmbient * Albedo * ambientOcclusion;
-		vec3 diffuse = lightDiffuse * diff * Albedo;
+		vec3 diffuse = lightDiffuse * diff * albedo;
 		vec3 specular = lightSpecular * spec * gSpecular * vec3(1.0f);
-		ambient *= attenuation; 
 		diffuse *= attenuation; 
 		specular *= attenuation; 
-		lighting += (ambient + diffuse + specular) * pointLights[i].color.rgb;
+		lighting += (diffuse + specular) * pointLights[i].color.rgb;
     }
     
     FragColor = vec4(lighting, 1.0);
