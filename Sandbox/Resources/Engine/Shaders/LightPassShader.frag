@@ -22,6 +22,7 @@ uniform Material material;
 uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
+uniform sampler2D gSSAOColorBuffer;
 
 // ----- Forward Declerations ----- //
 
@@ -34,6 +35,7 @@ void main()
     vec3 normal = texture(gNormal, TexCoords).rgb;
     vec3 Albedo = texture(gAlbedoSpec, TexCoords).rgb;
     float gSpecular = texture(gAlbedoSpec, TexCoords).a;
+    float ambientOcclusion = texture(gSSAOColorBuffer, TexCoords).r;
     
     // then calculate lighting as usual
     vec3 lighting;
@@ -54,7 +56,7 @@ void main()
 		float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance)); 
 		
 		// combine results 
-		vec3 ambient = lightAmbient * Albedo;
+		vec3 ambient = lightAmbient * Albedo * ambientOcclusion;
 		vec3 diffuse = lightDiffuse * diff * Albedo;
 		vec3 specular = lightSpecular * spec * gSpecular * vec3(1.0f);
 		ambient *= attenuation; 

@@ -292,7 +292,7 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 
 	m_ssaoColorBuffer->setSlot(3);
 	m_ssaoColorBuffer->bind();
-	m_lightPassShader->setValue("ssaoColorBuffer", 3);
+	m_lightPassShader->setValue("gSSAOColorBuffer", 3);
 
 	m_renderTargetFBO->bind();
 

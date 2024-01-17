@@ -62,7 +62,9 @@ void main()
 
         // Check if sample is inside geometry, if so add to occlusion factor
         float sampleDepth = texture(gPosition, offset.xy).z;
-        occlusionFactor += (sampleDepth >= samplePos.z + 0.025 ? 1.0 : 0.0);  
+
+        float rangeCheck = smoothstep(0.0, 1.0, radius / abs(fragPos.z - sampleDepth));
+        occlusionFactor += (sampleDepth >= samplePos.z + 0.025 ? 1.0 : 0.0) * rangeCheck;  
     }
 
     occlusionFactor = 1.0 - (occlusionFactor / 64.0);
