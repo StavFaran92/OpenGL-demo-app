@@ -24,6 +24,7 @@ public:
 
 private:
 	bool setupGBuffer();
+	bool setupSSAO();
 
 private:
 	FrameBufferObject m_gBuffer;
@@ -45,5 +46,12 @@ private:
 	
 	std::shared_ptr<Shader> m_gBufferShader;
 	std::shared_ptr<Shader> m_lightPassShader;
+
+	// SSAO
+	FrameBufferObject m_ssaoFBO;
+	RenderBufferObject m_ssaoRenderBuffer;
+	TextureHandler* m_ssaoNoiseTexture = nullptr;
+	TextureHandler* m_ssaoColorBuffer = nullptr;
+	std::shared_ptr<Shader> m_ssaoPassShader;
 };
 

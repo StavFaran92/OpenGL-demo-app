@@ -55,6 +55,13 @@ public:
 	static TextureHandler* loadTextureFromFile(const std::string& fileLocation, Texture::Type type);
 
 	/**
+	 * Create a texture using predefined data
+	 *
+	 * \return				A pointer to the loaded texture
+	 */
+	static TextureHandler* createTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, void* data);
+
+	/**
 	 * Load a cubemap texture using the specified faces file locations.
 	 * 
 	 * \param faces		the faces file locations to load the cubemap using

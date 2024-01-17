@@ -107,6 +107,32 @@ TextureHandler* Texture::loadTextureFromFile(const std::string& fileLocation, Te
 	return textureHandler;
 }
 
+TextureHandler* Texture::createTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, void* data)
+{
+	auto texture = new Texture();
+
+	texture->m_target = GL_TEXTURE_2D;
+	texture->m_width = width;
+	texture->m_height = height;
+
+	// generate texture
+	glGenTextures(1, &texture->m_id);
+	texture->bind();
+
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
+
+	for (auto& [paramKey, paramValue] : params)
+	{
+		glTexParameteri(GL_TEXTURE_2D, paramKey, paramValue);
+	}
+
+	texture->unbind();
+
+	auto textureHandler = new TextureHandler(texture);
+
+	return textureHandler;
+}
+
 TextureHandler* Texture::loadCubemapTexture(std::vector<std::string> faces)
 {
 	auto texture = new Texture();
