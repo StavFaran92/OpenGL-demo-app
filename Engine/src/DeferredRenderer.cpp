@@ -134,6 +134,27 @@ bool DeferredRenderer::setupSSAO()
 		"Resources/Engine/Shaders/SSAOPassShader.vert",
 		"Resources/Engine/Shaders/SSAOPassShader.frag");
 
+	// Initialize SSAO Blur
+	m_ssaoBlurFBO.bind();
+
+	m_ssaoBlurColorBuffer = Texture::createEmptyTexture(width, height, GL_RED, GL_RED, GL_FLOAT);
+	m_ssaoBlurFBO.attachTexture(m_ssaoBlurColorBuffer->getID(), GL_COLOR_ATTACHMENT0);
+
+	// Create RBO and attach to FBO
+	m_ssaoBlurFBO.attachRenderBuffer(m_ssaoBlurRenderBuffer.GetID(), FrameBufferObject::AttachmentType::Depth_Stencil);
+
+	if (!m_ssaoBlurFBO.isComplete())
+	{
+		logError("FBO is not complete!");
+		return false;
+	}
+
+	m_ssaoBlurFBO.unbind();
+
+	m_ssaoBlurPassShader = Shader::createShared<Shader>(
+		"Resources/Engine/Shaders/SSAOBlurPassShader.vert",
+		"Resources/Engine/Shaders/SSAOBlurPassShader.frag");
+
 	return true;
 }
 
@@ -276,6 +297,29 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 
 	m_ssaoFBO.unbind();
 
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	m_ssaoBlurFBO.bind();
+	
+	m_ssaoColorBuffer->setSlot(0);
+	m_ssaoColorBuffer->bind();
+	m_ssaoBlurPassShader->setValue("gSSAOColorBuffer", 0);
+
+	m_ssaoBlurPassShader->use();
+
+	{
+		// render to quad
+		auto& mesh = m_quad.getComponent<MeshComponent>();
+
+		DrawQueueRenderParams renderParams2D;
+		renderParams2D.mesh = mesh.mesh.get();
+
+		m_2DRenderer->render(renderParams2D);
+	}
+
+	m_ssaoBlurFBO.unbind();
+
+
 	// bind textures
 	// Todo solve slots issue
 	m_positionTexture->setSlot(0);
@@ -290,8 +334,8 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_albedoSpecularTexture->bind();
 	m_lightPassShader->setValue("gAlbedoSpec", 2);
 
-	m_ssaoColorBuffer->setSlot(3);
-	m_ssaoColorBuffer->bind();
+	m_ssaoBlurColorBuffer->setSlot(3);
+	m_ssaoBlurColorBuffer->bind();
 	m_lightPassShader->setValue("gSSAOColorBuffer", 3);
 
 	m_renderTargetFBO->bind();

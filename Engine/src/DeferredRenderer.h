@@ -54,5 +54,11 @@ private:
 	TextureHandler* m_ssaoColorBuffer = nullptr;
 	std::shared_ptr<Shader> m_ssaoPassShader;
 	std::vector<glm::vec3> m_ssaoKernel;
+	
+	FrameBufferObject m_ssaoBlurFBO;
+	RenderBufferObject m_ssaoBlurRenderBuffer;
+	TextureHandler* m_ssaoBlurColorBuffer = nullptr;
+	std::shared_ptr<Shader> m_ssaoBlurPassShader;
+
 };
 
