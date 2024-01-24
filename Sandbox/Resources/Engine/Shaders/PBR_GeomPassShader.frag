@@ -32,7 +32,6 @@ uniform PBR_Material material;
 void main() 
 { 	
 	gPosition = fs_in.fragPos;
-	
 	gNormal = fs_in.normal * texture(material.normalMap, fs_in.texCoord).rgb;
 	gAlbedo = texture(material.albedoMap, fs_in.texCoord).rgb;
 	gMRA.r = texture(material.metallicMap, fs_in.texCoord).r;

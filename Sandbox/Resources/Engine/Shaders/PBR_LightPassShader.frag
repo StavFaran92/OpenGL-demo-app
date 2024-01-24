@@ -26,7 +26,7 @@ uniform sampler2D gMRA;
 
 // ----- Methods ----- //
  
-vec3 fresnelSchlick(vec3 cosTheta, vec3 F0)
+vec3 fresnelSchlick(float cosTheta, vec3 F0)
 {
 	return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
@@ -56,7 +56,7 @@ float distributionGGX(vec3 N, vec3 H, float a)
 	float NdotH2 = NdotH * NdotH;
 
 	float nom = a2;
-	float denom = NdotH2 * (a2 - 1) + 1;
+	float denom = NdotH2 * (a2 - 1.0) + 1.0;
 	denom = denom * denom * PI;
 
 	return nom / denom;
@@ -110,14 +110,14 @@ void main()
 		float G = geometrySmith(N, V, L, roughness);
 
 		vec3 numerator = NDF * G * F;
-		float denominator = 4 * max(0.0, dot(N, V)) * max(0.0, dot(N, L)) + 0.0001;
+		float denominator = 4.0 * max(0.0, dot(N, V)) * max(0.0, dot(N, L)) + 0.0001;
 		vec3 specular = numerator / denominator;
 
-		L0 += (specular + Kd * albedo / PI) * radiance * cosTheta;
+		L0 += (specular + kd * albedo / PI) * radiance * cosTheta;
     }
 
-	vec3 ambient = vec3(0.03) * albedo * a0;
-	vec3 color = L0 + ambinet;
+	vec3 ambient = vec3(0.03) * albedo * ao;
+	vec3 color = L0 + ambient;
 
 	// HDR
 	color = color / (color + vec3(1.0));

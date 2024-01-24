@@ -10,3 +10,5 @@ const float quadratic = .44f;
 const float lightAmbient = .2f;
 const float lightDiffuse = .5f;
 const float lightSpecular = 1.f;
+
+const float PI = 3.14159265359;
