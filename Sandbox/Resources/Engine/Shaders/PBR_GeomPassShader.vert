@@ -32,7 +32,7 @@ void main()
 	mat4 modelViewMat = view * model;
 	vs_out.texCoord = tex;
 	vs_out.normal = mat3(transpose(inverse(modelViewMat))) * norm;
-	vs_out.fragPos = (modelViewMat * vec4(pos, 1.0)).xyz;
+	vs_out.fragPos = (model * vec4(pos, 1.0)).xyz;
 
 	gl_Position = projection * modelViewMat * vec4(pos, 1.0);
 }
