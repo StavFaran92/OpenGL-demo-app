@@ -33,6 +33,7 @@ public:
 
 protected:
 	void SetTexturesInShader(Shader& shader);
+	void setTextureInShader(Shader& shader, Texture::Type ttype, int slot);
 
 protected:
 	float m_specularIntensity;

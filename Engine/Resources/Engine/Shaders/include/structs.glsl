@@ -11,11 +11,11 @@ struct Material
 struct PBR_Material 
 { 
 	// textures 
-	sampler2D albedoMap; 
-	sampler2D normalMap; 
-	sampler2D metallicMap;
-	sampler2D roughnessMap;
-	sampler2D aoMap;
+	sampler2D texture_albedo; 
+	sampler2D texture_normal; 
+	sampler2D texture_metallic;
+	sampler2D texture_roughness;
+	sampler2D texture_ao;
 }; 
 
 struct PointLight 

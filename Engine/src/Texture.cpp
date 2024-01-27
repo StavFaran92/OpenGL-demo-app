@@ -207,6 +207,17 @@ std::string Texture::textureTypeToString(Type type)
 			return Constants::g_textureDiffuse;
 		case Texture::Type::Specular:
 			return Constants::g_textureSpecular;
+		case Texture::Type::Albedo:
+			return Constants::g_textureAlbedo;
+		case Texture::Type::Normal:
+			return Constants::g_textureNormal;
+		case Texture::Type::Metallic:
+			return Constants::g_textureMetallic;
+		case Texture::Type::Roughness:
+			return Constants::g_textureRoughness;
+		case Texture::Type::AmbientOcclusion:
+			return Constants::g_textureAO;
+
 		default:
 			logError("Unsupported texture format");
 			return "";

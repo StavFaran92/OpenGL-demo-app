@@ -81,7 +81,7 @@ void main()
     vec3 L0 = vec3(0.0);
     for(int i = 0; i < pointLightCount; ++i)
     {
-		vec3 L = normalize(pointLights[i].position - fragPos);
+		vec3 L = normalize(pointLights[i].position.rgb - fragPos);
 		vec3 H = normalize(V + L);
 
 		// Calculate Li

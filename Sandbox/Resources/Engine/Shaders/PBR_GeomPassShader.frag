@@ -32,9 +32,9 @@ uniform PBR_Material material;
 void main() 
 { 	
 	gPosition = fs_in.fragPos;
-	gNormal = fs_in.normal * texture(material.normalMap, fs_in.texCoord).rgb;
-	gAlbedo = texture(material.albedoMap, fs_in.texCoord).rgb;
-	gMRA.r = texture(material.metallicMap, fs_in.texCoord).r;
-	gMRA.g = texture(material.roughnessMap, fs_in.texCoord).r;
-	gMRA.b = texture(material.aoMap, fs_in.texCoord).r;
+	gNormal = fs_in.normal * texture(material.texture_normal, fs_in.texCoord).rgb;
+	gAlbedo = texture(material.texture_albedo, fs_in.texCoord).rgb;
+	gMRA.r = texture(material.texture_metallic, fs_in.texCoord).r;
+	gMRA.g = texture(material.texture_roughness, fs_in.texCoord).r;
+	gMRA.b = texture(material.texture_ao, fs_in.texCoord).r;
 } 

@@ -19,6 +19,11 @@ public:
 		Specular,
 		Normal,
 
+		Albedo,
+		Roughness,
+		Metallic,
+		AmbientOcclusion,
+
 		None
 	};
 
