@@ -16,20 +16,6 @@ public:
 
 	virtual void release();
 
-	///**
-	// * Add a texture to the mesh.
-	// *
-	// * \param texture	a texture raw pointer
-	// */
-	//void addTextureHandler(TextureHandler* texture);
-
-	///**
-	// * Add multiple textures to the mesh.
-	// *
-	// * \param textures
-	// */
-	//void addTextureHandlers(std::vector<TextureHandler*>& textures);
-
 	/**
 	 * Gets the mesh's Textures.
 	 *
@@ -51,10 +37,6 @@ protected:
 protected:
 	float m_specularIntensity;
 	float m_shininess;
-
-	/** Material texture Handlers */
-	//std::vector<std::shared_ptr<TextureHandler>>  m_defaultTextureHandlers;
-	//std::vector<std::shared_ptr<TextureHandler>>  m_textureHandlers;
 
 	std::map<Texture::Type, std::shared_ptr<TextureHandler>> m_textures;
 

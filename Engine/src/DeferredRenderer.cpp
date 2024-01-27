@@ -38,12 +38,16 @@ bool DeferredRenderer::setupGBuffer()
 	m_normalTexture = Texture::createEmptyTexture(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
 	m_gBuffer.attachTexture(m_normalTexture->getID(), GL_COLOR_ATTACHMENT1);
 
-	// Generate Texture for Albedo + Specular
-	m_albedoSpecularTexture = Texture::createEmptyTexture(width, height, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-	m_gBuffer.attachTexture(m_albedoSpecularTexture->getID(), GL_COLOR_ATTACHMENT2);
+	// Generate Texture for Albedo
+	m_albedoTexture = Texture::createEmptyTexture(width, height, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
+	m_gBuffer.attachTexture(m_albedoTexture->getID(), GL_COLOR_ATTACHMENT2);
 
-	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-	glDrawBuffers(3, attachments);
+	// Generate Texture for MRA
+	m_MRATexture = Texture::createEmptyTexture(width, height, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
+	m_gBuffer.attachTexture(m_MRATexture->getID(), GL_COLOR_ATTACHMENT3);
+
+	unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+	glDrawBuffers(4, attachments);
 
 	// Create RBO and attach to FBO
 	m_gBuffer.attachRenderBuffer(m_renderBuffer.GetID(), FrameBufferObject::AttachmentType::Depth_Stencil);
@@ -57,12 +61,12 @@ bool DeferredRenderer::setupGBuffer()
 	m_gBuffer.unbind();
 
 	m_gBufferShader = Shader::createShared<Shader>(
-		"Resources/Engine/Shaders/GBufferShader.vert",
-		"Resources/Engine/Shaders/GBufferShader.frag");
+		"Resources/Engine/Shaders/PBR_GeomPassShader.vert",
+		"Resources/Engine/Shaders/PBR_GeomPassShader.frag");
 
 	m_lightPassShader = Shader::createShared<Shader>(
-		"Resources/Engine/Shaders/LightPassShader.vert",
-		"Resources/Engine/Shaders/LightPassShader.frag");
+		"Resources/Engine/Shaders/PBR_LightPassShader.vert",
+		"Resources/Engine/Shaders/PBR_LightPassShader.frag");
 
 	return true;
 }
@@ -162,7 +166,7 @@ bool DeferredRenderer::init()
 {
 	setupGBuffer();
 
-	setupSSAO();
+	//setupSSAO();
 
 	// Generate screen quad
 	m_quad = ScreenQuad::GenerateScreenQuad(m_scene);
@@ -252,9 +256,11 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	// unbind gBuffer
 	m_gBuffer.unbind();
 
-	m_ssaoFBO.bind();
 
 	glDisable(GL_DEPTH_TEST);
+	
+#if 0
+	m_ssaoFBO.bind();
 
 	// SSAO
 	m_positionTexture->setSlot(0);
@@ -318,7 +324,7 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	}
 
 	m_ssaoBlurFBO.unbind();
-
+#endif
 
 	// bind textures
 	// Todo solve slots issue
@@ -330,13 +336,19 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_normalTexture->bind();
 	m_lightPassShader->setValue("gNormal", 1);
 
-	m_albedoSpecularTexture->setSlot(2);
-	m_albedoSpecularTexture->bind();
-	m_lightPassShader->setValue("gAlbedoSpec", 2);
+	m_albedoTexture->setSlot(2);
+	m_albedoTexture->bind();
+	m_lightPassShader->setValue("gAlbedo", 2);
 
+	m_MRATexture->setSlot(3);
+	m_MRATexture->bind();
+	m_lightPassShader->setValue("gMRA", 3);
+
+#if 0
 	m_ssaoBlurColorBuffer->setSlot(3);
 	m_ssaoBlurColorBuffer->bind();
 	m_lightPassShader->setValue("gSSAOColorBuffer", 3);
+#endif
 
 	m_renderTargetFBO->bind();
 

@@ -33,7 +33,8 @@ private:
 	
 	TextureHandler* m_positionTexture = nullptr;
 	TextureHandler* m_normalTexture = nullptr;
-	TextureHandler* m_albedoSpecularTexture = nullptr;
+	TextureHandler* m_albedoTexture = nullptr;
+	TextureHandler* m_MRATexture = nullptr;
 	
 	Scene* m_scene = nullptr;
 
