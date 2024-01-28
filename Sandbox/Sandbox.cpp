@@ -41,7 +41,7 @@ public:
 		{
 			for (int j = -1; j < 2; j++)
 			{
-				auto box = ShapeFactory::createBox(getContext()->getActiveScene().get());
+				auto box = ShapeFactory::createSphere(getContext()->getActiveScene().get());
 				auto& mat = box.getComponent<Material>();
 				auto albedoMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_albedo.png", Texture::Type::Albedo);
 				mat.setTexture(Texture::Type::Albedo, std::shared_ptr<TextureHandler>(albedoMap));
