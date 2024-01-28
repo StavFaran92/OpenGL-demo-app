@@ -77,7 +77,8 @@ void main()
 	// L0(P, W0) = integral[ BRDF(P, W0, Wi, roughness) * Li(P, Wi) * cosTheta(n, Wi) * dw ]
 	// BRDF = [ DFG / (4 * dot(n, w0) * dot(n, wi)) ] + Kd * albedo / PI
 	vec3 N = normalize(normal);
-	vec3 V = normalize(-fragPos);
+	vec3 viewPos = vec3(view[3][0], view[3][1], view[3][2]);
+	vec3 V = normalize(viewPos - fragPos);
     vec3 L0 = vec3(0.0);
     for(int i = 0; i < pointLightCount; ++i)
     {

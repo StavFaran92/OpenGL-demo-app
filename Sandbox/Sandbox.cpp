@@ -31,32 +31,31 @@ public:
 		//auto& renderable = guitar_forward.getComponent<RenderableComponent>();
 		//renderable.renderTechnique = RenderableComponent::Forward;
 
-		auto sphere = ShapeFactory::createSphere(getContext()->getActiveScene().get());
-		auto& mat = sphere.getComponent<Material>();
-		auto albedoMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_albedo.png", Texture::Type::Albedo);
-		mat.setTexture(Texture::Type::Albedo, std::shared_ptr<TextureHandler>(albedoMap));
-		auto roughnessMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_roughness.png", Texture::Type::Roughness);
-		mat.setTexture(Texture::Type::Roughness, std::shared_ptr<TextureHandler>(roughnessMap));
-		auto normalMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_normal-ogl.png", Texture::Type::Normal);
-		mat.setTexture(Texture::Type::Normal, std::shared_ptr<TextureHandler>(normalMap));
-		auto metallicMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_metallic.png", Texture::Type::Metallic);
-		mat.setTexture(Texture::Type::Metallic, std::shared_ptr<TextureHandler>(metallicMap));
-		auto aoMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_ao.png", Texture::Type::AmbientOcclusion);
-		mat.setTexture(Texture::Type::AmbientOcclusion, std::shared_ptr<TextureHandler>(aoMap));
+
 
 		//auto importer = getContext()->getModelImporter();
 
 		//auto helmet = importer->loadModelFromFile("./Resources/Content/Model/source/HelmetPresentationLightMap.fbx.fbx", getContext()->getActiveScene().get());
 
-		//for (int i = -1; i < 2; i++)
-		//{
-		//	for (int j = -1; j < 2; j++)
-		//	{
-		//		//auto guitar_deferred = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
-		//		auto guitar_deferred = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());
-		//		guitar_deferred.getComponent<Transformation>().setLocalPosition({ i * 4,0,j*4 });
-		//	}
-		//}
+		for (int i = -1; i < 2; i++)
+		{
+			for (int j = -1; j < 2; j++)
+			{
+				auto box = ShapeFactory::createBox(getContext()->getActiveScene().get());
+				auto& mat = box.getComponent<Material>();
+				auto albedoMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_albedo.png", Texture::Type::Albedo);
+				mat.setTexture(Texture::Type::Albedo, std::shared_ptr<TextureHandler>(albedoMap));
+				auto roughnessMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_roughness.png", Texture::Type::Roughness);
+				mat.setTexture(Texture::Type::Roughness, std::shared_ptr<TextureHandler>(roughnessMap));
+				auto normalMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_normal-ogl.png", Texture::Type::Normal);
+				mat.setTexture(Texture::Type::Normal, std::shared_ptr<TextureHandler>(normalMap));
+				auto metallicMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_metallic.png", Texture::Type::Metallic);
+				mat.setTexture(Texture::Type::Metallic, std::shared_ptr<TextureHandler>(metallicMap));
+				auto aoMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_ao.png", Texture::Type::AmbientOcclusion);
+				mat.setTexture(Texture::Type::AmbientOcclusion, std::shared_ptr<TextureHandler>(aoMap));
+				box.getComponent<Transformation>().setLocalPosition({ i * 2,0,j*2 });
+			}
+		}
 	
 
 

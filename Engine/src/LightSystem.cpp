@@ -90,7 +90,7 @@ void LightSystem::setLightsInUBO(const IRenderer::DrawQueueRenderParams* params)
 			auto& transform = view.get<Transformation>(*it);
 
 			PointLightUBORep pointLightUBO;
-			auto pos = *params->view * glm::vec4(transform.getLocalPosition(), 1.0f);
+			auto pos = /**params->view **/ glm::vec4(transform.getLocalPosition(), 1.0f);
 			pointLightUBO.position = { glm::vec3(pos.x,pos.y, pos.z), 1.f};
 			pointLightUBO.color = { pLight.getColor(), 1.f };
 
@@ -111,7 +111,7 @@ void LightSystem::setLightsInUBO(const IRenderer::DrawQueueRenderParams* params)
 			
 
 			DirLightUBORep dirLightUBO;
-			auto dir = *params->view * glm::vec4(dLight.getDirection(), 1.0f);
+			auto dir = /**params->view **/ glm::vec4(dLight.getDirection(), 1.0f);
 			dirLightUBO.direction = { glm::vec3(dir.x, dir.y, dir.z) , 1.f};
 			dirLightUBO.color = { dLight.getColor(), 1.f };
 
