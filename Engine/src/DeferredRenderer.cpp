@@ -358,7 +358,7 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_lightPassShader->bindUniformBlockToBindPoint("Time", 0);
 	m_lightPassShader->bindUniformBlockToBindPoint("Lights", 1);
 
-	m_lightPassShader->setValue("view", *renderParams.view);
+	m_lightPassShader->setValue("cameraPos", renderParams.cameraPos);
 
 	{
 		// render to quad

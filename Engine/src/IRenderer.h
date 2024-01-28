@@ -28,6 +28,7 @@ public:
 		Context* context = nullptr;
 		IRenderer* renderer = nullptr;
 		entt::registry* registry = nullptr;
+		glm::vec3 cameraPos;
 		
 		std::vector<Entity>* entityGroup;
 

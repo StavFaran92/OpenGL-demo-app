@@ -267,6 +267,7 @@ void Scene::draw(float deltaTime)
 	auto tempView = m_activeCamera->getView();
 	params.view = &tempView;
 	params.projection = &m_defaultPerspectiveProjection;
+	params.cameraPos = m_activeCamera->getPosition();
 
 	// PRE Render Phase
 	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])
