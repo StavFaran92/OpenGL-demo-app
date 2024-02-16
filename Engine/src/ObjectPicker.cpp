@@ -32,7 +32,7 @@ bool ObjectPicker::init(int windowWidth, int windowHeight)
 	m_frameBuffer->attachTexture(m_textureHandler->getID());
 
 	// Create RBO and attach to FBO
-	m_renderBuffer = std::make_shared<RenderBufferObject>();
+	m_renderBuffer = std::make_shared<RenderBufferObject>(1024, 768);
 	m_frameBuffer->attachRenderBuffer(m_renderBuffer->GetID(), FrameBufferObject::AttachmentType::Depth_Stencil);
 
 	// validate FBO

@@ -85,7 +85,9 @@ void Scene::init(Context* context)
 	auto height = Engine::get()->getWindow()->getHeight();
 
 	m_renderTargetFBO = std::make_shared<FrameBufferObject>();
-	m_renderTargetRBO = std::make_shared<RenderBufferObject>();
+	m_renderTargetRBO = std::make_shared<RenderBufferObject>(
+		Engine::get()->getWindow()->getWidth(), 
+		Engine::get()->getWindow()->getHeight());
 
 	m_renderTargetFBO->bind();
 

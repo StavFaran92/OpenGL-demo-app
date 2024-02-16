@@ -29,7 +29,7 @@ private:
 private:
 	FrameBufferObject m_gBuffer;
 	
-	RenderBufferObject m_renderBuffer;
+	RenderBufferObject m_renderBuffer{ 1024,768 };
 	
 	TextureHandler* m_positionTexture = nullptr;
 	TextureHandler* m_normalTexture = nullptr;
@@ -50,14 +50,14 @@ private:
 
 	// SSAO
 	FrameBufferObject m_ssaoFBO;
-	RenderBufferObject m_ssaoRenderBuffer;
+	RenderBufferObject m_ssaoRenderBuffer{ 1024,768 };
 	TextureHandler* m_ssaoNoiseTexture = nullptr;
 	TextureHandler* m_ssaoColorBuffer = nullptr;
 	std::shared_ptr<Shader> m_ssaoPassShader;
 	std::vector<glm::vec3> m_ssaoKernel;
 	
 	FrameBufferObject m_ssaoBlurFBO;
-	RenderBufferObject m_ssaoBlurRenderBuffer;
+	RenderBufferObject m_ssaoBlurRenderBuffer{ 1024,768 };
 	TextureHandler* m_ssaoBlurColorBuffer = nullptr;
 	std::shared_ptr<Shader> m_ssaoBlurPassShader;
 

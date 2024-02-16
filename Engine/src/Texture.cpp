@@ -180,7 +180,6 @@ TextureHandler* Texture::createCubemapTexture(int width, int height, int interna
 	glGenTextures(1, &texture->m_id);
 	texture->bind();
 
-	int width, height, nrChannels;
 	for (unsigned int i = 0; i < 6; i++)
 	{
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, internalFormat, width, height, 0, format, type, nullptr);

@@ -4,7 +4,7 @@
 class RenderBufferObject
 {
 public:
-	RenderBufferObject();
+	RenderBufferObject(int width, int height);
 
 	uint32_t GetID() { return m_id; }
 

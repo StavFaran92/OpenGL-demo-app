@@ -2,11 +2,11 @@
 
 #include "GL/glew.h"
 
-RenderBufferObject::RenderBufferObject()
+RenderBufferObject::RenderBufferObject(int width, int height)
 {
 	glGenRenderbuffers(1, &m_id);
 	Bind();
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1024, 768);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
 	Unbind();
 }
 
