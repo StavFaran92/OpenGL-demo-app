@@ -196,7 +196,7 @@ void Scene::init(Context* context)
 	auto tHandler = Texture::loadTextureFromFile("Resources/Content/Textures/rural_crossroads_4k.hdr", Texture::Type::None);
 
 	// convert equirectangular HDR map to Cubemap
-	EquirectangulatToCubemapConverter::convert();
+	EquirectangulatToCubemapConverter::convert(tHandler, this);
 
 	// Create irradiance map using created cubemap
 

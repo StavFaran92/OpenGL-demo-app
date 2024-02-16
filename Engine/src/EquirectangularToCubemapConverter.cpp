@@ -11,8 +11,13 @@
 #include "glm/ext.hpp"
 #include "Logger.h"
 
+#include "RenderCommand.h"
+#include "Entity.h"
+#include "Component.h"
+#include "Mesh.h"
 
-void EquirectangulatToCubemapConverter::convert(Scene* scene)
+
+void EquirectangulatToCubemapConverter::convert(TextureHandler* equirectangularTexture, Scene* scene)
 {
 	auto equirectangularShader = Shader::create<Shader>(
 		"Resources/Engine/Shaders/EquirectangularToCubemap.vert",
@@ -52,6 +57,14 @@ void EquirectangulatToCubemapConverter::convert(Scene* scene)
 
 	equirectangularShader->use();
 	equirectangularShader->setProjectionMatrix(captureProjection);
+	equirectangularShader->setValue("equirectangularMap", 0);
+
+	equirectangularTexture->setSlot(0);
+	equirectangularTexture->bind();
+	
+
+	auto box = ShapeFactory::createBox(scene);
+	auto vao = box.getComponent<MeshComponent>().mesh->getVAO();
 
 	// render to cube
 	// Attach cube map to frame buffer
@@ -63,13 +76,11 @@ void EquirectangulatToCubemapConverter::convert(Scene* scene)
 		// attach cubemap face to fbo
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemap->getID(), 0);
 
-		auto box = ShapeFactory::createBox(scene);
-		
 		// render cube
-		//Renderer::draw(box);
+		RenderCommand::drawIndexed(vao);
 	}
 
-
+	equirectangularTexture->unbind();
 	fbo.unbind();
 
 
