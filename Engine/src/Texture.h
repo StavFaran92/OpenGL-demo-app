@@ -75,6 +75,8 @@ public:
 	 */
 	static TextureHandler* loadCubemapTexture(std::vector<std::string> faces);
 
+	static TextureHandler* createCubemapTexture(int width, int height, int internalFormat, int format, int type);
+
 	static TextureHandler* createDummyTexture();
 
 	/**
