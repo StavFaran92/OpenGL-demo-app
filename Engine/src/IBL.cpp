@@ -1,4 +1,4 @@
-#include "EquirectangularToCubemapConverter.h"
+#include "IBL.h"
 
 #include "Texture.h"
 #include "FrameBufferObject.h"
@@ -16,12 +16,11 @@
 #include "Component.h"
 #include "Mesh.h"
 
-
-TextureHandler* EquirectangularToCubemapConverter::convert(TextureHandler* equirectangularTexture, Scene* scene)
+TextureHandler* IBL::generateIrradianceMap(TextureHandler* environmentMap, Scene* scene)
 {
-	auto equirectangularShader = Shader::create<Shader>(
-		"Resources/Engine/Shaders/EquirectangularToCubemap.vert",
-		"Resources/Engine/Shaders/EquirectangularToCubemap.frag");
+	auto irradianceShader = Shader::create<Shader>(
+		"Resources/Engine/Shaders/IrradianceShader.vert",
+		"Resources/Engine/Shaders/IrradianceShader.frag");
 
 	// Generate FBO 
 	FrameBufferObject fbo;
@@ -29,9 +28,9 @@ TextureHandler* EquirectangularToCubemapConverter::convert(TextureHandler* equir
 	fbo.bind();
 
 	// Generate cubemap
-	auto cubemap = Texture::createCubemapTexture(512, 512, GL_RGB16F, GL_RGB, GL_FLOAT);
+	auto irradianceMap = Texture::createCubemapTexture(32, 32, GL_RGB16F, GL_RGB, GL_FLOAT);
 
-	RenderBufferObject rbo{ 512, 512 };
+	RenderBufferObject rbo{ 32, 32 };
 	fbo.attachRenderBuffer(rbo.GetID(), FrameBufferObject::AttachmentType::Depth);
 
 	if (!fbo.isComplete())
@@ -53,15 +52,15 @@ TextureHandler* EquirectangularToCubemapConverter::convert(TextureHandler* equir
 	};
 
 	// set viewport
-	glViewport(0, 0, 512, 512);
+	glViewport(0, 0, 32, 32);
 
-	equirectangularShader->use();
-	equirectangularShader->setProjectionMatrix(captureProjection);
-	equirectangularShader->setValue("equirectangularMap", 0);
+	irradianceShader->use();
+	irradianceShader->setProjectionMatrix(captureProjection);
+	irradianceShader->setValue("environmentMap", 0);
 
-	equirectangularTexture->setSlot(0);
-	equirectangularTexture->bind();
-	
+	environmentMap->setSlot(0);
+	environmentMap->bind();
+
 
 	auto box = ShapeFactory::createBox(scene);
 	auto vao = box.getComponent<MeshComponent>().mesh->getVAO();
@@ -71,10 +70,10 @@ TextureHandler* EquirectangularToCubemapConverter::convert(TextureHandler* equir
 	for (int i = 0; i < 6; i++)
 	{
 		// set view
-		equirectangularShader->setViewMatrix(captureViews[i]);
+		irradianceShader->setViewMatrix(captureViews[i]);
 
 		// attach cubemap face to fbo
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemap->getID(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap->getID(), 0);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -82,8 +81,8 @@ TextureHandler* EquirectangularToCubemapConverter::convert(TextureHandler* equir
 		RenderCommand::drawIndexed(vao);
 	}
 
-	equirectangularTexture->unbind();
+	environmentMap->unbind();
 	fbo.unbind();
 
-	return cubemap;
+	return irradianceMap;
 }

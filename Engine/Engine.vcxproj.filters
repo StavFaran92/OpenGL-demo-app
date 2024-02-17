@@ -192,6 +192,7 @@
     <ClCompile Include="src\DeferredRenderer.cpp" />
     <ClCompile Include="src\RendererIntermediate.cpp" />
     <ClCompile Include="src\EquirectangularToCubemapConverter.cpp" />
+    <ClCompile Include="src\IBL.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Primitives\cube.h">
@@ -437,6 +438,9 @@
     <ClInclude Include="src\DeferredRenderer.h" />
     <ClInclude Include="src\RendererIntermediate.h" />
     <ClInclude Include="src\EquirectangularToCubemapConverter.h" />
+    <ClInclude Include="src\RenderCommand.h" />
+    <ClInclude Include="src\RenderCommand.cpp" />
+    <ClInclude Include="IBL.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

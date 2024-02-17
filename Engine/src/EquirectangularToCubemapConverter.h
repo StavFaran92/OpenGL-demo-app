@@ -3,8 +3,8 @@
 class Scene;
 class TextureHandler;
 
-class EquirectangulatToCubemapConverter
+class EquirectangularToCubemapConverter
 {
 public:
-	static void convert(TextureHandler* equirectangularTexture, Scene* scene);
+	static TextureHandler* convert(TextureHandler* equirectangularTexture, Scene* scene);
 };

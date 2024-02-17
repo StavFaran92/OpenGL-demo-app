@@ -46,6 +46,7 @@
 #include "ShapeFactory.h"
 #include <GL/glew.h>
 #include "EquirectangularToCubemapConverter.h"
+#include "IBL.h"
 
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
 {
@@ -196,9 +197,10 @@ void Scene::init(Context* context)
 	auto tHandler = Texture::loadTextureFromFile("Resources/Content/Textures/rural_crossroads_4k.hdr", Texture::Type::None);
 
 	// convert equirectangular HDR map to Cubemap
-	EquirectangulatToCubemapConverter::convert(tHandler, this);
+	auto cubemap = EquirectangularToCubemapConverter::convert(tHandler, this);
 
 	// Create irradiance map using created cubemap
+	IBL::generateIrradianceMap(cubemap, this);
 
 	m_registry.on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
 	m_registry.on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
