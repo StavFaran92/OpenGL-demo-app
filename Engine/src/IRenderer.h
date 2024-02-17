@@ -19,6 +19,7 @@ class Scene;
 class Context;
 class ICamera;
 class Material;
+class TextureHandler;
 
 class EngineAPI IRenderer {
 public:
@@ -41,6 +42,8 @@ public:
 		glm::mat4* model = nullptr;
 		glm::mat4* view = nullptr;
 		glm::mat4* projection = nullptr;
+
+		TextureHandler* irradianceMap = nullptr;
 	};
 	enum class DrawType {
 		Lines,

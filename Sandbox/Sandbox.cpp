@@ -35,12 +35,12 @@ public:
 
 		auto importer = getContext()->getModelImporter();
 
-		auto guitar = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());;
+		//auto guitar = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());;
 
 		//auto helmet = importer->loadModelFromFile("./Resources/Content/Model/source/HelmetPresentationLightMap.fbx.fbx", getContext()->getActiveScene().get());
 
-		//auto box = ShapeFactory::createSphere(getContext()->getActiveScene().get());
-		auto& mat = guitar.addComponent<Material>();
+		auto box = ShapeFactory::createSphere(getContext()->getActiveScene().get());
+		auto& mat = box.getComponent<Material>();
 		auto albedoMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_albedo.png", Texture::Type::Albedo);
 		mat.setTexture(Texture::Type::Albedo, std::shared_ptr<TextureHandler>(albedoMap));
 		auto roughnessMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_roughness.png", Texture::Type::Roughness);

@@ -158,4 +158,6 @@ private:
 	std::shared_ptr<FrameBufferObject> m_renderTargetFBO;
 	std::shared_ptr<RenderBufferObject> m_renderTargetRBO;
 	TextureHandler* m_renderTargetTexture = nullptr;
+
+	TextureHandler* m_irradianceMap = nullptr;
 };

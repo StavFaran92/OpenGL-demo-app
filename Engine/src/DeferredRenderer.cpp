@@ -344,6 +344,10 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_MRATexture->bind();
 	m_lightPassShader->setValue("gMRA", 3);
 
+	renderParams.irradianceMap->setSlot(4);
+	renderParams.irradianceMap->bind();
+	m_lightPassShader->setValue("gIrradianceMap", 4);
+
 #if 0
 	m_ssaoBlurColorBuffer->setSlot(3);
 	m_ssaoBlurColorBuffer->bind();

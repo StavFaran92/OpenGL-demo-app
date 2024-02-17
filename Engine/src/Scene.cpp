@@ -200,7 +200,7 @@ void Scene::init(Context* context)
 	auto cubemap = EquirectangularToCubemapConverter::convert(tHandler, this);
 
 	// Create irradiance map using created cubemap
-	auto irradianceMap = IBL::generateIrradianceMap(cubemap, this);
+	m_irradianceMap = IBL::generateIrradianceMap(cubemap, this);
 
 	m_registry.on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
 	m_registry.on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
@@ -282,6 +282,7 @@ void Scene::draw(float deltaTime)
 	params.view = &tempView;
 	params.projection = &m_defaultPerspectiveProjection;
 	params.cameraPos = m_activeCamera->getPosition();
+	params.irradianceMap = m_irradianceMap;
 
 	// PRE Render Phase
 	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])

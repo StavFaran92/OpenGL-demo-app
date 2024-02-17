@@ -21,6 +21,7 @@ uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedo;
 uniform sampler2D gMRA;
+uniform samplerCube gIrradianceMap;
 
 // ----- Forward Declerations ----- //
 
@@ -30,6 +31,11 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 {
 	return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
+
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}   
 
 float geometrySchlickGGX(float NdotV, float roughness)
 {
@@ -74,6 +80,9 @@ void main()
 	float roughness = texture(gMRA, TexCoords).g;
 	float ao = texture(gMRA, TexCoords).b;
 
+	vec3 F0 = vec3(0.04); // every dieltctric object has F0 = 0.04
+	F0 = mix(F0, albedo, metallic);
+
 	// Reflectance equation
 	// L0(P, W0) = integral[ BRDF(P, W0, Wi, roughness) * Li(P, Wi) * cosTheta(n, Wi) * dw ]
 	// BRDF = [ DFG / (4 * dot(n, w0) * dot(n, wi)) ] + Kd * albedo / PI
@@ -94,10 +103,7 @@ void main()
 		float cosTheta = max(0.0, dot(N, L));
 
 		// Calculate BRDF
-
 		// Calculate Fresnel Schlick 
-		vec3 F0 = vec3(0.04); // every dieltctric object has F0 = 0.04
-		F0 = mix(F0, albedo, metallic);
 		vec3 F = fresnelSchlick(max(0.0, dot(H, V)), F0);
 
 		vec3 ks = F;
@@ -117,7 +123,16 @@ void main()
 		L0 += (specular + kd * albedo / PI) * radiance * cosTheta;
     }
 
-	vec3 ambient = vec3(0.03) * albedo * ao;
+	// generate Kd to accomodate only for diffuse (exclude specular)
+	vec3 F = fresnelSchlickRoughness(max(0.0, dot(N, V)), F0, roughness);
+
+	vec3 ks = F;
+	vec3 kd = 1.0 - ks;
+
+	// ambient diffuse irradiance
+	vec3 ambient = texture(gIrradianceMap, N).rgb * albedo * ao * kd;
+
+	// combine results
 	vec3 color = L0 + ambient;
 
 	// HDR
