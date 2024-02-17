@@ -200,7 +200,7 @@ void Scene::init(Context* context)
 	auto cubemap = EquirectangularToCubemapConverter::convert(tHandler, this);
 
 	// Create irradiance map using created cubemap
-	IBL::generateIrradianceMap(cubemap, this);
+	auto irradianceMap = IBL::generateIrradianceMap(cubemap, this);
 
 	m_registry.on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
 	m_registry.on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
