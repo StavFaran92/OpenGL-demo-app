@@ -148,11 +148,11 @@ void Scene::init(Context* context)
 	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 1.0f);
 	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LIMITS, 1.0f);
 
-	m_shadowSystem = std::make_shared<ShadowSystem>(m_context, this);
-	if (!m_shadowSystem->init())
-	{
-		logError("Shadow System init failed!");
-	} 
+	//m_shadowSystem = std::make_shared<ShadowSystem>(m_context, this);
+	//if (!m_shadowSystem->init())
+	//{
+	//	logError("Shadow System init failed!");
+	//} 
 
 	m_lightSystem = std::make_shared<LightSystem>(m_context, this);
 	if (!m_lightSystem->init())
@@ -201,6 +201,12 @@ void Scene::init(Context* context)
 
 	// Create irradiance map using created cubemap
 	m_irradianceMap = IBL::generateIrradianceMap(cubemap, this);
+
+	m_skyboxShader = Shader::createShared<Shader>(
+		"Resources/Engine/Shaders/SkyboxShader.vert",
+		"Resources/Engine/Shaders/SkyboxShader.frag");
+
+	Skybox::CreateSkybox(cubemap, this);
 
 	m_registry.on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
 	m_registry.on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
@@ -271,6 +277,7 @@ void Scene::update(float deltaTime)
 
 void Scene::draw(float deltaTime)
 {
+	glViewport(0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
 	m_deferredRenderer->clear();
 
 	IRenderer::DrawQueueRenderParams params;
@@ -304,7 +311,6 @@ void Scene::draw(float deltaTime)
 
 
 	auto view = m_registry.view<MeshComponent, Transformation, RenderableComponent>();
-	params.entityGroup->reserve(view.size_hint());
 
 	// TODO consider optimizing this
 	std::vector<Entity> deferredRendererEntityGroup;
@@ -346,21 +352,12 @@ void Scene::draw(float deltaTime)
 	// Copy src to dest
 	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 
+
 	glBindFramebuffer(GL_FRAMEBUFFER, rTarget);
 
 	params.entityGroup = &forwardRendererEntityGroup;
 
 	m_forwardRenderer->renderScene(params);
-
-
-#if 1
-	
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_renderTargetFBO->getID());
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-#endif 
 
 #if 0
 	// POST Render Phase
@@ -374,20 +371,26 @@ void Scene::draw(float deltaTime)
 		m_deferredRenderer->render(params);
 	}
 
+#endif
+
 	// For some reason this group destroys the entities
 	glDepthMask(GL_FALSE);
 	glDepthFunc(GL_LEQUAL);
-	for (auto&& [entity, skybox, mesh, transform, mat, shader] : 
-		m_registry.view<SkyboxComponent, MeshComponent, Transformation, Material, Shader>().each())
+	m_skyboxShader->use();
+	m_renderTargetFBO->bind();
+
+	for (auto&& [entity, skybox, mesh, transform, mat] : 
+		m_registry.view<SkyboxComponent, MeshComponent, Transformation, Material>().each())
 	{
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;
 		params.mesh = mesh.mesh.get();
 		auto tempModel = transform.getWorldTransformation();
 		params.model = &tempModel;
-		params.shader = &shader;
+		params.shader = (m_skyboxShader.get());
+		mat.getTexture(Texture::Type::Diffuse)->bind();
 
-		m_deferredRenderer->render(params);
+		m_forwardRenderer->render(params);
 
 		params.entity = nullptr;
 		params.mesh = nullptr;
@@ -397,7 +400,15 @@ void Scene::draw(float deltaTime)
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);
 
-#endif
+
+#if 1
+
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_renderTargetFBO->getID());
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+#endif 
 
 #if 0
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

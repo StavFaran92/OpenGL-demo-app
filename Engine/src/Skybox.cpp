@@ -47,3 +47,22 @@ Entity Skybox::CreateSkybox(Scene* scene)
 
     return entity;
 }
+
+Entity Skybox::CreateSkybox(TextureHandler* cubemap, Scene* scene)
+{
+    if (!scene)
+    {
+        scene = Engine::get()->getContext()->getActiveScene().get();
+    }
+    
+
+    cubemap->setSlot(0);
+
+    auto entity = ShapeFactory::createBox(scene);
+
+    entity.RemoveComponent<RenderableComponent>();
+    entity.getComponent<Material>().setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(cubemap));
+    entity.addComponent<SkyboxComponent>();
+
+    return entity;
+}

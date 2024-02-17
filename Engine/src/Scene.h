@@ -160,4 +160,5 @@ private:
 	TextureHandler* m_renderTargetTexture = nullptr;
 
 	TextureHandler* m_irradianceMap = nullptr;
+	std::shared_ptr<Shader> m_skyboxShader;
 };

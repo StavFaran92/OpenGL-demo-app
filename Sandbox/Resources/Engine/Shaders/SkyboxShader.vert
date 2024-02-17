@@ -10,6 +10,7 @@ uniform mat4 view;
 void main()
 {
     TexCoords3D = aPos;
-    vec4 pos = projection * view * model * vec4(aPos, 1.0);
-    gl_Position = pos.xyww;
+    mat4 rotView = mat4(mat3(view)); // remove translation from the view matrix
+    vec4 clipPos = projection * rotView * vec4(aPos, 1.0);
+    gl_Position = clipPos.xyww;
 }  
