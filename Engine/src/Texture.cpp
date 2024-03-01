@@ -197,6 +197,36 @@ TextureHandler* Texture::createCubemapTexture(int width, int height, int interna
 	return textureHandler;
 }
 
+TextureHandler* Texture::createCubemapTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps)
+{
+	auto texture = new Texture();
+
+	texture->m_target = GL_TEXTURE_CUBE_MAP;
+
+	glGenTextures(1, &texture->m_id);
+	texture->bind();
+
+	for (unsigned int i = 0; i < 6; i++)
+	{
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, internalFormat, width, height, 0, format, type, nullptr);
+	}
+	for (auto& [paramKey, paramValue] : params)
+	{
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, paramKey, paramValue);
+	}
+
+	if (createMipMaps)
+	{
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	}
+
+	texture->unbind();
+
+	auto textureHandler = new TextureHandler(texture);
+
+	return textureHandler;
+}
+
 TextureHandler* Texture::createDummyTexture()
 {
 	auto texture = new Texture();

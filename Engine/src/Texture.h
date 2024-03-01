@@ -77,6 +77,9 @@ public:
 
 	static TextureHandler* createCubemapTexture(int width, int height, int internalFormat, int format, int type);
 
+
+	static TextureHandler* createCubemapTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps = false);
+
 	static TextureHandler* createDummyTexture();
 
 	/**

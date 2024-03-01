@@ -86,3 +86,93 @@ TextureHandler* IBL::generateIrradianceMap(TextureHandler* environmentMap, Scene
 
 	return irradianceMap;
 }
+
+TextureHandler* IBL::generatePrefilterEnvMap(TextureHandler* environmentMap, Scene* scene)
+{
+	auto prefilterShader = Shader::create<Shader>(
+		"Resources/Engine/Shaders/IBLPrefilterShader.vert",
+		"Resources/Engine/Shaders/IBLPrefilterShader.frag");
+
+	// Generate FBO 
+	FrameBufferObject fbo;
+
+	fbo.bind();
+
+	// Generate cubemap
+	auto prefilterEnvMap = Texture::createCubemapTexture(128, 128, GL_RGB16F, GL_RGB, GL_FLOAT, {
+		{ GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR },
+		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR },
+		{ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE },
+		{ GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE },
+		{ GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE }
+	}, true);
+
+	RenderBufferObject rbo{ 128, 128 };
+	fbo.attachRenderBuffer(rbo.GetID(), FrameBufferObject::AttachmentType::Depth);
+
+	if (!fbo.isComplete())
+	{
+		logError("FBO is not complete!");
+		return nullptr;
+	}
+
+	// Generate views and projection
+	glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+	glm::mat4 captureViews[] =
+	{
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+	};
+
+	prefilterShader->use();
+	prefilterShader->setProjectionMatrix(captureProjection);
+	prefilterShader->setValue("environmentMap", 0);
+
+	environmentMap->setSlot(0);
+	environmentMap->bind();
+
+
+	auto box = ShapeFactory::createBox(scene);
+	auto vao = box.getComponent<MeshComponent>().mesh->getVAO();
+
+	// render to cube
+	// Attach cube map to frame buffer
+	int maxMipLevel = 5;
+	for (int mip = 0; mip < maxMipLevel; mip++)
+	{
+		int mipWidth = 128 * std::pow(.5, mip);
+		int mipHeight = 128 * std::pow(.5, mip);
+
+		rbo.Bind();
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
+
+		// set viewport
+		glViewport(0, 0, mipWidth, mipHeight);
+		
+		float roughness = (float)mip / (maxMipLevel - 1);
+		prefilterShader->setValue("roughness", roughness);
+
+		for (int i = 0; i < 6; i++)
+		{
+			// set view
+			prefilterShader->setViewMatrix(captureViews[i]);
+
+			// attach cubemap face to fbo
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilterEnvMap->getID(), mip);
+
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			// render cube
+			RenderCommand::drawIndexed(vao);
+		}
+	}
+
+	environmentMap->unbind();
+	fbo.unbind();
+
+	return prefilterEnvMap;
+}
