@@ -148,7 +148,7 @@ TextureHandler* IBL::generatePrefilterEnvMap(TextureHandler* environmentMap, Sce
 		int mipHeight = 128 * std::pow(.5, mip);
 
 		rbo.Bind();
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, mipWidth, mipHeight);
 
 		// set viewport
 		glViewport(0, 0, mipWidth, mipHeight);

@@ -202,13 +202,8 @@ void Scene::init(Context* context)
 	// Create irradiance map using created cubemap
 	m_irradianceMap = IBL::generateIrradianceMap(cubemap, this);
 
-	/*auto prefilterEnvMap = Texture::createCubemapTexture(128, 128, GL_RGB16F, GL_RGB, GL_FLOAT, {
-		{ GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR },
-		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR },
-		{ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE },
-		{ GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE },
-		{ GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE }
-	}, true);*/
+	// Create prefilter env map using created cubemap
+	m_prefilterEnvMap = IBL::generatePrefilterEnvMap(cubemap, this);
 
 	m_skyboxShader = Shader::createShared<Shader>(
 		"Resources/Engine/Shaders/SkyboxShader.vert",
