@@ -189,7 +189,14 @@ TextureHandler* IBL::generateBRDFIntegrationLUT(Scene* scene)
 	fbo.bind();
 
 	// Generate 2D LUT
-	auto lut = Texture::createTexture(512, 512, GL_RG16, GL_RG, GL_FLOAT, {}, nullptr);
+	auto lut = Texture::createTexture(512, 512, GL_RG16, GL_RG, GL_FLOAT, 
+		{	
+			{ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE },
+			{ GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE },
+			{ GL_TEXTURE_MIN_FILTER, GL_LINEAR },
+			{ GL_TEXTURE_MAG_FILTER, GL_LINEAR } 
+		}
+	, nullptr);
 
 	RenderBufferObject rbo{ 512, 512 };
 	fbo.attachRenderBuffer(rbo.GetID(), FrameBufferObject::AttachmentType::Depth);
