@@ -176,3 +176,48 @@ TextureHandler* IBL::generatePrefilterEnvMap(TextureHandler* environmentMap, Sce
 
 	return prefilterEnvMap;
 }
+
+TextureHandler* IBL::generateBRDFIntegrationLUT(Scene* scene)
+{
+	auto BRDFIntegrationShader = Shader::create<Shader>(
+		"Resources/Engine/Shaders/BRDFIntegrationShader.vert",
+		"Resources/Engine/Shaders/BRDFIntegrationShader.frag");
+
+	// Generate FBO 
+	FrameBufferObject fbo;
+
+	fbo.bind();
+
+	// Generate 2D LUT
+	auto lut = Texture::createTexture(512, 512, GL_RG16, GL_RG, GL_FLOAT, {}, nullptr);
+
+	RenderBufferObject rbo{ 512, 512 };
+	fbo.attachRenderBuffer(rbo.GetID(), FrameBufferObject::AttachmentType::Depth);
+
+	if (!fbo.isComplete())
+	{
+		logError("FBO is not complete!");
+		return nullptr;
+	}
+
+	fbo.attachTexture(lut->getID());
+
+	// set viewport
+	glViewport(0, 0, 512, 512);
+
+	BRDFIntegrationShader->use();
+
+	auto quad = ShapeFactory::createQuad(scene);
+	auto vao = quad.getComponent<MeshComponent>().mesh->getVAO();
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// render to quad
+	RenderCommand::drawIndexed(vao);
+
+	fbo.unbind();
+
+	return lut;
+
+	
+}

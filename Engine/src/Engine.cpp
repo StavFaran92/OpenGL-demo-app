@@ -42,6 +42,8 @@ bool Engine::init()
 
     glEnable(GL_DEPTH_TEST);
 
+    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
     m_eventSystem = std::make_shared<EventSystem>();
 
     m_memoryManagementSystem = std::make_shared<MemoryManagement>();

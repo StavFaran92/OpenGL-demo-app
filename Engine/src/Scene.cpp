@@ -205,11 +205,13 @@ void Scene::init(Context* context)
 	// Create prefilter env map using created cubemap
 	m_prefilterEnvMap = IBL::generatePrefilterEnvMap(cubemap, this);
 
+	IBL::generateBRDFIntegrationLUT(this);
+
 	m_skyboxShader = Shader::createShared<Shader>(
 		"Resources/Engine/Shaders/SkyboxShader.vert",
 		"Resources/Engine/Shaders/SkyboxShader.frag");
 
-	Skybox::CreateSkybox(cubemap, this);
+	Skybox::CreateSkybox(m_prefilterEnvMap, this);
 
 	m_registry.on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
 	m_registry.on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
