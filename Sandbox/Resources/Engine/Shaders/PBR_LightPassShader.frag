@@ -132,8 +132,8 @@ void main()
 	vec3 irradiance = texture(gIrradianceMap, N).rgb;
 	vec3 diffuse = irradiance * albedo;
 
-	const int MAX_REFLECTION_LOD = 4;
-	vec3 prefilterColor = textureLod(gPrefilterEnvMap, R, roughness * 4).rgb;
+	const float MAX_REFLECTION_LOD = 4.0;
+	vec3 prefilterColor = textureLod(gPrefilterEnvMap, R, roughness * MAX_REFLECTION_LOD).rgb;
 
 	vec2 envBRDF = texture(gBRDFIntegrationLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
 	vec3 specular = prefilterColor * (envBRDF.x * F + envBRDF.y); 
