@@ -44,6 +44,8 @@ public:
 		glm::mat4* projection = nullptr;
 
 		TextureHandler* irradianceMap = nullptr;
+		TextureHandler* prefilterEnvMap = nullptr;
+		TextureHandler* brdfLUT = nullptr;
 	};
 	enum class DrawType {
 		Lines,

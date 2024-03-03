@@ -348,6 +348,16 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	renderParams.irradianceMap->bind();
 	m_lightPassShader->setValue("gIrradianceMap", 4);
 
+
+	renderParams.prefilterEnvMap->setSlot(5);
+	renderParams.prefilterEnvMap->bind();
+	m_lightPassShader->setValue("gPrefilterEnvMap", 5);
+
+
+	renderParams.brdfLUT->setSlot(6);
+	renderParams.brdfLUT->bind();
+	m_lightPassShader->setValue("gBRDFIntegrationLUT", 6);
+
 #if 0
 	m_ssaoBlurColorBuffer->setSlot(3);
 	m_ssaoBlurColorBuffer->bind();

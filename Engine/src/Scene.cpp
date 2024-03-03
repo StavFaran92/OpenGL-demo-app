@@ -205,13 +205,14 @@ void Scene::init(Context* context)
 	// Create prefilter env map using created cubemap
 	m_prefilterEnvMap = IBL::generatePrefilterEnvMap(cubemap, this);
 
-	IBL::generateBRDFIntegrationLUT(this);
+	// Create BRDF look up texture
+	m_BRDFIntegrationLUT = IBL::generateBRDFIntegrationLUT(this);
 
 	m_skyboxShader = Shader::createShared<Shader>(
 		"Resources/Engine/Shaders/SkyboxShader.vert",
 		"Resources/Engine/Shaders/SkyboxShader.frag");
 
-	Skybox::CreateSkybox(m_prefilterEnvMap, this);
+	Skybox::CreateSkybox(cubemap, this);
 
 	m_registry.on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
 	m_registry.on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
@@ -295,6 +296,8 @@ void Scene::draw(float deltaTime)
 	params.projection = &m_defaultPerspectiveProjection;
 	params.cameraPos = m_activeCamera->getPosition();
 	params.irradianceMap = m_irradianceMap;
+	params.prefilterEnvMap = m_prefilterEnvMap;
+	params.brdfLUT = m_BRDFIntegrationLUT;
 
 	// PRE Render Phase
 	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])

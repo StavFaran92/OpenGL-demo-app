@@ -161,5 +161,6 @@ private:
 
 	TextureHandler* m_irradianceMap = nullptr;
 	TextureHandler* m_prefilterEnvMap = nullptr;
+	TextureHandler* m_BRDFIntegrationLUT = nullptr;
 	std::shared_ptr<Shader> m_skyboxShader;
 };

@@ -22,6 +22,8 @@ uniform sampler2D gNormal;
 uniform sampler2D gAlbedo;
 uniform sampler2D gMRA;
 uniform samplerCube gIrradianceMap;
+uniform samplerCube gPrefilterEnvMap;
+uniform sampler2D gBRDFIntegrationLUT;
 
 // ----- Forward Declerations ----- //
 
@@ -88,6 +90,7 @@ void main()
 	// BRDF = [ DFG / (4 * dot(n, w0) * dot(n, wi)) ] + Kd * albedo / PI
 	vec3 N = normalize(normal);
 	vec3 V = normalize(cameraPos - fragPos);
+	vec3 R = reflect(-V, N);
     vec3 L0 = vec3(0.0);
     for(int i = 0; i < pointLightCount; ++i)
     {
@@ -125,12 +128,21 @@ void main()
 
 	// generate Kd to accomodate only for diffuse (exclude specular)
 	vec3 F = fresnelSchlickRoughness(max(0.0, dot(N, V)), F0, roughness);
+	
+	vec3 irradiance = texture(gIrradianceMap, N).rgb;
+	vec3 diffuse = irradiance * albedo;
+
+	const int MAX_REFLECTION_LOD = 4;
+	vec3 prefilterColor = textureLod(gPrefilterEnvMap, R, roughness * 4).rgb;
+
+	vec2 envBRDF = texture(gBRDFIntegrationLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
+	vec3 specular = prefilterColor * (envBRDF.x * F + envBRDF.y); 
 
 	vec3 ks = F;
 	vec3 kd = 1.0 - ks;
 
 	// ambient diffuse irradiance
-	vec3 ambient = texture(gIrradianceMap, N).rgb * albedo * ao * kd;
+	vec3 ambient = (kd * diffuse + specular) * ao;
 
 	// combine results
 	vec3 color = L0 + ambient;
