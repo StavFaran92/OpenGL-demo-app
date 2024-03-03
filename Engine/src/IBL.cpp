@@ -63,6 +63,7 @@ TextureHandler* IBL::generateIrradianceMap(TextureHandler* environmentMap, Scene
 
 
 	auto box = ShapeFactory::createBox(scene);
+	box.RemoveComponent<RenderableComponent>();
 	auto vao = box.getComponent<MeshComponent>().mesh->getVAO();
 
 	// render to cube
@@ -137,6 +138,7 @@ TextureHandler* IBL::generatePrefilterEnvMap(TextureHandler* environmentMap, Sce
 
 
 	auto box = ShapeFactory::createBox(scene);
+	box.RemoveComponent<RenderableComponent>();
 	auto vao = box.getComponent<MeshComponent>().mesh->getVAO();
 
 	// render to cube
@@ -215,6 +217,7 @@ TextureHandler* IBL::generateBRDFIntegrationLUT(Scene* scene)
 	BRDFIntegrationShader->use();
 
 	auto quad = ShapeFactory::createQuad(scene);
+	quad.RemoveComponent<RenderableComponent>();
 	auto vao = quad.getComponent<MeshComponent>().mesh->getVAO();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

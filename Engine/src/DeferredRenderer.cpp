@@ -170,6 +170,7 @@ bool DeferredRenderer::init()
 
 	// Generate screen quad
 	m_quad = ScreenQuad::GenerateScreenQuad(m_scene);
+	m_quad.RemoveComponent<RenderableComponent>();
 
 	// Generate screen renderer
 	m_2DRenderer = std::make_shared<Renderer2D>();
