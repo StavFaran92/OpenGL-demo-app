@@ -12,6 +12,7 @@
 #include "Renderer2D.h"
 #include "Material.h"
 #include "Random.h"
+#include "RenderCommand.h"
 
 static float lerp(float a, float b, float t)
 {
@@ -171,9 +172,6 @@ bool DeferredRenderer::init()
 	// Generate screen quad
 	m_quad = ScreenQuad::GenerateScreenQuad(m_scene);
 	m_quad.RemoveComponent<RenderableComponent>();
-
-	// Generate screen renderer
-	m_2DRenderer = std::make_shared<Renderer2D>();
 
 	return true;
 }
@@ -380,9 +378,9 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 		auto& mesh = m_quad.getComponent<MeshComponent>();
 
 		DrawQueueRenderParams renderParams2D;
-		renderParams2D.mesh = mesh.mesh.get();
+		auto vao = mesh.mesh.get()->getVAO();
 
-		m_2DRenderer->render(renderParams2D);
+		RenderCommand::drawIndexed(vao);
 	}
 
 	m_renderTargetFBO->unbind();

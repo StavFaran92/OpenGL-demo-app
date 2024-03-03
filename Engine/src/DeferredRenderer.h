@@ -41,7 +41,6 @@ private:
 	std::shared_ptr<FrameBufferObject> m_renderTargetFBO;
 
 	Entity m_quad;
-	std::shared_ptr<IRenderer> m_2DRenderer;
 	std::shared_ptr<Shader> m_screenShader;
 	
 	
