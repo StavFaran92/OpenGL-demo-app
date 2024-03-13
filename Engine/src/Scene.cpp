@@ -198,17 +198,10 @@ void Scene::init(Context* context)
 	m_uboTime = std::make_shared<UniformBufferObject>(sizeof(float));
 	m_uboTime->attachToBindPoint(0);
 
-	// load HDR equirectangular IBL map
-	// TODO update call to accept gl params
-	//auto tHandler = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/gear_store_8k.hdr", Texture::Type::None);
-
-	//// convert equirectangular HDR map to Cubemap
-	//auto cubemap = EquirectangularToCubemapConverter::convert(tHandler, this);
-
-	//// Create irradiance map using created cubemap
+	// Create irradiance map using created cubemap
 	m_irradianceMap = context->getDummyTexture().get();
 
-	//// Create prefilter env map using created cubemap
+	// Create prefilter env map using created cubemap
 	m_prefilterEnvMap = context->getDummyTexture().get();
 
 	// Create BRDF look up texture
@@ -217,8 +210,6 @@ void Scene::init(Context* context)
 	m_skyboxShader = Shader::createShared<Shader>(
 		"Resources/Engine/Shaders/SkyboxShader.vert",
 		"Resources/Engine/Shaders/SkyboxShader.frag");
-
-	//Skybox::CreateSkybox(cubemap, this);
 
 	m_registry.on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
 	m_registry.on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
