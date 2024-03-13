@@ -78,6 +78,12 @@ void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams para
 	}
 }
 
+void Scene::setIBLData(TextureHandler* irradianceMap, TextureHandler* prefilterEnvMap)
+{
+	m_irradianceMap = irradianceMap;
+	m_prefilterEnvMap = prefilterEnvMap;
+}
+
 void Scene::init(Context* context)
 {
 	m_context = context;
@@ -169,18 +175,18 @@ void Scene::init(Context* context)
 
 	
 
-	for (int i = 0; i < 32; i++)
-	{
-		auto rand_x = Engine::get()->getRandomSystem()->rand() * 12 - 6;
-		auto rand_y = Engine::get()->getRandomSystem()->rand() * 12 - 6;
-		auto pLight = createEntity();
-		//auto pLight = ShapeFactory::createSphere(this);
-		pLight.addComponent<Material>();
-		pLight.addComponent<RenderableComponent>();
-		pLight.addComponent<PointLight>();
-		pLight.getComponent<Transformation>().setLocalPosition({ rand_x , 0, rand_y });
-		pLight.getComponent<RenderableComponent>().renderTechnique = RenderableComponent::Forward;
-	}
+	//for (int i = 0; i < 32; i++)
+	//{
+	//	auto rand_x = Engine::get()->getRandomSystem()->rand() * 12 - 6;
+	//	auto rand_y = Engine::get()->getRandomSystem()->rand() * 12 - 6;
+	//	auto pLight = createEntity();
+	//	//auto pLight = ShapeFactory::createSphere(this);
+	//	pLight.addComponent<Material>();
+	//	pLight.addComponent<RenderableComponent>();
+	//	pLight.addComponent<PointLight>();
+	//	pLight.getComponent<Transformation>().setLocalPosition({ rand_x , 0, rand_y });
+	//	pLight.getComponent<RenderableComponent>().renderTechnique = RenderableComponent::Forward;
+	//}
 
 	auto editorCamera = createEntity();
 	editorCamera.addComponent<CameraComponent>();
@@ -194,16 +200,16 @@ void Scene::init(Context* context)
 
 	// load HDR equirectangular IBL map
 	// TODO update call to accept gl params
-	auto tHandler = Texture::loadTextureFromFile("Resources/Content/Textures/rural_crossroads_4k.hdr", Texture::Type::None);
+	//auto tHandler = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/gear_store_8k.hdr", Texture::Type::None);
 
-	// convert equirectangular HDR map to Cubemap
-	auto cubemap = EquirectangularToCubemapConverter::convert(tHandler, this);
+	//// convert equirectangular HDR map to Cubemap
+	//auto cubemap = EquirectangularToCubemapConverter::convert(tHandler, this);
 
-	// Create irradiance map using created cubemap
-	m_irradianceMap = IBL::generateIrradianceMap(cubemap, this);
+	//// Create irradiance map using created cubemap
+	m_irradianceMap = context->getDummyTexture().get();
 
-	// Create prefilter env map using created cubemap
-	m_prefilterEnvMap = IBL::generatePrefilterEnvMap(cubemap, this);
+	//// Create prefilter env map using created cubemap
+	m_prefilterEnvMap = context->getDummyTexture().get();
 
 	// Create BRDF look up texture
 	m_BRDFIntegrationLUT = IBL::generateBRDFIntegrationLUT(this);
@@ -212,7 +218,7 @@ void Scene::init(Context* context)
 		"Resources/Engine/Shaders/SkyboxShader.vert",
 		"Resources/Engine/Shaders/SkyboxShader.frag");
 
-	Skybox::CreateSkybox(cubemap, this);
+	//Skybox::CreateSkybox(cubemap, this);
 
 	m_registry.on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
 	m_registry.on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);

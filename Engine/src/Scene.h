@@ -99,6 +99,8 @@ public:
 	
 	void displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params);
 
+	void setIBLData(TextureHandler* irradianceMap, TextureHandler* prefilterEnvMap);
+
 private:
 	// -------------------- Methods -------------------- //
 	friend class Context;

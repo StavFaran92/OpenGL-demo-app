@@ -17,51 +17,54 @@
 
 #include "EditorCamera.h"
 #include "Resources/Engine/Primitives/cube.h"
+#include "EquirectangularToCubemapConverter.h"
+#include "IBL.h"
 
-Entity Skybox::CreateSkybox(Scene* scene)
+Entity Skybox::CreateSkybox(const SkyboxFaces& faces, Scene* scene)
 {
     if (!scene)
     {
         scene = Engine::get()->getContext()->getActiveScene().get();
     }
-    auto shader = Shader::create<Shader>("Resources/Engine/Shaders/SkyboxShader.vert", "Resources/Engine/Shaders/SkyboxShader.frag");
 
-    std::vector<std::string> faces
-    {
-        "Resources/Engine/Textures/Skybox/right.jpg",
-        "Resources/Engine/Textures/Skybox/left.jpg",
-        "Resources/Engine/Textures/Skybox/top.jpg",
-        "Resources/Engine/Textures/Skybox/bottom.jpg",
-        "Resources/Engine/Textures/Skybox/front.jpg",
-        "Resources/Engine/Textures/Skybox/back.jpg"
-    };
-    auto textureHandler = Texture::loadCubemapTexture(faces);
-    textureHandler->setSlot(0);
+    std::vector<std::string> facesVec{faces.right, faces.left, faces.top, faces.bottom, faces.front, faces.back};
 
-    auto entity = ShapeFactory::createBox(scene);
-
-    entity.addComponent<Shader>(shader);
-    entity.RemoveComponent<RenderableComponent>();
-    entity.getComponent<Material>().setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(textureHandler));
-    entity.addComponent<SkyboxComponent>();
-
-    return entity;
+    auto textureHandler = Texture::loadCubemapTexture(facesVec);
+    
+    return createSkyboxHelper(textureHandler, scene);
 }
 
-Entity Skybox::CreateSkybox(TextureHandler* cubemap, Scene* scene)
+Entity Skybox::CreateSkybox(TexType type, TextureHandler* texture, Scene* scene)
 {
     if (!scene)
     {
         scene = Engine::get()->getContext()->getActiveScene().get();
     }
-    
 
-    cubemap->setSlot(0);
+    if (type == TexType::EQUIRECTANGULAR)
+    {
+        texture = EquirectangularToCubemapConverter::convert(texture, scene);
+    }
+
+    return createSkyboxHelper(texture, scene);
+}
+
+Entity Skybox::createSkyboxHelper(TextureHandler* texture, Scene* scene)
+{
+    // Create irradiance map using created cubemap
+    auto irradianceMap = IBL::generateIrradianceMap(texture, scene);
+
+    // Create prefilter env map using created cubemap
+    auto prefilterEnvMap = IBL::generatePrefilterEnvMap(texture, scene);
+
+    scene->setIBLData(irradianceMap, prefilterEnvMap);
+
+    texture->setSlot(0);
 
     auto entity = ShapeFactory::createBox(scene);
 
     entity.RemoveComponent<RenderableComponent>();
-    entity.getComponent<Material>().setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(cubemap));
+    entity.getComponent<Material>().setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(texture));
     entity.addComponent<SkyboxComponent>();
 
     return entity;
