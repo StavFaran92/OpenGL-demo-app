@@ -59,7 +59,7 @@ public:
 	 * \param isFlipped		Should flip the texture vertically
 	 * \return				A pointer to the loaded texture
 	 */
-	static TextureHandler* loadTextureFromFile(const std::string& fileLocation, Texture::Type type, bool flip = FLIP_TEXTURE);
+	static TextureHandler* loadTextureFromFile(const std::string& fileLocation, bool flip = FLIP_TEXTURE);
 
 	/**
 	 * Create a texture using predefined data

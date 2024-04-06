@@ -154,11 +154,11 @@ void Scene::init(Context* context)
 	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 1.0f);
 	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LIMITS, 1.0f);
 
-	//m_shadowSystem = std::make_shared<ShadowSystem>(m_context, this);
-	//if (!m_shadowSystem->init())
-	//{
-	//	logError("Shadow System init failed!");
-	//} 
+	m_shadowSystem = std::make_shared<ShadowSystem>(m_context, this);
+	if (!m_shadowSystem->init())
+	{
+		logError("Shadow System init failed!");
+	} 
 
 	m_lightSystem = std::make_shared<LightSystem>(m_context, this);
 	if (!m_lightSystem->init())
@@ -287,7 +287,7 @@ void Scene::draw(float deltaTime)
 	params.scene = this;
 	params.context = m_context;
 	params.registry = &m_registry;
-	params.renderer = m_deferredRenderer.get();
+	params.renderer = m_forwardRenderer.get();
 	auto tempView = m_activeCamera->getView();
 	params.view = &tempView;
 	params.projection = &m_defaultPerspectiveProjection;
@@ -295,6 +295,8 @@ void Scene::draw(float deltaTime)
 	params.irradianceMap = m_irradianceMap;
 	params.prefilterEnvMap = m_prefilterEnvMap;
 	params.brdfLUT = m_BRDFIntegrationLUT;
+
+	m_shadowSystem->renderToDepthMap(&params);
 
 	// PRE Render Phase
 	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])

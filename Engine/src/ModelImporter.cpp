@@ -218,7 +218,7 @@ std::vector<TextureHandler*> ModelImporter::loadMaterialTextures(aiMaterial* mat
 		auto textureName = str.C_Str();
 
 		// Texture not found in cache -> load it and add to cache
-		auto textureHandler = Texture::loadTextureFromFile(session.fileDir + "/" + textureName, getTextureType(type));
+		auto textureHandler = Texture::loadTextureFromFile(session.fileDir + "/" + textureName);
 		textureHandlers.push_back(textureHandler);
 	}
 	return textureHandlers;

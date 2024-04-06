@@ -24,10 +24,10 @@ ShadowSystem::ShadowSystem(Context* context, Scene* scene)
 
 bool ShadowSystem::init()
 {
-	m_scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const IRenderer::DrawQueueRenderParams* params) {
+	//m_scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const IRenderer::DrawQueueRenderParams* params) {
 
-		renderToDepthMap(params);
-	});
+	//	renderToDepthMap(params);
+	//});
 
 	m_fbo.bind();
 

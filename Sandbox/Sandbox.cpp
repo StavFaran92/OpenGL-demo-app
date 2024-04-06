@@ -56,15 +56,15 @@ public:
 	
 		//auto box = ShapeFactory::createSphere(getContext()->getActiveScene().get());
 		auto& mat = gun.addComponent<Material>();
-		auto albedoMap = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_A.tga", Texture::Type::Albedo, false);
+		auto albedoMap = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_A.tga", false);
 		mat.setTexture(Texture::Type::Albedo, std::shared_ptr<TextureHandler>(albedoMap));
-		auto roughnessMap = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_R.tga", Texture::Type::Roughness, false);
+		auto roughnessMap = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_R.tga", false);
 		mat.setTexture(Texture::Type::Roughness, std::shared_ptr<TextureHandler>(roughnessMap));
-		auto normalMap = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_N.tga", Texture::Type::Normal, false);
+		auto normalMap = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_N.tga", false);
 		mat.setTexture(Texture::Type::Normal, std::shared_ptr<TextureHandler>(normalMap));
-		auto metallicMap = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga", Texture::Type::Metallic, false);
+		auto metallicMap = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga", false);
 		mat.setTexture(Texture::Type::Metallic, std::shared_ptr<TextureHandler>(metallicMap));
-		auto aoMap = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Raw/Cerberus_AO.tga", Texture::Type::AmbientOcclusion, false);
+		auto aoMap = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Raw/Cerberus_AO.tga", false);
 		mat.setTexture(Texture::Type::AmbientOcclusion, std::shared_ptr<TextureHandler>(aoMap));
 		//box.getComponent<Transformation>().setLocalPosition({ i * 3,0,j * 3 });
 
