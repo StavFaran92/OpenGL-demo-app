@@ -70,14 +70,81 @@ float distributionGGX(vec3 N, vec3 H, float a)
 	return nom / denom;
 }
 
+struct Surface
+{
+	vec3 fragPos;
+	vec3 V;
+	vec3 N;
+	vec3 H;
+	vec3 L;
+	vec3 F0;
+	vec3 albedo;
+	float metallic;
+	float roughness;
+	
+};
+
+vec3 calculateBRDF(Surface s)
+{
+	// Calculate BRDF
+	// Calculate Fresnel Schlick 
+	vec3 F = fresnelSchlick(max(0.0, dot(s.H, s.V)), s.F0);
+
+	vec3 ks = F;
+	vec3 kd = 1.0 - ks;
+	kd *= 1.0 - s.metallic;
+
+	// Calculate NDF
+	float NDF = distributionGGX(s.N, s.H, s.roughness);
+
+	// Calculate Schlick-GGX
+	float G = geometrySmith(s.N, s.V, s.L, s.roughness);
+
+	vec3 numerator = NDF * G * F;
+	float denominator = 4.0 * max(0.0, dot(s.N, s.V)) * max(0.0, dot(s.N, s.L)) + 0.0001;
+	vec3 specular = numerator / denominator;
+
+	return (specular + kd * s.albedo / PI);
+}
+
+vec3 PointLightRadiance(PointLight pLight, Surface s)
+{
+	s.L = normalize(pLight.position.rgb - s.fragPos);
+	s.H = normalize(s.V + s.L);
+
+	// Calculate Li
+	float distance = length(s.L);
+	float attenuation = 1.0 / (distance * distance);
+	vec3 radiance = pLight.color.rgb * attenuation;
+
+	// Calculate cosTheta
+	float cosTheta = max(0.0, dot(s.N, s.L));
+
+	return calculateBRDF(s) * radiance * cosTheta;
+}
+
+vec3 DirLightRadiance(DirLight dLight, Surface s)
+{
+	s.L = dLight.direction.xyz;
+	s.H = normalize(s.V + s.L);
+
+	// Calculate Li
+	vec3 radiance = dLight.color.rgb;
+
+	// Calculate cosTheta
+	float cosTheta = max(0.0, dot(s.N, s.L));
+
+	return calculateBRDF(s) * radiance * cosTheta;
+}
+
 uniform vec3 cameraPos;
 
 void main() 
 { 
-    // retrieve data from G-buffer
-    vec3 fragPos = texture(gPosition, TexCoords).rgb;
-    vec3 normal = texture(gNormal, TexCoords).rgb;
-    vec3 albedo = pow(texture(gAlbedo, TexCoords).rgb, vec3(2.2));
+	// retrieve data from G-buffer
+	vec3 fragPos = texture(gPosition, TexCoords).rgb;
+	vec3 normal = texture(gNormal, TexCoords).rgb;
+	vec3 albedo = pow(texture(gAlbedo, TexCoords).rgb, vec3(2.2));
 	float metallic = texture(gMRA, TexCoords).r;
 	float roughness = texture(gMRA, TexCoords).g;
 	float ao = texture(gMRA, TexCoords).b;
@@ -91,46 +158,35 @@ void main()
 	vec3 N = normalize(normal);
 	vec3 V = normalize(cameraPos - fragPos);
 	vec3 R = reflect(-V, N);
-    vec3 L0 = vec3(0.0);
-    for(int i = 0; i < pointLightCount; ++i)
-    {
-		vec3 L = normalize(pointLights[i].position.rgb - fragPos);
-		vec3 H = normalize(V + L);
+	vec3 L0 = vec3(0.0);
 
-		// Calculate Li
-		float distance = length(L);
-		float attenuation = 1.0 / (distance * distance);
-		vec3 radiance = pointLights[i].color.rgb * attenuation;
+	Surface s;
+	s.fragPos = fragPos;
+	s.V = V;
+	s.N = N;
+	s.F0 = F0;
+	s.metallic = metallic;
+	s.roughness = roughness;
+	s.albedo = albedo;
 
-		// Calculate cosTheta
-		float cosTheta = max(0.0, dot(N, L));
+	for(int i = 0; i < pointLightCount; ++i)
+	{
+		L0 += PointLightRadiance(pointLights[i], s);
+	}
 
-		// Calculate BRDF
-		// Calculate Fresnel Schlick 
-		vec3 F = fresnelSchlick(max(0.0, dot(H, V)), F0);
-
-		vec3 ks = F;
-		vec3 kd = 1.0 - ks;
-		kd *= 1.0 - metallic;
-
-		// Calculate NDF
-		float NDF = distributionGGX(N, H, roughness);
-
-		// Calculate Schlick-GGX
-		float G = geometrySmith(N, V, L, roughness);
-
-		vec3 numerator = NDF * G * F;
-		float denominator = 4.0 * max(0.0, dot(N, V)) * max(0.0, dot(N, L)) + 0.0001;
-		vec3 specular = numerator / denominator;
-
-		L0 += (specular + kd * albedo / PI) * radiance * cosTheta;
-    }
+	for(int i = 0; i < dirLightCount; ++i)
+	{
+		L0 += DirLightRadiance(dirLight[i], s);
+	}
 
 	// generate Kd to accomodate only for diffuse (exclude specular)
 	vec3 F = fresnelSchlickRoughness(max(0.0, dot(N, V)), F0, roughness);
 	
 	vec3 irradiance = texture(gIrradianceMap, N).rgb;
 	vec3 diffuse = irradiance * albedo;
+
+	float shadow = shadowCalculations(vec4(fragPos, 1.f));
+	//return (ambient + (1.0 - shadow) * (diffuse + specular)) * light.color.rgb; 
 
 	const float MAX_REFLECTION_LOD = 4.0;
 	vec3 prefilterColor = textureLod(gPrefilterEnvMap, R, roughness * MAX_REFLECTION_LOD).rgb;
@@ -142,7 +198,7 @@ void main()
 	vec3 kd = 1.0 - ks;
 
 	// ambient diffuse irradiance
-	vec3 ambient = (kd * diffuse + specular) * ao;
+	vec3 ambient = (kd * diffuse + specular) * ao * (1.0 - shadow) * vec3(1.f);
 
 	// combine results
 	vec3 color = L0 + ambient;
