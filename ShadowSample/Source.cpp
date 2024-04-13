@@ -20,6 +20,13 @@ public:
 	{
 		//auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
 
+		Skybox::CreateSkybox({ "Resources/Engine/Textures/Skybox/right.jpg",
+		"Resources/Engine/Textures/Skybox/left.jpg",
+		"Resources/Engine/Textures/Skybox/top.jpg",
+		"Resources/Engine/Textures/Skybox/bottom.jpg",
+		"Resources/Engine/Textures/Skybox/front.jpg",
+		"Resources/Engine/Textures/Skybox/back.jpg" });
+
 		{
 			auto box = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 			box.getComponent<Transformation>().translate({ 0, 2, 0 });

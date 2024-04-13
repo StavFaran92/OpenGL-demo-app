@@ -172,7 +172,9 @@ public:
 
     }
 
-    
+    //TODO fix this , 
+    // In conjuction with set parent this will cause hard to debug issues.
+    // make sure to fix it
     void setRoot(Entity e);
     void setParent(Entity entity);
     void removeParent();
