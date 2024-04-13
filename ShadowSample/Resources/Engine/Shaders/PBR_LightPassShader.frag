@@ -7,6 +7,8 @@
 #include ../../../../Engine/Resources/Engine/Shaders/include/uniforms.glsl
 #include ../../../../Engine/Resources/Engine/Shaders/include/functions.glsl
 
+const float MAX_REFLECTION_LOD = 4.0;
+
 // ----- In ----- //
 
 in vec2 TexCoords;
@@ -149,6 +151,8 @@ void main()
 	float roughness = texture(gMRA, TexCoords).g;
 	float ao = texture(gMRA, TexCoords).b;
 
+	float shadow = shadowCalculations(vec4(fragPos, 1.f));
+
 	vec3 F0 = vec3(0.04); // every dieltctric object has F0 = 0.04
 	F0 = mix(F0, albedo, metallic);
 
@@ -182,15 +186,7 @@ void main()
 	// generate Kd to accomodate only for diffuse (exclude specular)
 	vec3 F = fresnelSchlickRoughness(max(0.0, dot(N, V)), F0, roughness);
 	
-	vec3 irradiance = texture(gIrradianceMap, N).rgb;
-	vec3 diffuse = irradiance * albedo;
-
-	float shadow = shadowCalculations(vec4(fragPos, 1.f));
-	//return (ambient + (1.0 - shadow) * (diffuse + specular)) * light.color.rgb; 
-
-	const float MAX_REFLECTION_LOD = 4.0;
 	vec3 prefilterColor = textureLod(gPrefilterEnvMap, R, roughness * MAX_REFLECTION_LOD).rgb;
-
 	vec2 envBRDF = texture(gBRDFIntegrationLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
 	vec3 specular = prefilterColor * (envBRDF.x * F + envBRDF.y); 
 
@@ -198,7 +194,9 @@ void main()
 	vec3 kd = 1.0 - ks;
 
 	// ambient diffuse irradiance
-	vec3 ambient = (kd * diffuse + specular) * ao * (1.0 - shadow) * vec3(1.f);
+	vec3 irradiance = texture(gIrradianceMap, N).rgb;
+	vec3 diffuse = irradiance * albedo;
+	vec3 ambient = (kd * diffuse + specular) * (1.0 - shadow) * ao * vec3(1.f);
 
 	// combine results
 	vec3 color = L0 + ambient;
