@@ -95,12 +95,12 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 		glm::vec3(0.0f, 10.0f, 0.0f) + dirLight.getDirection(),
 		up);
 
-	glm::mat4 lightSpaceMatrix = lightProjection * dirLightView;
+	m_lightSpaceMatrix = lightProjection * dirLightView;
 
 	auto drawQueueRenderParams = *params;
 
 	drawQueueRenderParams.shader = m_simpleDepthShader.get();
-	drawQueueRenderParams.shader->setValue("lightSpaceMatrix", lightSpaceMatrix);
+	drawQueueRenderParams.shader->setValue("lightSpaceMatrix", m_lightSpaceMatrix);
 
 	// Render Scene 
 	for (auto&& [entity, mesh, transform, renderable] : 
@@ -148,4 +148,9 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 TextureHandler* ShadowSystem::getShadowMap() const
 {
 	return m_depthMapTexture;
+}
+
+glm::mat4 ShadowSystem::getLightSpaceMat() const
+{
+	return m_lightSpaceMatrix;
 }

@@ -26,6 +26,7 @@ public:
 	void renderToDepthMap(const IRenderer::DrawQueueRenderParams* params);
 
 	TextureHandler* getShadowMap() const;
+	glm::mat4 getLightSpaceMat() const;
 private:
 	bool m_isInit = false;
 
@@ -39,4 +40,6 @@ private:
 	std::shared_ptr<ScreenBufferDisplay> m_bufferDisplay;
 
 	Context* m_context = nullptr;
+
+	glm::mat4 m_lightSpaceMatrix;
 };

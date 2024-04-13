@@ -298,6 +298,7 @@ void Scene::draw(float deltaTime)
 
 	m_shadowSystem->renderToDepthMap(&params);
 
+	params.lightSpaceMatrix = m_shadowSystem->getLightSpaceMat();
 	params.shadowMap = m_shadowSystem->getShadowMap();
 
 	// PRE Render Phase

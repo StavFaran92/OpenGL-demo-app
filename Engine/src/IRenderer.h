@@ -47,6 +47,7 @@ public:
 		TextureHandler* prefilterEnvMap = nullptr;
 		TextureHandler* brdfLUT = nullptr;
 		TextureHandler* shadowMap = nullptr;
+		glm::mat4 lightSpaceMatrix;
 	};
 	enum class DrawType {
 		Lines,
