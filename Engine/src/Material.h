@@ -10,7 +10,7 @@
 class EngineAPI Material
 {
 public:
-	Material(float shine = 32.f);
+	Material();
 
 	virtual void use(Shader& shader);
 
@@ -23,24 +23,15 @@ public:
 	 */
 	std::shared_ptr < TextureHandler >getTexture(Texture::Type textureType) const;
 
-	void setReflection(bool enable);
-	void setRefraction(bool enable);
-
 	void setTexture(Texture::Type textureType, std::shared_ptr<TextureHandler> textureHandler);
 
-	bool isReflective() const;
-	bool isRefractive() const;
-
 protected:
-	void SetTexturesInShader(Shader& shader);
+	void setTexturesInShader(Shader& shader);
 	void setTextureInShader(Shader& shader, Texture::Type ttype, int slot);
 
 protected:
-	float m_specularIntensity;
-	float m_shininess;
+	float m_specularIntensity = 0.f;
+	float m_shininess = 32.f;
 
 	std::map<Texture::Type, std::shared_ptr<TextureHandler>> m_textures;
-
-	bool m_isReflective = false;
-	bool m_isRefractive = false;
 };

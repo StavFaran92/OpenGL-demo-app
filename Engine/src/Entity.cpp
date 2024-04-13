@@ -59,3 +59,17 @@ std::unordered_map<entity_id, Entity> Entity::getChildren()
     auto& transform = getComponent<Transformation>();
     return transform.getChildren();
 }
+
+Entity Entity::getRoot() const
+{
+    assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
+    auto& transform = getComponent<Transformation>();
+    return transform.getRoot();
+}
+
+void Entity::setRoot(Entity e)
+{
+    assert(HasComponent<HierarchyComponent>() && "Entity does not contain HierarchyComponent.");
+    auto& transform = getComponent<Transformation>();
+    transform.setRoot(e);
+}

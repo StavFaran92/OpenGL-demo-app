@@ -6,31 +6,12 @@
 #include "Engine.h"
 #include "Context.h"
 
-Material::Material(float shine)
-: m_shininess(shine)
-{
-	//auto texturediff = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png", Texture::Type::Diffuse);
-	//if (!texturediff)
-	//{
-	//	logError("Failed to load resource");
-	//	return;
-	//}
-
-	//setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(texturediff));
-
-	//auto textureSpec = Texture::loadTextureFromFile("Resources/Engine/Textures/template.png", Texture::Type::Specular);
-	//if (!textureSpec)
-	//{
-	//	logError("Failed to load resource");
-	//	return;
-	//}
-
-	//setTexture(Texture::Type::Specular, std::shared_ptr<TextureHandler>(textureSpec));
-}
+Material::Material()
+{}
 
 void Material::use(Shader& shader)
 {
-	SetTexturesInShader(shader);
+	setTexturesInShader(shader);
 }
 
 void Material::release()
@@ -65,7 +46,7 @@ void Material::setTextureInShader(Shader& shader, Texture::Type ttype, int slot)
 	shader.setValue("material." + Texture::textureTypeToString(ttype), slot);
 }
 
-void Material::SetTexturesInShader(Shader& shader)
+void Material::setTexturesInShader(Shader& shader)
 {
 	int index = 0;
 	setTextureInShader(shader, Texture::Type::Albedo, index++);
@@ -75,26 +56,7 @@ void Material::SetTexturesInShader(Shader& shader)
 	setTextureInShader(shader, Texture::Type::AmbientOcclusion, index++);
 }
 
-void Material::setReflection(bool enable)
-{
-	m_isReflective = enable;
-}
-
-void Material::setRefraction(bool enable)
-{
-	m_isRefractive = enable;
-}
-
 void Material::setTexture(Texture::Type textureType, std::shared_ptr<TextureHandler> textureHandler)
 {
 	m_textures[textureType] = textureHandler;
-}
-
-bool Material::isReflective() const
-{
-	return m_isReflective;
-}
-bool Material::isRefractive() const
-{
-	return m_isRefractive;
 }

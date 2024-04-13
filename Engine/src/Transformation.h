@@ -19,7 +19,9 @@ public:
 		m_rotation(1, 0, 0, 0),
 		m_scale(1, 1, 1),
 		m_relativeRot(1.f)
-	{}
+	{
+		m_root = entity;
+	}
 
 	Transformation(const Entity& entity, glm::vec3 translation) :
 		m_entity(entity),
@@ -28,6 +30,7 @@ public:
 		m_scale(1, 1, 1),
 		m_relativeRot(1.f)
 	{
+		m_root = entity;
 		m_change = true;
 	}
 
@@ -38,6 +41,7 @@ public:
 		m_scale(1, 1, 1),
 		m_relativeRot(1.f)
 	{
+		m_root = entity;
 		m_change = true;
 	}
 
@@ -74,6 +78,8 @@ public:
 	void setParent(Entity parent);
 	void removeParent();
 	Entity getParent() const;
+	Entity getRoot() const;
+	Entity setRoot(Entity root);
 
 	std::unordered_map<entity_id, Entity> getChildren();
 
@@ -93,6 +99,7 @@ private:
 
 	Entity m_parent = Entity::EmptyEntity;
 	Entity m_entity = Entity::EmptyEntity;
+	Entity m_root = Entity::EmptyEntity;
 	std::unordered_map<entity_id, Entity> m_children{};
 
 	bool m_change = false;

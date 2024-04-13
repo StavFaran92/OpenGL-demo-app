@@ -75,6 +75,7 @@ Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 	ModelImportSession session;
 	session.filepath = path;
 	session.fileDir = path.substr(0, path.find_last_of('/'));
+	session.root = entity;
 
 	// place session in session map
 	m_sessions[entity.handlerID()] = session;
@@ -100,32 +101,29 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 
 		auto& sgeMaterial = entity.addComponent<Material>();
 		// process material
-		if (aimesh->mMaterialIndex >= 0)
+		aiMaterial* material = scene->mMaterials[aimesh->mMaterialIndex];
+
+		auto diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, session);
+		textureHandlers->insert(textureHandlers->end(), diffuseMaps.begin(), diffuseMaps.end());
+
+		if (diffuseMaps.size() > 0)
 		{
-			aiMaterial* material = scene->mMaterials[aimesh->mMaterialIndex];
+			sgeMaterial.setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(diffuseMaps[0]));
+		}
 
-			auto diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, session);
-			textureHandlers->insert(textureHandlers->end(), diffuseMaps.begin(), diffuseMaps.end());
+		auto specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, session);
+		textureHandlers->insert(textureHandlers->end(), specularMaps.begin(), specularMaps.end());
 
-			if (diffuseMaps.size() > 0)
-			{
-				sgeMaterial.setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(diffuseMaps[0]));
-			}
+		//TODO fix
+		if (specularMaps.size() > 0)
+		{
+			sgeMaterial.setTexture(Texture::Type::Specular, std::shared_ptr<TextureHandler>(specularMaps[0]));
+		}
 
-			auto specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, session);
-			textureHandlers->insert(textureHandlers->end(), specularMaps.begin(), specularMaps.end());
-
-			//TODO fix
-			if (specularMaps.size() > 0)
-			{
-				sgeMaterial.setTexture(Texture::Type::Specular, std::shared_ptr<TextureHandler>(specularMaps[0]));
-			}
-
-			auto normalMap = loadMaterialTextures(material, aiTextureType_HEIGHT, session);
-			if (normalMap.size() > 0)
-			{
-				sgeMaterial.setTexture(Texture::Type::Normal, std::shared_ptr<TextureHandler>(normalMap[0]));
-			}
+		auto normalMap = loadMaterialTextures(material, aiTextureType_HEIGHT, session);
+		if (normalMap.size() > 0)
+		{
+			sgeMaterial.setTexture(Texture::Type::Normal, std::shared_ptr<TextureHandler>(normalMap[0]));
 		}
 		
 	}
@@ -138,6 +136,7 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 		childEntity.addComponent<RenderableComponent>();
 
 		childEntity.setParent(entity);
+		childEntity.setRoot(session.root);
 
 		processNode(node->mChildren[i], scene, session, childEntity, pScene);
 	}

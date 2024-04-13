@@ -173,13 +173,15 @@ public:
     }
 
     
-
+    void setRoot(Entity e);
     void setParent(Entity entity);
     void removeParent();
     Entity getParent() const;
     void addChildren(Entity entity);
     void removeChildren(Entity entity);
     std::unordered_map<entity_id, Entity> getChildren();
+
+    Entity getRoot() const;
 
     /**
      * @brief Checks if the entity is valid
@@ -210,12 +212,13 @@ public:
         return (entity_id)m_entity;
     }
 
+    
+
 private:
     Scene* m_scene = nullptr;  ///< Scene the entity belongs to
     entt::entity m_entity{ entt::null };  ///< ENTT entity instance
 
     // TODO remove
     std::set<std::string> m_components;
-
 };
 

@@ -237,12 +237,9 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 		auto tempModel = entityHandler.getComponent<Transformation>().getWorldTransformation();
 		renderParams.model = &tempModel;
 		renderParams.shader = m_gBufferShader.get();
-		Material* mat = renderParams.entity->tryGetComponentInParent<Material>(false);
+		Material& mat = renderParams.entity->getRoot().getComponent<Material>();
 
-		if (mat)
-		{
-			renderParams.material = mat;
-		}
+		renderParams.material = &mat;
 
 		// draw model
 		render(renderParams);

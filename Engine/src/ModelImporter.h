@@ -35,6 +35,7 @@ public:
 		std::string fileDir;
 		int nodeIndex = 0;
 		int childIndex = 0;
+		Entity root;
 	};
 
 	/** Constructor */

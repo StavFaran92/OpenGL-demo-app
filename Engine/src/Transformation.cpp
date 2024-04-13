@@ -67,6 +67,16 @@ Entity Transformation::getParent() const
 	return m_parent;
 }
 
+Entity Transformation::getRoot() const
+{
+	return m_root;
+}
+
+Entity Transformation::setRoot(Entity root)
+{
+	return m_root = root;
+}
+
 void Transformation::addChild(Entity entity)
 {
 	m_children[entity.handlerID()] = entity;
