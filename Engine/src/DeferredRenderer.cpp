@@ -354,6 +354,10 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	renderParams.brdfLUT->bind();
 	m_lightPassShader->setValue("gBRDFIntegrationLUT", 6);
 
+	renderParams.shadowMap->setSlot(7);
+	renderParams.shadowMap->bind();
+	m_lightPassShader->setValue("gShadowMap", 7);
+
 #if 0
 	m_ssaoBlurColorBuffer->setSlot(3);
 	m_ssaoBlurColorBuffer->bind();

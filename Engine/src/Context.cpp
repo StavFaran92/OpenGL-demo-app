@@ -21,7 +21,6 @@ Context::Context() : m_shaderCounter(0)
 
 	m_refractiveShader = Shader::createShared<Shader>("Resources/Engine/Shaders/RefractionShader.vert", "Resources/Engine/Shaders/RefractionShader.frag");
 
-	m_phongShader = Shader::createShared<Shader>("Resources/Engine/Shaders/PhongShader.vert", "Resources/Engine/Shaders/PhongShader.frag");
 
 	m_pickingShader = Shader::createShared<PickingShader>();
 

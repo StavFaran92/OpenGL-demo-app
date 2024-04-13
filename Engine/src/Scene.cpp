@@ -298,6 +298,8 @@ void Scene::draw(float deltaTime)
 
 	m_shadowSystem->renderToDepthMap(&params);
 
+	params.shadowMap = m_shadowSystem->getShadowMap();
+
 	// PRE Render Phase
 	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])
 	{

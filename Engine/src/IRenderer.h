@@ -46,6 +46,7 @@ public:
 		TextureHandler* irradianceMap = nullptr;
 		TextureHandler* prefilterEnvMap = nullptr;
 		TextureHandler* brdfLUT = nullptr;
+		TextureHandler* shadowMap = nullptr;
 	};
 	enum class DrawType {
 		Lines,

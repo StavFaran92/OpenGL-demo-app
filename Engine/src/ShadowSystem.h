@@ -24,6 +24,8 @@ public:
 	bool init();
 
 	void renderToDepthMap(const IRenderer::DrawQueueRenderParams* params);
+
+	TextureHandler* getShadowMap() const;
 private:
 	bool m_isInit = false;
 

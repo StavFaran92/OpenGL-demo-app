@@ -129,18 +129,23 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 	auto height = Engine::get()->getWindow()->getHeight();
 	glViewport(0, 0, width, height);
 
-	auto phongShader = m_context->getStandardShader();
+	//auto phongShader = m_context->getStandardShader();
 
-	// set lightSpaceMatrix in shader
-	phongShader->setValue("lightSpaceMatrix", lightSpaceMatrix);
+	//// set lightSpaceMatrix in shader
+	//phongShader->setValue("lightSpaceMatrix", lightSpaceMatrix);
 
-	//TODO Fix
-	// set Depth map texture in shader
-	phongShader->setValue("shadowMap", 2);
-	m_depthMapTexture->setSlot(2);
-	m_depthMapTexture->bind();
+	////TODO Fix
+	//// set Depth map texture in shader
+	//phongShader->setValue("shadowMap", 2);
+	//m_depthMapTexture->setSlot(2);
+	//m_depthMapTexture->bind();
 
 	//m_bufferDisplay->draw(m_depthMapTexture);
 	glDisable(GL_DEPTH_TEST);
 	glCullFace(GL_BACK);
+}
+
+TextureHandler* ShadowSystem::getShadowMap() const
+{
+	return m_depthMapTexture;
 }
