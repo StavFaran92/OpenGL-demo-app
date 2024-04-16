@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 #include "Core.h"
 
 
@@ -22,6 +23,7 @@ class TimeManager;
 class PhysicsSystem;
 class RandomNumberGenerator;
 class ShaderLoader;
+class ResourceManager;
 
 class EngineAPI Engine
 {
@@ -29,6 +31,8 @@ public:
 
     // -------------------- Methods -------------------- //
     static Engine* get();
+
+    std::string getRootDir();
 
     Window* getWindow() const;
     IRenderer* getRenderer() const;
@@ -43,6 +47,7 @@ public:
     PhysicsSystem* getPhysicsSystem() const;
     RandomNumberGenerator* getRandomSystem() const;
     ShaderLoader* getShaderLoader() const;
+    ResourceManager* getResourceManager() const;
 
     
 
@@ -91,6 +96,8 @@ protected:
     std::shared_ptr<PhysicsSystem> m_physicsSystem;
     std::shared_ptr<RandomNumberGenerator> m_randomSystem;
     std::shared_ptr<ShaderLoader> m_shaderLoader;
+    std::shared_ptr<ResourceManager> m_resourceManager;
 
 };
 
+#define SGE_ROOT_DIR Engine::get()->getRootDir()

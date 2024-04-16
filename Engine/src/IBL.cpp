@@ -16,11 +16,13 @@
 #include "Component.h"
 #include "Mesh.h"
 
+#include "Engine.h"
+
 TextureHandler* IBL::generateIrradianceMap(TextureHandler* environmentMap, Scene* scene)
 {
 	auto irradianceShader = Shader::create<Shader>(
-		"Resources/Engine/Shaders/IrradianceShader.vert",
-		"Resources/Engine/Shaders/IrradianceShader.frag");
+		SGE_ROOT_DIR + "Resources/Engine/Shaders/IrradianceShader.vert",
+		SGE_ROOT_DIR + "Resources/Engine/Shaders/IrradianceShader.frag");
 
 	// Generate FBO 
 	FrameBufferObject fbo;
@@ -91,8 +93,8 @@ TextureHandler* IBL::generateIrradianceMap(TextureHandler* environmentMap, Scene
 TextureHandler* IBL::generatePrefilterEnvMap(TextureHandler* environmentMap, Scene* scene)
 {
 	auto prefilterShader = Shader::create<Shader>(
-		"Resources/Engine/Shaders/IBLPrefilterShader.vert",
-		"Resources/Engine/Shaders/IBLPrefilterShader.frag");
+		SGE_ROOT_DIR + "Resources/Engine/Shaders/IBLPrefilterShader.vert",
+		SGE_ROOT_DIR + "Resources/Engine/Shaders/IBLPrefilterShader.frag");
 
 	// Generate FBO 
 	FrameBufferObject fbo;
@@ -182,8 +184,8 @@ TextureHandler* IBL::generatePrefilterEnvMap(TextureHandler* environmentMap, Sce
 TextureHandler* IBL::generateBRDFIntegrationLUT(Scene* scene)
 {
 	auto BRDFIntegrationShader = Shader::create<Shader>(
-		"Resources/Engine/Shaders/BRDFIntegrationShader.vert",
-		"Resources/Engine/Shaders/BRDFIntegrationShader.frag");
+		SGE_ROOT_DIR + "Resources/Engine/Shaders/BRDFIntegrationShader.vert",
+		SGE_ROOT_DIR + "Resources/Engine/Shaders/BRDFIntegrationShader.frag");
 
 	// Generate FBO 
 	FrameBufferObject fbo;

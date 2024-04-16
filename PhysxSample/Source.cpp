@@ -46,7 +46,7 @@ void createSphere()
 
 
 		auto& mat = sphere.addComponent<Material>();
-		auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg", Texture::Type::Diffuse);
+		auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg");
 		mat.setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(tex));
 
 		auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
@@ -67,7 +67,7 @@ void createBox()
 		boxTransform.rotate({ 0, 1, 0 }, 45);
 
 		auto& mat = box.addComponent<Material>();
-		auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg", Texture::Type::Diffuse);
+		auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg");
 		mat.setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(tex));
 
 		auto& rb = box.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
@@ -114,7 +114,12 @@ public:
 
 	void start() override
 	{
-		Skybox::CreateSkybox();
+		Skybox::CreateSkybox({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
+		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/left.jpg",
+		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/top.jpg",
+		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/bottom.jpg",
+		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/front.jpg",
+		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/back.jpg" });
 
 		auto camera = Engine::get()->getContext()->getActiveScene()->getActiveCamera();
 		camera->lookAt(0, 5, 0);
@@ -209,7 +214,7 @@ public:
 			//groundTransfrom.rotate({ 0, 0, 1 }, 90);
 
 			auto& mat = ground.addComponent<Material>();
-			auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/floor.jpg", Texture::Type::Diffuse);
+			auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/floor.jpg");
 			mat.setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(tex));
 			auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
 

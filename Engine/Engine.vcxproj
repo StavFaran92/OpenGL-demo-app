@@ -97,6 +97,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\EquirectangularToCubemapConverter.cpp" />
     <ClCompile Include="src\IBL.cpp" />
     <ClCompile Include="src\RendererIntermediate.cpp" />
@@ -178,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IBL.h" />
+    <ClInclude Include="src\ResourceManager.h" />
     <ClInclude Include="src\EquirectangularToCubemapConverter.h" />
     <ClInclude Include="src\RendererIntermediate.h" />
     <ClInclude Include="src\DeferredRenderer.h" />

@@ -62,12 +62,12 @@ bool DeferredRenderer::setupGBuffer()
 	m_gBuffer.unbind();
 
 	m_gBufferShader = Shader::createShared<Shader>(
-		"Resources/Engine/Shaders/PBR_GeomPassShader.vert",
-		"Resources/Engine/Shaders/PBR_GeomPassShader.frag");
+		SGE_ROOT_DIR + "Resources/Engine/Shaders/PBR_GeomPassShader.vert",
+		SGE_ROOT_DIR + "Resources/Engine/Shaders/PBR_GeomPassShader.frag");
 
 	m_lightPassShader = Shader::createShared<Shader>(
-		"Resources/Engine/Shaders/PBR_LightPassShader.vert",
-		"Resources/Engine/Shaders/PBR_LightPassShader.frag");
+		SGE_ROOT_DIR + "Resources/Engine/Shaders/PBR_LightPassShader.vert",
+		SGE_ROOT_DIR + "Resources/Engine/Shaders/PBR_LightPassShader.frag");
 
 	return true;
 }
@@ -136,8 +136,8 @@ bool DeferredRenderer::setupSSAO()
 	m_ssaoFBO.unbind();
 
 	m_ssaoPassShader = Shader::createShared<Shader>(
-		"Resources/Engine/Shaders/SSAOPassShader.vert",
-		"Resources/Engine/Shaders/SSAOPassShader.frag");
+		SGE_ROOT_DIR + "Resources/Engine/Shaders/SSAOPassShader.vert",
+		SGE_ROOT_DIR + "Resources/Engine/Shaders/SSAOPassShader.frag");
 
 	// Initialize SSAO Blur
 	m_ssaoBlurFBO.bind();
@@ -157,8 +157,8 @@ bool DeferredRenderer::setupSSAO()
 	m_ssaoBlurFBO.unbind();
 
 	m_ssaoBlurPassShader = Shader::createShared<Shader>(
-		"Resources/Engine/Shaders/SSAOBlurPassShader.vert",
-		"Resources/Engine/Shaders/SSAOBlurPassShader.frag");
+		SGE_ROOT_DIR + "Resources/Engine/Shaders/SSAOBlurPassShader.vert",
+		SGE_ROOT_DIR + "Resources/Engine/Shaders/SSAOBlurPassShader.frag");
 
 	return true;
 }

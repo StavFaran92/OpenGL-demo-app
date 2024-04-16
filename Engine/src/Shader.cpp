@@ -272,14 +272,14 @@ void Shader::setMat4(const std::string& name, const glm::mat4& v)
 
 Shader* Shader::PhongShader()
 {
-	Shader* shader = Shader::create<Shader>("Resources/Engine/Shaders/shader.vert", "Resources/Engine/Shaders/shader.frag");
+	Shader* shader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/shader.vert", SGE_ROOT_DIR + "Resources/Engine/Shaders/shader.frag");
 
 	return shader;
 }
 
 Shader* Shader::SolidColorShader()
 {
-	Shader* shader = Shader::create<Shader>("Resources/Engine/Shaders/LightShader.vert", "Resources/Engine/Shaders/LightShader.frag");
+	Shader* shader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/LightShader.vert", SGE_ROOT_DIR + "Resources/Engine/Shaders/LightShader.frag");
 
 	return shader;
 }

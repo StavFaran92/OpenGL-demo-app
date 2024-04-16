@@ -188,7 +188,8 @@ void main()
 	float roughness = texture(gMRA, TexCoords).g;
 	float ao = texture(gMRA, TexCoords).b;
 
-	float shadow = shadowCalculations(vec4(fragPos, 1.f));
+	vec4 fragPosInLightSpace = lightSpaceMatrix * vec4(fragPos, 1.f);
+	float shadow = shadowCalculations(fragPosInLightSpace);
 
 	vec3 F0 = vec3(0.04); // every dieltctric object has F0 = 0.04
 	F0 = mix(F0, albedo, metallic);

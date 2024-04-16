@@ -6,6 +6,7 @@
 constexpr bool FLIP_TEXTURE = true;
 constexpr bool DEBUG_MODE_ENABLED = false;
 constexpr bool DEBUG_DISPLAY_NORMALS = false;
+static bool SGE_EXPORT_PACKAGE = false;
 
 enum class LayoutAttribute
 {

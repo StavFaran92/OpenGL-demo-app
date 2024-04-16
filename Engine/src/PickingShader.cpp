@@ -1,6 +1,8 @@
 #include "PickingShader.h"
 
-PickingShader::PickingShader() : Shader("Resources/Engine/Shaders/PickingShader.vert", "Resources/Engine/Shaders/PickingShader.frag")
+#include "Engine.h"
+
+PickingShader::PickingShader() : Shader(SGE_ROOT_DIR + "Resources/Engine/Shaders/PickingShader.vert", SGE_ROOT_DIR + "Resources/Engine/Shaders/PickingShader.frag")
 {
 }
 

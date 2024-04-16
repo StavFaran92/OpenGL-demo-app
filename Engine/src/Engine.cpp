@@ -23,6 +23,7 @@
 #include "ShadowSystem.h"
 #include "ShaderLoader.h"
 #include "ShaderParser_tntmeijsImpl.h"
+#include "ResourceManager.h"
 
 #include "Application.h"
 #include "SDL.h"
@@ -47,6 +48,39 @@ bool Engine::init()
     m_eventSystem = std::make_shared<EventSystem>();
 
     m_memoryManagementSystem = std::make_shared<MemoryManagement>();
+
+    m_resourceManager = std::make_shared<ResourceManager>();
+
+    if (!SGE_EXPORT_PACKAGE)
+    {
+        auto found = false;
+        try
+        {
+            size_t len = 0;
+            char* sgeRoot = nullptr;
+            errno_t err = _dupenv_s(&sgeRoot, &len, "SGE");
+            if (err == 0 && sgeRoot)
+            {
+                found = true;
+                m_resourceManager->setRootDir(std::string(sgeRoot) + "/Engine/");
+            }
+            free(sgeRoot);
+        }
+        catch (std::exception e)
+        {
+            logError(e.what());
+        }
+
+        if (!found)
+        {
+            m_resourceManager->setRootDir("./");
+        }
+        
+    }
+    else
+    {
+        m_resourceManager->setRootDir("./");
+    }
 
     m_objectManager = std::make_shared<ObjectManager>();
 
@@ -121,6 +155,11 @@ Engine* Engine::get()
         instance = new Engine();
     }
     return instance;
+}
+
+std::string Engine::getRootDir()
+{
+    return m_resourceManager->getRootDir();
 }
 
 void Engine::SetWindow(std::shared_ptr<Window> window)
@@ -261,6 +300,11 @@ RandomNumberGenerator* Engine::getRandomSystem() const
 ShaderLoader* Engine::getShaderLoader() const
 {
     return m_shaderLoader.get();
+}
+
+ResourceManager* Engine::getResourceManager() const
+{
+    return m_resourceManager.get();
 }
 
 void Engine::pause()
