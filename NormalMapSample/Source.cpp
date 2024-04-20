@@ -19,7 +19,12 @@ public:
 
 	void start() override
 	{
-		//auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
+		Skybox::CreateSkybox({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
+		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
+		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
+		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",
+		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
+		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" });
 
 
 		{
@@ -27,9 +32,9 @@ public:
 			auto& groundTransfrom = ground.getComponent<Transformation>();
 			groundTransfrom.setLocalScale({ 10, .1f, 10 });
 			auto& mat = ground.addComponent<Material>();
-			auto texDiff = Texture::loadTextureFromFile("Resources/Content/Textures/brickwall.jpg", Texture::Type::Diffuse);
-			mat.setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(texDiff));
-			auto texNorm = Texture::loadTextureFromFile("Resources/Content/Textures/brickwall_normal.jpg", Texture::Type::Normal);
+			auto texDiff = Texture::loadTextureFromFile("Resources/Content/Textures/brickwall.jpg");
+			mat.setTexture(Texture::Type::Albedo, std::shared_ptr<TextureHandler>(texDiff));
+			auto texNorm = Texture::loadTextureFromFile("Resources/Content/Textures/brickwall_normal.jpg");
 			mat.setTexture(Texture::Type::Normal, std::shared_ptr<TextureHandler>(texNorm));
 		}
 
