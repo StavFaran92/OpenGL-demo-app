@@ -15,32 +15,33 @@ Shader::Shader()
 {
 }
 
-Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath, const std::string& geometryShader /*= ""*/) :
+Shader::Shader(const std::string& glslFilePath) :
 	m_id(0),
-	m_vertexShaderFilepath(vertexFilePath), 
-	m_FragmentShaderFilepath(fragmentFilePath),
-	m_geometryShaderFilepath(geometryShader)
-{}
+	m_glslFilePath(glslFilePath)
+{
+	std::string fullShaderCode = Engine::get()->getShaderLoader()->readShader(glslFilePath);
 
+	ShaderLoader::ShadersInfo shaders;
+	Engine::get()->getShaderLoader()->parseGLSLShader(fullShaderCode, shaders);
+
+	//// Parse shaders
+	//std::string vertexCode = Engine::get()->getShaderLoader()->readShader(shaders.vertexCode);
+	//std::string fragmentCode = Engine::get()->getShaderLoader()->readShader(shaders.fragmentCode);
+
+	//std::string geometryCode;
+
+	//if (!shaders.geometryCode.empty())
+	//{
+	//	geometryCode = Engine::get()->getShaderLoader()->readShader(shaders.geometryCode);
+	//}
+
+	// Build shaders
+	BuildShaders(shaders.vertexCode, shaders.fragmentCode, shaders.geometryCode);
+}
 
 void Shader::init()
 {
-	// Parse shaders
-	std::string vertexCode = Engine::get()->getShaderLoader()->readShader(m_vertexShaderFilepath);
-	//std::string vertexCode = Utils::ReadFile(m_vertexShaderFilepath);
-	std::string fragmentCode = Engine::get()->getShaderLoader()->readShader(m_FragmentShaderFilepath);
-	//std::string fragmentCode = Utils::ReadFile(m_FragmentShaderFilepath);
 
-	std::string geometryCode;
-
-	if (!m_geometryShaderFilepath.empty())
-	{
-		geometryCode = Engine::get()->getShaderLoader()->readShader(m_geometryShaderFilepath);
-		//geometryCode = Utils::ReadFile(m_geometryShaderFilepath);
-	}
-
-	// Build shaders
-	BuildShaders(vertexCode, fragmentCode, geometryCode);
 }
 
 void Shader::bindUniformBlockToBindPoint(const std::string& uniformBlockName, int bindPointIndex)
@@ -272,14 +273,14 @@ void Shader::setMat4(const std::string& name, const glm::mat4& v)
 
 Shader* Shader::PhongShader()
 {
-	Shader* shader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/shader.vert", SGE_ROOT_DIR + "Resources/Engine/Shaders/shader.frag");
+	Shader* shader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/shader.glsl");
 
 	return shader;
 }
 
 Shader* Shader::SolidColorShader()
 {
-	Shader* shader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/LightShader.vert", SGE_ROOT_DIR + "Resources/Engine/Shaders/LightShader.frag");
+	Shader* shader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/LightShader.glsl");
 
 	return shader;
 }

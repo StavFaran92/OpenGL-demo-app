@@ -23,7 +23,7 @@ public:
 		static_assert(std::is_base_of<Shader, T>::value, "T must be a type derived from Shader");
 
 		auto shader = new T(std::forward<_Types>(_Args)...);
-		shader->init();
+		//shader->init();
 
 		return shader;
 	}
@@ -66,7 +66,7 @@ protected:
 	Shader();
 
 	/** Constructor */
-	Shader(const std::string& vertexfilePath, const std::string& fragmentFilePath, const std::string& geometryShader = "");
+	Shader(const std::string& glslFilePath);
 
 
 
@@ -96,6 +96,7 @@ protected:
 	std::string m_vertexShaderFilepath;
 	std::string m_FragmentShaderFilepath;
 	std::string m_geometryShaderFilepath;
+	std::string m_glslFilePath;
 
 	static uint32_t s_activeShader;
 

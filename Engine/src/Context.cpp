@@ -18,9 +18,9 @@
 
 Context::Context() : m_shaderCounter(0)
 {
-	m_reflectionShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/ReflectionShader.vert", SGE_ROOT_DIR + "Resources/Engine/Shaders/ReflectionShader.frag");
+	m_reflectionShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/ReflectionShader.glsl");
 
-	m_refractiveShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/RefractionShader.vert", SGE_ROOT_DIR + "Resources/Engine/Shaders/RefractionShader.frag");
+	m_refractiveShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/RefractionShader.glsl");
 
 
 	m_pickingShader = Shader::createShared<PickingShader>();

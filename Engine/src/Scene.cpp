@@ -193,7 +193,7 @@ void Scene::init(Context* context)
 	m_activeCamera = editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
 
 	m_tempBoxMesh = Box::createMesh();
-	m_tempOutlineShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/shader.vert", SGE_ROOT_DIR + "Resources/Engine/Shaders/OutlineShader.frag");
+	m_tempOutlineShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/OutlineShader.glsl");
 
 	m_uboTime = std::make_shared<UniformBufferObject>(sizeof(float));
 	m_uboTime->attachToBindPoint(0);
@@ -207,9 +207,7 @@ void Scene::init(Context* context)
 	// Create BRDF look up texture
 	m_BRDFIntegrationLUT = IBL::generateBRDFIntegrationLUT(this);
 
-	m_skyboxShader = Shader::createShared<Shader>(
-		SGE_ROOT_DIR +"Resources/Engine/Shaders/SkyboxShader.vert",
-		SGE_ROOT_DIR +"Resources/Engine/Shaders/SkyboxShader.frag");
+	m_skyboxShader = Shader::createShared<Shader>(SGE_ROOT_DIR +"Resources/Engine/Shaders/SkyboxShader.glsl");
 
 	m_registry.on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
 	m_registry.on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);

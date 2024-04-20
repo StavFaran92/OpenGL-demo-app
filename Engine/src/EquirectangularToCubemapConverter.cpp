@@ -21,9 +21,7 @@
 
 TextureHandler* EquirectangularToCubemapConverter::convert(TextureHandler* equirectangularTexture, Scene* scene)
 {
-	auto equirectangularShader = Shader::create<Shader>(
-		SGE_ROOT_DIR + "Resources/Engine/Shaders/EquirectangularToCubemap.vert",
-		SGE_ROOT_DIR + "Resources/Engine/Shaders/EquirectangularToCubemap.frag");
+	auto equirectangularShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/EquirectangularToCubemap.glsl");
 
 	// Generate FBO 
 	FrameBufferObject fbo;

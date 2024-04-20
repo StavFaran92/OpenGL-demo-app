@@ -2,7 +2,7 @@
 
 #include "Engine.h"
 
-PickingShader::PickingShader() : Shader(SGE_ROOT_DIR + "Resources/Engine/Shaders/PickingShader.vert", SGE_ROOT_DIR + "Resources/Engine/Shaders/PickingShader.frag")
+PickingShader::PickingShader() : Shader(SGE_ROOT_DIR + "Resources/Engine/Shaders/PickingShader.glsl")
 {
 }
 
