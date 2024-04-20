@@ -171,8 +171,9 @@ void Scene::init(Context* context)
 #endif // SGE_DEBUG
 
 	// Add default dir light
-	createEntity().addComponent<DirectionalLight>();
-
+	auto dLight = createEntity();
+	dLight.addComponent<DirectionalLight>().setDirection({1, -1, 1});
+	//dLight.getComponent<Transformation>().setLocalPosition({ 0 , 2, 0 });;
 	
 
 	//for (int i = 0; i < 32; i++)

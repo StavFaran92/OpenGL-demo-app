@@ -131,7 +131,7 @@ vec3 calculateBRDF(Surface s)
 
 vec3 PointLightRadiance(PointLight pLight, Surface s)
 {
-	s.L = normalize(pLight.position.rgb - s.fragPos);
+	s.L = normalize(pLight.position.rgb - s.fragPos); // from frag pos to light pos
 	s.H = normalize(s.V + s.L);
 
 	// Calculate Li
@@ -147,7 +147,7 @@ vec3 PointLightRadiance(PointLight pLight, Surface s)
 
 vec3 DirLightRadiance(DirLight dLight, Surface s)
 {
-	s.L = dLight.direction.xyz;
+	s.L = normalize(-dLight.direction.xyz);
 	s.H = normalize(s.V + s.L);
 
 	// Calculate Li
@@ -236,7 +236,7 @@ void main()
 
 	for(int i = 0; i < dirLightCount; ++i)
 	{
-		L0 += DirLightRadiance(dirLight[i], s);
+		L0 += DirLightRadiance(dirLight[i], s) * (1.0 - shadow);
 	}
 
 	// generate Kd to accomodate only for diffuse (exclude specular)
@@ -252,7 +252,7 @@ void main()
 	// ambient diffuse irradiance
 	vec3 irradiance = texture(gIrradianceMap, N).rgb;
 	vec3 diffuse = irradiance * albedo;
-	vec3 ambient = (kd * diffuse + specular) * (1.0 - shadow) * ao * vec3(1.f);
+	vec3 ambient = (kd * diffuse + specular) * ao * vec3(1.f);
 
 	// combine results
 	vec3 color = L0 + ambient;
