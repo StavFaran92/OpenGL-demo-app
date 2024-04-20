@@ -24,17 +24,6 @@ Shader::Shader(const std::string& glslFilePath) :
 	ShaderLoader::ShadersInfo shaders;
 	Engine::get()->getShaderLoader()->parseGLSLShader(fullShaderCode, shaders);
 
-	//// Parse shaders
-	//std::string vertexCode = Engine::get()->getShaderLoader()->readShader(shaders.vertexCode);
-	//std::string fragmentCode = Engine::get()->getShaderLoader()->readShader(shaders.fragmentCode);
-
-	//std::string geometryCode;
-
-	//if (!shaders.geometryCode.empty())
-	//{
-	//	geometryCode = Engine::get()->getShaderLoader()->readShader(shaders.geometryCode);
-	//}
-
 	// Build shaders
 	BuildShaders(shaders.vertexCode, shaders.fragmentCode, shaders.geometryCode);
 }
