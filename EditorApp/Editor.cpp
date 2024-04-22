@@ -13,6 +13,11 @@ std::vector<SceneObject> sceneObjects
 	{"a"},{"b"},{"c"}
 };
 
+static bool ShowLightCreatorWindow = false;
+static bool showModelCreatorWindow = false;
+static bool showModelInspectorWindow = false;
+static bool showPrimitiveCreatorWindow = false;
+
 auto style = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoCollapse;
 
 void RenderSceneHierarchyWindow(float width, float height) 
@@ -93,19 +98,44 @@ class GUI_Helper : public GuiMenu {
 
 
 		// Render menu bar
-		if (ImGui::BeginMainMenuBar()) {
-			if (ImGui::BeginMenu("File")) {
-				// File menu items
-				ImGui::EndMenu();
+		if (ImGui::BeginMainMenuBar()) 
+		{
+			if (ImGui::BeginMainMenuBar()) 
+			{
+				if (ImGui::BeginMenu("File")) 
+				{ // Start of File dropdown
+					if (ImGui::MenuItem("Open...", "Ctrl+O")) {
+						// OpenFile();
+					}
+					if (ImGui::MenuItem("Save As..", "Ctrl+S")) {
+						// SaveFile();
+					}
+					if (ImGui::MenuItem("Load Model")) {
+						showModelCreatorWindow = true;
+					}
+					if (ImGui::MenuItem("Add Light")) {
+						ShowLightCreatorWindow = true;
+					}
+					if (ImGui::MenuItem("Add Primitive")) {
+						showPrimitiveCreatorWindow = true;
+					}
+					ImGui::Separator(); // Optional: Add a separator
+					if (ImGui::MenuItem("Quit", "Alt+F4")) {
+						Engine::get()->stop();
+					}
+					ImGui::EndMenu(); // End of File dropdown
+				}
+				if (ImGui::BeginMenu("Edit")) {
+					// Edit menu items
+					ImGui::EndMenu();
+				}
+				if (ImGui::BeginMenu("Help")) {
+					// Help menu items
+					ImGui::EndMenu();
+				}
+				ImGui::EndMainMenuBar();
 			}
-			if (ImGui::BeginMenu("Edit")) {
-				// Edit menu items
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("Help")) {
-				// Help menu items
-				ImGui::EndMenu();
-			}
+			
 			ImGui::EndMainMenuBar();
 		}
 
