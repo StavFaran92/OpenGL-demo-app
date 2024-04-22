@@ -86,7 +86,7 @@ bool Engine::init()
 
     ObjectFactory::init(m_objectManager.get());
 
-    m_window = std::make_shared<Window>(1024, 768);
+    m_window = std::make_shared<Window>(SCREEN_WIDTH, SCREEN_HEIGHT);
     if (!m_window->init())
     {
         logError("Window init failed!");
