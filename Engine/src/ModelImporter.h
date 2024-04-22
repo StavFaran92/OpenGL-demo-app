@@ -33,6 +33,7 @@ public:
 	{
 		std::string filepath;
 		std::string fileDir;
+		std::string name;
 		int nodeIndex = 0;
 		int childIndex = 0;
 		Entity root;

@@ -117,3 +117,11 @@ struct EngineAPI MeshComponent : public Component
 
 	std::shared_ptr<Mesh> mesh = nullptr;
 };
+
+struct EngineAPI ObjectComponent : public Component
+{
+	ObjectComponent() = default;
+	ObjectComponent(const std::string& name) : name(name) {};
+
+	std::string name;
+};

@@ -84,6 +84,11 @@ void Scene::setIBLData(TextureHandler* irradianceMap, TextureHandler* prefilterE
 	m_prefilterEnvMap = prefilterEnvMap;
 }
 
+int Scene::getRenderTarget() const
+{
+	return m_renderTargetTexture->getID();
+}
+
 void Scene::init(Context* context)
 {
 	m_context = context;
@@ -171,7 +176,7 @@ void Scene::init(Context* context)
 #endif // SGE_DEBUG
 
 	// Add default dir light
-	auto dLight = createEntity();
+	auto dLight = createEntity("Directional light");
 	dLight.addComponent<DirectionalLight>().setDirection({1, -1, 1});
 	//dLight.getComponent<Transformation>().setLocalPosition({ 0 , 2, 0 });;
 	
@@ -189,7 +194,7 @@ void Scene::init(Context* context)
 	//	pLight.getComponent<RenderableComponent>().renderTechnique = RenderableComponent::Forward;
 	//}
 
-	auto editorCamera = createEntity();
+	auto editorCamera = createEntity("Camera");
 	editorCamera.addComponent<CameraComponent>();
 	m_activeCamera = editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
 
@@ -489,9 +494,16 @@ entt::registry& Scene::getRegistry()
 
 Entity Scene::createEntity()
 {
+	std::string name = "temp";
+	return createEntity(name);
+}
+
+Entity Scene::createEntity(const std::string& name)
+{
 	entt::entity e = m_registry.create();
 	auto entityHandler = Entity(e, this);
 	entityHandler.addComponent<Transformation>(entityHandler);
+	entityHandler.addComponent<ObjectComponent>(name); //todo fix
 	return entityHandler;
 }
 

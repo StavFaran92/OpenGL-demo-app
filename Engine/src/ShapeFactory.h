@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 #include "Core.h"
 
@@ -15,5 +16,5 @@ public:
 	static Entity createSphere(Scene* scene);
 
 private:
-	static Entity createEntity(Scene* scene);
+	static Entity createEntity(Scene* scene, const std::string& name);
 };

@@ -93,6 +93,7 @@ public:
 	entt::registry& getRegistry();
 
 	Entity createEntity();
+	Entity createEntity(const std::string& name);
 	void removeEntity(const Entity& e);
 
 	ICamera* getActiveCamera() const;
@@ -100,6 +101,8 @@ public:
 	void displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params);
 
 	void setIBLData(TextureHandler* irradianceMap, TextureHandler* prefilterEnvMap);
+
+	int getRenderTarget() const;
 
 private:
 	// -------------------- Methods -------------------- //

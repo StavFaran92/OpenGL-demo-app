@@ -67,8 +67,10 @@ Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 
 	m_lastLoadedSceneName = path;
 
+	std::string modelName = path.substr(path.find_last_of('/'));
+
 	//create new model
-	auto entity = pScene->createEntity();
+	auto entity = pScene->createEntity(modelName);
 	entity.addComponent<RenderableComponent>();
 
 	// create new model session
@@ -76,6 +78,7 @@ Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 	session.filepath = path;
 	session.fileDir = path.substr(0, path.find_last_of('/'));
 	session.root = entity;
+	session.name = modelName;
 
 	// place session in session map
 	m_sessions[entity.handlerID()] = session;
@@ -132,7 +135,7 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	{
 		session.childIndex = i;
 
-		auto childEntity = pScene->createEntity();
+		auto childEntity = pScene->createEntity(session.name); //todo fix
 		childEntity.addComponent<RenderableComponent>();
 
 		childEntity.setParent(entity);
