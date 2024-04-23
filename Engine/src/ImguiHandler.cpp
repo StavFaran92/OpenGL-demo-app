@@ -16,7 +16,7 @@ bool ImguiHandler::init(SDL_Window* window, const SDL_GLContext& context)
 
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
+	m_imguiContext = ImGui::CreateContext();
 
 	// Set ImGui flags
 	ImGuiIO& io = ImGui::GetIO();
@@ -89,5 +89,10 @@ void ImguiHandler::addGUI(GuiMenu* menu)
 void ImguiHandler::removeGUI(GuiMenu* menu)
 {
 	m_guiList.erase(std::remove(m_guiList.begin(), m_guiList.end(), menu), m_guiList.end());
+}
+
+void* ImguiHandler::getCurrentContext() const
+{
+	return m_imguiContext;
 }
 

@@ -67,7 +67,7 @@ Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 
 	m_lastLoadedSceneName = path;
 
-	std::string modelName = path.substr(path.find_last_of('/'));
+	std::string modelName = path.substr(path.find_last_of('\\') + 1);
 
 	//create new model
 	auto entity = pScene->createEntity(modelName);
@@ -76,7 +76,7 @@ Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 	// create new model session
 	ModelImportSession session;
 	session.filepath = path;
-	session.fileDir = path.substr(0, path.find_last_of('/'));
+	session.fileDir = path.substr(0, path.find_last_of('\\'));
 	session.root = entity;
 	session.name = modelName;
 

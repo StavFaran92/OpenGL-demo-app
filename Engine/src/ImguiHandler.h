@@ -18,7 +18,11 @@ public:
 	void addGUI(GuiMenu* menu);
 	void removeGUI(GuiMenu* menu);
 
+	void* getCurrentContext() const;
+
 private:
 	std::vector<GuiMenu*> m_guiList;
+
+	void* m_imguiContext = nullptr;
 };
 

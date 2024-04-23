@@ -1,6 +1,10 @@
 #include "EntryPoint.h"
 #include "sge.h"
 
+#include "Window.h"
+#include "commdlg.h"
+
+
 // Define a structure to represent an object in the scene hierarchy
 struct SceneObject {
 	std::string name;
@@ -9,9 +13,7 @@ struct SceneObject {
 
 // Define a vector to store scene objects
 std::vector<SceneObject> sceneObjects
-{
-	{"a"},{"b"},{"c"}
-};
+{};
 
 static bool ShowLightCreatorWindow = false;
 static bool showModelCreatorWindow = false;
@@ -19,6 +21,117 @@ static bool showModelInspectorWindow = false;
 static bool showPrimitiveCreatorWindow = false;
 
 auto style = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoCollapse;
+
+static const char* g_supportedFormats = "All formats (*.obj *.blend *.fbx *.dae)\0*.obj;*.blend;*.fbx;*.dae\0obj files (*.obj)\0*.obj\0Blender 3D (*.blend)\0*.blend\0Autodesk 3D (*.fbx)\0*.fbx\0Collada (*dae)\0*.dae\0";
+
+
+std::string OpenFile(const char* filter)
+{
+	OPENFILENAMEA ofn;
+	CHAR szFile[260] = { 0 };
+	CHAR currentDir[256] = { 0 };
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = (HWND)Engine::get()->getWindow()->GetNativeWindow();
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = sizeof(szFile);
+	if (GetCurrentDirectoryA(256, currentDir))
+		ofn.lpstrInitialDir = currentDir;
+	ofn.lpstrFilter = filter;
+	ofn.nFilterIndex = 1;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+	if (GetOpenFileNameA(&ofn) == TRUE)
+		return ofn.lpstrFile;
+
+	return std::string();
+}
+
+std::string SaveFile(const char* filter)
+{
+	OPENFILENAMEA ofn;
+	CHAR szFile[260] = { 0 };
+	CHAR currentDir[256] = { 0 };
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = (HWND)Engine::get()->getWindow()->GetNativeWindow();
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = sizeof(szFile);
+	if (GetCurrentDirectoryA(256, currentDir))
+		ofn.lpstrInitialDir = currentDir;
+	ofn.lpstrFilter = filter;
+	ofn.nFilterIndex = 1;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+	if (GetSaveFileNameA(&ofn) == TRUE)
+		return ofn.lpstrFile;
+
+	return std::string();
+}
+
+
+void ShowModelCreatorWindow()
+{
+	if (showModelCreatorWindow)
+	{
+		ImGui::SetNextWindowSize({ 400, 300 }, ImGuiCond_Appearing);
+		ImGui::Begin("Model Creator");
+
+		static bool flipTexture = false;
+		static ImGuiTextBuffer modelPath;
+		static std::string path = "";
+		static glm::vec3 pos(0.f, 0.f, 0.f);
+		static glm::vec3 rotation(0.f, 0.f, 0.f);
+		static glm::vec3 scale(1.f, 1.f, 1.f);
+
+
+
+		ImGui::LabelText("", "Model path");
+		if (ImGui::Button("Browse"))
+		{
+			auto filePath = OpenFile(g_supportedFormats);
+			if (!filePath.empty())
+			{
+				modelPath.clear();
+				modelPath.append(filePath.c_str());
+				path = modelPath.c_str();
+			}
+		}
+		ImGui::SameLine();
+		ImGui::TextUnformatted(modelPath.begin(), modelPath.end());
+
+		ImGui::LabelText("", "Texture");
+		ImGui::Checkbox("Flip Texture", &flipTexture);
+
+		ImGui::LabelText("", "Transformation");
+		ImGui::InputFloat3("Position", (float*)&pos);
+		ImGui::InputFloat3("Rotation", (float*)&rotation);
+		ImGui::InputFloat3("Scale", (float*)&scale);
+
+		if (ImGui::Button("Ok"))
+		{
+			//todo validate input
+
+			//logInfo("Open file: " + path);
+
+			auto entity = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str(), Engine::get()->getContext()->getActiveScene().get());
+
+			entity.getComponent<Transformation>().setLocalPosition(pos);
+			entity.getComponent<Transformation>().setLocalScale(scale);
+
+			showModelCreatorWindow = false;
+
+			//logInfo("Added Model successfully.");
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel"))
+		{
+			showModelCreatorWindow = false;
+		}
+
+		ImGui::End();
+	}
+}
 
 void RenderSceneHierarchyWindow(float width, float height) 
 {
@@ -145,6 +258,7 @@ class GUI_Helper : public GuiMenu {
 		RenderInspectorWindow(screenWidth, screenHeight);
 		RenderAssetViewWindow(screenWidth, screenHeight); // Add the Asset View window
 
+		ShowModelCreatorWindow();
 	}
 };
 
@@ -158,6 +272,9 @@ public:
 
 	void start() override
 	{
+		
+		ImGui::SetCurrentContext((ImGuiContext * )Engine::get()->getImguiHandler()->getCurrentContext());
+
 		Skybox::CreateSkybox({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
 		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
 		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
