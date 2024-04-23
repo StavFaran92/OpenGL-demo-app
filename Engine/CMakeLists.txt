@@ -9,10 +9,13 @@ file(GLOB_RECURSE SOURCES src/*.cpp src/*.h)
 # Add shared library target
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE ENGINE_BUILD_DLL)
+target_compile_definitions(${PROJECT_NAME} PRIVATE ENGINE_BUILD_DLL STB_IMAGE_IMPLEMENTATION)
 target_compile_options(${PROJECT_NAME} PRIVATE /MP)
 
 add_subdirectory(extern)
+
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 
 

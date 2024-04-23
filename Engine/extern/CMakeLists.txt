@@ -1,15 +1,17 @@
+add_subdirectory(imgui)
+
 target_include_directories(Engine PUBLIC 	
 	assimp/include
 	entt
 	glew/include
 	GLM
-	imgui
 	SDL2/include
+	SDL2/include/SDL2
 	spdlog/include
 	stb_image
-	
-	$ENV{PHYSX}/physx/include
-	$ENV{PHYSX}/pxshared/include
+	imgui
+	"$ENV{PHYSX}/physx/include"
+	"$ENV{PHYSX}/pxshared/include"
 )
 
 target_link_directories(Engine PUBLIC 
@@ -18,7 +20,7 @@ target_link_directories(Engine PUBLIC
 	SDL2/lib
 	spdlog/lib
 	
-	$ENV{PHYSX}/physx/bin/win.x86_64.vc142.mt/checked
+	"$ENV{PHYSX}/physx/bin/win.x86_64.vc142.mt/checked"
 )
 
 target_link_libraries(Engine PUBLIC 
@@ -36,5 +38,7 @@ target_link_libraries(Engine PUBLIC
 	glew32
 	assimp-vc142-mt
 	spdlog
+	ImGui
 )
-	
+
+

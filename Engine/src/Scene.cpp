@@ -158,12 +158,14 @@ void Scene::init(Context* context)
 
 	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 1.0f);
 	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LIMITS, 1.0f);
+#endif // SGE_DEBUG
 
 	m_shadowSystem = std::make_shared<ShadowSystem>(m_context, this);
 	if (!m_shadowSystem->init())
 	{
 		logError("Shadow System init failed!");
 	} 
+
 
 	m_lightSystem = std::make_shared<LightSystem>(m_context, this);
 	if (!m_lightSystem->init())
@@ -173,7 +175,7 @@ void Scene::init(Context* context)
 
 	m_defaultPerspectiveProjection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
 	
-#endif // SGE_DEBUG
+
 
 	// Add default dir light
 	auto dLight = createEntity("Directional light");
