@@ -3,7 +3,7 @@
 #include <vector>
 #include <functional>
 
-#include "SDL_events.h"
+#include "SDL2/SDL_events.h"
 
 #include "Core.h"
 

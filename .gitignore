@@ -400,3 +400,4 @@ FodyWeavers.xsd
 *.iobj
 
 ./Engine/extern/**
+**/build/**

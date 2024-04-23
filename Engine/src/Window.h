@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-#include "SDL_syswm.h"
+#include "SDL2/SDL_syswm.h"
 #include "Core.h"
 
 #include "Configurations.h"

@@ -3,6 +3,8 @@
 #include <memory>
 #include "VertexArrayObject.h"
 
+#include "gl/glew.h"
+
 class RenderCommand
 {
 public:

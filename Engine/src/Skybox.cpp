@@ -16,7 +16,7 @@
 #include "Engine.h"
 
 #include "EditorCamera.h"
-#include "Resources/Engine/Primitives/cube.h"
+#include "cube.h"
 #include "EquirectangularToCubemapConverter.h"
 #include "IBL.h"
 

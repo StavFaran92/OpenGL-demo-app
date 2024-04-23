@@ -12,9 +12,6 @@
 
 #include "RenderableComponent.h"
 
-
-#include "Resources/Engine/Primitives/quad.h"
-
 Entity ScreenQuad::GenerateScreenQuad(Scene* scene)
 {
 	auto entity = ShapeFactory::createQuad(scene);

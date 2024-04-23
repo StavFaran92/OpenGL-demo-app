@@ -26,7 +26,7 @@
 #include "ResourceManager.h"
 
 #include "Application.h"
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 #include "GL/glew.h"
 
