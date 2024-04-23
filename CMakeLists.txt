@@ -9,4 +9,8 @@ message(STATUS "PHYSX environment variable value: $ENV{PHYSX}")
 
 add_subdirectory(Engine)
 add_subdirectory(EditorApp)
+add_subdirectory(PhysxSample)
+add_subdirectory(NormalMapSample)
+add_subdirectory(Sandbox)
+add_subdirectory(ShadowSample)
 
