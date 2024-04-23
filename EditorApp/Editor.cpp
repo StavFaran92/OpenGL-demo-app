@@ -15,6 +15,15 @@ struct SceneObject {
 std::vector<SceneObject> sceneObjects
 {};
 
+void updateScene()
+{
+	sceneObjects.clear();
+	for (auto&& [entity, obj] : Engine::get()->getContext()->getActiveScene()->getRegistry().view<ObjectComponent>().each())
+	{
+		sceneObjects.emplace_back(SceneObject{ obj.name });
+	}
+}
+
 static bool ShowLightCreatorWindow = false;
 static bool showModelCreatorWindow = false;
 static bool showModelInspectorWindow = false;
@@ -69,6 +78,174 @@ std::string SaveFile(const char* filter)
 	return std::string();
 }
 
+enum class LightType {
+	DirectionalLight = 0,
+	PointLight = 1
+};
+
+enum class PrimitiveType
+{
+	Quad,
+	Cube,
+	Sphere
+
+};
+
+void ShowPrimitiveCreatorWindow()
+{
+	if (showPrimitiveCreatorWindow)
+	{
+		ImGui::SetNextWindowSize({ 400, 300 }, ImGuiCond_Appearing);
+		ImGui::Begin("Primitve Creator");
+
+		static bool flipTexture = false;
+		static ImGuiTextBuffer texturePath;
+		static std::string path = "";
+		static glm::vec3 pos(0.f, 0.f, 0.f);
+		static glm::vec3 rotation(0.f, 0.f, 0.f);
+		static glm::vec3 scale(1.f, 1.f, 1.f);
+		static PrimitiveType shape = PrimitiveType::Quad;
+		//static Model:: type = Model::PrimitiveType::Quad;
+
+
+		ImGui::LabelText("", "Shape");
+		ImGui::RadioButton("Quad", (int*)&shape, 0);
+		ImGui::RadioButton("Cube", (int*)&shape, 1);
+
+		//ImGui::RadioButton("Texture", (int*)&type, 0);
+		//ImGui::RadioButton("Reflection", (int*)&type, 1);
+		//ImGui::RadioButton("Refractive", (int*)&type, 2);
+		ImGui::LabelText("", "Texture");
+		if (ImGui::Button("Browse"))
+		{
+			auto filePath = OpenFile(g_supportedFormats);
+			if (!filePath.empty())
+			{
+				texturePath.clear();
+				texturePath.append(filePath.c_str());
+				path = texturePath.c_str();
+			}
+		}
+		ImGui::SameLine();
+		ImGui::TextUnformatted(texturePath.begin(), texturePath.end());
+
+		ImGui::Checkbox("Flip Texture", &flipTexture);
+
+		ImGui::LabelText("", "Transformation");
+		ImGui::InputFloat3("Position", (float*)&pos);
+		ImGui::InputFloat3("Rotation", (float*)&rotation);
+		ImGui::InputFloat3("Scale", (float*)&scale);
+
+		if (ImGui::Button("Ok"))
+		{
+			//todo validate input
+
+			//logInfo("Open file: " + path);
+
+			//auto texture = Texture::loadTextureFromFile(texturePath.c_str(), flipTexture);
+
+			Entity entity;
+			if (shape == PrimitiveType::Quad)
+			{
+				//entity = ModelBuilder::builder<Quad>().build();
+			}
+			else if (shape == PrimitiveType::Cube)
+			{
+				entity = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+			}
+
+			assert(entity);
+
+			if (entity.valid())
+			{
+				entity.getComponent<Transformation>().setLocalPosition(pos);
+				entity.getComponent<Transformation>().setLocalScale(scale);
+
+				//logInfo("Added Entity successfully.");
+			}
+
+			showPrimitiveCreatorWindow = false;
+
+			updateScene();
+
+
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel"))
+		{
+			showModelCreatorWindow = false;
+		}
+
+		ImGui::End();
+	}
+}
+
+void LightCreatorWindow()
+{
+	if (ShowLightCreatorWindow)
+	{
+		ImGui::SetNextWindowSize({ 400, 300 }, ImGuiCond_Appearing);
+		ImGui::Begin("Light Creator");
+
+		static LightType lightType = LightType::DirectionalLight;
+		static float ambientIntensity = 0.2f;
+		static float diffuseIntensity = 0.5f;
+		static glm::vec3 color(1.f, 1.f, 1.f);
+		static glm::vec3 dir(0.f, 0.f, 0.f);
+		static glm::vec3 pos(0.f, 0.f, 0.f);
+		static Attenuation attenuation;
+
+		// Light Type
+		ImGui::RadioButton("Directional Light", (int*)&lightType, 0);
+		ImGui::RadioButton("Point Light", (int*)&lightType, 1);
+
+		ImGui::ColorEdit3("Color", (float*)&color);
+		ImGui::SliderFloat("Ambient intensity", &ambientIntensity, 0.0f, 1.0f);
+		ImGui::SliderFloat("Diffuse intensity", &diffuseIntensity, 0.0f, 1.0f);
+
+		if (lightType == LightType::DirectionalLight)
+		{
+			ImGui::InputFloat3("Direction", (float*)&dir);
+		}
+		if (lightType == LightType::PointLight)
+		{
+			ImGui::InputFloat3("Position", (float*)&pos);
+			ImGui::LabelText("", "Attenuation");
+			ImGui::SliderFloat("constant", (float*)&attenuation.constant, 0.f, 1.f);
+			ImGui::SliderFloat("linear", (float*)&attenuation.linear, 0.f, 1.f);
+			ImGui::SliderFloat("quadratic", (float*)&attenuation.quadratic, 0.f, 1.f);
+		}
+
+		if (ImGui::Button("Ok"))
+		{
+			if (lightType == LightType::DirectionalLight)
+			{
+				auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
+				e.addComponent<DirectionalLight>(color, dir, ambientIntensity, diffuseIntensity);
+
+			}
+			else if (lightType == LightType::PointLight)
+			{
+				auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
+				e.addComponent<PointLight>(color, ambientIntensity, diffuseIntensity, attenuation);
+			}
+
+			ShowLightCreatorWindow = false;
+
+			updateScene();
+
+			//logInfo("Added light successfully.");
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel"))
+		{
+			ShowLightCreatorWindow = false;
+		}
+
+		ImGui::End();
+	}
+
+}
 
 void ShowModelCreatorWindow()
 {
@@ -120,6 +297,8 @@ void ShowModelCreatorWindow()
 			entity.getComponent<Transformation>().setLocalScale(scale);
 
 			showModelCreatorWindow = false;
+
+			updateScene();
 
 			//logInfo("Added Model successfully.");
 		}
@@ -259,6 +438,8 @@ class GUI_Helper : public GuiMenu {
 		RenderAssetViewWindow(screenWidth, screenHeight); // Add the Asset View window
 
 		ShowModelCreatorWindow();
+		LightCreatorWindow();
+		ShowPrimitiveCreatorWindow();
 	}
 };
 
@@ -286,11 +467,7 @@ public:
 		camera->lookAt(0, 5, 0);
 		camera->setPosition(25, 225, 35);
 
-		sceneObjects.clear();
-		for (auto&& [entity, obj] : Engine::get()->getContext()->getActiveScene()->getRegistry().view<ObjectComponent>().each())
-		{
-			sceneObjects.emplace_back(SceneObject{ obj.name });
-		}
+		updateScene();
 
 		auto gui = new GUI_Helper();
 		Engine::get()->getImguiHandler()->addGUI(gui);
