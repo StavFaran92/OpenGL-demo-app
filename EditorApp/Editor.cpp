@@ -463,6 +463,13 @@ public:
 		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
 		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" });
 
+		auto ground = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+		auto& groundTransfrom = ground.getComponent<Transformation>();
+		groundTransfrom.setLocalScale({ 50, .5f, 50 });
+		auto& mat = ground.addComponent<Material>();
+		auto tex = Texture::loadTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
+		mat.setTexture(Texture::Type::Albedo, std::shared_ptr<TextureHandler>(tex));
+
 		auto camera = Engine::get()->getContext()->getActiveScene()->getActiveCamera();
 		camera->lookAt(0, 5, 0);
 		camera->setPosition(25, 225, 35);

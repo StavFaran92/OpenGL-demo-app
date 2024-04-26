@@ -72,6 +72,7 @@ Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 	//create new model
 	auto entity = pScene->createEntity(modelName);
 	entity.addComponent<RenderableComponent>();
+	entity.addComponent<Material>();
 
 	// create new model session
 	ModelImportSession session;
