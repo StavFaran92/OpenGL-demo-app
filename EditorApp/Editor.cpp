@@ -32,6 +32,7 @@ static bool showPrimitiveCreatorWindow = false;
 auto style = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoCollapse;
 
 static const char* g_supportedFormats = "All formats (*.obj *.blend *.fbx *.dae)\0*.obj;*.blend;*.fbx;*.dae\0obj files (*.obj)\0*.obj\0Blender 3D (*.blend)\0*.blend\0Autodesk 3D (*.fbx)\0*.fbx\0Collada (*dae)\0*.dae\0";
+static const char* g_supportedTextureFormats = "All formats (*.png *.jpg)\0";
 
 
 std::string OpenFile(const char* filter)
@@ -247,43 +248,63 @@ void LightCreatorWindow()
 
 }
 
+static void addAssetLoadWidget(const std::string& name, ImGuiTextBuffer& textBuffer, const char* assetSupportedFormats)
+{
+	ImGui::LabelText("", name.c_str());
+	if (ImGui::Button(std::string("Browse##" + name).c_str()))
+	{
+		auto albedoFilePath = OpenFile(assetSupportedFormats);
+		if (!albedoFilePath.empty())
+		{
+			textBuffer.clear();
+			textBuffer.append(albedoFilePath.c_str());
+		}
+	}
+	ImGui::SameLine();
+	ImGui::TextUnformatted(textBuffer.begin(), textBuffer.end());
+}
+
 void ShowModelCreatorWindow()
 {
 	if (showModelCreatorWindow)
 	{
 		ImGui::SetNextWindowSize({ 400, 300 }, ImGuiCond_Appearing);
-		ImGui::Begin("Model Creator");
+		ImGui::Begin("Model Creator", false, ImGuiWindowFlags_AlwaysAutoResize);
 
-		static bool flipTexture = false;
-		static ImGuiTextBuffer modelPath;
-		static std::string path = "";
+		static ImGuiTextBuffer modelPathBuffer;
+		static ImGuiTextBuffer textureAlbedoPathBuffer;
+		static ImGuiTextBuffer textureSpecularPathBuffer;
+		static ImGuiTextBuffer textureNormalPathBuffer;
+		static ImGuiTextBuffer textureMetallicPathBuffer;
+		static ImGuiTextBuffer textureRoughnessPathBuffer;
+		static ImGuiTextBuffer textureAmbientOcclusionPathBuffer;
+
 		static glm::vec3 pos(0.f, 0.f, 0.f);
 		static glm::vec3 rotation(0.f, 0.f, 0.f);
 		static glm::vec3 scale(1.f, 1.f, 1.f);
 
+		// Model
+		addAssetLoadWidget("Model", modelPathBuffer, g_supportedFormats);
 
-
-		ImGui::LabelText("", "Model path");
-		if (ImGui::Button("Browse"))
-		{
-			auto filePath = OpenFile(g_supportedFormats);
-			if (!filePath.empty())
-			{
-				modelPath.clear();
-				modelPath.append(filePath.c_str());
-				path = modelPath.c_str();
-			}
-		}
-		ImGui::SameLine();
-		ImGui::TextUnformatted(modelPath.begin(), modelPath.end());
-
+		ImGui::Separator();
 		ImGui::LabelText("", "Texture");
-		ImGui::Checkbox("Flip Texture", &flipTexture);
+
+		// Textures
+		addAssetLoadWidget("Albedo", textureAlbedoPathBuffer, g_supportedTextureFormats);
+		//addAssetLoadWidget("Specular", textureSpecularPathBuffer, g_supportedTextureFormats);
+		addAssetLoadWidget("Normal", textureNormalPathBuffer, g_supportedTextureFormats);
+		addAssetLoadWidget("Metallic", textureMetallicPathBuffer, g_supportedTextureFormats);
+		addAssetLoadWidget("Roghuness", textureRoughnessPathBuffer, g_supportedTextureFormats);
+		addAssetLoadWidget("Occlusion", textureAmbientOcclusionPathBuffer, g_supportedTextureFormats);
+
+		ImGui::Separator();
 
 		ImGui::LabelText("", "Transformation");
 		ImGui::InputFloat3("Position", (float*)&pos);
 		ImGui::InputFloat3("Rotation", (float*)&rotation);
 		ImGui::InputFloat3("Scale", (float*)&scale);
+
+		ImGui::Separator();
 
 		if (ImGui::Button("Ok"))
 		{
@@ -291,7 +312,20 @@ void ShowModelCreatorWindow()
 
 			//logInfo("Open file: " + path);
 
-			auto entity = Engine::get()->getModelImporter()->loadModelFromFile(modelPath.c_str(), Engine::get()->getContext()->getActiveScene().get());
+			auto entity = Engine::get()->getModelImporter()->loadModelFromFile(modelPathBuffer.c_str(), Engine::get()->getContext()->getActiveScene().get());
+
+			auto& mat = entity.getComponent<Material>();
+
+			auto albedoMap = Texture::loadTextureFromFile(textureAlbedoPathBuffer.c_str(), false);
+			mat.setTexture(Texture::Type::Albedo, std::shared_ptr<TextureHandler>(albedoMap));
+			auto roughnessMap = Texture::loadTextureFromFile(textureRoughnessPathBuffer.c_str(), false);
+			mat.setTexture(Texture::Type::Roughness, std::shared_ptr<TextureHandler>(roughnessMap));
+			auto normalMap = Texture::loadTextureFromFile(textureNormalPathBuffer.c_str(), false);
+			mat.setTexture(Texture::Type::Normal, std::shared_ptr<TextureHandler>(normalMap));
+			auto metallicMap = Texture::loadTextureFromFile(textureMetallicPathBuffer.c_str(), false);
+			mat.setTexture(Texture::Type::Metallic, std::shared_ptr<TextureHandler>(metallicMap));
+			auto aoMap = Texture::loadTextureFromFile(textureAmbientOcclusionPathBuffer.c_str(), false);
+			mat.setTexture(Texture::Type::AmbientOcclusion, std::shared_ptr<TextureHandler>(aoMap));
 
 			entity.getComponent<Transformation>().setLocalPosition(pos);
 			entity.getComponent<Transformation>().setLocalScale(scale);
