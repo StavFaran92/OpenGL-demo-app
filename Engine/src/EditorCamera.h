@@ -4,13 +4,19 @@
 #include "Core.h"
 #include "Component.h"
 #include "ScriptableEntity.h"
+#include "ICameraController.h"
 
 
 class EngineAPI EditorCamera : public ICamera
 {
 public:
+	enum class CameraState
+	{
+		FreeLook,
+		Orbit
+	};
+public:
 	EditorCamera();
-	EditorCamera(float startMoveSpeed, float startTurnSpeed);
 
 	void lookAt(float x, float y, float z) override;
 	void setPosition(float distance, float angleX, float angleY) override;
@@ -19,15 +25,11 @@ public:
 
 	void onCreate() override;
 private:
-	void calculateOrientation();
-private:
 	bool m_isLocked = true;
 
-	float m_movementSpeed = 0;
-	float m_turnSpeed = 0;
-	float m_distance = 0;
-	float m_angleX = 0;
-	float m_angleY = 0;
+	CameraState m_camState = CameraState::FreeLook;
+
+	std::shared_ptr<ICameraController> m_cameraController;
 
 	CameraComponent* m_cameraComponent = nullptr;
 
