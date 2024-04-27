@@ -62,7 +62,7 @@ void CameraControllerFreeLook::onCreate(CameraComponent* cameraComponent)
 				xChange *= m_movementSpeed;
 				yChange *= m_movementSpeed;
 
-				float xVelocity = .1f * xChange;// *deltaTime
+				float xVelocity = .1f * xChange;// *deltaTime // todo fix
 				float yVelocity = .1f * yChange;// *deltaTime
 
 
@@ -96,7 +96,7 @@ void CameraControllerFreeLook::onCreate(CameraComponent* cameraComponent)
 		}
 	});
 	eventSystem->addEventListener(SDL_MOUSEWHEEL, [this](SDL_Event e){
-		m_distance = std::clamp(m_distance - e.wheel.y, 1.f, 50.f);
+		m_cameraComponent->position += m_front * (float)e.wheel.y;
 
 		calculateOrientation();
 	});
