@@ -16,7 +16,7 @@
 
 EditorCamera::EditorCamera()
 {
-	m_cameraController = std::make_shared<CameraControllerFreeLook>();
+	m_cameraController = std::make_shared<CameraControllerOrbit>();
 }
 
 glm::mat4 EditorCamera::getView()
