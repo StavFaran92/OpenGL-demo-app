@@ -8,16 +8,15 @@
 
 void CameraControllerFreeLook::calculateOrientation()
 {
-	glm::vec3 front;
-	front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-	front.y = sin(glm::radians(m_pitch));
-	front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	m_front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	m_front.y = sin(glm::radians(m_pitch));
+	m_front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
 
-	front = glm::normalize(front);
-	m_cameraComponent->center = m_cameraComponent->getPosition() + front;
+	m_front = glm::normalize(m_front);
+	m_cameraComponent->center = m_cameraComponent->getPosition() + m_front;
 
-	auto right = glm::normalize(glm::cross(front, m_up));
-	m_cameraComponent->up = glm::normalize(glm::cross(right, front));
+	m_right = glm::normalize(glm::cross(m_front, m_up));
+	m_cameraComponent->up = glm::normalize(glm::cross(m_right, m_front));
 }
 
 void CameraControllerFreeLook::onCreate(CameraComponent* cameraComponent)
@@ -31,7 +30,7 @@ void CameraControllerFreeLook::onCreate(CameraComponent* cameraComponent)
 	eventSystem->addEventListener(SDL_MOUSEMOTION, [this](SDL_Event e)
 		{
 			
-			if (!m_isLocked)
+			if (m_state == ControllerState::ROTATE)
 			{
 				int xChange = e.motion.xrel;
 				int yChange = e.motion.yrel;
@@ -54,25 +53,51 @@ void CameraControllerFreeLook::onCreate(CameraComponent* cameraComponent)
 
 				calculateOrientation();
 			}
-		});
-	eventSystem->addEventListener(SDL_MOUSEBUTTONDOWN, [this](SDL_Event e)
-		{
-			if (e.button.button == SDL_BUTTON_RIGHT)
-			{
-				m_isLocked = false;
-			}
-		});
-	eventSystem->addEventListener(SDL_MOUSEBUTTONUP, [this](SDL_Event e)
-		{
-			if (e.button.button == SDL_BUTTON_RIGHT)
-			{
-				m_isLocked = true;
-			}
-		});
-	eventSystem->addEventListener(SDL_MOUSEWHEEL, [this](SDL_Event e)
-		{
-			m_distance = std::clamp(m_distance - e.wheel.y, 1.f, 50.f);
 
-			calculateOrientation();
+			if (m_state == ControllerState::TRANSFORM)
+			{
+				int xChange = e.motion.xrel;
+				int yChange = e.motion.yrel;
+
+				xChange *= m_movementSpeed;
+				yChange *= m_movementSpeed;
+
+				float xVelocity = .1f * xChange;// *deltaTime
+				float yVelocity = .1f * yChange;// *deltaTime
+
+
+				m_cameraComponent->position += m_right * xVelocity;
+				m_cameraComponent->position -= m_up * yVelocity;
+
+				calculateOrientation();
+			}
 		});
+	eventSystem->addEventListener(SDL_MOUSEBUTTONDOWN, [this](SDL_Event e){
+		if (e.button.button == SDL_BUTTON_RIGHT)
+		{
+			if (m_state == ControllerState::IDLE)
+			{
+				m_state = ControllerState::ROTATE;
+			}
+		}
+
+		else if (e.button.button == SDL_BUTTON_MIDDLE)
+		{
+			if (m_state == ControllerState::IDLE)
+			{
+				m_state = ControllerState::TRANSFORM;
+			}
+		}
+	});
+	eventSystem->addEventListener(SDL_MOUSEBUTTONUP, [this](SDL_Event e){
+		if (e.button.button == SDL_BUTTON_RIGHT || e.button.button == SDL_BUTTON_MIDDLE)
+		{
+			m_state = ControllerState::IDLE;
+		}
+	});
+	eventSystem->addEventListener(SDL_MOUSEWHEEL, [this](SDL_Event e){
+		m_distance = std::clamp(m_distance - e.wheel.y, 1.f, 50.f);
+
+		calculateOrientation();
+	});
 }
