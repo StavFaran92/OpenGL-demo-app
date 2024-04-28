@@ -29,6 +29,7 @@ struct EngineAPI SkyboxComponent : public TagComponent
 
 struct EngineAPI RenderableComponent : public Component
 {
+	RenderableComponent() = default;
 	enum class RenderTechnique : int
 	{
 		Forward,
@@ -40,6 +41,7 @@ struct EngineAPI RenderableComponent : public Component
 
 struct EngineAPI NativeScriptComponent : public Component
 {
+	NativeScriptComponent() = default;
 	ScriptableEntity* script = nullptr;
 	Entity entity = Entity::EmptyEntity;
 
@@ -67,6 +69,7 @@ struct EngineAPI NativeScriptComponent : public Component
 
 struct EngineAPI RigidBodyComponent : public Component
 {
+	RigidBodyComponent() = default;
 	RigidBodyComponent(RigidbodyType type, float mass) : type(type), mass(mass) {};
 
 	RigidbodyType type = RigidbodyType::Static;
@@ -76,6 +79,7 @@ struct EngineAPI RigidBodyComponent : public Component
 
 struct EngineAPI CollisionBoxComponent : public Component
 {
+	CollisionBoxComponent() = default;
 	CollisionBoxComponent(float halfExtent) : halfExtent(halfExtent) {};
 
 	float halfExtent = 0;
@@ -83,6 +87,7 @@ struct EngineAPI CollisionBoxComponent : public Component
 
 struct EngineAPI CollisionSphereComponent : public Component
 {
+	CollisionSphereComponent() = default;
 	CollisionSphereComponent(float radius) : radius(radius) {};
 
 	float radius = 0;
@@ -90,12 +95,14 @@ struct EngineAPI CollisionSphereComponent : public Component
 
 struct EngineAPI CollisionMeshComponent : public Component
 {
+	CollisionMeshComponent() = default;
 	bool isConvex = false;
 	Mesh* mesh = nullptr;
 };
 
 struct EngineAPI CameraComponent : public Component
 {
+	CameraComponent() = default;
 	glm::mat4 getView()
 	{
 		return glm::lookAt(position, center, up);
@@ -113,6 +120,7 @@ struct EngineAPI CameraComponent : public Component
 
 struct EngineAPI MeshComponent : public Component
 {
+	MeshComponent() = default;
 	MeshComponent(std::shared_ptr<Mesh> mesh) : mesh(mesh) {}
 
 	std::shared_ptr<Mesh> mesh = nullptr;
@@ -120,6 +128,7 @@ struct EngineAPI MeshComponent : public Component
 
 struct EngineAPI MaterialComponent : public Component
 {
+	MaterialComponent() = default;
 	MaterialComponent(std::shared_ptr<Material> mat) : mat(mat) {}
 
 	std::shared_ptr<Material> mat;

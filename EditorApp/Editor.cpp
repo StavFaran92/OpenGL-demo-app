@@ -358,6 +358,11 @@ void RenderSceneHierarchyWindow(float width, float height)
 	ImGui::SetNextWindowSize(windowSize);
 	ImGui::Begin("Scene Hierarchy", nullptr, style);
 
+	if (ImGui::Button("+", ImVec2(windowWidth, 0)))
+	{
+
+	}
+
 	// Calculate the size of the list box accounting for padding
 	ImVec2 listBoxSize(windowSize.x - 10, windowSize.y - 10);
 
@@ -433,7 +438,8 @@ static void addTextureEditWidget(const Material& mat, const std::string& name, T
 	ImGui::Image(reinterpret_cast<ImTextureID>(tid), imageSize, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
 }
 
-void RenderInspectorWindow(float width, float height) {
+void RenderInspectorWindow(float width, float height) 
+{
 	float windowWidth = width * 0.2f - 5;
 	float startX = width * 0.8f + 5; // Add a gap of 5 pixels
 	ImGui::SetNextWindowPos(ImVec2(startX, 25)); // Adjust vertical position to make space for the menu bar
@@ -442,7 +448,6 @@ void RenderInspectorWindow(float width, float height) {
 
 	if (selectedEntity != Entity::EmptyEntity)
 	{
-
 		if (selectedEntity.HasComponent<Transformation>())
 		{
 			ImGui::LabelText("", "Transformation");
@@ -460,10 +465,10 @@ void RenderInspectorWindow(float width, float height) {
 			ImGui::InputFloat3("Scale", (float*)&scale);
 
 
-transform.setLocalRotation(rotation);
-transform.setLocalScale(scale);
+			transform.setLocalRotation(rotation);
+			transform.setLocalScale(scale);
 
-ImGui::Separator();
+			ImGui::Separator();
 		}
 
 		if (selectedEntity.HasComponent<RigidBodyComponent>())
@@ -591,6 +596,50 @@ ImGui::Separator();
 			ImGui::Separator();
 		}
 
+		if (ImGui::Button("Add Component", ImVec2(windowWidth, 0)))
+		{
+			ImGui::OpenPopup("AddComponentPopup");
+		}
+
+		if (ImGui::BeginPopup("AddComponentPopup"))
+		{
+			if (ImGui::MenuItem("Transformation"))
+			{
+				selectedEntity.addComponent<Transformation>(selectedEntity);
+			}
+
+			if (ImGui::MenuItem("RigidBody"))
+			{
+				selectedEntity.addComponent<RigidBodyComponent>();
+			}
+
+			if (ImGui::MenuItem("Collision Box"))
+			{
+				selectedEntity.addComponent<CollisionBoxComponent>();
+			}
+
+			if (ImGui::MenuItem("Collision Sphere"))
+			{
+				selectedEntity.addComponent<CollisionSphereComponent>();
+			}
+
+			if (ImGui::MenuItem("Mesh"))
+			{
+				selectedEntity.addComponent<MeshComponent>();
+			}
+
+			if (ImGui::MenuItem("Camera"))
+			{
+				selectedEntity.addComponent<CameraComponent>();
+			}
+
+			if (ImGui::MenuItem("Script"))
+			{
+				selectedEntity.addComponent<NativeScriptComponent>();
+			}
+
+			ImGui::EndPopup();
+		}
 		
 	}
 
