@@ -419,6 +419,20 @@ static const char* renderTechniqueStrList[]{
 	"Defererred"
 };
 
+static void addTextureEditWidget(const Material& mat, const std::string& name, Texture::Type ttype)
+{
+	unsigned int tid = 0;
+	if (mat.hasTexture(ttype))
+	{
+		tid = mat.getTexture(ttype)->getID();
+	}
+
+	ImGui::Text(name.c_str());
+	ImGui::SameLine();
+	ImVec2 imageSize(20, 20);
+	ImGui::Image(reinterpret_cast<ImTextureID>(tid), imageSize, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+}
+
 void RenderInspectorWindow(float width, float height) {
 	float windowWidth = width * 0.2f - 5;
 	float startX = width * 0.8f + 5; // Add a gap of 5 pixels
@@ -434,19 +448,22 @@ void RenderInspectorWindow(float width, float height) {
 			ImGui::LabelText("", "Transformation");
 			auto& transform = selectedEntity.getComponent<Transformation>();
 
-			glm::vec3 pos = transform.getLocalPosition();
-			glm::vec3 rotation = transform.getLocalRotationVec3(); // todo fix
-			glm::vec3 scale = transform.getLocalScale();
+			glm::vec3& pos = transform.getLocalPosition();
+			glm::vec3& rotation = transform.getLocalRotationVec3(); // todo fix
+			glm::vec3& scale = transform.getLocalScale();
 
-			ImGui::InputFloat3("Position", (float*)&pos);
+			if (ImGui::InputFloat3("Position", (float*)&pos))
+			{
+				transform.setLocalPosition(pos);
+			}
 			ImGui::InputFloat3("Rotation", (float*)&rotation);
 			ImGui::InputFloat3("Scale", (float*)&scale);
 
-			transform.setLocalPosition(pos);
-			transform.setLocalRotation(rotation);
-			transform.setLocalScale(scale);
 
-			ImGui::Separator();
+transform.setLocalRotation(rotation);
+transform.setLocalScale(scale);
+
+ImGui::Separator();
 		}
 
 		if (selectedEntity.HasComponent<RigidBodyComponent>())
@@ -496,6 +513,80 @@ void RenderInspectorWindow(float width, float height) {
 			auto& renderComponent = selectedEntity.getComponent<RenderableComponent>();
 
 			ImGui::Combo("##Technique", (int*)&renderComponent.renderTechnique, renderTechniqueStrList, IM_ARRAYSIZE(renderTechniqueStrList));
+
+			ImGui::Separator();
+		}
+
+		if (selectedEntity.HasComponent<CameraComponent>())
+		{
+			ImGui::LabelText("", "Camera");
+			auto& cameraComponent = selectedEntity.getComponent<CameraComponent>();
+
+			// TBD
+
+			ImGui::Separator();
+		}
+
+		if (selectedEntity.HasComponent<NativeScriptComponent>())
+		{
+			ImGui::LabelText("", "Script");
+			auto& nsc = selectedEntity.getComponent<NativeScriptComponent>();
+
+			// TBD
+
+			ImGui::Separator();
+		}
+
+		if (selectedEntity.HasComponent<Material>())
+		{
+			ImGui::LabelText("", "Material");
+			auto& mat = selectedEntity.getComponent<Material>();
+
+			addTextureEditWidget(mat, "Albedo", Texture::Type::Albedo);
+			addTextureEditWidget(mat, "Normal", Texture::Type::Normal);
+			addTextureEditWidget(mat, "Metallic", Texture::Type::Metallic);
+			addTextureEditWidget(mat, "Roughness", Texture::Type::Roughness);
+			addTextureEditWidget(mat, "Occlusion", Texture::Type::AmbientOcclusion);
+
+			ImGui::Separator();
+		}
+
+		if (selectedEntity.HasComponent<DirectionalLight>())
+		{
+			ImGui::LabelText("", "Directional Light");
+			auto& dLight = selectedEntity.getComponent<DirectionalLight>();
+
+
+			auto& color = dLight.getColor();
+			if(ImGui::InputFloat3("Color", (float*)&color))
+			{
+				dLight.SetColor(color);
+			}
+
+			ImGui::Separator();
+		}
+
+		if (selectedEntity.HasComponent<PointLight>())
+		{
+
+			ImGui::LabelText("", "Point Light");
+			auto& pLight = selectedEntity.getComponent<PointLight>();
+
+
+			auto& color = pLight.getColor();
+			if (ImGui::InputFloat3("Color", (float*)&color))
+			{
+				pLight.SetColor(color);
+			}
+
+			Attenuation& attenuation = pLight.getAttenuation();
+			ImGui::LabelText("", "Attenuation");
+			if (ImGui::SliderFloat("constant", (float*)&attenuation.constant, 0.f, 1.f) ||
+				ImGui::SliderFloat("linear", (float*)&attenuation.linear, 0.f, 1.f) || 
+				ImGui::SliderFloat("quadratic", (float*)&attenuation.quadratic, 0.f, 1.f))
+			{
+				pLight.SetAttenuation(attenuation);
+			}
 
 			ImGui::Separator();
 		}

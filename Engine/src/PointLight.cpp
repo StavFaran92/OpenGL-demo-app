@@ -15,6 +15,11 @@ void PointLight::SetAttenuation(Attenuation attenuation)
 	m_attenuation = attenuation;
 }
 
+Attenuation PointLight::getAttenuation() const
+{
+	return m_attenuation;
+}
+
 void PointLight::useLight(Shader& shader, int index)
 {
 	Light::useLight(shader, index);

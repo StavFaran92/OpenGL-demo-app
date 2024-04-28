@@ -22,6 +22,7 @@ public:
 	 * \param colors
 	 */
 	std::shared_ptr < TextureHandler >getTexture(Texture::Type textureType) const;
+	bool hasTexture(Texture::Type textureType) const;
 
 	void setTexture(Texture::Type textureType, std::shared_ptr<TextureHandler> textureHandler);
 

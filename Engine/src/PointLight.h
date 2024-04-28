@@ -23,6 +23,7 @@ public:
 	void useLight(Shader& shader, int index);
 
 	void SetAttenuation(Attenuation attenuation);
+	Attenuation getAttenuation() const;
 
 private:
 	Attenuation m_attenuation;

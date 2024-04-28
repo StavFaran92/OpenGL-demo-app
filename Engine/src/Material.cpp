@@ -28,6 +28,12 @@ std::shared_ptr<TextureHandler> Material::getTexture(Texture::Type textureType) 
 	return m_textures.at(textureType);
 }
 
+bool Material::hasTexture(Texture::Type textureType) const
+{
+	auto iter = m_textures.find(textureType);
+	return iter != m_textures.end() && iter->second;
+}
+
 void Material::setTextureInShader(Shader& shader, Texture::Type ttype, int slot)
 {
 	auto texture = m_textures[ttype];

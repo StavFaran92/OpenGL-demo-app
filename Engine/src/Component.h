@@ -118,6 +118,13 @@ struct EngineAPI MeshComponent : public Component
 	std::shared_ptr<Mesh> mesh = nullptr;
 };
 
+struct EngineAPI MaterialComponent : public Component
+{
+	MaterialComponent(std::shared_ptr<Material> mat) : mat(mat) {}
+
+	std::shared_ptr<Material> mat;
+};
+
 struct EngineAPI ObjectComponent : public Component
 {
 	ObjectComponent() = delete;
