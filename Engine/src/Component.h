@@ -29,7 +29,7 @@ struct EngineAPI SkyboxComponent : public TagComponent
 
 struct EngineAPI RenderableComponent : public Component
 {
-	enum RenderTechnique
+	enum class RenderTechnique : int
 	{
 		Forward,
 		Deferred

@@ -365,12 +365,27 @@ void RenderSceneHierarchyWindow(float width, float height)
 	if (ImGui::BeginListBox("Objects", listBoxSize)) 
 	{
 		// Iterate through each scene object and render it as a selectable item in the list
-		for (const auto& obj : sceneObjects) 
+		static int selected = -1;
+		for (int i=0; i<sceneObjects.size(); i++) 
 		{
-			if (ImGui::Selectable(obj.name.c_str())) 
+			bool isSelected = (selected == i);
+			if (isSelected)
 			{
-				selectedEntity = obj.e;
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.2f, 0.2f, 1.0f)); // Change background color
 			}
+			if (!isSelected)
+			{
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Default color
+			}
+
+			if (ImGui::Selectable(sceneObjects[i].name.c_str()))
+			{
+				selectedEntity = sceneObjects[i].e;
+
+				selected = i;
+			}
+
+			ImGui::PopStyleColor();
 		}
 		ImGui::EndListBox();
 	}
@@ -399,6 +414,10 @@ static const char* rigidyBodyTypesStrList[]{
 	"Kinematic"
 };
 
+static const char* renderTechniqueStrList[]{
+	"Forward",
+	"Defererred"
+};
 
 void RenderInspectorWindow(float width, float height) {
 	float windowWidth = width * 0.2f - 5;
@@ -412,8 +431,8 @@ void RenderInspectorWindow(float width, float height) {
 
 		if (selectedEntity.HasComponent<Transformation>())
 		{
-			auto& transform = selectedEntity.getComponent<Transformation>();
 			ImGui::LabelText("", "Transformation");
+			auto& transform = selectedEntity.getComponent<Transformation>();
 
 			glm::vec3 pos = transform.getLocalPosition();
 			glm::vec3 rotation = transform.getLocalRotationVec3(); // todo fix
@@ -426,40 +445,62 @@ void RenderInspectorWindow(float width, float height) {
 			transform.setLocalPosition(pos);
 			transform.setLocalRotation(rotation);
 			transform.setLocalScale(scale);
-		}
 
-		ImGui::Separator();
+			ImGui::Separator();
+		}
 
 		if (selectedEntity.HasComponent<RigidBodyComponent>())
 		{
-			auto& rBody = selectedEntity.getComponent<RigidBodyComponent>();
 			ImGui::LabelText("", "RigidBody");
+			auto& rBody = selectedEntity.getComponent<RigidBodyComponent>();
 
 			ImGui::Combo("##Type", (int*)&rBody.type, rigidyBodyTypesStrList, IM_ARRAYSIZE(rigidyBodyTypesStrList));
 			ImGui::InputFloat("Mass", &rBody.mass);
-		}
 
-		ImGui::Separator();
+			ImGui::Separator();
+		}
 
 		if (selectedEntity.HasComponent<CollisionBoxComponent>())
 		{
-			auto& collisionBox = selectedEntity.getComponent<CollisionBoxComponent>();
 			ImGui::LabelText("", "Collision Box");
+			auto& collisionBox = selectedEntity.getComponent<CollisionBoxComponent>();
 
 			ImGui::InputFloat("Half Extent", &collisionBox.halfExtent);
-		}
 
-		ImGui::Separator();
+			ImGui::Separator();
+		}
 
 		if (selectedEntity.HasComponent<CollisionSphereComponent>())
 		{
-			auto& collisionBox = selectedEntity.getComponent<CollisionSphereComponent>();
 			ImGui::LabelText("", "Collision Sphere");
+			auto& collisionBox = selectedEntity.getComponent<CollisionSphereComponent>();
 
 			ImGui::InputFloat("Radius", &collisionBox.radius);
+
+			ImGui::Separator();
 		}
 
-		ImGui::Separator();
+		if (selectedEntity.HasComponent<MeshComponent>())
+		{
+			ImGui::LabelText("", "Mesh");
+			auto& meshComponent = selectedEntity.getComponent<MeshComponent>();
+			;
+			ImGui::Text("Number of vertices: %d", (int)meshComponent.mesh->getNumOfVertices());
+
+			ImGui::Separator();
+		}
+
+		if (selectedEntity.HasComponent<RenderableComponent>())
+		{
+			ImGui::LabelText("", "Renderer");
+			auto& renderComponent = selectedEntity.getComponent<RenderableComponent>();
+
+			ImGui::Combo("##Technique", (int*)&renderComponent.renderTechnique, renderTechniqueStrList, IM_ARRAYSIZE(renderTechniqueStrList));
+
+			ImGui::Separator();
+		}
+
+		
 	}
 
 	// Render inspector content here

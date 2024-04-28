@@ -337,11 +337,11 @@ void Scene::draw(float deltaTime)
 		Entity entityhandler{ *iter, this };
 
 		auto& renderable = entityhandler.getComponent<RenderableComponent>();
-		if (renderable.renderTechnique == RenderableComponent::Deferred)
+		if (renderable.renderTechnique == RenderableComponent::RenderTechnique::Deferred)
 		{
 			deferredRendererEntityGroup.push_back(entityhandler);
 		}
-		else if (renderable.renderTechnique == RenderableComponent::Forward)
+		else if (renderable.renderTechnique == RenderableComponent::RenderTechnique::Forward)
 		{
 			forwardRendererEntityGroup.push_back(entityhandler);
 		}
