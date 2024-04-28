@@ -42,7 +42,7 @@ void Transformation::setParent(Entity parent)
 	//m_rootTransformation = glm::inverse(pTransform.getWorldTransformation());
 
 	setLocalPosition(getLocalPosition() - pTransform.getWorldPosition());
-	setLocalRotation(glm::inverse(pTransform.getLocalRotation()) * m_rotation);
+	setLocalRotation(glm::inverse(pTransform.getLocalRotationQuat()) * m_rotation);
 	setLocalScale(getLocalScale() / pTransform.getWorldScale());
 
 	m_parent = parent;
@@ -155,9 +155,14 @@ glm::vec3 Transformation::getWorldPosition() const
 	}
 }
 
-glm::quat Transformation::getLocalRotation() const
+glm::quat Transformation::getLocalRotationQuat() const
 {
 	return m_rotation;
+}
+
+glm::vec3 Transformation::getLocalRotationVec3() const
+{
+	return glm::eulerAngles(m_rotation);
 }
 
 glm::quat Transformation::getWorldRotation() const

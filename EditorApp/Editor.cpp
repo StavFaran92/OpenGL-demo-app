@@ -8,6 +8,7 @@
 // Define a structure to represent an object in the scene hierarchy
 struct SceneObject {
 	std::string name;
+	Entity e;
 	// Add any other properties as needed
 };
 
@@ -20,7 +21,7 @@ void updateScene()
 	sceneObjects.clear();
 	for (auto&& [entity, obj] : Engine::get()->getContext()->getActiveScene()->getRegistry().view<ObjectComponent>().each())
 	{
-		sceneObjects.emplace_back(SceneObject{ obj.name });
+		sceneObjects.emplace_back(SceneObject{ obj.name, obj.e });
 	}
 }
 
@@ -28,6 +29,8 @@ static bool ShowLightCreatorWindow = false;
 static bool showModelCreatorWindow = false;
 static bool showModelInspectorWindow = false;
 static bool showPrimitiveCreatorWindow = false;
+
+Entity  selectedEntity = Entity::EmptyEntity;
 
 auto style = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoCollapse;
 
@@ -366,8 +369,7 @@ void RenderSceneHierarchyWindow(float width, float height)
 		{
 			if (ImGui::Selectable(obj.name.c_str())) 
 			{
-				// Handle selection of the object
-				// For example, you can highlight the selected object in the view window
+				selectedEntity = obj.e;
 			}
 		}
 		ImGui::EndListBox();
@@ -391,12 +393,75 @@ void RenderViewWindow(float width, float height)
 	ImGui::End();
 }
 
+static const char* rigidyBodyTypesStrList[]{ 
+	"Static",
+	"Dynamic",
+	"Kinematic"
+};
+
+
 void RenderInspectorWindow(float width, float height) {
 	float windowWidth = width * 0.2f - 5;
 	float startX = width * 0.8f + 5; // Add a gap of 5 pixels
 	ImGui::SetNextWindowPos(ImVec2(startX, 25)); // Adjust vertical position to make space for the menu bar
 	ImGui::SetNextWindowSize(ImVec2(windowWidth - 5, height * 0.8f));
 	ImGui::Begin("Inspector", nullptr, style);
+
+	if (selectedEntity != Entity::EmptyEntity)
+	{
+
+		if (selectedEntity.HasComponent<Transformation>())
+		{
+			auto& transform = selectedEntity.getComponent<Transformation>();
+			ImGui::LabelText("", "Transformation");
+
+			glm::vec3 pos = transform.getLocalPosition();
+			glm::vec3 rotation = transform.getLocalRotationVec3(); // todo fix
+			glm::vec3 scale = transform.getLocalScale();
+
+			ImGui::InputFloat3("Position", (float*)&pos);
+			ImGui::InputFloat3("Rotation", (float*)&rotation);
+			ImGui::InputFloat3("Scale", (float*)&scale);
+
+			transform.setLocalPosition(pos);
+			transform.setLocalRotation(rotation);
+			transform.setLocalScale(scale);
+		}
+
+		ImGui::Separator();
+
+		if (selectedEntity.HasComponent<RigidBodyComponent>())
+		{
+			auto& rBody = selectedEntity.getComponent<RigidBodyComponent>();
+			ImGui::LabelText("", "RigidBody");
+
+			ImGui::Combo("##Type", (int*)&rBody.type, rigidyBodyTypesStrList, IM_ARRAYSIZE(rigidyBodyTypesStrList));
+			ImGui::InputFloat("Mass", &rBody.mass);
+		}
+
+		ImGui::Separator();
+
+		if (selectedEntity.HasComponent<CollisionBoxComponent>())
+		{
+			auto& collisionBox = selectedEntity.getComponent<CollisionBoxComponent>();
+			ImGui::LabelText("", "Collision Box");
+
+			ImGui::InputFloat("Half Extent", &collisionBox.halfExtent);
+		}
+
+		ImGui::Separator();
+
+		if (selectedEntity.HasComponent<CollisionSphereComponent>())
+		{
+			auto& collisionBox = selectedEntity.getComponent<CollisionSphereComponent>();
+			ImGui::LabelText("", "Collision Sphere");
+
+			ImGui::InputFloat("Radius", &collisionBox.radius);
+		}
+
+		ImGui::Separator();
+	}
+
 	// Render inspector content here
 	ImGui::End();
 }
@@ -503,10 +568,30 @@ public:
 		auto& mat = ground.addComponent<Material>();
 		auto tex = Texture::loadTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
 		mat.setTexture(Texture::Type::Albedo, std::shared_ptr<TextureHandler>(tex));
+		auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
+		auto& collisionBox = ground.addComponent<CollisionBoxComponent>(.5f);
 
 		auto camera = Engine::get()->getContext()->getActiveScene()->getActiveCamera();
 		camera->lookAt(0, 5, 0);
 		camera->setPosition(25, 225, 35);
+
+		auto sphere = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get());
+		{
+			auto random = Engine::get()->getRandomSystem();
+			auto x = random->rand() * 10 - 5;
+			auto z = random->rand() * 10 - 5;
+
+			auto& sphereTransform = sphere.getComponent<Transformation>();
+			sphereTransform.setLocalPosition({ x, 10, z });
+
+
+			auto& mat = sphere.addComponent<Material>();
+			auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg");
+			mat.setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(tex));
+
+			auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
+			auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);
+		}
 
 		updateScene();
 

@@ -505,7 +505,7 @@ Entity Scene::createEntity(const std::string& name)
 	entt::entity e = m_registry.create();
 	auto entityHandler = Entity(e, this);
 	entityHandler.addComponent<Transformation>(entityHandler);
-	entityHandler.addComponent<ObjectComponent>(name); //todo fix
+	entityHandler.addComponent<ObjectComponent>(entityHandler, name); //todo fix
 	return entityHandler;
 }
 

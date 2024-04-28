@@ -49,9 +49,9 @@ const std::vector<LayoutAttribute> g_defaultLayoutAttributes =
 	LayoutAttribute::Texcoords,
 };
 
-enum class RigidbodyType
+enum class RigidbodyType : int
 {
-	Static,
+	Static = 0,
 	Dynamic,
 	Kinematic
 };

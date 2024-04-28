@@ -120,8 +120,9 @@ struct EngineAPI MeshComponent : public Component
 
 struct EngineAPI ObjectComponent : public Component
 {
-	ObjectComponent() = default;
-	ObjectComponent(const std::string& name) : name(name) {};
+	ObjectComponent() = delete;
+	ObjectComponent(Entity e, const std::string& name) : name(name), e(e) {};
 
 	std::string name;
+	Entity e;
 };

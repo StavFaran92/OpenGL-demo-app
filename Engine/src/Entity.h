@@ -152,7 +152,7 @@ public:
      * @return true if the entity has the component, false otherwise
      */
     template<typename T>
-    bool HasComponent()
+    bool HasComponent() const
     {
         assert(valid() && "Invalid entity.");
         return m_scene->getRegistry().any_of<T>(m_entity);
