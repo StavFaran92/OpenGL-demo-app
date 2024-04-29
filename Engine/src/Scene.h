@@ -13,6 +13,7 @@
 
 #include "glm/glm.hpp"
 #include "IRenderer.h"
+#include "SceneSerDes.h"
 
 
 class Model;
@@ -104,12 +105,13 @@ public:
 
 	int getRenderTarget() const;
 
-	bool serialize() const;
+	bool serialize();
 	bool deserialize();
 
 private:
 	// -------------------- Methods -------------------- //
 	friend class Context;
+	friend class SceneSerDes;
 	void update(float deltaTime);
 	inline void SetID(uint32_t id) { m_id = id; }
 	void draw(float deltaTime);
@@ -171,4 +173,6 @@ private:
 	TextureHandler* m_prefilterEnvMap = nullptr;
 	TextureHandler* m_BRDFIntegrationLUT = nullptr;
 	std::shared_ptr<Shader> m_skyboxShader;
+
+	SceneSerDes m_serdes;
 };

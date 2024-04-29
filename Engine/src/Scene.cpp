@@ -48,6 +48,7 @@
 #include "EquirectangularToCubemapConverter.h"
 #include "IBL.h"
 
+
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
 {
 	auto mesh = e.tryGetComponent<MeshComponent>();
@@ -89,70 +90,14 @@ int Scene::getRenderTarget() const
 	return m_renderTargetTexture->getID();
 }
 
-#include <optional>
-
-struct SerializableEntity 
+bool Scene::serialize()
 {
-	entt::entity entity;
-	std::optional<Transformation> transform;
-
-	template <class Archive>
-	void serialize(Archive& archive) {
-		archive(entity, transform);
-	}
-};
-
-#include <fstream>
-#include <filesystem>
-#include <ostream>
-#include "cereal/archives/json.hpp"
-#include "cereal/types/vector.hpp"
-#include "cereal/types/optional.hpp"
-
-bool Scene::serialize() const
-{
-	std::vector<SerializableEntity> serializedEntities;
-
-	m_registry.each([&](auto entity) {
-		std::optional<Transformation> t;
-		if (m_registry.any_of<Transformation>(entity)) {
-			t = *m_registry.try_get<Transformation>(entity);
-		}
-		SerializableEntity e{ entity, t };
-		serializedEntities.push_back(e);
-	});
-
-	//if(!std::filesystem::exists("entities.json"))
-
-	std::ofstream os("entities.json");
-	cereal::JSONOutputArchive archive(os);
-	archive(serializedEntities);
-
-	return true;
+	return m_serdes.serialize(*this);
 }
 
 bool Scene::deserialize()
 {
-	clear();
-
-	std::vector<SerializableEntity> serializedEntities;
-
-	std::ifstream is("entities.json");
-	cereal::JSONInputArchive inputArchive(is);
-	inputArchive(serializedEntities);
-
-	for (auto& serializedEnt : serializedEntities)
-	{
-		auto e = m_registry.create(serializedEnt.entity);
-		auto entityHandler = Entity(e, this);
-		if (serializedEnt.transform)
-		{
-			entityHandler.addComponent<Transformation>(serializedEnt.transform.value());
-		}
-
-	}
-
-	return true;
+	return m_serdes.deserialize(*this);
 }
 
 void Scene::init(Context* context)
