@@ -141,6 +141,17 @@ bool Scene::deserialize()
 	cereal::JSONInputArchive inputArchive(is);
 	inputArchive(serializedEntities);
 
+	for (auto& serializedEnt : serializedEntities)
+	{
+		auto e = m_registry.create(serializedEnt.entity);
+		auto entityHandler = Entity(e, this);
+		if (serializedEnt.transform)
+		{
+			entityHandler.addComponent<Transformation>(serializedEnt.transform.value());
+		}
+
+	}
+
 	return true;
 }
 
