@@ -6,11 +6,7 @@
 class EngineAPI DirectionalLight : public Light
 {
 public:
-	DirectionalLight()
-		: Light(), m_direction(0.0f, -1.0f, 0.0f)
-	{
-		m_name = "dirLight";
-	}
+	DirectionalLight();
 
 	DirectionalLight(glm::vec3 color, glm::vec3 dir, float aIntensity, float dIntensity)
 		: Light(color, aIntensity, dIntensity), m_direction(dir)
@@ -23,6 +19,11 @@ public:
 	glm::vec3 getDirection() const;
 
 	void setDirection(glm::vec3 dir);
+
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(m_color);
+	}
 
 private:
 	glm::vec3 m_direction;

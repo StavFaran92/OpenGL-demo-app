@@ -10,19 +10,6 @@
 
 #include "Entity.h"
 
-namespace glm
-{
-	template<class Archive>
-	void serialize(Archive& archive, glm::vec3& v) {
-		archive(v.x, v.y, v.z);
-	}
-
-	template<class Archive>
-	void serialize(Archive& archive, glm::quat& q) {
-		archive(q.x, q.y, q.z, q.w);
-	}
-};
-
 class EngineAPI Transformation
 {
 public:

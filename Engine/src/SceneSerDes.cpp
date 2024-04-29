@@ -23,20 +23,54 @@ struct SerializableEntity
 	}
 };
 
+namespace glm
+{
+	template<class Archive>
+	void serialize(Archive& archive, glm::vec3& v) {
+		archive(v.x, v.y, v.z);
+	}
+
+	template<class Archive>
+	void serialize(Archive& archive, glm::quat& q) {
+		archive(q.x, q.y, q.z, q.w);
+	}
+};
+
+template<typename T>
+decltype(auto) getComponentIfExists(const Entity& e)
+{
+	std::optional<T> c;
+	if (e.HasComponent<T>())
+	{
+		c = e.getComponent<T>();
+	}
+	return c;
+}
+
 bool SceneSerDes::serialize(Scene& scene)
 {
 	std::vector<SerializableEntity> serializedEntities;
 
-	auto& registry = scene.getRegistry();
-
-	registry.each([&](auto entity) {
-		std::optional<Transformation> t;
-		if (registry.any_of<Transformation>(entity)) {
-			t = *registry.try_get<Transformation>(entity);
-		}
-		SerializableEntity e{ entity, t };
-		serializedEntities.push_back(e);
-		});
+	scene.getRegistry().each([&](auto entity) {
+		Entity e(entity, &scene);
+		
+		SerializableEntity se{ entity, 
+			getComponentIfExists<Transformation>(e),
+			getComponentIfExists<RigidBodyComponent>(e),
+			getComponentIfExists<CollisionBoxComponent>(e),
+			getComponentIfExists<CollisionSphereComponent>(e),
+			getComponentIfExists<MeshComponent>(e),
+			getComponentIfExists<RenderableComponent>(e),
+			getComponentIfExists<CameraComponent>(e),
+			getComponentIfExists<NativeScriptComponent>(e),
+			//getComponentIfExists<Material>(e),
+			getComponentIfExists<DirectionalLight>(e),
+			getComponentIfExists<PointLight>(e),
+			getComponentIfExists<ObjectComponent>(e),
+			getComponentIfExists<SkyboxComponent>(e),
+		};
+		serializedEntities.push_back(se);
+	});
 
 	//if(!std::filesystem::exists("entities.json"))
 

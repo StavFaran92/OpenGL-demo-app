@@ -3,6 +3,13 @@
 #include "Shader.h"
 #include "Logger.h"
 
+DirectionalLight::DirectionalLight()
+
+	: Light(), m_direction(0.0f, -1.0f, 0.0f)
+{
+	m_name = "dirLight";
+}
+
 void DirectionalLight::useLight(Shader& shader, int index)
 {
 	Light::useLight(shader, index);
