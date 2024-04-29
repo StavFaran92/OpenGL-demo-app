@@ -11,6 +11,7 @@ class EngineAPI Material
 {
 public:
 	Material();
+	~Material() = default;
 
 	virtual void use(Shader& shader);
 
@@ -25,6 +26,11 @@ public:
 	bool hasTexture(Texture::Type textureType) const;
 
 	void setTexture(Texture::Type textureType, std::shared_ptr<TextureHandler> textureHandler);
+
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(m_specularIntensity);
+	}
 
 protected:
 	void setTexturesInShader(Shader& shader);

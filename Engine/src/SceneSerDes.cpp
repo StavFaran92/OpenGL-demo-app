@@ -4,6 +4,7 @@
 #include "cereal/archives/json.hpp"
 #include "cereal/types/vector.hpp"
 #include "cereal/types/optional.hpp"
+#include "cereal/types/polymorphic.hpp"
 #include <optional>
 #include <fstream>
 #include <filesystem>
@@ -11,15 +12,31 @@
 
 #include "Component.h"
 #include "Transformation.h"
+#include "Material.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
 
 struct SerializableEntity
 {
 	entt::entity entity;
 	std::optional<Transformation> transform;
+	std::optional<RigidBodyComponent> rigidBody;
+	std::optional<CollisionBoxComponent> collisionBox;
+	std::optional<CollisionSphereComponent> collisionSphere;
+	std::optional<MeshComponent> mesh;
+	std::optional <RenderableComponent> renderableComponent;
+	std::optional<CameraComponent> camera;
+	//std::optional<NativeScriptComponent> nsc;
+	std::optional<Material> mat;
+	std::optional<DirectionalLight> dLight;
+	std::optional<PointLight> pLight;
+	std::optional<ObjectComponent> obj;
+	std::optional<SkyboxComponent> skybox;
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(entity, transform);
+		archive(entity, transform, rigidBody, collisionBox, collisionSphere, mesh, renderableComponent, camera,
+			mat, dLight, pLight, obj, skybox);
 	}
 };
 
@@ -62,8 +79,8 @@ bool SceneSerDes::serialize(Scene& scene)
 			getComponentIfExists<MeshComponent>(e),
 			getComponentIfExists<RenderableComponent>(e),
 			getComponentIfExists<CameraComponent>(e),
-			getComponentIfExists<NativeScriptComponent>(e),
-			//getComponentIfExists<Material>(e),
+			//getComponentIfExists<NativeScriptComponent>(e),
+			getComponentIfExists<Material>(e),
 			getComponentIfExists<DirectionalLight>(e),
 			getComponentIfExists<PointLight>(e),
 			getComponentIfExists<ObjectComponent>(e),

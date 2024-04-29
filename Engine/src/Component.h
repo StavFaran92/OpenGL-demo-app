@@ -24,12 +24,23 @@ struct EngineAPI TagComponent
 
 struct EngineAPI SkyboxComponent : public TagComponent
 {
-	
+	float t; // todo fix
+
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(t);
+	}
 };
 
 struct EngineAPI RenderableComponent : public Component
 {
 	RenderableComponent() = default;
+
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(renderTechnique);
+	}
+
 	enum class RenderTechnique : int
 	{
 		Forward,
@@ -72,6 +83,11 @@ struct EngineAPI RigidBodyComponent : public Component
 	RigidBodyComponent() = default;
 	RigidBodyComponent(RigidbodyType type, float mass) : type(type), mass(mass) {};
 
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(type, mass);
+	}
+
 	RigidbodyType type = RigidbodyType::Static;
 	float mass = 0;
 	void* simulatedBody = nullptr;
@@ -82,6 +98,11 @@ struct EngineAPI CollisionBoxComponent : public Component
 	CollisionBoxComponent() = default;
 	CollisionBoxComponent(float halfExtent) : halfExtent(halfExtent) {};
 
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(halfExtent);
+	}
+
 	float halfExtent = 0;
 };
 
@@ -90,12 +111,23 @@ struct EngineAPI CollisionSphereComponent : public Component
 	CollisionSphereComponent() = default;
 	CollisionSphereComponent(float radius) : radius(radius) {};
 
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(radius);
+	}
+
 	float radius = 0;
 };
 
 struct EngineAPI CollisionMeshComponent : public Component
 {
 	CollisionMeshComponent() = default;
+
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(isConvex);
+	}
+
 	bool isConvex = false;
 	Mesh* mesh = nullptr;
 };
@@ -113,6 +145,11 @@ struct EngineAPI CameraComponent : public Component
 		return position;
 	}
 
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(position, center, up);
+	}
+
 	glm::vec3 position;
 	glm::vec3 center;
 	glm::vec3 up;
@@ -123,6 +160,12 @@ struct EngineAPI MeshComponent : public Component
 	MeshComponent() = default;
 	MeshComponent(std::shared_ptr<Mesh> mesh) : mesh(mesh) {}
 
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(temp);
+	}
+
+	float temp; //todo remove
 	std::shared_ptr<Mesh> mesh = nullptr;
 };
 
@@ -136,9 +179,14 @@ struct EngineAPI MaterialComponent : public Component
 
 struct EngineAPI ObjectComponent : public Component
 {
-	ObjectComponent() = delete;
+	ObjectComponent() = default;
 	ObjectComponent(Entity e, const std::string& name) : name(name), e(e) {};
 
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(name, e.handlerID());
+	}
+
 	std::string name;
-	Entity e;
+	Entity e = Entity::EmptyEntity;
 };

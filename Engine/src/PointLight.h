@@ -7,6 +7,11 @@ struct EngineAPI Attenuation {
 	float constant = 1;
 	float linear = .35f;
 	float quadratic = .44f;
+
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(constant, linear, quadratic);
+	}
 };
 
 class EngineAPI PointLight : public Light
@@ -24,6 +29,11 @@ public:
 
 	void SetAttenuation(Attenuation attenuation);
 	Attenuation getAttenuation() const;
+
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(m_attenuation, m_color);
+	}
 
 private:
 	Attenuation m_attenuation;
