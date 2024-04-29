@@ -10,9 +10,32 @@
 
 #include "Entity.h"
 
+namespace glm
+{
+	template<class Archive>
+	void serialize(Archive& archive, glm::vec3& v) {
+		archive(v.x, v.y, v.z);
+	}
+
+	template<class Archive>
+	void serialize(Archive& archive, glm::quat& q) {
+		archive(q.x, q.y, q.z, q.w);
+	}
+};
+
 class EngineAPI Transformation
 {
 public:
+	Transformation() :
+		m_entity(Entity::EmptyEntity),
+		m_translation(0, 0, 0),
+		m_rotation(1, 0, 0, 0),
+		m_scale(1, 1, 1),
+		m_relativeRot(1.f)
+	{
+		m_root = m_entity;
+	}
+
 	Transformation(const Entity& entity) :
 		m_entity(entity),
 		m_translation(0, 0, 0),
@@ -83,6 +106,11 @@ public:
 	Entity setRoot(Entity root);
 
 	std::unordered_map<entity_id, Entity> getChildren();
+
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(m_translation, m_rotation, m_scale);
+	}
 
 private:
 	void addChild(Entity entity);

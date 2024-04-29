@@ -104,6 +104,9 @@ public:
 
 	int getRenderTarget() const;
 
+	bool serialize() const;
+	bool deserialize();
+
 private:
 	// -------------------- Methods -------------------- //
 	friend class Context;
