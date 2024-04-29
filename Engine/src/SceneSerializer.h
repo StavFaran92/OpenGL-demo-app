@@ -2,7 +2,7 @@
 
 class Scene;
 
-class SceneSerDes
+class SceneSerializer
 {
 public:
 	bool serialize(Scene& scene);

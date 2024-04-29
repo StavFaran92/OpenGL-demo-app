@@ -1,4 +1,4 @@
-#include "SceneSerDes.h"
+#include "SceneSerializer.h"
 
 #include "Scene.h"
 #include "cereal/archives/json.hpp"
@@ -64,7 +64,7 @@ decltype(auto) getComponentIfExists(const Entity& e)
 	return c;
 }
 
-bool SceneSerDes::serialize(Scene& scene)
+bool SceneSerializer::serialize(Scene& scene)
 {
 	std::vector<SerializableEntity> serializedEntities;
 
@@ -98,7 +98,7 @@ bool SceneSerDes::serialize(Scene& scene)
 	return true;
 }
 
-bool SceneSerDes::deserialize(Scene& scene)
+bool SceneSerializer::deserialize(Scene& scene)
 {
 	scene.clear();
 
