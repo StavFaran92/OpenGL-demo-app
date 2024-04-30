@@ -3,6 +3,9 @@
 #include <memory>
 #include <string>
 #include <functional>
+template<class T>  class Resource;
+
+#include "MemoryPool.h"
 
 class Texture;
 class Mesh;
@@ -17,11 +20,15 @@ class MemoryManagement
 public:
 	MemoryManagement();
 	~MemoryManagement();
-	std::shared_ptr<Texture> getTexture(const std::string& resourceName, std::function<Texture* ()> creationCallback = nullptr);
-	std::shared_ptr<Mesh> getMesh(const std::string& resourceName, std::function<Mesh* ()> creationCallback = nullptr);
-	std::shared_ptr<Shader> getShader(const std::string& resourceName, std::function<Shader* ()> creationCallback = nullptr);
+	Resource<Texture> getTexture(const std::string& resourceName, std::function<Texture* ()> creationCallback = nullptr);
+	Resource<Mesh> getMesh(const std::string& resourceName, std::function<Mesh* ()> creationCallback = nullptr);
+	Resource<Shader> getShader(const std::string& resourceName, std::function<Shader* ()> creationCallback = nullptr);
 
 private:
+	template<class T>friend class Resource;
+	MemoryPool<Texture> m_texturePool;
+	MemoryPool<Mesh> m_meshPool;
+	MemoryPool<Shader> m_shaderPool;
 	struct MemoryManagementImpl;
 	MemoryManagementImpl* m_pimpl = nullptr;
 };

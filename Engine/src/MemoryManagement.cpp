@@ -1,27 +1,25 @@
 #include "MemoryManagement.h"
 
-#include "MemoryPool.h"
+#include "Resource.h"
 
 struct MemoryManagement::MemoryManagementImpl
 {
-    MemoryPool<Texture> m_texturePool;
-    MemoryPool<Mesh> m_meshPool;
-    MemoryPool<Shader> m_shaderPool;
+
 };
 
-std::shared_ptr<Texture> MemoryManagement::getTexture(const std::string& resourceName, std::function<Texture* ()> creationCallback/* = nullptr*/)
+Resource<Texture> MemoryManagement::getTexture(const std::string& resourceName, std::function<Texture* ()> creationCallback/* = nullptr*/)
 {
-	return m_pimpl->m_texturePool.get(resourceName, creationCallback);
+	return m_texturePool.createOrGetCached(resourceName, creationCallback);
 }
 
-std::shared_ptr<Mesh> MemoryManagement::getMesh(const std::string& resourceName, std::function<Mesh* ()> creationCallback/* = nullptr*/)
+Resource<Mesh> MemoryManagement::getMesh(const std::string& resourceName, std::function<Mesh* ()> creationCallback/* = nullptr*/)
 {
-	return m_pimpl->m_meshPool.get(resourceName, creationCallback);
+	return m_meshPool.createOrGetCached(resourceName, creationCallback);
 }
 
-std::shared_ptr<Shader> MemoryManagement::getShader(const std::string& resourceName, std::function<Shader* ()> creationCallback/* = nullptr*/)
+Resource<Shader> MemoryManagement::getShader(const std::string& resourceName, std::function<Shader* ()> creationCallback/* = nullptr*/)
 {
-	return m_pimpl->m_shaderPool.get(resourceName, creationCallback);
+	return m_shaderPool.createOrGetCached(resourceName, creationCallback);
 }
 
 
