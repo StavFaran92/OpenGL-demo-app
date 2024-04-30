@@ -57,15 +57,15 @@ public:
 		//auto box = ShapeFactory::createSphere(getContext()->getActiveScene().get());
 		auto& mat = gun.addComponent<Material>();
 		auto albedoMap = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_A.tga", false);
-		mat.setTexture(Texture::Type::Albedo, std::shared_ptr<TextureHandler>(albedoMap));
+		mat.setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
 		auto roughnessMap = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_R.tga", false);
-		mat.setTexture(Texture::Type::Roughness, std::shared_ptr<TextureHandler>(roughnessMap));
+		mat.setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
 		auto normalMap = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_N.tga", false);
-		mat.setTexture(Texture::Type::Normal, std::shared_ptr<TextureHandler>(normalMap));
+		mat.setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
 		auto metallicMap = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga", false);
-		mat.setTexture(Texture::Type::Metallic, std::shared_ptr<TextureHandler>(metallicMap));
+		mat.setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
 		auto aoMap = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Raw/Cerberus_AO.tga", false);
-		mat.setTexture(Texture::Type::AmbientOcclusion, std::shared_ptr<TextureHandler>(aoMap));
+		mat.setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
 		//box.getComponent<Transformation>().setLocalPosition({ i * 3,0,j * 3 });
 
 		/*for (int i = -1; i < 2; i++)
@@ -75,15 +75,15 @@ public:
 				auto box = ShapeFactory::createSphere(getContext()->getActiveScene().get());
 				auto& mat = box.getComponent<Material>();
 				auto albedoMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_albedo.png", Texture::Type::Albedo);
-				mat.setTexture(Texture::Type::Albedo, std::shared_ptr<TextureHandler>(albedoMap));
+				mat.setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
 				auto roughnessMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_roughness.png", Texture::Type::Roughness);
-				mat.setTexture(Texture::Type::Roughness, std::shared_ptr<TextureHandler>(roughnessMap));
+				mat.setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
 				auto normalMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_normal-ogl.png", Texture::Type::Normal);
-				mat.setTexture(Texture::Type::Normal, std::shared_ptr<TextureHandler>(normalMap));
+				mat.setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
 				auto metallicMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_metallic.png", Texture::Type::Metallic);
-				mat.setTexture(Texture::Type::Metallic, std::shared_ptr<TextureHandler>(metallicMap));
+				mat.setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
 				auto aoMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_ao.png", Texture::Type::AmbientOcclusion);
-				mat.setTexture(Texture::Type::AmbientOcclusion, std::shared_ptr<TextureHandler>(aoMap));
+				mat.setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
 				box.getComponent<Transformation>().setLocalPosition({ i * 3,0,j*3 });
 			}
 		}*/

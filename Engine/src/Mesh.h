@@ -5,7 +5,7 @@
 #include "Core.h"
 #include "Renderer.h"
 #include "Shader.h"
-#include "TextureHandler.h"
+#include "Resource.h"
 
 #include "VertexBufferObject.h"
 #include "ElementBufferObject.h"

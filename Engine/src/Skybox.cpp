@@ -6,7 +6,7 @@
 #include "Renderer.h"
 #include "Mesh.h"
 #include "Box.h"
-#include "TextureHandler.h"
+#include "Resource.h"
 #include "ObjectHandler.h"
 #include "Shader.h"
 #include "ShapeFactory.h"
@@ -34,7 +34,7 @@ Entity Skybox::CreateSkybox(const SkyboxFaces& faces, Scene* scene)
     return createSkyboxHelper(textureHandler, scene);
 }
 
-Entity Skybox::CreateSkybox(TexType type, TextureHandler* texture, Scene* scene)
+Entity Skybox::CreateSkybox(TexType type, Resource<Texture> texture, Scene* scene)
 {
     if (!scene)
     {
@@ -49,7 +49,7 @@ Entity Skybox::CreateSkybox(TexType type, TextureHandler* texture, Scene* scene)
     return createSkyboxHelper(texture, scene);
 }
 
-Entity Skybox::createSkyboxHelper(TextureHandler* texture, Scene* scene)
+Entity Skybox::createSkyboxHelper(Resource<Texture> texture, Scene* scene)
 {
     // Create irradiance map using created cubemap
     auto irradianceMap = IBL::generateIrradianceMap(texture, scene);
@@ -59,12 +59,12 @@ Entity Skybox::createSkyboxHelper(TextureHandler* texture, Scene* scene)
 
     scene->setIBLData(irradianceMap, prefilterEnvMap);
 
-    texture->setSlot(0);
+    texture.get()->setSlot(0);
 
     auto entity = ShapeFactory::createBox(scene);
 
     entity.RemoveComponent<RenderableComponent>();
-    entity.getComponent<Material>().setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(texture));
+    entity.getComponent<Material>().setTexture(Texture::Type::Diffuse, Resource<Texture>(texture));
     entity.addComponent<SkyboxComponent>();
 
     return entity;

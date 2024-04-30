@@ -15,6 +15,7 @@
 
 #include "Logger.h"
 #include "Engine.h"
+#include "Texture.h"
 
 Context::Context() : m_shaderCounter(0)
 {
@@ -25,7 +26,7 @@ Context::Context() : m_shaderCounter(0)
 
 	m_pickingShader = Shader::createShared<PickingShader>();
 
-	m_dummyTexture = std::shared_ptr<TextureHandler>(Texture::createDummyTexture());
+	m_dummyTexture = Resource<Texture>(Texture::createDummyTexture());
 	//m_normalDisplayShader = std::make_shared<Shader>("Resources\\Shaders\\normalDisplayShader.vert", "Resources\\Shaders\\normalDisplayShader.frag", "Resources\\Shaders\\normalDisplayShader.geom");
 
 	//std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
@@ -115,7 +116,7 @@ void Context::setActiveScene(uint32_t index)
 	m_activeScene = index;
 }
 
-std::shared_ptr<TextureHandler> Context::getDummyTexture()
+Resource<Texture> Context::getDummyTexture()
 {
 	return m_dummyTexture;
 }

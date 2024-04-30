@@ -1,7 +1,7 @@
 #include "ShadowSystem.h"
 
 #include "FrameBufferObject.h"
-#include "TextureHandler.h"
+#include "Resource.h"
 #include "gl/glew.h"
 #include "Logger.h"
 #include "Scene.h"
@@ -14,6 +14,7 @@
 #include "Shader.h"
 #include "ScreenBufferDisplay.h"
 #include "Context.h"
+#include "Texture.h"
 
 const unsigned int SHADOW_WIDTH = 1024;
 const unsigned int SHADOW_HEIGHT = 1024;
@@ -40,7 +41,7 @@ bool ShadowSystem::init()
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 	// Attach texture to FBO
-	m_fbo.attachTexture(m_depthMapTexture->getID(), GL_DEPTH_ATTACHMENT);
+	m_fbo.attachTexture(m_depthMapTexture.get()->getID(), GL_DEPTH_ATTACHMENT);
 
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
@@ -145,7 +146,7 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 	glCullFace(GL_BACK);
 }
 
-TextureHandler* ShadowSystem::getShadowMap() const
+Resource<Texture> ShadowSystem::getShadowMap() const
 {
 	return m_depthMapTexture;
 }

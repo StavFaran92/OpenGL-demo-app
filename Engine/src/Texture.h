@@ -8,6 +8,7 @@
 #include "Core.h"
 #include "ApplicationConstants.h"
 #include "Configurations.h"
+#include "Resource.h"
 
 class TextureHandler;
 
@@ -41,7 +42,7 @@ public:
 	 * \param height	The generated texture height
 	 * \return			A pointer to the generated texture
 	 */
-	static TextureHandler* createEmptyTexture(int width, int height);
+	static Resource<Texture> createEmptyTexture(int width, int height);
 
 	/**
 	 * Create an empty texture.
@@ -50,7 +51,7 @@ public:
 	 * \param height	The generated texture height
 	 * \return			A pointer to the generated texture
 	 */
-	static TextureHandler* createEmptyTexture(int width, int height, int internalFormat, int format, int type);
+	static Resource<Texture> createEmptyTexture(int width, int height, int internalFormat, int format, int type);
 
 	/**
 	 * Load a texture from a given file path.
@@ -59,14 +60,14 @@ public:
 	 * \param isFlipped		Should flip the texture vertically
 	 * \return				A pointer to the loaded texture
 	 */
-	static TextureHandler* loadTextureFromFile(const std::string& fileLocation, bool flip = FLIP_TEXTURE);
+	static Resource<Texture> loadTextureFromFile(const std::string& fileLocation, bool flip = FLIP_TEXTURE);
 
 	/**
 	 * Create a texture using predefined data
 	 *
 	 * \return				A pointer to the loaded texture
 	 */
-	static TextureHandler* createTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, void* data);
+	static Resource<Texture> createTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, void* data);
 
 	/**
 	 * Load a cubemap texture using the specified faces file locations.
@@ -74,14 +75,14 @@ public:
 	 * \param faces		the faces file locations to load the cubemap using
 	 * \return			A pointer to the loaded texture
 	 */
-	static TextureHandler* loadCubemapTexture(std::vector<std::string> faces);
+	static Resource<Texture> loadCubemapTexture(std::vector<std::string> faces);
 
-	static TextureHandler* createCubemapTexture(int width, int height, int internalFormat, int format, int type);
+	static Resource<Texture> createCubemapTexture(int width, int height, int internalFormat, int format, int type);
 
 
-	static TextureHandler* createCubemapTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps = false);
+	static Resource<Texture> createCubemapTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps = false);
 
-	static TextureHandler* createDummyTexture();
+	static Resource<Texture> createDummyTexture();
 
 	/**
 	 * Converts a texture type to a string.

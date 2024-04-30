@@ -7,6 +7,7 @@
 #include "glm/glm.hpp"
 #include "Core.h"
 #include <entt/entt.hpp>
+#include "Resource.h"
 
 class Shader;
 class VertexArrayObject;
@@ -43,10 +44,10 @@ public:
 		glm::mat4* view = nullptr;
 		glm::mat4* projection = nullptr;
 
-		TextureHandler* irradianceMap = nullptr;
-		TextureHandler* prefilterEnvMap = nullptr;
-		TextureHandler* brdfLUT = nullptr;
-		TextureHandler* shadowMap = nullptr;
+		Resource<Texture> irradianceMap = nullptr;
+		Resource<Texture> prefilterEnvMap = nullptr;
+		Resource<Texture> brdfLUT = nullptr;
+		Resource<Texture> shadowMap = nullptr;
 		glm::mat4 lightSpaceMatrix;
 	};
 	enum class DrawType {

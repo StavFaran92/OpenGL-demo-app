@@ -1,12 +1,12 @@
 #pragma once
 
 class Scene;
-class TextureHandler;
+#include "Resource.h"
 
 class IBL
 {
 public:
-	static TextureHandler* generateIrradianceMap(TextureHandler* cubemap, Scene* scene);
-	static TextureHandler* generatePrefilterEnvMap(TextureHandler* cubemap, Scene* scene);
-	static TextureHandler* generateBRDFIntegrationLUT(Scene* scene);
+	static Resource<Texture> generateIrradianceMap(Resource<Texture> cubemap, Scene* scene);
+	static Resource<Texture> generatePrefilterEnvMap(Resource<Texture> cubemap, Scene* scene);
+	static Resource<Texture> generateBRDFIntegrationLUT(Scene* scene);
 };

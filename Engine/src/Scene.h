@@ -101,7 +101,7 @@ public:
 	
 	void displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params);
 
-	void setIBLData(TextureHandler* irradianceMap, TextureHandler* prefilterEnvMap);
+	void setIBLData(Resource<Texture> irradianceMap, Resource<Texture> prefilterEnvMap);
 
 	int getRenderTarget() const;
 
@@ -167,11 +167,11 @@ private:
 
 	std::shared_ptr<FrameBufferObject> m_renderTargetFBO;
 	std::shared_ptr<RenderBufferObject> m_renderTargetRBO;
-	TextureHandler* m_renderTargetTexture = nullptr;
+	Resource<Texture> m_renderTargetTexture = nullptr;
 
-	TextureHandler* m_irradianceMap = nullptr;
-	TextureHandler* m_prefilterEnvMap = nullptr;
-	TextureHandler* m_BRDFIntegrationLUT = nullptr;
+	Resource<Texture> m_irradianceMap = nullptr;
+	Resource<Texture> m_prefilterEnvMap = nullptr;
+	Resource<Texture> m_BRDFIntegrationLUT = nullptr;
 	std::shared_ptr<Shader> m_skyboxShader;
 
 	SceneSerializer m_serdes;

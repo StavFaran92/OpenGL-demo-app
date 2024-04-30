@@ -8,7 +8,7 @@
 #include "Configurations.h"
 #include "MemoryManagement.h"
 #include "Engine.h"
-#include "TextureHandler.h"
+#include "Resource.h"
 
 Texture::Texture()
 	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_slot(0)
@@ -22,14 +22,15 @@ Texture::Texture(const Texture& other)
 	logInfo(__FUNCTION__);
 }
 
-TextureHandler* Texture::createEmptyTexture(int width, int height)
+Resource<Texture> Texture::createEmptyTexture(int width, int height)
 {
 	return createEmptyTexture(width, height, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
 }
 
-TextureHandler* Texture::createEmptyTexture(int width, int height, int internalFormat, int format, int type)
+Resource<Texture> Texture::createEmptyTexture(int width, int height, int internalFormat, int format, int type)
 {
-	auto texture = new Texture();
+	Resource<Texture> resource = Engine::get()->getFactory<Texture>().create();
+	Texture* texture = resource.get();
 
 	texture->m_target = GL_TEXTURE_2D;
 	texture->m_width = width;
@@ -45,17 +46,13 @@ TextureHandler* Texture::createEmptyTexture(int width, int height, int internalF
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	texture->unbind();
-
-	auto textureHandler = new TextureHandler(texture);
-
-	return textureHandler;
 }
 
-TextureHandler* Texture::loadTextureFromFile(const std::string& fileLocation, bool flip/* = FLIP_TEXTURE*/)
+Resource<Texture> Texture::loadTextureFromFile(const std::string& fileLocation, bool flip/* = FLIP_TEXTURE*/)
 {
 	// Check if texture is already cached to optimize the load process
 	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
-	auto texture = memoryManagementSystem->getTexture(fileLocation, [&]() {
+	return memoryManagementSystem->getTexture(fileLocation, [&]() {
 		auto texture = new Texture();
 
 		texture->m_target = GL_TEXTURE_2D;
@@ -100,39 +97,31 @@ TextureHandler* Texture::loadTextureFromFile(const std::string& fileLocation, bo
 
 		return texture;
 	});
-
-	auto textureHandler = new TextureHandler(texture);
-
-	return textureHandler;
 }
 
-TextureHandler* Texture::createTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, void* data)
+Resource<Texture> Texture::createTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, void* data)
 {
-	auto texture = new Texture();
+	return Engine::get()->getMemoryManagementSystem()->createTexture([&](Texture* texture) {
+		texture->m_target = GL_TEXTURE_2D;
+		texture->m_width = width;
+		texture->m_height = height;
 
-	texture->m_target = GL_TEXTURE_2D;
-	texture->m_width = width;
-	texture->m_height = height;
+		// generate texture
+		glGenTextures(1, &texture->m_id);
+		texture->bind();
 
-	// generate texture
-	glGenTextures(1, &texture->m_id);
-	texture->bind();
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
+		for (auto& [paramKey, paramValue] : params)
+		{
+			glTexParameteri(GL_TEXTURE_2D, paramKey, paramValue);
+		}
 
-	for (auto& [paramKey, paramValue] : params)
-	{
-		glTexParameteri(GL_TEXTURE_2D, paramKey, paramValue);
-	}
-
-	texture->unbind();
-
-	auto textureHandler = new TextureHandler(texture);
-
-	return textureHandler;
+		texture->unbind();
+	});
 }
 
-TextureHandler* Texture::loadCubemapTexture(std::vector<std::string> faces)
+Resource<Texture> Texture::loadCubemapTexture(std::vector<std::string> faces)
 {
 	auto texture = new Texture();
 
@@ -170,7 +159,7 @@ TextureHandler* Texture::loadCubemapTexture(std::vector<std::string> faces)
 	return textureHandler;
 }
 
-TextureHandler* Texture::createCubemapTexture(int width, int height, int internalFormat, int format, int type)
+Resource<Texture> Texture::createCubemapTexture(int width, int height, int internalFormat, int format, int type)
 {
 	auto texture = new Texture();
 
@@ -196,7 +185,7 @@ TextureHandler* Texture::createCubemapTexture(int width, int height, int interna
 	return textureHandler;
 }
 
-TextureHandler* Texture::createCubemapTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps)
+Resource<Texture> Texture::createCubemapTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps)
 {
 	auto texture = new Texture();
 
@@ -226,7 +215,7 @@ TextureHandler* Texture::createCubemapTexture(int width, int height, int interna
 	return textureHandler;
 }
 
-TextureHandler* Texture::createDummyTexture()
+Resource<Texture> Texture::createDummyTexture()
 {
 	auto texture = new Texture();
 

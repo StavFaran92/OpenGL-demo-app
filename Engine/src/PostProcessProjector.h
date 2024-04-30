@@ -32,7 +32,7 @@ private:
 	std::shared_ptr<RenderBufferObject> m_renderBuffer = nullptr;
 	std::shared_ptr<Shader> m_screenShader = nullptr;
 	std::shared_ptr<IRenderer> m_renderer = nullptr;
-	std::shared_ptr<TextureHandler> m_textureHandler = nullptr;
+	Resource<Texture> m_textureHandler = nullptr;
 	Scene* m_scene = nullptr;
 	bool m_isEnabled = false;
 };

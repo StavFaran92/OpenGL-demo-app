@@ -17,7 +17,7 @@ class ScreenBufferDisplay
 public:
 	ScreenBufferDisplay(Scene* scene);
 	bool init(int windowWidth, int windowHeight);
-	void draw(TextureHandler* textureHandler);
+	void draw(Resource<Texture> textureHandler);
 
 private:
 	Entity m_quad;

@@ -158,7 +158,7 @@ struct EngineAPI CameraComponent : public Component
 struct EngineAPI MeshComponent : public Component
 {
 	MeshComponent() = default;
-	MeshComponent(std::shared_ptr<Mesh> mesh) : mesh(mesh) {}
+	MeshComponent(Resource<Mesh> mesh) : mesh(mesh) {}
 
 	template <class Archive>
 	void serialize(Archive& archive) {
@@ -166,7 +166,7 @@ struct EngineAPI MeshComponent : public Component
 	}
 
 	float temp; //todo remove
-	std::shared_ptr<Mesh> mesh = nullptr;
+	Resource<Mesh> mesh;
 };
 
 struct EngineAPI MaterialComponent : public Component

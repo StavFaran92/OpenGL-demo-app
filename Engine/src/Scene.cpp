@@ -79,7 +79,7 @@ void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams para
 	}
 }
 
-void Scene::setIBLData(TextureHandler* irradianceMap, TextureHandler* prefilterEnvMap)
+void Scene::setIBLData(Resource<Texture> irradianceMap, Resource<Texture> prefilterEnvMap)
 {
 	m_irradianceMap = irradianceMap;
 	m_prefilterEnvMap = prefilterEnvMap;
@@ -87,7 +87,7 @@ void Scene::setIBLData(TextureHandler* irradianceMap, TextureHandler* prefilterE
 
 int Scene::getRenderTarget() const
 {
-	return m_renderTargetTexture->getID();
+	return m_renderTargetTexture.get()->getID();
 }
 
 bool Scene::serialize()
@@ -116,7 +116,7 @@ void Scene::init(Context* context)
 
 	// Generate Texture for Position data
 	m_renderTargetTexture = Texture::createEmptyTexture(width, height);
-	m_renderTargetFBO->attachTexture(m_renderTargetTexture->getID(), GL_COLOR_ATTACHMENT0);
+	m_renderTargetFBO->attachTexture(m_renderTargetTexture.get()->getID(), GL_COLOR_ATTACHMENT0);
 
 	unsigned int attachments[1] = { GL_COLOR_ATTACHMENT0 };
 	glDrawBuffers(1, attachments);
@@ -218,10 +218,10 @@ void Scene::init(Context* context)
 	m_uboTime->attachToBindPoint(0);
 
 	// Create irradiance map using created cubemap
-	m_irradianceMap = context->getDummyTexture().get();
+	m_irradianceMap = context->getDummyTexture();
 
 	// Create prefilter env map using created cubemap
-	m_prefilterEnvMap = context->getDummyTexture().get();
+	m_prefilterEnvMap = context->getDummyTexture();
 
 	// Create BRDF look up texture
 	m_BRDFIntegrationLUT = IBL::generateBRDFIntegrationLUT(this);
@@ -415,7 +415,7 @@ void Scene::draw(float deltaTime)
 		auto tempModel = transform.getWorldTransformation();
 		params.model = &tempModel;
 		params.shader = (m_skyboxShader.get());
-		mat.getTexture(Texture::Type::Diffuse)->bind();
+		mat.getTexture(Texture::Type::Diffuse).get()->bind();
 
 		m_forwardRenderer->render(params);
 
@@ -748,7 +748,7 @@ void Scene::createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body,
 		auto meshComponent = e.tryGetComponent<MeshComponent>();
 		if (meshComponent)
 		{
-			const std::vector<glm::vec3>* apos = meshComponent->mesh->getPositions();
+			const std::vector<glm::vec3>* apos = meshComponent->mesh.get()->getPositions();
 			shape = physicsSystem->createConvexMeshShape(*apos);
 		}
 	}

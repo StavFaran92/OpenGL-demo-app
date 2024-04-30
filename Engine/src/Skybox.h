@@ -25,10 +25,10 @@ public:
 public:
     static Entity CreateSkybox(const SkyboxFaces& faces, Scene* scene = nullptr);
 
-    static Entity CreateSkybox(TexType type, TextureHandler* texture, Scene* scene = nullptr);
+    static Entity CreateSkybox(TexType type, Resource<Texture> texture, Scene* scene = nullptr);
 
 private:
-    static Entity createSkyboxHelper(TextureHandler* texture, Scene* scene);
+    static Entity createSkyboxHelper(Resource<Texture> texture, Scene* scene);
 
     
 private:

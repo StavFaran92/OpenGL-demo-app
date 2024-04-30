@@ -2,6 +2,7 @@
 #include <memory>
 
 #include "IProjector.h"
+#include "Resource.h"
 
 class FrameBufferObject;
 class RenderBufferObject;
@@ -31,7 +32,7 @@ public:
 private:
 	std::shared_ptr<FrameBufferObject> m_frameBuffer = nullptr;
 	std::shared_ptr<RenderBufferObject> m_renderBuffer = nullptr;
-	std::shared_ptr<TextureHandler> m_textureHandler = nullptr;
+	Resource<Texture> m_textureHandler = nullptr;
 
 	int m_width = 0;
 	int m_height = 0;

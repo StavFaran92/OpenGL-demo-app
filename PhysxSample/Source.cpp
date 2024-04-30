@@ -47,7 +47,7 @@ void createSphere()
 
 		auto& mat = sphere.addComponent<Material>();
 		auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg");
-		mat.setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(tex));
+		mat.setTexture(Texture::Type::Diffuse, Resource<Texture>(tex));
 
 		auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
 		auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);
@@ -68,7 +68,7 @@ void createBox()
 
 		auto& mat = box.addComponent<Material>();
 		auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg");
-		mat.setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(tex));
+		mat.setTexture(Texture::Type::Diffuse, Resource<Texture>(tex));
 
 		auto& rb = box.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
 		auto& collisionBox = box.addComponent<CollisionBoxComponent>(.5f);
@@ -215,7 +215,7 @@ public:
 
 			auto& mat = ground.addComponent<Material>();
 			auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/floor.jpg");
-			mat.setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(tex));
+			mat.setTexture(Texture::Type::Diffuse, Resource<Texture>(tex));
 			auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
 
 

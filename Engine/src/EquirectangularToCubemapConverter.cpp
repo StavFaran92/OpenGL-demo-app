@@ -3,7 +3,7 @@
 #include "Texture.h"
 #include "FrameBufferObject.h"
 #include "RenderBufferObject.h"
-#include "TextureHandler.h"
+#include "Resource.h"
 #include "Shader.h"
 #include "ShapeFactory.h"
 
@@ -19,7 +19,7 @@
 #include "Engine.h"
 
 
-TextureHandler* EquirectangularToCubemapConverter::convert(TextureHandler* equirectangularTexture, Scene* scene)
+Resource<Texture> EquirectangularToCubemapConverter::convert(Resource<Texture> equirectangularTexture, Scene* scene)
 {
 	auto equirectangularShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/EquirectangularToCubemap.glsl");
 
@@ -59,12 +59,12 @@ TextureHandler* EquirectangularToCubemapConverter::convert(TextureHandler* equir
 	equirectangularShader->setProjectionMatrix(captureProjection);
 	equirectangularShader->setValue("equirectangularMap", 0);
 
-	equirectangularTexture->setSlot(0);
-	equirectangularTexture->bind();
+	equirectangularTexture.get()->setSlot(0);
+	equirectangularTexture.get()->bind();
 	
 
 	auto box = ShapeFactory::createBox(scene);
-	auto vao = box.getComponent<MeshComponent>().mesh->getVAO();
+	auto vao = box.getComponent<MeshComponent>().mesh.get()->getVAO();
 
 	// render to cube
 	// Attach cube map to frame buffer
@@ -74,7 +74,7 @@ TextureHandler* EquirectangularToCubemapConverter::convert(TextureHandler* equir
 		equirectangularShader->setViewMatrix(captureViews[i]);
 
 		// attach cubemap face to fbo
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemap->getID(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemap.get()->getID(), 0);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -82,7 +82,7 @@ TextureHandler* EquirectangularToCubemapConverter::convert(TextureHandler* equir
 		RenderCommand::drawIndexed(vao);
 	}
 
-	equirectangularTexture->unbind();
+	equirectangularTexture.get()->unbind();
 	fbo.unbind();
 
 	return cubemap;

@@ -42,7 +42,7 @@
 #include "Configurations.h"
 #include "MeshBuilder.h"
 #include "ModelImporter.h"
-#include "TextureHandler.h"
+#include "Resource.h"
 #include "ObjectFactory.h"
 #include "ObjectHandler.h"
 #include "GuiMenu.h"

@@ -3,7 +3,7 @@
 #include "Texture.h"
 #include "FrameBufferObject.h"
 #include "RenderBufferObject.h"
-#include "TextureHandler.h"
+#include "Resource.h"
 #include "Shader.h"
 #include "ShapeFactory.h"
 
@@ -18,7 +18,7 @@
 
 #include "Engine.h"
 
-TextureHandler* IBL::generateIrradianceMap(TextureHandler* environmentMap, Scene* scene)
+Resource<Texture> IBL::generateIrradianceMap(Resource<Texture> environmentMap, Scene* scene)
 {
 	auto irradianceShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/IrradianceShader.glsl");
 
@@ -58,13 +58,13 @@ TextureHandler* IBL::generateIrradianceMap(TextureHandler* environmentMap, Scene
 	irradianceShader->setProjectionMatrix(captureProjection);
 	irradianceShader->setValue("environmentMap", 0);
 
-	environmentMap->setSlot(0);
-	environmentMap->bind();
+	environmentMap.get()->setSlot(0);
+	environmentMap.get()->bind();
 
 
 	auto box = ShapeFactory::createBox(scene);
 	box.RemoveComponent<RenderableComponent>();
-	auto vao = box.getComponent<MeshComponent>().mesh->getVAO();
+	auto vao = box.getComponent<MeshComponent>().mesh.get()->getVAO();
 
 	// render to cube
 	// Attach cube map to frame buffer
@@ -74,7 +74,7 @@ TextureHandler* IBL::generateIrradianceMap(TextureHandler* environmentMap, Scene
 		irradianceShader->setViewMatrix(captureViews[i]);
 
 		// attach cubemap face to fbo
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap->getID(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap.get()->getID(), 0);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -82,13 +82,13 @@ TextureHandler* IBL::generateIrradianceMap(TextureHandler* environmentMap, Scene
 		RenderCommand::drawIndexed(vao);
 	}
 
-	environmentMap->unbind();
+	environmentMap.get()->unbind();
 	fbo.unbind();
 
 	return irradianceMap;
 }
 
-TextureHandler* IBL::generatePrefilterEnvMap(TextureHandler* environmentMap, Scene* scene)
+Resource<Texture> IBL::generatePrefilterEnvMap(Resource<Texture> environmentMap, Scene* scene)
 {
 	auto prefilterShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/IBLPrefilterShader.glsl");
 
@@ -131,13 +131,13 @@ TextureHandler* IBL::generatePrefilterEnvMap(TextureHandler* environmentMap, Sce
 	prefilterShader->setProjectionMatrix(captureProjection);
 	prefilterShader->setValue("environmentMap", 0);
 
-	environmentMap->setSlot(0);
-	environmentMap->bind();
+	environmentMap.get()->setSlot(0);
+	environmentMap.get()->bind();
 
 
 	auto box = ShapeFactory::createBox(scene);
 	box.RemoveComponent<RenderableComponent>();
-	auto vao = box.getComponent<MeshComponent>().mesh->getVAO();
+	auto vao = box.getComponent<MeshComponent>().mesh.get()->getVAO();
 
 	// render to cube
 	// Attach cube map to frame buffer
@@ -162,7 +162,7 @@ TextureHandler* IBL::generatePrefilterEnvMap(TextureHandler* environmentMap, Sce
 			prefilterShader->setViewMatrix(captureViews[i]);
 
 			// attach cubemap face to fbo
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilterEnvMap->getID(), mip);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilterEnvMap.get()->getID(), mip);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -171,13 +171,13 @@ TextureHandler* IBL::generatePrefilterEnvMap(TextureHandler* environmentMap, Sce
 		}
 	}
 
-	environmentMap->unbind();
+	environmentMap.get()->unbind();
 	fbo.unbind();
 
 	return prefilterEnvMap;
 }
 
-TextureHandler* IBL::generateBRDFIntegrationLUT(Scene* scene)
+Resource<Texture> IBL::generateBRDFIntegrationLUT(Scene* scene)
 {
 	auto BRDFIntegrationShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/BRDFIntegrationShader.glsl");
 
@@ -205,7 +205,7 @@ TextureHandler* IBL::generateBRDFIntegrationLUT(Scene* scene)
 		return nullptr;
 	}
 
-	fbo.attachTexture(lut->getID());
+	fbo.attachTexture(lut.get()->getID());
 
 	// set viewport
 	glViewport(0, 0, 512, 512);
@@ -214,7 +214,7 @@ TextureHandler* IBL::generateBRDFIntegrationLUT(Scene* scene)
 
 	auto quad = ShapeFactory::createQuad(scene);
 	quad.RemoveComponent<RenderableComponent>();
-	auto vao = quad.getComponent<MeshComponent>().mesh->getVAO();
+	auto vao = quad.getComponent<MeshComponent>().mesh.get()->getVAO();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

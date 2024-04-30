@@ -33,9 +33,9 @@ public:
 			groundTransfrom.setLocalScale({ 10, .1f, 10 });
 			auto& mat = ground.addComponent<Material>();
 			auto texDiff = Texture::loadTextureFromFile("Resources/Content/Textures/brickwall.jpg");
-			mat.setTexture(Texture::Type::Albedo, std::shared_ptr<TextureHandler>(texDiff));
+			mat.setTexture(Texture::Type::Albedo, Resource<Texture>(texDiff));
 			auto texNorm = Texture::loadTextureFromFile("Resources/Content/Textures/brickwall_normal.jpg");
-			mat.setTexture(Texture::Type::Normal, std::shared_ptr<TextureHandler>(texNorm));
+			mat.setTexture(Texture::Type::Normal, Resource<Texture>(texNorm));
 		}
 
 		auto pLight = getContext()->getActiveScene()->createEntity();

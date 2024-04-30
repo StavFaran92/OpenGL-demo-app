@@ -6,7 +6,7 @@
 #include "Window.h"
 #include "FrameBufferObject.h"
 #include "RenderBufferObject.h"
-#include "TextureHandler.h"
+#include "Resource.h"
 #include "Scene.h"
 #include "Context.h"
 #include "Shader.h"

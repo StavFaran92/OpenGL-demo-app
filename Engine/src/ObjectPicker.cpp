@@ -8,12 +8,13 @@
 #include "Window.h"
 #include "FrameBufferObject.h"
 #include "RenderBufferObject.h"
-#include "TextureHandler.h"
+#include "Resource.h"
 #include "Input.h"
 #include "IRenderer.h"
 #include "ICamera.h"
 #include "PickingShader.h"
 #include "Entity.h"
+#include "Texture.h"
 
 #include "Logger.h"
 
@@ -28,8 +29,8 @@ bool ObjectPicker::init(int windowWidth, int windowHeight)
 	m_height = windowHeight;
 
 	// Create a empty texture and attach to FBO
-	m_textureHandler = std::shared_ptr<TextureHandler>(Texture::createEmptyTexture(m_width, m_height, GL_RGB32UI, GL_RGB_INTEGER, GL_UNSIGNED_INT));
-	m_frameBuffer->attachTexture(m_textureHandler->getID());
+	m_textureHandler = Resource<Texture>(Texture::createEmptyTexture(m_width, m_height, GL_RGB32UI, GL_RGB_INTEGER, GL_UNSIGNED_INT));
+	m_frameBuffer->attachTexture(m_textureHandler.get()->getID());
 
 	// Create RBO and attach to FBO
 	m_renderBuffer = std::make_shared<RenderBufferObject>(1024, 768);

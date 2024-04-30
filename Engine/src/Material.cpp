@@ -23,7 +23,7 @@ void Material::release()
 	}
 }
 
-std::shared_ptr<TextureHandler> Material::getTexture(Texture::Type textureType) const
+Resource<Texture> Material::getTexture(Texture::Type textureType) const
 {
 	return m_textures.at(textureType);
 }
@@ -31,13 +31,13 @@ std::shared_ptr<TextureHandler> Material::getTexture(Texture::Type textureType) 
 bool Material::hasTexture(Texture::Type textureType) const
 {
 	auto iter = m_textures.find(textureType);
-	return iter != m_textures.end() && iter->second;
+	return iter != m_textures.end() && iter->second.get();
 }
 
 void Material::setTextureInShader(Shader& shader, Texture::Type ttype, int slot)
 {
 	auto texture = m_textures[ttype];
-	if (!texture)
+	if (!texture.get())
 	{
 		texture = Engine::get()->getContext()->getDummyTexture();
 	}
@@ -46,7 +46,7 @@ void Material::setTextureInShader(Shader& shader, Texture::Type ttype, int slot)
 	glActiveTexture(GL_TEXTURE0 + slot);
 
 	// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
-	glBindTexture(GL_TEXTURE_2D, texture->getID());
+	glBindTexture(GL_TEXTURE_2D, texture.get()->getID());
 
 	// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
 	shader.setValue("material." + Texture::textureTypeToString(ttype), slot);
@@ -62,7 +62,7 @@ void Material::setTexturesInShader(Shader& shader)
 	setTextureInShader(shader, Texture::Type::AmbientOcclusion, index++);
 }
 
-void Material::setTexture(Texture::Type textureType, std::shared_ptr<TextureHandler> textureHandler)
+void Material::setTexture(Texture::Type textureType, Resource<Texture> textureHandler)
 {
 	m_textures[textureType] = textureHandler;
 }

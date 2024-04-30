@@ -1,10 +1,11 @@
 #pragma once
 
 class Scene;
-class TextureHandler;
+
+#include "Resource.h"
 
 class EquirectangularToCubemapConverter
 {
 public:
-	static TextureHandler* convert(TextureHandler* equirectangularTexture, Scene* scene);
+	static Resource<Texture> convert(Resource<Texture> equirectangularTexture, Scene* scene);
 };

@@ -7,11 +7,12 @@
 #include "Engine.h"
 #include "Window.h"
 #include "Logger.h"
-#include "TextureHandler.h"
+#include "Resource.h"
 #include "ObjectHandler.h"
 #include "Scene.h"
 #include "Entity.h"
 #include "Component.h"
+#include "Texture.h"
 
 #include "GL/glew.h"
 
@@ -50,8 +51,8 @@ bool PostProcessProjector::init(int windowWidth, int windowHeight)
 	auto height = windowHeight;
 
 	// Create a empty texture and attach to FBO
-	m_textureHandler = std::shared_ptr<TextureHandler>(Texture::createEmptyTexture(width, height));
-	m_frameBuffer->attachTexture(m_textureHandler->getID());
+	m_textureHandler = Resource<Texture>(Texture::createEmptyTexture(width, height));
+	m_frameBuffer->attachTexture(m_textureHandler.get()->getID());
 
 	// Create RBO and attach to FBO
 	m_renderBuffer = std::make_shared<RenderBufferObject>(1024, 768);
@@ -102,7 +103,7 @@ void PostProcessProjector::draw()
 
 	m_screenShader->use();
 
-	m_textureHandler->bind();
+	m_textureHandler.get()->bind();
 
 	m_renderer->SetDrawType(Renderer::DrawType::Triangles);
 	
@@ -113,7 +114,7 @@ void PostProcessProjector::draw()
 	renderParams.shader = m_screenShader.get();
 	m_renderer->render(renderParams);
 
-	m_textureHandler->unbind();
+	m_textureHandler.get()->unbind();
 }
 
 void PostProcessProjector::setPostProcessShader(std::shared_ptr<Shader> shader)

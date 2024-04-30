@@ -30,7 +30,7 @@ Entity ShapeFactory::createBox(Scene* scene)
 	static int createdBoxCount = 0;
 	auto entity = createEntity(scene, "Box_" + std::to_string(createdBoxCount++));
 	auto memoryManager = Engine::get()->getMemoryManagementSystem();
-	std::shared_ptr<Mesh> mesh = memoryManager->getMesh("SGE_BOX_MESH", []() {return Box::createMesh(); });
+	Resource<Mesh> mesh = memoryManager->getMesh("SGE_BOX_MESH", []() {return Box::createMesh(); });
 	entity.addComponent<MeshComponent>(mesh);
 	return entity;
 }
@@ -40,7 +40,7 @@ Entity ShapeFactory::createQuad(Scene* scene)
 	static int createdQuadCount = 0;
 	auto entity = createEntity(scene, "Quad_" + std::to_string(createdQuadCount++));
 	auto memoryManager = Engine::get()->getMemoryManagementSystem();
-	std::shared_ptr<Mesh> mesh = memoryManager->getMesh("SGE_QUAD_MESH", []() {return Quad::createMesh(); });
+	Resource<Mesh> mesh = memoryManager->getMesh("SGE_QUAD_MESH", []() {return Quad::createMesh(); });
 	entity.addComponent<MeshComponent>(mesh);
 	return entity;
 }
@@ -50,7 +50,7 @@ Entity ShapeFactory::createSphere(Scene* scene)
 	static int createdSphereCount = 0;
 	auto entity = createEntity(scene, "Sphere_" + std::to_string(createdSphereCount++));
 	auto memoryManager = Engine::get()->getMemoryManagementSystem();
-	std::shared_ptr<Mesh> mesh = memoryManager->getMesh("SGE_SPHERE_MESH", []() {return Sphere::createMesh(1, 36, 36); });
+	Resource<Mesh> mesh = memoryManager->getMesh("SGE_SPHERE_MESH", []() {return Sphere::createMesh(1, 36, 36); });
 	entity.addComponent<MeshComponent>(mesh);
 	return entity;
 }

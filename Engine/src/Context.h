@@ -3,6 +3,7 @@
 #include <map>
 #include <memory>
 #include "Core.h"
+#include "Resource.h"
 
 class Model;
 class Shader;
@@ -56,7 +57,7 @@ public:
 
 	void setActiveScene(uint32_t index);
 
-	std::shared_ptr<TextureHandler> getDummyTexture();
+	Resource<Texture> getDummyTexture();
 
 private:
 	friend class Engine;
@@ -75,7 +76,7 @@ private:
 	std::shared_ptr<Shader> m_phongShader = nullptr;
 	std::shared_ptr<PickingShader> m_pickingShader = nullptr;
 	std::shared_ptr<Shader> m_normalDisplayShader = nullptr;
-	std::shared_ptr<TextureHandler> m_dummyTexture;
+	Resource<Texture> m_dummyTexture;
 };
 
 

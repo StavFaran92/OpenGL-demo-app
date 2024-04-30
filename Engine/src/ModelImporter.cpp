@@ -7,7 +7,7 @@
 #include "Logger.h"
 #include <filesystem>
 #include "MeshBuilder.h"
-#include "TextureHandler.h"
+#include "Resource.h"
 #include "ObjectFactory.h"
 #include "ObjectHandler.h"
 #include "Material.h"
@@ -98,10 +98,10 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 		aiMesh* aimesh = scene->mMeshes[node->mMeshes[i]];
 		std::string meshName = session.filepath + "_" + std::to_string(session.nodeIndex) + "_" + std::to_string(session.childIndex);
 		auto memoryManager = Engine::get()->getMemoryManagementSystem();
-		std::shared_ptr<Mesh> mesh = memoryManager->getMesh(meshName, [&]() { return processMesh(aimesh, scene, session); });
+		Resource<Mesh> mesh = memoryManager->getMesh(meshName, [&]() { return processMesh(aimesh, scene, session); });
 		entity.addComponent<MeshComponent>(mesh);
 
-		auto textureHandlers = new std::vector<TextureHandler*>();
+		auto textureHandlers = new std::vector<Resource<Texture>>();
 
 		auto& sgeMaterial = entity.addComponent<Material>();
 		// process material
@@ -112,7 +112,7 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 
 		if (diffuseMaps.size() > 0)
 		{
-			sgeMaterial.setTexture(Texture::Type::Diffuse, std::shared_ptr<TextureHandler>(diffuseMaps[0]));
+			sgeMaterial.setTexture(Texture::Type::Diffuse, Resource<Texture>(diffuseMaps[0]));
 		}
 
 		auto specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, session);
@@ -121,13 +121,13 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 		//TODO fix
 		if (specularMaps.size() > 0)
 		{
-			sgeMaterial.setTexture(Texture::Type::Specular, std::shared_ptr<TextureHandler>(specularMaps[0]));
+			sgeMaterial.setTexture(Texture::Type::Specular, Resource<Texture>(specularMaps[0]));
 		}
 
 		auto normalMap = loadMaterialTextures(material, aiTextureType_HEIGHT, session);
 		if (normalMap.size() > 0)
 		{
-			sgeMaterial.setTexture(Texture::Type::Normal, std::shared_ptr<TextureHandler>(normalMap[0]));
+			sgeMaterial.setTexture(Texture::Type::Normal, Resource<Texture>(normalMap[0]));
 		}
 		
 	}
@@ -209,9 +209,9 @@ Mesh* ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImport
 		.build();
 }
 
-std::vector<TextureHandler*> ModelImporter::loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImporter::ModelImportSession& session)
+std::vector<Resource<Texture>> ModelImporter::loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImporter::ModelImportSession& session)
 {
-	std::vector<TextureHandler*> textureHandlers;
+	std::vector<Resource<Texture>> textureHandlers;
 
 	// Iterate material's textures
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)

@@ -7,11 +7,12 @@
 #include "Engine.h"
 #include "Window.h"
 #include "Logger.h"
-#include "TextureHandler.h"
+#include "Resource.h"
 #include "ObjectHandler.h"
 #include "Scene.h"
 #include "Entity.h"
 #include "Component.h"
+#include "Texture.h"
 
 #include "GL/glew.h"
 
@@ -34,7 +35,7 @@ bool ScreenBufferDisplay::init(int windowWidth, int windowHeight)
 	return true;
 }
 
-void ScreenBufferDisplay::draw(TextureHandler* textureHandler)
+void ScreenBufferDisplay::draw(Resource<Texture> textureHandler)
 {
 	// Clean buffers
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -42,7 +43,7 @@ void ScreenBufferDisplay::draw(TextureHandler* textureHandler)
 
 	m_screenShader->use();
 
-	textureHandler->bind();
+	textureHandler.get()->bind();
 
 	m_renderer->SetDrawType(Renderer::DrawType::Triangles);
 	
@@ -55,5 +56,5 @@ void ScreenBufferDisplay::draw(TextureHandler* textureHandler)
 
 	//mesh.mesh->render(*m_screenShader, *m_renderer);
 
-	textureHandler->unbind();
+	textureHandler.get()->unbind();
 }

@@ -1,6 +1,6 @@
 #include "DeferredRenderer.h"
 
-#include "TextureHandler.h"
+#include "Resource.h"
 #include "gl/glew.h"
 #include "Engine.h"
 #include "Window.h"
@@ -33,19 +33,19 @@ bool DeferredRenderer::setupGBuffer()
 
 	// Generate Texture for Position data
 	m_positionTexture = Texture::createEmptyTexture(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
-	m_gBuffer.attachTexture(m_positionTexture->getID(), GL_COLOR_ATTACHMENT0);
+	m_gBuffer.attachTexture(m_positionTexture.get()->getID(), GL_COLOR_ATTACHMENT0);
 
 	// Generate Texture for Normal data
 	m_normalTexture = Texture::createEmptyTexture(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
-	m_gBuffer.attachTexture(m_normalTexture->getID(), GL_COLOR_ATTACHMENT1);
+	m_gBuffer.attachTexture(m_normalTexture.get()->getID(), GL_COLOR_ATTACHMENT1);
 
 	// Generate Texture for Albedo
 	m_albedoTexture = Texture::createEmptyTexture(width, height, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-	m_gBuffer.attachTexture(m_albedoTexture->getID(), GL_COLOR_ATTACHMENT2);
+	m_gBuffer.attachTexture(m_albedoTexture.get()->getID(), GL_COLOR_ATTACHMENT2);
 
 	// Generate Texture for MRA
 	m_MRATexture = Texture::createEmptyTexture(width, height, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-	m_gBuffer.attachTexture(m_MRATexture->getID(), GL_COLOR_ATTACHMENT3);
+	m_gBuffer.attachTexture(m_MRATexture.get()->getID(), GL_COLOR_ATTACHMENT3);
 
 	unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
 	glDrawBuffers(4, attachments);
@@ -115,7 +115,7 @@ bool DeferredRenderer::setupSSAO()
 	m_ssaoFBO.bind();
 
 	m_ssaoColorBuffer = Texture::createEmptyTexture(width, height, GL_RED, GL_RED, GL_FLOAT);
-	m_ssaoFBO.attachTexture(m_ssaoColorBuffer->getID(), GL_COLOR_ATTACHMENT0);
+	m_ssaoFBO.attachTexture(m_ssaoColorBuffer.get()->getID(), GL_COLOR_ATTACHMENT0);
 
 	unsigned int attachments[1] = { GL_COLOR_ATTACHMENT0 };
 	glDrawBuffers(1, attachments);
@@ -137,7 +137,7 @@ bool DeferredRenderer::setupSSAO()
 	m_ssaoBlurFBO.bind();
 
 	m_ssaoBlurColorBuffer = Texture::createEmptyTexture(width, height, GL_RED, GL_RED, GL_FLOAT);
-	m_ssaoBlurFBO.attachTexture(m_ssaoBlurColorBuffer->getID(), GL_COLOR_ATTACHMENT0);
+	m_ssaoBlurFBO.attachTexture(m_ssaoBlurColorBuffer.get()->getID(), GL_COLOR_ATTACHMENT0);
 
 	// Create RBO and attach to FBO
 	m_ssaoBlurFBO.attachRenderBuffer(m_ssaoBlurRenderBuffer.GetID(), FrameBufferObject::AttachmentType::Depth_Stencil);
@@ -316,38 +316,38 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 
 	// bind textures
 	// Todo solve slots issue
-	m_positionTexture->setSlot(0);
-	m_positionTexture->bind();
+	m_positionTexture.get()->setSlot(0);
+	m_positionTexture.get()->bind();
 	m_lightPassShader->setValue("gPosition", 0);
 
-	m_normalTexture->setSlot(1);
-	m_normalTexture->bind();
+	m_normalTexture.get()->setSlot(1);
+	m_normalTexture.get()->bind();
 	m_lightPassShader->setValue("gNormal", 1);
 
-	m_albedoTexture->setSlot(2);
-	m_albedoTexture->bind();
+	m_albedoTexture.get()->setSlot(2);
+	m_albedoTexture.get()->bind();
 	m_lightPassShader->setValue("gAlbedo", 2);
 
-	m_MRATexture->setSlot(3);
-	m_MRATexture->bind();
+	m_MRATexture.get()->setSlot(3);
+	m_MRATexture.get()->bind();
 	m_lightPassShader->setValue("gMRA", 3);
 
-	renderParams.irradianceMap->setSlot(4);
-	renderParams.irradianceMap->bind();
+	renderParams.irradianceMap.get()->setSlot(4);
+	renderParams.irradianceMap.get()->bind();
 	m_lightPassShader->setValue("gIrradianceMap", 4);
 
 
-	renderParams.prefilterEnvMap->setSlot(5);
-	renderParams.prefilterEnvMap->bind();
+	renderParams.prefilterEnvMap.get()->setSlot(5);
+	renderParams.prefilterEnvMap.get()->bind();
 	m_lightPassShader->setValue("gPrefilterEnvMap", 5);
 
 
-	renderParams.brdfLUT->setSlot(6);
-	renderParams.brdfLUT->bind();
+	renderParams.brdfLUT.get()->setSlot(6);
+	renderParams.brdfLUT.get()->bind();
 	m_lightPassShader->setValue("gBRDFIntegrationLUT", 6);
 
-	renderParams.shadowMap->setSlot(7);
-	renderParams.shadowMap->bind();
+	renderParams.shadowMap.get()->setSlot(7);
+	renderParams.shadowMap.get()->bind();
 	m_lightPassShader->setValue("gShadowMap", 7);
 
 #if 0

@@ -4,8 +4,9 @@
 #include <map>
 #include "Core.h"
 
-#include "TextureHandler.h"
+#include "Resource.h"
 #include "Shader.h"
+#include "Texture.h"
 
 class EngineAPI Material
 {
@@ -22,10 +23,10 @@ public:
 	 *
 	 * \param colors
 	 */
-	std::shared_ptr < TextureHandler >getTexture(Texture::Type textureType) const;
+	Resource<Texture> getTexture(Texture::Type textureType) const;
 	bool hasTexture(Texture::Type textureType) const;
 
-	void setTexture(Texture::Type textureType, std::shared_ptr<TextureHandler> textureHandler);
+	void setTexture(Texture::Type textureType, Resource<Texture> textureHandler);
 
 	template <class Archive>
 	void serialize(Archive& archive) {
@@ -40,5 +41,5 @@ protected:
 	float m_specularIntensity = 0.f;
 	float m_shininess = 32.f;
 
-	std::map<Texture::Type, std::shared_ptr<TextureHandler>> m_textures;
+	std::map<Texture::Type, Resource<Texture>> m_textures;
 };

@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "Texture.h"
+class Texture;
 #include "Engine.h"
 #include "MemoryManagement.h"
 
@@ -16,7 +16,6 @@ public:
 
 	inline T* get() const
 	{
-		return m_texturePool.get(m_uid);
 	}
 
 	inline const std::string& getUID() const 
@@ -32,4 +31,4 @@ template<>
 inline Texture* Resource<Texture>::get() const
 {
 	return Engine::get()->getMemoryManagementSystem()->m_texturePool.get(m_uid);
-}
+};
