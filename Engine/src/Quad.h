@@ -7,6 +7,6 @@ class MeshBuilder;
 class EngineAPI Quad 
 {
 public:
-	static Mesh* createMesh();
+	static Resource<Mesh> createMesh();
 };
 

@@ -3,7 +3,7 @@
 #include "Mesh.h"
 #include "MeshBuilder.h"
 
-Mesh* Sphere::createMesh(float radius, int sectors, int stacks)
+Resource<Mesh> Sphere::createMesh(float radius, int sectors, int stacks)
 {
     // clear memory of prev arrays
     auto positions = new std::vector<glm::vec3>();

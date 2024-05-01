@@ -13,7 +13,7 @@
 #include "Shader.h"
 //#include "RenderableComponent.h"
 #include "Component.h"
-#include "MemoryManagement.h"
+#include "CacheSystem.h"
 
 Entity ShapeFactory::createEntity(Scene* scene, const std::string& name)
 {

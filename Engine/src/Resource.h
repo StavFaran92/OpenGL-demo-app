@@ -3,8 +3,9 @@
 #include <cstdint>
 
 class Texture;
+class Mesh;
 #include "Engine.h"
-#include "MemoryManagement.h"
+#include "MemoryPool.h"
 
 template<typename T>
 class Resource
@@ -40,5 +41,12 @@ private:
 template<>
 inline Texture* Resource<Texture>::get() const
 {
-	return Engine::get()->getMemoryManagementSystem()->m_texturePool.get(m_uid);
+	return Engine::get()->getMemoryPool<Texture>()->get(m_uid);
+};
+
+// Specialization for get() function for Texture type
+template<>
+inline Mesh* Resource<Mesh>::get() const
+{
+	return Engine::get()->getMemoryPool<Mesh>()->get(m_uid);
 };

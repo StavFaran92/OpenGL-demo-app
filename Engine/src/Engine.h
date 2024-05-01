@@ -17,13 +17,16 @@ union SDL_Event;
 class Input;
 class EventSystem;
 class ModelImporter;
-class MemoryManagement;
+class CacheSystem;
 class ObjectManager;
 class TimeManager;
 class PhysicsSystem;
 class RandomNumberGenerator;
 class ShaderLoader;
 class ResourceManager;
+class Texture;
+class Mesh;
+template<typename T>class MemoryPool;
 
 class EngineAPI Engine
 {
@@ -41,13 +44,16 @@ public:
     Input* getInput() const;
     EventSystem* getEventSystem() const;
     ModelImporter* getModelImporter() const;
-    MemoryManagement* getMemoryManagementSystem() const;
+    CacheSystem* getMemoryManagementSystem() const;
     ObjectManager* getObjectManager() const;
     TimeManager* getTimeManager() const;
     PhysicsSystem* getPhysicsSystem() const;
     RandomNumberGenerator* getRandomSystem() const;
     ShaderLoader* getShaderLoader() const;
     ResourceManager* getResourceManager() const;
+    template<typename T>MemoryPool<T>* getMemoryPool() const {};
+    template<>MemoryPool<Texture>* getMemoryPool() const { return m_memoryPoolTexture.get(); }
+    template<>MemoryPool<Mesh>* getMemoryPool() const { return m_memoryPoolMesh.get(); }
 
     
 
@@ -90,13 +96,15 @@ protected:
     std::shared_ptr<Input> m_input;
     std::shared_ptr<EventSystem> m_eventSystem;
     std::shared_ptr<ModelImporter> m_modelImporter;
-    std::shared_ptr<MemoryManagement> m_memoryManagementSystem;
+    std::shared_ptr<CacheSystem> m_memoryManagementSystem;
     std::shared_ptr<ObjectManager> m_objectManager;
     std::shared_ptr<TimeManager> m_timeManager;
     std::shared_ptr<PhysicsSystem> m_physicsSystem;
     std::shared_ptr<RandomNumberGenerator> m_randomSystem;
     std::shared_ptr<ShaderLoader> m_shaderLoader;
     std::shared_ptr<ResourceManager> m_resourceManager;
+    std::shared_ptr<MemoryPool<Texture>> m_memoryPoolTexture;
+    std::shared_ptr<MemoryPool<Mesh>> m_memoryPoolMesh;
 
 };
 

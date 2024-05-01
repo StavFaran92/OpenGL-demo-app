@@ -15,7 +15,7 @@
 #include "Component.h"
 #include "Shader.h"
 #include "Engine.h"
-#include "MemoryManagement.h"
+#include "CacheSystem.h"
 
 ModelImporter::ModelImporter()
 {
@@ -98,7 +98,7 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 		aiMesh* aimesh = scene->mMeshes[node->mMeshes[i]];
 		std::string meshName = session.filepath + "_" + std::to_string(session.nodeIndex) + "_" + std::to_string(session.childIndex);
 		auto memoryManager = Engine::get()->getMemoryManagementSystem();
-		Resource<Mesh> mesh = memoryManager->getMesh(meshName, [&]() { return processMesh(aimesh, scene, session); });
+		Resource<Mesh> mesh = memoryManager->getMesh(meshName, [&]() { return processMesh(aimesh, scene, session); }); // todo fix
 		entity.addComponent<MeshComponent>(mesh);
 
 		auto textureHandlers = new std::vector<Resource<Texture>>();
@@ -146,7 +146,7 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	}
 }
 
-Mesh* ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporter::ModelImportSession& session)
+Resource<Mesh> ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporter::ModelImportSession& session)
 {
 	auto positions = new std::vector<glm::vec3>();
 	auto normals = new std::vector<glm::vec3>();

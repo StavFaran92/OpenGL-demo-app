@@ -17,7 +17,7 @@ static const unsigned int indices[] = {
 	1, 0, 3    // second triangle
 };
 
-Mesh* Quad::createMesh()
+Resource<Mesh> Quad::createMesh()
 {
 	VertexLayout layout;
 	layout.numOfVertices = 4;

@@ -43,7 +43,7 @@ public:
 	
 
 	ModelBuilder& getModelBuilder() const;
-	Mesh* build();
+	Resource<Mesh> build();
 
 	static MeshBuilder& builder();
 	

@@ -69,7 +69,7 @@ static const unsigned int indices[] = {
     6, 7, 3
 };
 
-Mesh* Box::createMesh()
+Resource<Mesh> Box::createMesh()
 {
     VertexLayout layout;
     layout.numOfVertices = 36;

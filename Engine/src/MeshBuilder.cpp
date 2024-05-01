@@ -2,6 +2,7 @@
 
 #include "Logger.h"
 #include "VertexLayout.h"
+#include "Factory.h"
 
 void MeshBuilder::setNumOfVertices(size_t size)
 {
@@ -375,27 +376,27 @@ MeshBuilder& MeshBuilder::setRawIndices(const unsigned int* indices, size_t size
 
 
 
-Mesh* MeshBuilder::build()
+Resource<Mesh> MeshBuilder::build()
 {
-	auto mesh = new Mesh();
+	Resource<Mesh> mesh = Factory<Mesh>::create();
 
 	if(m_positions)
-		mesh->setPositions(m_positions);
+		mesh.get()->setPositions(m_positions);
 
 	if (m_normals)
-		mesh->setNormals(m_normals);
+		mesh.get()->setNormals(m_normals);
 
 	if (m_texCoords)
-		mesh->setTexcoords(m_texCoords);
+		mesh.get()->setTexcoords(m_texCoords);
 
 	if (m_colors)
-		mesh->setColors(m_colors);
+		mesh.get()->setColors(m_colors);
 
 	if (m_indices)
-		mesh->setIndices(m_indices);
+		mesh.get()->setIndices(m_indices);
 
 	if (m_tangents)
-		mesh->setTangents(m_tangents);
+		mesh.get()->setTangents(m_tangents);
 
 	std::sort(m_layout.attribs.begin(), m_layout.attribs.end(),
 		[](LayoutAttribute l1, LayoutAttribute l2)
@@ -403,11 +404,11 @@ Mesh* MeshBuilder::build()
 		return getAttributeLocationInShader(l1) < getAttributeLocationInShader(l2);
 	});
 
-	mesh->setVertexLayout(m_layout);
+	mesh.get()->setVertexLayout(m_layout);
 
-	mesh->setNumOfVertices(m_numOfVertices);
+	mesh.get()->setNumOfVertices(m_numOfVertices);
 
-	if (!mesh->build())
+	if (!mesh.get()->build())
 	{
 		logError("Mesh Builder failed to build mesh.");
 

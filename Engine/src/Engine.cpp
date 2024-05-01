@@ -14,7 +14,7 @@
 #include "EventSystem.h"
 #include "ModelImporter.h"
 #include "Logger.h"
-#include "MemoryManagement.h"
+#include "CacheSystem.h"
 #include "ObjectManager.h"
 #include "ObjectFactory.h"
 #include "TimeManager.h"
@@ -47,7 +47,10 @@ bool Engine::init()
 
     m_eventSystem = std::make_shared<EventSystem>();
 
-    m_memoryManagementSystem = std::make_shared<MemoryManagement>();
+    m_memoryPoolTexture = std::make_shared<MemoryPool<Texture>>();
+    m_memoryPoolMesh = std::make_shared<MemoryPool<Mesh>>();
+
+    m_memoryManagementSystem = std::make_shared<CacheSystem>();
 
     m_resourceManager = std::make_shared<ResourceManager>();
 
@@ -272,7 +275,7 @@ ModelImporter* Engine::getModelImporter() const
     return m_modelImporter.get();
 }
 
-MemoryManagement* Engine::getMemoryManagementSystem() const
+CacheSystem* Engine::getMemoryManagementSystem() const
 {
     return m_memoryManagementSystem.get();
 }

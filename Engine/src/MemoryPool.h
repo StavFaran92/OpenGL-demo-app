@@ -9,38 +9,29 @@ template<typename T>
 class MemoryPool
 {
 public:
-    Resource<T> createOrGetCached(const std::string& resourceName, const std::function<T* ()>& creationCallback)
+    
+    void add(UUID uuid, T* resource)
     {
-        auto it = m_associations.find(resourceName);
-        if (it != m_associations.end())
-        {
-            auto& uid = it->second;
-            Resource<T> resource(uid);
-            return resource;
-        }
-
-        auto& resource = create(creationCallback);
-        m_associations[resourceName] = resource.getUID();
-
-        return resource;
+        m_memory[uuid] = resource;
     }
-    Resource<T> create(const std::function<T*()>& creationCallback)
-    {
-        auto obj = creationCallback();
-        auto uid = uuid::generate_uuid_v4();
-        Resource<T> resource(uid);
-        m_cache[uid] = obj;
 
-        return resource;
-    }
+    //Resource<T> create(const std::function<Resource<T>()>& creationCallback)
+    //{
+    //    auto obj = creationCallback();
+    //    auto uid = uuid::generate_uuid_v4();
+    //    Resource<T> resource(uid);
+    //    m_cache[uid] = obj;
+
+    //    return resource;
+    //}
 
 private:
     template<class T>friend class Resource;
-    T* get(const std::string& rid)
+    T* get(UUID rid)
     {
-        return m_cache[rid];
+        return m_memory[rid];
     }
-    std::unordered_map<std::string, T*> m_cache;
-    std::unordered_map<std::string, std::string> m_associations;
+    std::unordered_map<UUID, T*> m_memory;
+    
 
 };
