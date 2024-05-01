@@ -15,16 +15,6 @@ public:
         m_memory[uuid] = resource;
     }
 
-    //Resource<T> create(const std::function<Resource<T>()>& creationCallback)
-    //{
-    //    auto obj = creationCallback();
-    //    auto uid = uuid::generate_uuid_v4();
-    //    Resource<T> resource(uid);
-    //    m_cache[uid] = obj;
-
-    //    return resource;
-    //}
-
 private:
     template<class T>friend class Resource;
     T* get(UUID rid)

@@ -54,16 +54,16 @@ Resource<Texture> Texture::loadTextureFromFile(const std::string& fileLocation, 
 {
 	// Check if texture is already cached to optimize the load process
 	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
-	return memoryManagementSystem->getTexture(fileLocation, [&]() {
-		auto texture = new Texture();
+	return memoryManagementSystem->createOrGetCached<Texture>(fileLocation, [&]() {
+		Resource<Texture> texture = Factory<Texture>::create();
 
-		texture->m_target = GL_TEXTURE_2D;
+		texture.get()->m_target = GL_TEXTURE_2D;
 
 		// flip the image
 		stbi_set_flip_vertically_on_load(flip);
 
 		// load texture from file
-		unsigned char* data = stbi_load(fileLocation.c_str(), &texture->m_width, &texture->m_height, &texture->m_bitDepth, 0);
+		unsigned char* data = stbi_load(fileLocation.c_str(), &texture.get()->m_width, &texture.get()->m_height, &texture.get()->m_bitDepth, 0);
 
 		// load validation
 		if (!data) {
@@ -72,15 +72,15 @@ Resource<Texture> Texture::loadTextureFromFile(const std::string& fileLocation, 
 		}
 
 		// generate texture and bind it
-		glGenTextures(1, &texture->m_id);
-		texture->bind();
+		glGenTextures(1, &texture.get()->m_id);
+		texture.get()->bind();
 
 		GLenum format = GL_RGB;
-		if (texture->m_bitDepth == 1)
+		if (texture.get()->m_bitDepth == 1)
 			format = GL_RED;
-		else if (texture->m_bitDepth == 3)
+		else if (texture.get()->m_bitDepth == 3)
 			format = GL_RGB;
-		else if (texture->m_bitDepth == 4)
+		else if (texture.get()->m_bitDepth == 4)
 			format = GL_RGBA;
 
 		// sets the texture parameters
@@ -90,11 +90,11 @@ Resource<Texture> Texture::loadTextureFromFile(const std::string& fileLocation, 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		// generate texture and mipmaps
-		glTexImage2D(GL_TEXTURE_2D, 0, format, texture->m_width, texture->m_height, 0, format, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, texture.get()->m_width, texture.get()->m_height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		// unbind texture and release the image.
-		texture->unbind();
+		texture.get()->unbind();
 		stbi_image_free(data);
 
 		return texture;

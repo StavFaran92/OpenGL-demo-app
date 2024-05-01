@@ -26,7 +26,7 @@ public:
 
 	inline T* get() const
 	{
-		return nullptr;
+		return Engine::get()->getMemoryPool<T>()->get(m_uid);
 	}
 
 	inline const std::string& getUID() const 
@@ -35,18 +35,4 @@ public:
 	}
 private:
 	std::string m_uid;
-};
-
-// Specialization for get() function for Texture type
-template<>
-inline Texture* Resource<Texture>::get() const
-{
-	return Engine::get()->getMemoryPool<Texture>()->get(m_uid);
-};
-
-// Specialization for get() function for Texture type
-template<>
-inline Mesh* Resource<Mesh>::get() const
-{
-	return Engine::get()->getMemoryPool<Mesh>()->get(m_uid);
 };
