@@ -26,6 +26,7 @@ public:
 
 private:
 	template<class T>friend class Resource;
+	template<class T>friend class Factory;
 	MemoryPool<Texture> m_texturePool;
 	MemoryPool<Mesh> m_meshPool;
 	MemoryPool<Shader> m_shaderPool;

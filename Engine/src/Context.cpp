@@ -26,7 +26,7 @@ Context::Context() : m_shaderCounter(0)
 
 	m_pickingShader = Shader::createShared<PickingShader>();
 
-	m_dummyTexture = Resource<Texture>(Texture::createDummyTexture());
+	m_dummyTexture = Texture::createDummyTexture();
 	//m_normalDisplayShader = std::make_shared<Shader>("Resources\\Shaders\\normalDisplayShader.vert", "Resources\\Shaders\\normalDisplayShader.frag", "Resources\\Shaders\\normalDisplayShader.geom");
 
 	//std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();

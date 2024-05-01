@@ -167,11 +167,11 @@ private:
 
 	std::shared_ptr<FrameBufferObject> m_renderTargetFBO;
 	std::shared_ptr<RenderBufferObject> m_renderTargetRBO;
-	Resource<Texture> m_renderTargetTexture = nullptr;
+	Resource<Texture> m_renderTargetTexture;
 
-	Resource<Texture> m_irradianceMap = nullptr;
-	Resource<Texture> m_prefilterEnvMap = nullptr;
-	Resource<Texture> m_BRDFIntegrationLUT = nullptr;
+	Resource<Texture> m_irradianceMap;
+	Resource<Texture> m_prefilterEnvMap;
+	Resource<Texture> m_BRDFIntegrationLUT;
 	std::shared_ptr<Shader> m_skyboxShader;
 
 	SceneSerializer m_serdes;

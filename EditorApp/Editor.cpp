@@ -429,7 +429,7 @@ static void addTextureEditWidget(const Material& mat, const std::string& name, T
 	unsigned int tid = 0;
 	if (mat.hasTexture(ttype))
 	{
-		tid = mat.getTexture(ttype)->getID();
+		tid = mat.getTexture(ttype).get()->getID();
 	}
 
 	ImGui::Text(name.c_str());
@@ -507,7 +507,7 @@ void RenderInspectorWindow(float width, float height)
 			ImGui::LabelText("", "Mesh");
 			auto& meshComponent = selectedEntity.getComponent<MeshComponent>();
 			;
-			ImGui::Text("Number of vertices: %d", (int)meshComponent.mesh->getNumOfVertices());
+			ImGui::Text("Number of vertices: %d", (int)meshComponent.mesh.get()->getNumOfVertices());
 
 			ImGui::Separator();
 		}

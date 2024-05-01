@@ -10,12 +10,22 @@ template<typename T>
 class Resource
 {
 public:
+	static Resource<T> empty;
+
 	Resource() = default;
+
+	Resource(std::nullptr_t) {};
+
+	// Override assignment operator to allow assigning nullptr
+	Resource& operator=(std::nullptr_t) {
+		return empty;
+	}
 
 	Resource(const std::string& uid) : m_uid(uid) {};
 
 	inline T* get() const
 	{
+		return nullptr;
 	}
 
 	inline const std::string& getUID() const 
@@ -23,7 +33,7 @@ public:
 		return m_uid; 
 	}
 private:
-	std::string m_uid = 0;
+	std::string m_uid;
 };
 
 // Specialization for get() function for Texture type

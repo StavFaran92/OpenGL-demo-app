@@ -9,6 +9,7 @@
 #include "MemoryManagement.h"
 #include "Engine.h"
 #include "Resource.h"
+#include "Factory.h"
 
 Texture::Texture()
 	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_slot(0)
@@ -29,23 +30,24 @@ Resource<Texture> Texture::createEmptyTexture(int width, int height)
 
 Resource<Texture> Texture::createEmptyTexture(int width, int height, int internalFormat, int format, int type)
 {
-	Resource<Texture> resource = Engine::get()->getFactory<Texture>().create();
-	Texture* texture = resource.get();
+	Resource<Texture> texture = Factory<Texture>::create();
 
-	texture->m_target = GL_TEXTURE_2D;
-	texture->m_width = width;
-	texture->m_height = height;
+	texture.get()->m_target = GL_TEXTURE_2D;
+	texture.get()->m_width = width;
+	texture.get()->m_height = height;
 
 	// generate texture
-	glGenTextures(1, &texture->m_id);
-	texture->bind();
+	glGenTextures(1, &texture.get()->m_id);
+	texture.get()->bind();
 
 	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	texture->unbind();
+	texture.get()->unbind();
+
+	return texture;
 }
 
 Resource<Texture> Texture::loadTextureFromFile(const std::string& fileLocation, bool flip/* = FLIP_TEXTURE*/)
@@ -101,34 +103,36 @@ Resource<Texture> Texture::loadTextureFromFile(const std::string& fileLocation, 
 
 Resource<Texture> Texture::createTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, void* data)
 {
-	return Engine::get()->getMemoryManagementSystem()->createTexture([&](Texture* texture) {
-		texture->m_target = GL_TEXTURE_2D;
-		texture->m_width = width;
-		texture->m_height = height;
+	Resource<Texture> texture = Factory<Texture>::create();
 
-		// generate texture
-		glGenTextures(1, &texture->m_id);
-		texture->bind();
+	texture.get()->m_target = GL_TEXTURE_2D;
+	texture.get()->m_width = width;
+	texture.get()->m_height = height;
 
-		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
+	// generate texture
+	glGenTextures(1, &texture.get()->m_id);
+	texture.get()->bind();
 
-		for (auto& [paramKey, paramValue] : params)
-		{
-			glTexParameteri(GL_TEXTURE_2D, paramKey, paramValue);
-		}
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
 
-		texture->unbind();
-	});
+	for (auto& [paramKey, paramValue] : params)
+	{
+		glTexParameteri(GL_TEXTURE_2D, paramKey, paramValue);
+	}
+
+	texture.get()->unbind();
+
+	return texture;
 }
 
 Resource<Texture> Texture::loadCubemapTexture(std::vector<std::string> faces)
 {
-	auto texture = new Texture();
+	Resource<Texture> texture = Factory<Texture>::create();
 
-	texture->m_target = GL_TEXTURE_CUBE_MAP;
+	texture.get()->m_target = GL_TEXTURE_CUBE_MAP;
 
-	glGenTextures(1, &texture->m_id);
-	texture->bind();
+	glGenTextures(1, &texture.get()->m_id);
+	texture.get()->bind();
 
 	// flip the image
 	stbi_set_flip_vertically_on_load(false);
@@ -152,21 +156,19 @@ Resource<Texture> Texture::loadCubemapTexture(std::vector<std::string> faces)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-	texture->unbind();
+	texture.get()->unbind();
 
-	auto textureHandler = new TextureHandler(texture);
-
-	return textureHandler;
+	return texture;
 }
 
 Resource<Texture> Texture::createCubemapTexture(int width, int height, int internalFormat, int format, int type)
 {
-	auto texture = new Texture();
+	Resource<Texture> texture = Factory<Texture>::create();
 
-	texture->m_target = GL_TEXTURE_CUBE_MAP;
+	texture.get()->m_target = GL_TEXTURE_CUBE_MAP;
 
-	glGenTextures(1, &texture->m_id);
-	texture->bind();
+	glGenTextures(1, &texture.get()->m_id);
+	texture.get()->bind();
 
 	for (unsigned int i = 0; i < 6; i++)
 	{
@@ -178,21 +180,19 @@ Resource<Texture> Texture::createCubemapTexture(int width, int height, int inter
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-	texture->unbind();
+	texture.get()->unbind();
 
-	auto textureHandler = new TextureHandler(texture);
-
-	return textureHandler;
+	return texture;
 }
 
 Resource<Texture> Texture::createCubemapTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps)
 {
-	auto texture = new Texture();
+	Resource<Texture> texture = Factory<Texture>::create();
 
-	texture->m_target = GL_TEXTURE_CUBE_MAP;
+	texture.get()->m_target = GL_TEXTURE_CUBE_MAP;
 
-	glGenTextures(1, &texture->m_id);
-	texture->bind();
+	glGenTextures(1, &texture.get()->m_id);
+	texture.get()->bind();
 
 	for (unsigned int i = 0; i < 6; i++)
 	{
@@ -208,24 +208,22 @@ Resource<Texture> Texture::createCubemapTexture(int width, int height, int inter
 		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 	}
 
-	texture->unbind();
+	texture.get()->unbind();
 
-	auto textureHandler = new TextureHandler(texture);
-
-	return textureHandler;
+	return texture;
 }
 
 Resource<Texture> Texture::createDummyTexture()
 {
-	auto texture = new Texture();
+	Resource<Texture> texture = Factory<Texture>::create();
 
-	texture->m_target = GL_TEXTURE_2D;
-	texture->m_width = 1;
-	texture->m_height = 1;
+	texture.get()->m_target = GL_TEXTURE_2D;
+	texture.get()->m_width = 1;
+	texture.get()->m_height = 1;
 
 	// generate texture
-	glGenTextures(1, &texture->m_id);
-	texture->bind();
+	glGenTextures(1, &texture.get()->m_id);
+	texture.get()->bind();
 
 	unsigned char data[3] = { 255, 255, 255 }; // RGB values for white
 
@@ -236,11 +234,9 @@ Resource<Texture> Texture::createDummyTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	texture->unbind();
+	texture.get()->unbind();
 
-	auto textureHandler = new TextureHandler(texture);
-
-	return textureHandler;
+	return texture;
 }
 
 std::string Texture::textureTypeToString(Type type)
