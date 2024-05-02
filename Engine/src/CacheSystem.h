@@ -37,6 +37,6 @@ public:
 		return resource;
 	}
 private:
-	std::unordered_map<std::string, std::string> m_associations;
+	std::unordered_map<std::string, UUID> m_associations;
 };
 

@@ -121,6 +121,8 @@ Resource<Texture> Context::getDummyTexture()
 	return m_dummyTexture;
 }
 
+
+
 void Context::update(float deltaTime)
 {
 	if (m_activeScene == -1)
@@ -175,4 +177,11 @@ EventSystem* Context::getEventSystem() const
 ModelImporter* Context::getModelImporter() const
 {
 	return Engine::get()->getModelImporter();
+}
+
+void Context::close()
+{
+	m_scenes.clear();
+	m_shaders.clear();
+	m_dummyTexture.release();
 }

@@ -59,6 +59,8 @@ public:
 
 	Resource<Texture> getDummyTexture();
 
+	void close();
+
 private:
 	friend class Engine;
 	void update(float deltaTime);

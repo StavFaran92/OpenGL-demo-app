@@ -21,6 +21,13 @@ private:
     {
         return m_memory[rid];
     }
+
+    void erase(UUID uid)
+    {
+        if (m_memory.find(uid) == m_memory.end()) return;
+        delete m_memory[uid];
+        m_memory.erase(uid);
+    }
     std::unordered_map<UUID, T*> m_memory;
     
 

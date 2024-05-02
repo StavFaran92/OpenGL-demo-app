@@ -69,14 +69,17 @@ void ImguiHandler::render()
 
 bool ImguiHandler::close()
 {
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplSDL2_Shutdown();
-	ImGui::DestroyContext();
+
 
 	for (int i = m_guiList.size() - 1; i >= 0; i--)
 	{
 		delete m_guiList[i];
 	}
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext((ImGuiContext*)m_imguiContext);
+
 
     return true;
 }

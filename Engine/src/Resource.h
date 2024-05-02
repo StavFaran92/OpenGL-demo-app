@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <atomic>
 
 class Texture;
 class Mesh;
@@ -13,26 +14,93 @@ class Resource
 public:
 	static Resource<T> empty;
 
-	Resource() = default;
+	Resource() : m_uid(EMPTY_UUID), refCount(new int(0)) {};
 
-	Resource(std::nullptr_t) {};
+	Resource(std::nullptr_t) : m_uid(EMPTY_UUID), refCount(new int(0)) {};
 
-	// Override assignment operator to allow assigning nullptr
-	Resource& operator=(std::nullptr_t) {
-		return empty;
-	}
+	Resource(UUID uid) : m_uid(uid), refCount(new int(1)) {};
 
-	Resource(const std::string& uid) : m_uid(uid) {};
+	Resource(const Resource<T>& other) 
+	{
+		m_uid = other.m_uid;
+		refCount = other.refCount;
+		if (other.m_uid != EMPTY_UUID)
+		{
+			(*this->refCount)++;
+		}
+	};
+
+	Resource<T>& operator=(const Resource<T>& other)
+	{
+		clean();
+
+		m_uid = other.m_uid;
+		refCount = other.refCount;
+		if (other.m_uid != EMPTY_UUID)
+		{
+			(*this->refCount)++;
+		}
+
+		return *this;
+	};
+
+	Resource(Resource<T>&& other)
+	{
+		m_uid = other.m_uid;
+		refCount = other.refCount;
+
+		other.m_uid = EMPTY_UUID;
+		other.refCount = nullptr;
+	};
+
+	Resource<T>& operator=(Resource<T>&& other)
+	{
+		clean();
+
+		m_uid = other.m_uid;
+		refCount = other.refCount;
+		
+		other.m_uid = EMPTY_UUID;
+		other.refCount = nullptr;
+
+		return *this;
+	};
 
 	inline T* get() const
 	{
 		return Engine::get()->getMemoryPool<T>()->get(m_uid);
 	}
 
-	inline const std::string& getUID() const 
+	inline UUID getUID() const 
 	{ 
 		return m_uid; 
 	}
+
+	void release()
+	{
+		clean();
+	}
+
+	~Resource<T>() // destructor
+	{
+		if(m_uid != EMPTY_UUID) clean();
+	}
+
 private:
-	std::string m_uid;
+	void clean()
+	{
+		(*refCount)--;
+		if (*refCount == 0)
+		{
+			if (m_uid != EMPTY_UUID)
+			{
+				Engine::get()->getMemoryPool<T>()->erase(m_uid);
+			}
+			delete refCount;
+			m_uid = EMPTY_UUID;
+		}
+	}
+private:
+	UUID m_uid;
+	int* refCount = nullptr;
 };

@@ -245,6 +245,8 @@ void Engine::close()
 {
     logTrace(__FUNCTION__);
 
+    m_context->close();
+
     m_imguiHandler->close();
 
     m_window->close();
