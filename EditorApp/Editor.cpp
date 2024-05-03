@@ -385,6 +385,7 @@ void RenderSceneHierarchyWindow(float width, float height)
 
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
 			{
+				// I have no idea why i-1 is used here, it's just works..
 				selectedEntity = sceneObjects[i-1].e;
 
 				selected = i - 1;
@@ -394,7 +395,7 @@ void RenderSceneHierarchyWindow(float width, float height)
 
 			if (selected == i)
 			{
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Default color
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
 				if (ImGui::BeginPopup("SceneObjectContextPopup"))
 				{
 					if (ImGui::MenuItem("Delete"))
@@ -738,7 +739,7 @@ class GUI_Helper : public GuiMenu {
 
 		// Render UI
 		RenderSceneHierarchyWindow(screenWidth, screenHeight);
-		RenderViewWindow(screenWidth, screenHeight);
+		//RenderViewWindow(screenWidth, screenHeight);
 		RenderInspectorWindow(screenWidth, screenHeight);
 		RenderAssetViewWindow(screenWidth, screenHeight); // Add the Asset View window
 
