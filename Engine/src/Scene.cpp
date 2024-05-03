@@ -232,6 +232,8 @@ void Scene::init(Context* context)
 	m_registry.on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
 	m_registry.on_construct<CollisionSphereComponent>().connect<&Scene::onCollisionConstruct>(this);
 	m_registry.on_construct<CollisionMeshComponent>().connect<&Scene::onCollisionConstruct>(this);
+	
+	m_registry.on_destroy<RigidBodyComponent>().connect<&Scene::onRigidBodyDestroy>(this);
 }
 
 void Scene::update(float deltaTime)
@@ -522,7 +524,10 @@ Entity Scene::createEntity(const std::string& name)
 
 void Scene::removeEntity(const Entity& e)
 {
+	auto id = e.handlerID();
 	m_registry.destroy(e.handler());
+
+	logDebug("Removed entity: " + std::to_string(id));
 }
 
 ICamera* Scene::getActiveCamera() const
@@ -711,6 +716,14 @@ void Scene::createActor(entt::entity entity, PhysicsSystem* physicsSystem, Rigid
 	rb.simulatedBody = (void*)body;
 }
 
+void Scene::removeActor(entt::entity entity, PhysicsSystem* physicsSystem, RigidBodyComponent& rb)
+{
+	Entity e{ entity, this };
+
+	auto& rBody = e.getComponent<RigidBodyComponent>();
+	m_PhysicsScene->removeActor(*(physx::PxRigidActor*)rBody.simulatedBody);
+}
+
 void Scene::stopSimulation()
 {
 	if (!m_isSimulationActive)
@@ -796,6 +809,17 @@ void Scene::onRigidBodyConstruct(entt::registry& registry, entt::entity entity)
 		auto physicsSystem = Engine::get()->getPhysicsSystem();
 		auto& rb = e.getComponent<RigidBodyComponent>();
 		createActor(entity, physicsSystem, rb);
+	}
+}
+
+void Scene::onRigidBodyDestroy(entt::registry& registry, entt::entity entity)
+{
+	if (m_isSimulationActive)
+	{
+		Entity e(entity, this);
+		auto physicsSystem = Engine::get()->getPhysicsSystem();
+		auto& rb = e.getComponent<RigidBodyComponent>();
+		removeActor(entity, physicsSystem, rb);
 	}
 }
 

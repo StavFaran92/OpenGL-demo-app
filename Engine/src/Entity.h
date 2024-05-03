@@ -172,6 +172,11 @@ public:
 
     }
 
+    void remove()
+    {
+        m_scene->removeEntity(*this);
+    }
+
     //TODO fix this , 
     // In conjuction with set parent this will cause hard to debug issues.
     // make sure to fix it

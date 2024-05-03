@@ -55,8 +55,6 @@ public:
 
 	Resource<T>& operator=(Resource<T>&& other)
 	{
-		clean();
-
 		m_uid = other.m_uid;
 		refCount = other.refCount;
 		

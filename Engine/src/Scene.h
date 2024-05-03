@@ -119,11 +119,14 @@ private:
 	void startSimulation();
 	void createSimulationActors(PhysicsSystem* physicsSystem);
 	void createActor(entt::entity entity, PhysicsSystem* physicsSystem, RigidBodyComponent& rb);
+	void removeActor(entt::entity entity, PhysicsSystem* physicsSystem, RigidBodyComponent& rb);
 	void stopSimulation();
 	bool isSimulationActive() const;
 	void createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body, Entity e, bool recursive);
 
 	void onRigidBodyConstruct(entt::registry& registry, entt::entity entity);
+	void onRigidBodyDestroy(entt::registry& registry, entt::entity entity);
+
 	void onCollisionConstruct(entt::registry& registry, entt::entity entity);
 
 	void init(Context* context);
