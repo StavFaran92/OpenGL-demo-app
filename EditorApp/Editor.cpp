@@ -385,19 +385,27 @@ void RenderSceneHierarchyWindow(float width, float height)
 
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
 			{
+				selectedEntity = sceneObjects[i-1].e;
+
+				selected = i - 1;
+
 				ImGui::OpenPopup("SceneObjectContextPopup");
 			}
 
-			if (ImGui::BeginPopup("SceneObjectContextPopup"))
+			if (selected == i)
 			{
-				if (ImGui::MenuItem("Delete"))
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Default color
+				if (ImGui::BeginPopup("SceneObjectContextPopup"))
 				{
-					auto e = sceneObjects[i].e;
-					e.remove();
-					updateScene();
-				}
+					if (ImGui::MenuItem("Delete"))
+					{
+						sceneObjects[i].e.remove();
+						updateScene();
+					}
 
-				ImGui::EndPopup();
+					ImGui::EndPopup();
+				}
+				ImGui::PopStyleColor();
 			}
 
 			if (ImGui::Selectable(sceneObjects[i].name.c_str()))
