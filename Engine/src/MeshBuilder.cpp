@@ -228,6 +228,21 @@ MeshBuilder& MeshBuilder::setTangents(std::vector<glm::vec3>& tangents, bool cop
 	return *this;
 }
 
+MeshBuilder& MeshBuilder::merge(const MeshBuilder& other)
+{
+
+	m_numOfVertices += other.m_numOfVertices;
+	m_positions->insert(m_positions->end(), other.m_positions->begin(), other.m_positions->end());
+	m_normals->insert(m_normals->end(), other.m_normals->begin(), other.m_normals->end());
+	m_tangents->insert(m_tangents->end(), other.m_tangents->begin(), other.m_tangents->end());
+	m_texCoords->insert(m_texCoords->end(), other.m_texCoords->begin(), other.m_texCoords->end());
+	m_colors->insert(m_colors->end(), other.m_colors->begin(), other.m_colors->end());
+	m_indices->insert(m_indices->end(), other.m_indices->begin(), other.m_indices->end());
+	m_layout = other.m_layout;
+
+	return *this;
+}
+
 MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, VertexLayout layout)
 {
 	if (!vertices)

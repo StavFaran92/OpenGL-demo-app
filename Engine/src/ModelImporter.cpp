@@ -81,11 +81,15 @@ Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 	session.fileDir = path.substr(0, path.find_last_of('\\'));
 	session.root = entity;
 	session.name = modelName;
+	session.builder = &MeshBuilder::builder();
 
 	// place session in session map
 	m_sessions[entity.handlerID()] = session;
 
 	processNode(scene->mRootNode, scene, session, entity, pScene);
+
+	Resource<Mesh> mesh = session.builder->build();
+	entity.getComponent<MeshComponent>().mesh = mesh;
 
 	return entity;
 }
@@ -99,8 +103,9 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 		aiMesh* aimesh = scene->mMeshes[node->mMeshes[i]];
 		std::string meshName = session.filepath + "_" + std::to_string(session.nodeIndex) + "_" + std::to_string(session.childIndex);
 		auto memoryManager = Engine::get()->getMemoryManagementSystem();
-		Resource<Mesh> mesh = memoryManager->createOrGetCached<Mesh>(meshName, [&]() { return processMesh(aimesh, scene, session); });
-		entity.getComponent<MeshComponent>().mesh = mesh;
+		session.builder->merge(processMesh(aimesh, scene, session));
+		//Resource<Mesh> mesh = memoryManager->createOrGetCached<Mesh>(meshName, [&]() {  });
+		//entity.getComponent<MeshComponent>().mesh = mesh;
 
 		//TODO fix the code below
 
@@ -149,7 +154,7 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	}
 }
 
-Resource<Mesh> ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporter::ModelImportSession& session)
+MeshBuilder& ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporter::ModelImportSession& session)
 {
 	auto positions = new std::vector<glm::vec3>();
 	auto normals = new std::vector<glm::vec3>();
@@ -208,8 +213,7 @@ Resource<Mesh> ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, Mo
 		.setNormals(*normals)
 		.setTexcoords(*texcoords)
 		.setIndices(*indices)
-		.setTangents(*tangents)
-		.build();
+		.setTangents(*tangents);
 }
 
 std::vector<Resource<Texture>> ModelImporter::loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImporter::ModelImportSession& session)

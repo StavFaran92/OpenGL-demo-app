@@ -16,6 +16,7 @@
 #include "Logger.h"
 #include "Engine.h"
 #include "Texture.h"
+#include "Material.h"
 
 Context::Context() : m_shaderCounter(0)
 {
@@ -27,6 +28,8 @@ Context::Context() : m_shaderCounter(0)
 	m_pickingShader = Shader::createShared<PickingShader>();
 
 	m_dummyTexture = Texture::createDummyTexture();
+
+	m_defaultMaterial = std::make_shared<Material>();
 	//m_normalDisplayShader = std::make_shared<Shader>("Resources\\Shaders\\normalDisplayShader.vert", "Resources\\Shaders\\normalDisplayShader.frag", "Resources\\Shaders\\normalDisplayShader.geom");
 
 	//std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
@@ -177,6 +180,11 @@ EventSystem* Context::getEventSystem() const
 ModelImporter* Context::getModelImporter() const
 {
 	return Engine::get()->getModelImporter();
+}
+
+std::shared_ptr<Material> Context::getDefaultMaterial() const
+{
+	return m_defaultMaterial;
 }
 
 void Context::close()

@@ -317,18 +317,18 @@ void ShowModelCreatorWindow()
 
 			auto entity = Engine::get()->getModelImporter()->loadModelFromFile(modelPathBuffer.c_str(), Engine::get()->getContext()->getActiveScene().get());
 
-			auto& mat = entity.getComponent<Material>();
+			auto& mat = entity.getComponent<MaterialComponent>();
 
 			auto albedoMap = Texture::loadTextureFromFile(textureAlbedoPathBuffer.c_str(), false);
-			mat.setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
+			mat.begin()->get()->setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
 			auto roughnessMap = Texture::loadTextureFromFile(textureRoughnessPathBuffer.c_str(), false);
-			mat.setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
+			mat.begin()->get()->setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
 			auto normalMap = Texture::loadTextureFromFile(textureNormalPathBuffer.c_str(), false);
-			mat.setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
+			mat.begin()->get()->setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
 			auto metallicMap = Texture::loadTextureFromFile(textureMetallicPathBuffer.c_str(), false);
-			mat.setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
+			mat.begin()->get()->setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
 			auto aoMap = Texture::loadTextureFromFile(textureAmbientOcclusionPathBuffer.c_str(), false);
-			mat.setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
+			mat.begin()->get()->setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
 
 			entity.getComponent<Transformation>().setLocalPosition(pos);
 			entity.getComponent<Transformation>().setLocalScale(scale);
@@ -571,7 +571,7 @@ void RenderInspectorWindow(float width, float height)
 		if (selectedEntity.HasComponent<Material>())
 		{
 			ImGui::LabelText("", "Material");
-			auto& mat = selectedEntity.getComponent<Material>();
+			auto& mat = *selectedEntity.getComponent<MaterialComponent>().begin()->get();
 
 			addTextureEditWidget(mat, "Albedo", Texture::Type::Albedo);
 			addTextureEditWidget(mat, "Normal", Texture::Type::Normal);
@@ -772,9 +772,9 @@ public:
 		auto ground = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 		auto& groundTransfrom = ground.getComponent<Transformation>();
 		groundTransfrom.setLocalScale({ 50, .5f, 50 });
-		auto& mat = ground.addComponent<Material>();
+		auto& mat = ground.addComponent<MaterialComponent>();
 		auto tex = Texture::loadTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
-		mat.setTexture(Texture::Type::Albedo, Resource<Texture>(tex));
+		mat.begin()->get()->setTexture(Texture::Type::Albedo, Resource<Texture>(tex));
 		auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
 		auto& collisionBox = ground.addComponent<CollisionBoxComponent>(.5f);
 
@@ -792,9 +792,9 @@ public:
 			sphereTransform.setLocalPosition({ x, 10, z });
 
 
-			auto& mat = sphere.addComponent<Material>();
-			auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg");
-			mat.setTexture(Texture::Type::Diffuse, Resource<Texture>(tex));
+			auto& mat = sphere.addComponent<MaterialComponent>();
+			auto tex = Texture::loadTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
+			mat.begin()->get()->setTexture(Texture::Type::Diffuse, Resource<Texture>(tex));
 
 			auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
 			auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);

@@ -22,6 +22,7 @@ class Input;
 class EventSystem;
 class ModelImporter;
 class TextureHandler;
+class Material;
 
 
 
@@ -51,6 +52,7 @@ public:
 	Input* getInput() const;
 	EventSystem* getEventSystem() const;
 	ModelImporter* getModelImporter() const;
+	std::shared_ptr<Material> getDefaultMaterial() const;
 
 	std::shared_ptr<Scene> getActiveScene() const;
 	
@@ -78,6 +80,7 @@ private:
 	std::shared_ptr<Shader> m_phongShader = nullptr;
 	std::shared_ptr<PickingShader> m_pickingShader = nullptr;
 	std::shared_ptr<Shader> m_normalDisplayShader = nullptr;
+	std::shared_ptr<Material> m_defaultMaterial = nullptr;
 	Resource<Texture> m_dummyTexture;
 };
 

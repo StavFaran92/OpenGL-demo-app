@@ -193,14 +193,15 @@ struct EngineAPI MeshComponent : public Component
 
 struct EngineAPI MaterialComponent : public Component
 {
-	MaterialComponent() = default;
+	MaterialComponent();
+	
 
 	auto begin() { return materials.begin(); }
 	auto end() { return materials.end(); }
 	auto begin() const { return materials.begin(); }
 	auto end() const { return materials.end(); }
 
-	void addMaterial(const Resource<Material>& mat)
+	void addMaterial(const std::shared_ptr<Material>& mat)
 	{
 		materials.push_back(mat);
 	}
@@ -210,7 +211,7 @@ struct EngineAPI MaterialComponent : public Component
 		archive(materials);
 	}
 
-	std::vector<Resource<Material>> materials;
+	std::vector<std::shared_ptr<Material>> materials;
 };
 
 struct EngineAPI ObjectComponent : public Component

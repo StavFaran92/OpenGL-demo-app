@@ -9,6 +9,7 @@
 #include "Mesh.h"
 #include "Texture.h"
 #include "Entity.h"
+#include "MeshBuilder.h"
 
 // Forward declerations
 struct aiNode;
@@ -37,6 +38,7 @@ public:
 		int nodeIndex = 0;
 		int childIndex = 0;
 		Entity root;
+		MeshBuilder* builder = nullptr;
 	};
 
 	/** Constructor */
@@ -55,7 +57,7 @@ private:
 	/** Init the model loader module */
 	void init();
 	void processNode(aiNode* node, const aiScene* scene, ModelImportSession& session, Entity entity, Scene* pScene);
-	Resource<Mesh> processMesh(aiMesh* mesh, const aiScene* scene, ModelImportSession& session);
+	MeshBuilder& processMesh(aiMesh* mesh, const aiScene* scene, ModelImportSession& session);
 	std::vector<Resource<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImportSession& session);
 	static Texture::Type getTextureType(aiTextureType type);
 private:

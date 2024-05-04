@@ -34,6 +34,8 @@ public:
 
 	MeshBuilder& setTangents(std::vector<glm::vec3>& tangents, bool copy = false);
 
+	MeshBuilder& merge(const MeshBuilder& other);
+
 	Resource<Mesh> build();
 
 	static MeshBuilder& builder();
