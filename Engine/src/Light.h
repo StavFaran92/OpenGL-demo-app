@@ -3,10 +3,11 @@
 
 #include <string>
 #include "Core.h"
+#include "Component.h"
 
 class Shader;
 
-class EngineAPI Light
+class EngineAPI Light : public Component
 {
 public:
 	Light();

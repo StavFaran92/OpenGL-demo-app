@@ -17,7 +17,7 @@ struct EngineAPI Component
 
 };
 
-struct EngineAPI TagComponent
+struct EngineAPI TagComponent : public Component
 {
 	[[maybe_unused]] bool empty = false;
 };
@@ -157,24 +157,60 @@ struct EngineAPI CameraComponent : public Component
 
 struct EngineAPI MeshComponent : public Component
 {
+	MeshComponent(const Resource<Mesh>& mesh) : mesh(mesh) {};
 	MeshComponent() = default;
-	MeshComponent(Resource<Mesh> mesh) : mesh(mesh) {}
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(temp);
+		archive(mesh.getUID(), materialSlot);
 	}
 
-	float temp; //todo remove
+	float materialSlot = 0; // todo this will be used (probably as a list) to support multi material models
 	Resource<Mesh> mesh;
 };
+
+//struct EngineAPI MeshArrayRendererComponent : public Component
+//{
+//	MeshArrayRendererComponent() = default;
+//	
+//	void addMesh(const MeshRenderer& mesh)
+//	{
+//		meshes.push_back(mesh);
+//	}
+//
+//	auto begin() { return meshes.begin(); }
+//	auto end() { return meshes.end(); }
+//	auto begin() const { return meshes.begin(); }
+//	auto end() const { return meshes.end(); }
+//
+//	template <class Archive>
+//	void serialize(Archive& archive) {
+//		archive(meshes);
+//	}
+//
+//	std::vector<MeshRenderer> meshes;
+//};
 
 struct EngineAPI MaterialComponent : public Component
 {
 	MaterialComponent() = default;
-	MaterialComponent(std::shared_ptr<Material> mat) : mat(mat) {}
 
-	std::shared_ptr<Material> mat;
+	auto begin() { return materials.begin(); }
+	auto end() { return materials.end(); }
+	auto begin() const { return materials.begin(); }
+	auto end() const { return materials.end(); }
+
+	void addMaterial(const Resource<Material>& mat)
+	{
+		materials.push_back(mat);
+	}
+
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(materials);
+	}
+
+	std::vector<Resource<Material>> materials;
 };
 
 struct EngineAPI ObjectComponent : public Component

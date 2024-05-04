@@ -8,7 +8,7 @@
 #include "Transformation.h"
 //#include "Components.h"
 
-class EngineAPI InstanceBatch// : public Component
+class EngineAPI InstanceBatch : public Component
 {
 public:
 	/** Constructor */

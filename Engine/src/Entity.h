@@ -67,6 +67,8 @@ public:
     template<typename T, typename... Args>
     T& addComponent(Args&&... args)
     {
+        static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component.");
+
         assert(valid() && "Invalid entity.");
 
         T& component = m_scene->getRegistry().emplace_or_replace<T>(m_entity, std::forward<Args>(args)...);
@@ -89,6 +91,8 @@ public:
     template<typename T>
     T& getComponent() const
     {
+        static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component.");
+
         assert(valid() && "Invalid entity.");
         assert(m_scene->getRegistry().has<T>(m_entity) && "Component does not exist.");
         return m_scene->getRegistry().get<T>(m_entity);

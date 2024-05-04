@@ -422,16 +422,6 @@ Resource<Mesh> MeshBuilder::build()
 	return mesh;
 }
 
-void MeshBuilder::setModelBuilder(ModelBuilder* modelBuilder)
-{
-	m_modelBuilder = modelBuilder;
-}
-
-ModelBuilder& MeshBuilder::getModelBuilder() const
-{
-	return *m_modelBuilder;
-}
-
 MeshBuilder& MeshBuilder::builder()
 {
 	return *new MeshBuilder();

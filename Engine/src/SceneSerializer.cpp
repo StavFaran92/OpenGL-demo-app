@@ -27,7 +27,7 @@ struct SerializableEntity
 	std::optional <RenderableComponent> renderableComponent;
 	std::optional<CameraComponent> camera;
 	//std::optional<NativeScriptComponent> nsc;
-	std::optional<Material> mat;
+	std::optional<MaterialComponent> mat;
 	std::optional<DirectionalLight> dLight;
 	std::optional<PointLight> pLight;
 	std::optional<ObjectComponent> obj;
@@ -80,7 +80,7 @@ bool SceneSerializer::serialize(Scene& scene)
 			getComponentIfExists<RenderableComponent>(e),
 			getComponentIfExists<CameraComponent>(e),
 			//getComponentIfExists<NativeScriptComponent>(e),
-			getComponentIfExists<Material>(e),
+			getComponentIfExists<MaterialComponent>(e),
 			getComponentIfExists<DirectionalLight>(e),
 			getComponentIfExists<PointLight>(e),
 			getComponentIfExists<ObjectComponent>(e),

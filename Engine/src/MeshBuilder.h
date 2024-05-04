@@ -10,9 +10,6 @@
 #include "Mesh.h"
 #include "VertexLayout.h"
 
-class ModelBuilder;
-class TextureHandler;
-
 class EngineAPI MeshBuilder
 {
 public:
@@ -28,21 +25,15 @@ public:
 	MeshBuilder& setTexcoords(const float* texCoords, size_t size);
 
 	MeshBuilder& setColors(std::vector<glm::vec3>& colors, bool copy = false);
-
 	MeshBuilder& setColors(const float* colors, size_t size);
 
 	MeshBuilder& setIndices(std::vector<unsigned int>& indices, bool copy = false);
+	MeshBuilder& setRawIndices(const unsigned int* indices, size_t size);
 
 	MeshBuilder& setRawVertices(const float* vertices, VertexLayout layout);
 
-	MeshBuilder& setRawIndices(const unsigned int* indices, size_t size);
-
 	MeshBuilder& setTangents(std::vector<glm::vec3>& tangents, bool copy = false);
 
-	
-	
-
-	ModelBuilder& getModelBuilder() const;
 	Resource<Mesh> build();
 
 	static MeshBuilder& builder();
@@ -53,7 +44,6 @@ private:
 	friend class ModelBuilder;
 	/** Constructor */
 	MeshBuilder();
-	void setModelBuilder(ModelBuilder* modelBuilder);
 	void enableAttribute(LayoutAttribute attribute);
 	void disableAttribute(LayoutAttribute attribute);
 	void setNumOfVertices(size_t size);
@@ -72,13 +62,3 @@ private:
 	ModelBuilder* m_modelBuilder = nullptr;
 
 };
-
-//void MeshBuilder::setModelBuilder(ModelBuilder<Model>* modelBuilder)
-//{
-//	m_modelBuilder = modelBuilder;
-//}
-//
-//ModelBuilder<Model>& MeshBuilder::getModelBuilder()
-//{
-//	return *m_modelBuilder;
-//}

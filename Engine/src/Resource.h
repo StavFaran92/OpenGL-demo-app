@@ -79,6 +79,11 @@ public:
 		clean();
 	}
 
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(m_uid);
+	}
+
 	~Resource<T>() // destructor
 	{
 		if(m_uid != EMPTY_UUID) clean();

@@ -72,7 +72,8 @@ Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 	//create new model
 	auto entity = pScene->createEntity(modelName);
 	entity.addComponent<RenderableComponent>();
-	entity.addComponent<Material>();
+	entity.addComponent<MeshComponent>();
+	entity.addComponent<MaterialComponent>();
 
 	// create new model session
 	ModelImportSession session;
@@ -99,36 +100,38 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 		std::string meshName = session.filepath + "_" + std::to_string(session.nodeIndex) + "_" + std::to_string(session.childIndex);
 		auto memoryManager = Engine::get()->getMemoryManagementSystem();
 		Resource<Mesh> mesh = memoryManager->createOrGetCached<Mesh>(meshName, [&]() { return processMesh(aimesh, scene, session); });
-		entity.addComponent<MeshComponent>(mesh);
+		entity.getComponent<MeshComponent>().mesh = mesh;
 
-		auto textureHandlers = new std::vector<Resource<Texture>>();
+		//TODO fix the code below
 
-		auto& sgeMaterial = entity.addComponent<Material>();
-		// process material
-		aiMaterial* material = scene->mMaterials[aimesh->mMaterialIndex];
+		//auto textureHandlers = new std::vector<Resource<Texture>>();
 
-		auto diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, session);
-		textureHandlers->insert(textureHandlers->end(), diffuseMaps.begin(), diffuseMaps.end());
+		//auto& sgeMaterial = entity.addComponent<Material>();
+		//// process material
+		//aiMaterial* material = scene->mMaterials[aimesh->mMaterialIndex];
 
-		if (diffuseMaps.size() > 0)
-		{
-			sgeMaterial.setTexture(Texture::Type::Diffuse, Resource<Texture>(diffuseMaps[0]));
-		}
+		//auto diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, session);
+		//textureHandlers->insert(textureHandlers->end(), diffuseMaps.begin(), diffuseMaps.end());
 
-		auto specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, session);
-		textureHandlers->insert(textureHandlers->end(), specularMaps.begin(), specularMaps.end());
+		//if (diffuseMaps.size() > 0)
+		//{
+		//	sgeMaterial.setTexture(Texture::Type::Diffuse, Resource<Texture>(diffuseMaps[0]));
+		//}
 
-		//TODO fix
-		if (specularMaps.size() > 0)
-		{
-			sgeMaterial.setTexture(Texture::Type::Specular, Resource<Texture>(specularMaps[0]));
-		}
+		//auto specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, session);
+		//textureHandlers->insert(textureHandlers->end(), specularMaps.begin(), specularMaps.end());
 
-		auto normalMap = loadMaterialTextures(material, aiTextureType_HEIGHT, session);
-		if (normalMap.size() > 0)
-		{
-			sgeMaterial.setTexture(Texture::Type::Normal, Resource<Texture>(normalMap[0]));
-		}
+		////TODO fix
+		//if (specularMaps.size() > 0)
+		//{
+		//	sgeMaterial.setTexture(Texture::Type::Specular, Resource<Texture>(specularMaps[0]));
+		//}
+
+		//auto normalMap = loadMaterialTextures(material, aiTextureType_HEIGHT, session);
+		//if (normalMap.size() > 0)
+		//{
+		//	sgeMaterial.setTexture(Texture::Type::Normal, Resource<Texture>(normalMap[0]));
+		//}
 		
 	}
 	// then do the same for each of its children
@@ -136,13 +139,13 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	{
 		session.childIndex = i;
 
-		auto childEntity = pScene->createEntity(session.name); //todo fix
-		childEntity.addComponent<RenderableComponent>();
+		//auto childEntity = pScene->createEntity(session.name); //todo fix
+		//childEntity.addComponent<RenderableComponent>();
 
-		childEntity.setParent(entity);
-		childEntity.setRoot(session.root);
+		//childEntity.setParent(entity);
+		//childEntity.setRoot(session.root);
 
-		processNode(node->mChildren[i], scene, session, childEntity, pScene);
+		processNode(node->mChildren[i], scene, session, entity, pScene);
 	}
 }
 
