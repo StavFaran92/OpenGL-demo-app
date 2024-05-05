@@ -78,6 +78,6 @@ Resource<Mesh> Box::createMesh()
     layout.attribs.emplace_back(LayoutAttribute::Texcoords);
 
     return MeshBuilder::builder()
-        .setRawVertices((float*)vertices, layout)
+        .addRawVertices((float*)vertices, layout)
         .build();
 }

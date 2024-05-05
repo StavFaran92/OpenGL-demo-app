@@ -761,8 +761,8 @@ void Scene::createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body,
 		auto meshComponent = e.tryGetComponent<MeshComponent>();
 		if (meshComponent)
 		{
-			const std::vector<glm::vec3>* apos = meshComponent->mesh.get()->getPositions();
-			shape = physicsSystem->createConvexMeshShape(*apos);
+			const std::vector<glm::vec3>& apos = meshComponent->mesh.get()->getPositions();
+			shape = physicsSystem->createConvexMeshShape(apos);
 		}
 	}
 

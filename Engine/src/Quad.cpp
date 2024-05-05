@@ -26,8 +26,8 @@ Resource<Mesh> Quad::createMesh()
 	layout.attribs.emplace_back(LayoutAttribute::Texcoords);
 
 	return MeshBuilder::builder()
-		.setRawVertices((float*)vertices, layout)
-		.setRawIndices((unsigned int*)indices, sizeof(indices) / sizeof(unsigned int))
+		.addRawVertices((float*)vertices, layout)
+		.addIndices((unsigned int*)indices, sizeof(indices) / sizeof(unsigned int))
 		.build();
 }
 

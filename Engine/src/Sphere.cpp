@@ -93,9 +93,9 @@ Resource<Mesh> Sphere::createMesh(float radius, int sectors, int stacks)
     }
 
     return MeshBuilder::builder()
-        .setPositions(*positions)
-        .setNormals(*normals)
-        .setTexcoords(*texcoords)
-        .setIndices(*indices)
+        .addPositions(*positions)
+        .addNormals(*normals)
+        .addTexcoords(*texcoords)
+        .addIndices(*indices)
         .build();
 }

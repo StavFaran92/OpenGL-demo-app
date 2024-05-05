@@ -10,85 +10,27 @@ Mesh::Mesh()
 	logInfo(__FUNCTION__);
 }
 
-void Mesh::setPositions(std::shared_ptr<std::vector<glm::vec3>> positions)
+const std::vector<glm::vec3>& Mesh::getPositions() const
 {
-	m_positions = positions;
+	return m_positions;
 }
 
-const std::vector<glm::vec3>* Mesh::getPositions() const
+const std::vector<glm::vec3>& Mesh::getNormals() const
 {
-	return m_positions.get();
-}
-
-void Mesh::setNormals(std::shared_ptr<std::vector<glm::vec3>> normals)
-{
-	m_normals = normals;
-}
-
-void Mesh::setTangents(std::shared_ptr<std::vector<glm::vec3>> tangents)
-{
-	m_tangents = tangents;
-}
-
-const std::vector<glm::vec3>* Mesh::getNormals() const
-{
-	return m_normals.get();
-}
-
-void Mesh::setNumOfVertices(size_t size)
-{
-	m_numOfVertices = size;
+	return m_normals;
 }
 
 size_t Mesh::getNumOfVertices() const
 {
-	return m_numOfVertices;
+	return m_positions.size();
 }
 
-void Mesh::setTexcoords(std::shared_ptr<std::vector<glm::vec2>> texCoords)
-{
-	m_texcoords = texCoords;
-}
-
-const std::vector<glm::vec2>* Mesh::getTexcoords() const
-{
-	return m_texcoords.get();
-}
-
-void Mesh::setIndices(std::shared_ptr<std::vector<unsigned int>> indices)
-{
-	m_indices = indices;
-}
-
-const std::vector<unsigned int>* Mesh::getIndices() const
-{
-	return m_indices.get();
-}
-
-void Mesh::setColors(std::shared_ptr<std::vector<glm::vec3>> colors)
-{
-	m_useColors = true;
-
-	m_colors = colors;
-}
-
-const std::vector<glm::vec3>* Mesh::getColors() const
-{
-	return m_colors.get();
-}
-
-bool Mesh::build()
+bool Mesh::build(const MeshData& mData)
 {
 	// validate mesh data
-	if (!m_positions || m_positions->empty())
+	if (mData.m_positions.size() == 0)
 	{
 		logError("Cannot build mesh without position data.");
-		return false;
-	}
-
-	if (m_numOfVertices == 0)
-	{
-		logError("Number of vertices cannot be 0.");
 		return false;
 	}
 
@@ -99,7 +41,7 @@ bool Mesh::build()
 	}
 
 	// if mesh doesn't have normals calculate them
-	if (!m_normals || m_normals->empty())
+	if (mData.m_normals.size() == 0)
 	{
 		calculateNormals();
 	}
@@ -112,12 +54,12 @@ bool Mesh::build()
 	}
 
 	// Update layout info
-	m_layout.numOfVertices = m_numOfVertices;
+	m_layout.numOfVertices = mData.m_positions.size();
 	m_layout.stride = stride;
 
 	// Create verticies array
 	int offset = 0;
-	std::vector<float> vertices(stride * m_numOfVertices, 0); //TODO optimize
+	std::vector<float> vertices(stride * mData.m_positions.size(), 0); //TODO optimize
 
 	for (auto entry : m_layout.attribs)
 	{
@@ -126,7 +68,7 @@ bool Mesh::build()
 		{
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
-				auto pos = m_positions->at(i);
+				auto pos = mData.m_positions.at(i);
 				vertices[stride * i + offset + 0] = pos.x;
 				vertices[stride * i + offset + 1] = pos.y;
 				vertices[stride * i + offset + 2] = pos.z;
@@ -138,7 +80,7 @@ bool Mesh::build()
 		{
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
-				auto normal = m_normals->at(i);
+				auto normal = mData.m_normals.at(i);
 				vertices[stride * i + offset + 0] = normal.x;
 				vertices[stride * i + offset + 1] = normal.y;
 				vertices[stride * i + offset + 2] = normal.z;
@@ -150,7 +92,7 @@ bool Mesh::build()
 		{
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
-				auto texCoord = m_texcoords->at(i);
+				auto texCoord = mData.m_texCoords.at(i);
 				vertices[stride * i + offset + 0] = texCoord.x;
 				vertices[stride * i + offset + 1] = texCoord.y;
 			}
@@ -161,7 +103,7 @@ bool Mesh::build()
 		{
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
-				auto color = m_colors->at(i);
+				auto color = mData.m_colors.at(i);
 				vertices[stride * i + offset + 0] = color.x;
 				vertices[stride * i + offset + 1] = color.y;
 				vertices[stride * i + offset + 2] = color.z;
@@ -173,10 +115,9 @@ bool Mesh::build()
 		{
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
-				auto tangent = m_tangents->at(i);
+				auto tangent = mData.m_tangents.at(i);
 				vertices[stride * i + offset + 0] = tangent.x;
 				vertices[stride * i + offset + 1] = tangent.y;
-				vertices[stride * i + offset + 2] = tangent.z;
 			}
 		}
 
@@ -186,12 +127,17 @@ bool Mesh::build()
 	// Create buffers
 	m_vao = std::make_shared<VertexArrayObject>();
 
-	if(m_indices)
-		m_ibo = std::make_shared<ElementBufferObject>(&(m_indices->at(0)), m_indices->size());
+	if (mData.m_indices.size() > 0)
+	{
+		m_ibo = std::make_shared<ElementBufferObject>((unsigned int*) & (mData.m_indices[0]), mData.m_indices.size());
+	}
 
-	m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), m_numOfVertices, sizeof(float) * stride);
+	m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), (unsigned int)mData.m_positions.size(), sizeof(float) * stride);
 
 	m_vao->AttachBuffer(*m_vbo, m_ibo.get(), m_layout);
+
+	m_positions = std::move(mData.m_positions);
+	m_normals = std::move(mData.m_normals);
 
 	return true;
 }
@@ -234,11 +180,8 @@ void Mesh::calculateNormals()
 
 void Mesh::clearMesh()
 {
-	m_positions = nullptr;
-	m_normals = nullptr;
-	m_texcoords = nullptr;
-	m_indices = nullptr;
-	m_colors = nullptr;
+	m_positions.clear();
+	m_normals.clear();
 	m_vao = nullptr;
 	m_ibo = nullptr;
 	m_vbo = nullptr;

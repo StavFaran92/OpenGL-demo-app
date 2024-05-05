@@ -15,24 +15,31 @@ class EngineAPI MeshBuilder
 public:
 	
 
-	MeshBuilder& setPositions(std::vector<glm::vec3>& positions, bool copy = false);
-	MeshBuilder& setPositions(const float* positions, size_t size);
+	MeshBuilder& addPosition(const glm::vec3& position);
+	MeshBuilder& addPositions(const std::vector<glm::vec3>& positions);
+	MeshBuilder& addPositions(const float* positions, size_t size);
 
-	MeshBuilder& setNormals(std::vector<glm::vec3>& normals, bool copy = false);
-	MeshBuilder& setNormals(const float* normals, size_t size);
+	MeshBuilder& addNormal(const glm::vec3& normal);
+	MeshBuilder& addNormals(const std::vector<glm::vec3>& normals);
+	MeshBuilder& addNormals(const float* normals, size_t size);
 
-	MeshBuilder& setTexcoords(std::vector<glm::vec2>& texCoords, bool copy = false);
-	MeshBuilder& setTexcoords(const float* texCoords, size_t size);
+	MeshBuilder& addTexcoord(const glm::vec2& texCoord);
+	MeshBuilder& addTexcoords(const std::vector<glm::vec2>& texCoords);
+	MeshBuilder& addTexcoords(const float* texCoords, size_t size);
 
-	MeshBuilder& setColors(std::vector<glm::vec3>& colors, bool copy = false);
-	MeshBuilder& setColors(const float* colors, size_t size);
+	MeshBuilder& addColor(const glm::vec3& color);
+	MeshBuilder& addColors(const std::vector<glm::vec3>& colors);
+	MeshBuilder& addColors(const float* colors, size_t size);
 
-	MeshBuilder& setIndices(std::vector<unsigned int>& indices, bool copy = false);
-	MeshBuilder& setRawIndices(const unsigned int* indices, size_t size);
+	MeshBuilder& addTangent(const glm::vec3& tangent);
+	MeshBuilder& addTangents(const std::vector<glm::vec3>& tangents);
+	MeshBuilder& addTangents(const float* tangents, size_t size);
 
-	MeshBuilder& setRawVertices(const float* vertices, VertexLayout layout);
+	MeshBuilder& addIndex(unsigned int index);
+	MeshBuilder& addIndices(const std::vector<unsigned int>& indices);
+	MeshBuilder& addIndices(const unsigned int* indices, size_t size);
 
-	MeshBuilder& setTangents(std::vector<glm::vec3>& tangents, bool copy = false);
+	MeshBuilder& addRawVertices(const float* vertices, VertexLayout layout);
 
 	MeshBuilder& merge(const MeshBuilder& other);
 
@@ -48,19 +55,8 @@ private:
 	MeshBuilder();
 	void enableAttribute(LayoutAttribute attribute);
 	void disableAttribute(LayoutAttribute attribute);
-	void setNumOfVertices(size_t size);
 
 private:
 
-	size_t m_numOfVertices = 0;
-	std::shared_ptr<std::vector<glm::vec3>> m_positions = nullptr;
-	std::shared_ptr<std::vector<glm::vec3>> m_normals = nullptr;
-	std::shared_ptr<std::vector<glm::vec3>> m_tangents = nullptr;
-	std::shared_ptr<std::vector<glm::vec2>> m_texCoords = nullptr;
-	std::shared_ptr<std::vector<glm::vec3>> m_colors = nullptr;
-	std::shared_ptr<std::vector<unsigned int>> m_indices = nullptr;
-	VertexLayout m_layout;
-
-	ModelBuilder* m_modelBuilder = nullptr;
-
+	MeshData m_data;
 };

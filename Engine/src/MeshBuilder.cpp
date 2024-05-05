@@ -4,246 +4,373 @@
 #include "VertexLayout.h"
 #include "Factory.h"
 
-void MeshBuilder::setNumOfVertices(size_t size)
+MeshBuilder& MeshBuilder::addPosition(const glm::vec3& position)
 {
-	if (size == 0)
-	{
-		logError("Size cannot be set to 0.");
-		return;
-	}
-
-	if (m_numOfVertices != 0 && m_numOfVertices != size)
-	{
-		logWarning("2 different numOfVertices values have been specified, using the first one.."); 
-		return;
-	}
-
-	m_numOfVertices = size;
-}
-
-MeshBuilder& MeshBuilder::setPositions(std::vector<glm::vec3>& positions, bool copy)
-{
-	if (copy)
-	{
-		m_positions = std::make_shared<std::vector<glm::vec3>>(positions);
-	}
-	else
-	{
-		m_positions = std::shared_ptr<std::vector<glm::vec3>>(&positions);
-	}
-
-	enableAttribute(LayoutAttribute::Positions);
-	setNumOfVertices(positions.size());
+	m_data.m_positions.push_back(position);
 
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::setPositions(const float* positions, size_t size)
+MeshBuilder& MeshBuilder::addPositions(const std::vector<glm::vec3>& positions)
 {
-	if (!positions)
-	{
-		logError("Specified ptr is null.");
-		return *this;
-	}
+	m_data.m_positions.insert(m_data.m_positions.end(), positions.begin(), positions.end());
 
-	if (size == 0)
-	{
-		logError("Size cannot be set to 0.");
-		return *this;
-	}
+	return *this;
+}
 
-	m_positions = std::make_shared<std::vector<glm::vec3>>();
-
+MeshBuilder& MeshBuilder::addPositions(const float* positions, size_t size)
+{
 	for (int i = 0; i < size; i++)
 	{
-		glm::vec3 pos{ positions[i * 3 + 0], positions[i * 3 + 1], positions[i * 3 + 2] };
-		m_positions->emplace_back(pos);
+		addPosition({ positions[i * 3 + 0], positions[i * 3 + 1], positions[i * 3 + 2] });
 	}
-
-	enableAttribute(LayoutAttribute::Positions);
-	setNumOfVertices(size);
 
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::setNormals(std::vector<glm::vec3>& normals, bool copy)
+MeshBuilder& MeshBuilder::addNormal(const glm::vec3& normal)
 {
-	if (copy)
-	{
-		m_normals = std::make_shared<std::vector<glm::vec3>>(normals);
-	}
-	else
-	{
-		m_normals = std::shared_ptr<std::vector<glm::vec3>>(&normals);
-	}
-
-	enableAttribute(LayoutAttribute::Normals);
+	m_data.m_normals.push_back(normal);
 
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::setNormals(const float* normals, size_t size)
+MeshBuilder& MeshBuilder::addNormals(const std::vector<glm::vec3>& normals)
 {
-	if (!normals)
-	{
-		logError("Specified ptr is null");
-		return *this;
-	}
+	m_data.m_normals.insert(m_data.m_normals.end(), normals.begin(), normals.end());
 
-	if (size == 0)
-	{
-		logError("Size cannot be set to 0.");
-		return *this;
-	}
+	return *this;
+}
 
-	m_normals = std::make_shared<std::vector<glm::vec3>>();
-
+MeshBuilder& MeshBuilder::addNormals(const float* normals, size_t size)
+{
 	for (int i = 0; i < size; i++)
 	{
-		glm::vec3 normal{ normals[i * 3 + 0], normals[i * 3 + 1], normals[i * 3 + 2] };
-		m_normals->emplace_back(normal);
+		addNormal({ normals[i * 3 + 0], normals[i * 3 + 1], normals[i * 3 + 2] });
 	}
-
-	enableAttribute(LayoutAttribute::Normals);
-	setNumOfVertices(size);
 
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::setTexcoords(std::vector<glm::vec2>& texCoords, bool copy)
+MeshBuilder& MeshBuilder::addTexcoord(const glm::vec2& texCoord)
 {
-	if (copy)
-	{
-		m_texCoords = std::make_shared<std::vector<glm::vec2>>(texCoords);
-	}
-	else
-	{
-		m_texCoords = std::shared_ptr<std::vector<glm::vec2>>(&texCoords);
-	}
-
-	enableAttribute(LayoutAttribute::Texcoords);
+	m_data.m_texCoords.push_back(texCoord);
 
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::setTexcoords(const float* texCoords, size_t size)
+MeshBuilder& MeshBuilder::addTexcoords(const std::vector<glm::vec2>& texCoords)
 {
-	if (!texCoords)
-	{
-		logError("Specified ptr is null");
-		return *this;
-	}
+	m_data.m_texCoords.insert(m_data.m_texCoords.end(), texCoords.begin(), texCoords.end());
 
-	if (size == 0)
-	{
-		logError("Size cannot be set to 0.");
-		return *this;
-	}
+	return *this;
+}
 
-	m_texCoords = std::make_shared<std::vector<glm::vec2>>();
-
+MeshBuilder& MeshBuilder::addTexcoords(const float* texCoords, size_t size)
+{
 	for (int i = 0; i < size; i++)
 	{
-		glm::vec3 texCoord{ texCoords[i * 3 + 0], texCoords[i * 3 + 1], texCoords[i * 3 + 2] };
-		m_texCoords->emplace_back(texCoord);
+		addTexcoord({ texCoords[i * 2 + 0], texCoords[i * 2 + 1] });
 	}
-
-	enableAttribute(LayoutAttribute::Texcoords);
-	setNumOfVertices(size);
 
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::setColors(std::vector<glm::vec3>& colors, bool copy)
+MeshBuilder& MeshBuilder::addColor(const glm::vec3& color)
 {
-	if (copy)
-	{
-		m_colors = std::make_shared<std::vector<glm::vec3>>(colors);
-	}
-	else
-	{
-		m_colors = std::shared_ptr<std::vector<glm::vec3>>(&colors);
-	}
-
-	enableAttribute(LayoutAttribute::Colors);
+	m_data.m_colors.push_back(color);
 
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::setColors(const float* colors, size_t size)
+MeshBuilder& MeshBuilder::addColors(const std::vector<glm::vec3>& colors)
 {
-	if (!colors)
-	{
-		logError("Specified ptr is null");
-		return *this;
-	}
+	m_data.m_colors.insert(m_data.m_colors.end(), colors.begin(), colors.end());
 
-	if (size == 0)
-	{
-		logError("Size cannot be set to 0.");
-		return *this;
-	}
+	return *this;
+}
 
-	m_colors = std::make_shared<std::vector<glm::vec3>>();
-
+MeshBuilder& MeshBuilder::addColors(const float* colors, size_t size)
+{
 	for (int i = 0; i < size; i++)
 	{
-		glm::vec3 color{ colors[i * 3 + 0], colors[i * 3 + 1], colors[i * 3 + 2] };
-		m_colors->emplace_back(color);
+		addColor({ colors[i * 3 + 0], colors[i * 3 + 1], colors[i * 3 + 2] });
 	}
-
-	enableAttribute(LayoutAttribute::Colors);
-	setNumOfVertices(size); // todo verift instead of write
 
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::setIndices(std::vector<unsigned int>& indices, bool copy)
+MeshBuilder& MeshBuilder::addTangent(const glm::vec3& tangent)
 {
-	if (copy)
-	{
-		m_indices = std::make_shared<std::vector<unsigned int>>(indices);
-	}
-	else
-	{
-		m_indices = std::shared_ptr<std::vector<unsigned int>>(&indices);
-	}
+	m_data.m_tangents.push_back(tangent);
 
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::setTangents(std::vector<glm::vec3>& tangents, bool copy)
+MeshBuilder& MeshBuilder::addTangents(const std::vector<glm::vec3>& tangents)
 {
-	if (copy)
-	{
-		m_tangents = std::make_shared<std::vector<glm::vec3>>(tangents);
-	}
-	else
-	{
-		m_tangents = std::shared_ptr<std::vector<glm::vec3>>(&tangents);
-	}
-
-	enableAttribute(LayoutAttribute::Tangents);
+	m_data.m_tangents.insert(m_data.m_tangents.end(), tangents.begin(), tangents.end());
 
 	return *this;
 }
+
+MeshBuilder& MeshBuilder::addTangents(const float* tangents, size_t size)
+{
+	for (int i = 0; i < size; i++)
+	{
+		addTangent({ tangents[i * 3 + 0], tangents[i * 3 + 1], tangents[i * 3 + 2] });
+	}
+
+	return *this;
+}
+
+MeshBuilder& MeshBuilder::addIndex(unsigned int index)
+{
+	m_data.m_indices.push_back(index);
+
+	return *this;
+}
+
+MeshBuilder& MeshBuilder::addIndices(const std::vector<unsigned int>& indices)
+{
+	m_data.m_indices.insert(m_data.m_indices.end(), indices.begin(), indices.end());
+
+	return *this;
+}
+
+MeshBuilder& MeshBuilder::addIndices(const unsigned int* indices, size_t size)
+{
+	for (int i = 0; i < size; i++)
+	{
+		addIndex(indices[i]);
+	}
+
+	return *this;
+}
+
+//MeshBuilder& MeshBuilder::setPositions(std::vector<glm::vec3>& positions, bool copy)
+//{
+//	if (copy)
+//	{
+//		m_positions = std::make_shared<std::vector<glm::vec3>>(positions);
+//	}
+//	else
+//	{
+//		m_positions = std::shared_ptr<std::vector<glm::vec3>>(&positions);
+//	}
+//
+//	enableAttribute(LayoutAttribute::Positions);
+//	setNumOfVertices(positions.size());
+//
+//	return *this;
+//}
+//
+//MeshBuilder& MeshBuilder::setPositions(const float* positions, size_t size)
+//{
+//	if (!positions)
+//	{
+//		logError("Specified ptr is null.");
+//		return *this;
+//	}
+//
+//	if (size == 0)
+//	{
+//		logError("Size cannot be set to 0.");
+//		return *this;
+//	}
+//
+//	m_positions = std::make_shared<std::vector<glm::vec3>>();
+//
+//	for (int i = 0; i < size; i++)
+//	{
+//		glm::vec3 pos{ positions[i * 3 + 0], positions[i * 3 + 1], positions[i * 3 + 2] };
+//		m_positions->emplace_back(pos);
+//	}
+//
+//	enableAttribute(LayoutAttribute::Positions);
+//	setNumOfVertices(size);
+//
+//	return *this;
+//}
+
+//MeshBuilder& MeshBuilder::setNormals(std::vector<glm::vec3>& normals, bool copy)
+//{
+//	if (copy)
+//	{
+//		m_normals = std::make_shared<std::vector<glm::vec3>>(normals);
+//	}
+//	else
+//	{
+//		m_normals = std::shared_ptr<std::vector<glm::vec3>>(&normals);
+//	}
+//
+//	enableAttribute(LayoutAttribute::Normals);
+//
+//	return *this;
+//}
+//
+//MeshBuilder& MeshBuilder::setNormals(const float* normals, size_t size)
+//{
+//	if (!normals)
+//	{
+//		logError("Specified ptr is null");
+//		return *this;
+//	}
+//
+//	if (size == 0)
+//	{
+//		logError("Size cannot be set to 0.");
+//		return *this;
+//	}
+//
+//	m_normals = std::make_shared<std::vector<glm::vec3>>();
+//
+//	for (int i = 0; i < size; i++)
+//	{
+//		glm::vec3 normal{ normals[i * 3 + 0], normals[i * 3 + 1], normals[i * 3 + 2] };
+//		m_normals->emplace_back(normal);
+//	}
+//
+//	enableAttribute(LayoutAttribute::Normals);
+//	setNumOfVertices(size);
+//
+//	return *this;
+//}
+
+//MeshBuilder& MeshBuilder::setTexcoords(std::vector<glm::vec2>& texCoords, bool copy)
+//{
+//	if (copy)
+//	{
+//		m_texCoords = std::make_shared<std::vector<glm::vec2>>(texCoords);
+//	}
+//	else
+//	{
+//		m_texCoords = std::shared_ptr<std::vector<glm::vec2>>(&texCoords);
+//	}
+//
+//	enableAttribute(LayoutAttribute::Texcoords);
+//
+//	return *this;
+//}
+
+//MeshBuilder& MeshBuilder::setTexcoords(const float* texCoords, size_t size)
+//{
+//	if (!texCoords)
+//	{
+//		logError("Specified ptr is null");
+//		return *this;
+//	}
+//
+//	if (size == 0)
+//	{
+//		logError("Size cannot be set to 0.");
+//		return *this;
+//	}
+//
+//	m_texCoords = std::make_shared<std::vector<glm::vec2>>();
+//
+//	for (int i = 0; i < size; i++)
+//	{
+//		glm::vec3 texCoord{ texCoords[i * 3 + 0], texCoords[i * 3 + 1], texCoords[i * 3 + 2] };
+//		m_texCoords->emplace_back(texCoord);
+//	}
+//
+//	enableAttribute(LayoutAttribute::Texcoords);
+//	setNumOfVertices(size);
+//
+//	return *this;
+//}
+
+//MeshBuilder& MeshBuilder::setColors(std::vector<glm::vec3>& colors, bool copy)
+//{
+//	if (copy)
+//	{
+//		m_colors = std::make_shared<std::vector<glm::vec3>>(colors);
+//	}
+//	else
+//	{
+//		m_colors = std::shared_ptr<std::vector<glm::vec3>>(&colors);
+//	}
+//
+//	enableAttribute(LayoutAttribute::Colors);
+//
+//	return *this;
+//}
+//
+//MeshBuilder& MeshBuilder::setColors(const float* colors, size_t size)
+//{
+//	if (!colors)
+//	{
+//		logError("Specified ptr is null");
+//		return *this;
+//	}
+//
+//	if (size == 0)
+//	{
+//		logError("Size cannot be set to 0.");
+//		return *this;
+//	}
+//
+//	m_colors = std::make_shared<std::vector<glm::vec3>>();
+//
+//	for (int i = 0; i < size; i++)
+//	{
+//		glm::vec3 color{ colors[i * 3 + 0], colors[i * 3 + 1], colors[i * 3 + 2] };
+//		m_colors->emplace_back(color);
+//	}
+//
+//	enableAttribute(LayoutAttribute::Colors);
+//	setNumOfVertices(size); // todo verift instead of write
+//
+//	return *this;
+//}
+
+//MeshBuilder& MeshBuilder::setIndices(std::vector<unsigned int>& indices, bool copy)
+//{
+//	if (copy)
+//	{
+//		m_indices = std::make_shared<std::vector<unsigned int>>(indices);
+//	}
+//	else
+//	{
+//		m_indices = std::shared_ptr<std::vector<unsigned int>>(&indices);
+//	}
+//
+//	return *this;
+//}
+
+//MeshBuilder& MeshBuilder::setTangents(std::vector<glm::vec3>& tangents, bool copy)
+//{
+//	if (copy)
+//	{
+//		m_tangents = std::make_shared<std::vector<glm::vec3>>(tangents);
+//	}
+//	else
+//	{
+//		m_tangents = std::shared_ptr<std::vector<glm::vec3>>(&tangents);
+//	}
+//
+//	enableAttribute(LayoutAttribute::Tangents);
+//
+//	return *this;
+//}
 
 MeshBuilder& MeshBuilder::merge(const MeshBuilder& other)
 {
 
-	m_numOfVertices += other.m_numOfVertices;
-	m_positions->insert(m_positions->end(), other.m_positions->begin(), other.m_positions->end());
-	m_normals->insert(m_normals->end(), other.m_normals->begin(), other.m_normals->end());
-	m_tangents->insert(m_tangents->end(), other.m_tangents->begin(), other.m_tangents->end());
-	m_texCoords->insert(m_texCoords->end(), other.m_texCoords->begin(), other.m_texCoords->end());
-	m_colors->insert(m_colors->end(), other.m_colors->begin(), other.m_colors->end());
-	m_indices->insert(m_indices->end(), other.m_indices->begin(), other.m_indices->end());
-	m_layout = other.m_layout;
+	addPositions(other.m_data.m_positions);
+	addNormals(other.m_data.m_normals);
+	addTexcoords(other.m_data.m_texCoords);
+	addColors(other.m_data.m_colors);
+	addIndices(other.m_data.m_indices);
+
+	m_data.m_numOfVertices += other.m_data.m_numOfVertices;
+	m_data.m_layout = other.m_data.m_layout;
 
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, VertexLayout layout)
+MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout layout)
 {
 	if (!vertices)
 	{
@@ -257,7 +384,6 @@ MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, VertexLayout lay
 		return *this;
 	}
 
-	setNumOfVertices(layout.numOfVertices);
 	// calculate stride
 	int stride = 0;
 	for (auto entry : layout.attribs)
@@ -268,18 +394,18 @@ MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, VertexLayout lay
 	int offset = 0;
 
 	// Parse vertices
-	auto positions = new std::vector<glm::vec3>();
-	auto normals = new std::vector<glm::vec3>();
-	auto texcoords = new std::vector<glm::vec2>();
-	auto colors = new std::vector<glm::vec3>();
-	auto tangents = new std::vector<glm::vec3>();
+	std::vector<glm::vec3> positions;
+	std::vector<glm::vec3> normals;
+	std::vector<glm::vec2> texcoords;
+	std::vector<glm::vec3> colors;
+	std::vector<glm::vec3> tangents;
 
 	for (auto entry : layout.attribs)
 	{
 		// Parse positions
 		if (LayoutAttribute::Positions == entry)
 		{
-			positions->reserve(layout.numOfVertices * getAttributeSize(entry));
+			positions.reserve(layout.numOfVertices * getAttributeSize(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
 				glm::vec3 pos;
@@ -287,15 +413,15 @@ MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, VertexLayout lay
 				{
 					pos[j] = vertices[stride * i + j + offset];
 				}
-				positions->emplace_back(pos);
+				positions.emplace_back(pos);
 			}
-			setPositions(*positions);
+			addPositions(positions);
 		}
 
 		// Parse normals
 		else if (LayoutAttribute::Normals == entry)
 		{
-			normals->reserve(layout.numOfVertices * getAttributeSize(entry));
+			normals.reserve(layout.numOfVertices * getAttributeSize(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
 				glm::vec3 normal;
@@ -303,15 +429,15 @@ MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, VertexLayout lay
 				{
 					normal[j] = vertices[stride * i + j + offset];
 				}
-				normals->emplace_back(normal);
+				normals.emplace_back(normal);
 			}
-			setNormals(*normals);
+			addNormals(normals);
 		}
 
 		// Parse texcoords
 		else if (LayoutAttribute::Texcoords == entry)
 		{
-			texcoords->reserve(layout.numOfVertices * getAttributeSize(entry));
+			texcoords.reserve(layout.numOfVertices * getAttributeSize(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
 				glm::vec2 vec;
@@ -319,15 +445,15 @@ MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, VertexLayout lay
 				{
 					vec[j] = vertices[stride * i + j + offset];
 				}
-				texcoords->emplace_back(vec);
+				texcoords.emplace_back(vec);
 			}
-			setTexcoords(*texcoords);
+			addTexcoords(texcoords);
 		}
 
 		// Parse colors
 		else if (LayoutAttribute::Colors == entry)
 		{
-			colors->reserve(layout.numOfVertices * getAttributeSize(entry));
+			colors.reserve(layout.numOfVertices * getAttributeSize(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
 				glm::vec3 color;
@@ -335,15 +461,15 @@ MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, VertexLayout lay
 				{
 					color[j] = vertices[stride * i + j + offset];
 				}
-				colors->emplace_back(color);
+				colors.emplace_back(color);
 			}
-			setColors(*colors);
+			addColors(colors);
 		}
 
 		// Parse Tangents
 		else if (LayoutAttribute::Tangents == entry)
 		{
-			tangents->reserve(layout.numOfVertices * getAttributeSize(entry));
+			tangents.reserve(layout.numOfVertices * getAttributeSize(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
 				glm::vec3 tangent;
@@ -351,9 +477,9 @@ MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, VertexLayout lay
 				{
 					tangent[j] = vertices[stride * i + j + offset];
 				}
-				colors->emplace_back(tangent);
+				colors.emplace_back(tangent);
 			}
-			setTangents(*tangents);
+			addTangents(tangents);
 		}
 
 		offset += getAttributeSize(entry);
@@ -363,67 +489,41 @@ MeshBuilder& MeshBuilder::setRawVertices(const float* vertices, VertexLayout lay
 }
 
 
-MeshBuilder& MeshBuilder::setRawIndices(const unsigned int* indices, size_t size)
-{
-	if (!indices)
-	{
-		logError("Specified ptr is null");
-		return *this;
-	}
-
-	if (size == 0)
-	{
-		logError("Size cannot be set to 0.");
-		return *this;
-	}
-
-	auto vec = new std::vector<unsigned int>();
-	vec->reserve(size);
-	for (auto i = 0; i < size; i++)
-	{
-		vec->push_back(indices[i]);
-	}
-	setIndices(*vec);
-
-	return *this;
-}
-
-
-
 
 Resource<Mesh> MeshBuilder::build()
 {
 	Resource<Mesh> mesh = Factory<Mesh>::create();
 
-	if(m_positions)
-		mesh.get()->setPositions(m_positions);
+	if (m_data.m_positions.size() > 0)
+	{
+		enableAttribute(LayoutAttribute::Positions);
+	}
+	if (m_data.m_normals.size() > 0)
+	{
+		enableAttribute(LayoutAttribute::Normals);
+	}
+	if (m_data.m_texCoords.size() > 0)
+	{
+		enableAttribute(LayoutAttribute::Texcoords);
+	}
+	if (m_data.m_colors.size() > 0)
+	{
+		enableAttribute(LayoutAttribute::Colors);
+	}
+	if (m_data.m_tangents.size() > 0)
+	{
+		enableAttribute(LayoutAttribute::Tangents);
+	}
 
-	if (m_normals)
-		mesh.get()->setNormals(m_normals);
-
-	if (m_texCoords)
-		mesh.get()->setTexcoords(m_texCoords);
-
-	if (m_colors)
-		mesh.get()->setColors(m_colors);
-
-	if (m_indices)
-		mesh.get()->setIndices(m_indices);
-
-	if (m_tangents)
-		mesh.get()->setTangents(m_tangents);
-
-	std::sort(m_layout.attribs.begin(), m_layout.attribs.end(),
+	std::sort(m_data.m_layout.attribs.begin(), m_data.m_layout.attribs.end(),
 		[](LayoutAttribute l1, LayoutAttribute l2)
 	{
 		return getAttributeLocationInShader(l1) < getAttributeLocationInShader(l2);
 	});
 
-	mesh.get()->setVertexLayout(m_layout);
+	mesh.get()->setVertexLayout(m_data.m_layout);
 
-	mesh.get()->setNumOfVertices(m_numOfVertices);
-
-	if (!mesh.get()->build())
+	if (!mesh.get()->build(m_data))
 	{
 		logError("Mesh Builder failed to build mesh.");
 
@@ -449,13 +549,13 @@ MeshBuilder::MeshBuilder()
 
 void MeshBuilder::enableAttribute(LayoutAttribute attribute)
 {
-	if (std::find(m_layout.attribs.begin(), m_layout.attribs.end(), attribute) == m_layout.attribs.end())
-		m_layout.attribs.emplace_back(attribute);
+	if (std::find(m_data.m_layout.attribs.begin(), m_data.m_layout.attribs.end(), attribute) == m_data.m_layout.attribs.end())
+		m_data.m_layout.attribs.emplace_back(attribute);
 }
 
 void MeshBuilder::disableAttribute(LayoutAttribute attribute)
 {
-	auto iter = std::find(m_layout.attribs.begin(), m_layout.attribs.end(), attribute);
-	if (iter != m_layout.attribs.end())
-		m_layout.attribs.erase(iter);
+	auto iter = std::find(m_data.m_layout.attribs.begin(), m_data.m_layout.attribs.end(), attribute);
+	if (iter != m_data.m_layout.attribs.end())
+		m_data.m_layout.attribs.erase(iter);
 }

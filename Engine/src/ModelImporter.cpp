@@ -209,11 +209,11 @@ MeshBuilder& ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, Mode
 	}
 
 	return MeshBuilder::builder()
-		.setPositions(*positions)
-		.setNormals(*normals)
-		.setTexcoords(*texcoords)
-		.setIndices(*indices)
-		.setTangents(*tangents);
+		.addPositions(*positions)
+		.addNormals(*normals)
+		.addTexcoords(*texcoords)
+		.addIndices(*indices)
+		.addTangents(*tangents);
 }
 
 std::vector<Resource<Texture>> ModelImporter::loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImporter::ModelImportSession& session)

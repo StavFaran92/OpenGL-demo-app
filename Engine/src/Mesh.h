@@ -16,9 +16,22 @@
 #include "Configurations.h"
 #include "VertexLayout.h"
 
+struct MeshData
+{
+	size_t m_numOfVertices = 0;
+	std::vector<glm::vec3> m_positions;
+	std::vector<glm::vec3> m_normals;
+	std::vector<glm::vec3> m_tangents;
+	std::vector<glm::vec2> m_texCoords;
+	std::vector<glm::vec3> m_colors;
+	std::vector<unsigned int> m_indices;
+	VertexLayout m_layout;
+};
+
 // Forward declerations
 class MeshBuilder;
 class Model;
+struct MeshData;
 
 /**
  * The mesh class is used to represent the Egnine's basic mesh object,
@@ -33,13 +46,6 @@ public:
 	Mesh();
 
 	/**
-	 * Sets the number of vertices in the mesh.
-	 *
-	 * \param size	Number of vertices the mesh contains
-	 */
-	void setNumOfVertices(size_t size);
-
-	/**
 	 * Gets the number of vertices in the mesh.
 	 *
 	 * \param size	Number of vertices the mesh contains
@@ -47,75 +53,18 @@ public:
 	size_t getNumOfVertices() const;
 
 	/**
-	 * Sets The mesh's positions vertices.
-	 *
-	 * \param positions
-	 */
-	void setPositions(std::shared_ptr<std::vector<glm::vec3>> positions);
-
-	/**
 	 * Gets The mesh's positions vertices.
 	 *
 	 * \return	positions vector pointer
 	 */
-	const std::vector<glm::vec3>* getPositions() const;
-
-	/**
-	 * Sets the mesh's Normals vertices.
-	 *
-	 * \param normals
-	 */
-	void setNormals(std::shared_ptr<std::vector<glm::vec3>> normals);
-	void setTangents(std::shared_ptr<std::vector<glm::vec3>> tangents);
+	const std::vector<glm::vec3>& getPositions() const;
 
 	/**
 	 * Gets the mesh's Normals vertices.
 	 *
 	 * \return	normals vector pointer
 	 */
-	const std::vector<glm::vec3>* getNormals() const;
-
-	/**
-	 * Sets the mesh's TexCoords vertices.
-	 *
-	 * \param texCoords
-	 */
-	void setTexcoords(std::shared_ptr<std::vector<glm::vec2>> texCoords);
-
-	/**
-	 * Gets the mesh's TexCoords vertices.
-	 *
-	 * \return	texcoords vector pointer
-	 */
-	const std::vector<glm::vec2>* getTexcoords() const;
-
-	/**
-	 * Sets the mesh's Indices.
-	 *
-	 * \param indices
-	 */
-	void setIndices(std::shared_ptr<std::vector<unsigned int>> indices);
-
-	/**
-	 * Gets the mesh's Indices.
-	 *
-	 * \return	indices vector pointer
-	 */
-	const std::vector<unsigned int>* getIndices() const;
-
-	/**
-	 * Sets the mesh's Color vertices.
-	 *
-	 * \param colors
-	 */
-	void setColors(std::shared_ptr<std::vector<glm::vec3>> colors);
-
-	/**
-	 * Gets the mesh's Color vertices.
-	 *
-	 * \param colors
-	 */
-	const std::vector<glm::vec3>* getColors() const;
+	const std::vector<glm::vec3>& getNormals() const;
 
 	/**
 	 * Clear the Mesh entirely.
@@ -144,7 +93,7 @@ public:
 	 *
 	 * return true if the model was built succesfully, false otherwise.
 	 */
-	bool build();
+	bool build(const MeshData& mData);
 
 	/** Destructor */
 	~Mesh();
@@ -158,30 +107,14 @@ private:
 	void calculateNormals();
 private:
 	// -------------------- Attributes -------------------- //
-	/** Mesh positions */
-	std::shared_ptr<std::vector<glm::vec3>>       m_positions;
-
-	/** Mesh normals */
-	std::shared_ptr<std::vector<glm::vec3>>       m_normals;
-	std::shared_ptr<std::vector<glm::vec3>>       m_tangents;
-
-	/** Mesh texCoords */
-	std::shared_ptr<std::vector<glm::vec2>>       m_texcoords;
-
-	/** Mesh Indices */
-	std::shared_ptr<std::vector<unsigned int>>    m_indices;
-
-	
-
-	/** Mesh colors */
-	std::shared_ptr<std::vector<glm::vec3>>       m_colors;
+	std::vector<glm::vec3> m_positions;
+	std::vector<glm::vec3> m_normals;
 
 	// render data
 	std::shared_ptr<ElementBufferObject> m_ibo = nullptr;
 	std::shared_ptr<VertexBufferObject>  m_vbo = nullptr;
 	std::shared_ptr<VertexArrayObject>   m_vao = nullptr;
 
-	size_t m_numOfVertices = 0;
 	size_t m_indexCount = 0;
 	VertexLayout m_layout;
 	bool m_useColors = false;
