@@ -319,16 +319,35 @@ void ShowModelCreatorWindow()
 
 			auto& mat = entity.getComponent<MaterialComponent>();
 
-			auto albedoMap = Texture::loadTextureFromFile(textureAlbedoPathBuffer.c_str(), false);
-			mat.begin()->get()->setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
-			auto roughnessMap = Texture::loadTextureFromFile(textureRoughnessPathBuffer.c_str(), false);
-			mat.begin()->get()->setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
-			auto normalMap = Texture::loadTextureFromFile(textureNormalPathBuffer.c_str(), false);
-			mat.begin()->get()->setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
-			auto metallicMap = Texture::loadTextureFromFile(textureMetallicPathBuffer.c_str(), false);
-			mat.begin()->get()->setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
-			auto aoMap = Texture::loadTextureFromFile(textureAmbientOcclusionPathBuffer.c_str(), false);
-			mat.begin()->get()->setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
+			if (!textureAlbedoPathBuffer.empty())
+			{
+				auto albedoMap = Texture::loadTextureFromFile(textureAlbedoPathBuffer.c_str(), false);
+				mat.begin()->get()->setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
+			}
+
+			if (!textureRoughnessPathBuffer.empty())
+			{
+				auto roughnessMap = Texture::loadTextureFromFile(textureRoughnessPathBuffer.c_str(), false);
+				mat.begin()->get()->setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
+			}
+
+			if (!textureNormalPathBuffer.empty())
+			{
+				auto normalMap = Texture::loadTextureFromFile(textureNormalPathBuffer.c_str(), false);
+				mat.begin()->get()->setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
+			}
+
+			if (!textureMetallicPathBuffer.empty())
+			{
+				auto metallicMap = Texture::loadTextureFromFile(textureMetallicPathBuffer.c_str(), false);
+				mat.begin()->get()->setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
+			}
+
+			if (!textureAmbientOcclusionPathBuffer.empty())
+			{
+				auto aoMap = Texture::loadTextureFromFile(textureAmbientOcclusionPathBuffer.c_str(), false);
+				mat.begin()->get()->setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
+			}
 
 			entity.getComponent<Transformation>().setLocalPosition(pos);
 			entity.getComponent<Transformation>().setLocalScale(scale);

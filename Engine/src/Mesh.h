@@ -92,7 +92,7 @@ public:
 	 *
 	 * return true if the model was built succesfully, false otherwise.
 	 */
-	bool build(const MeshData& mData);
+	bool build(MeshData& mData);
 
 	/** Destructor */
 	~Mesh();

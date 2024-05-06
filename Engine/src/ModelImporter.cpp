@@ -104,7 +104,7 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 		aiMesh* aimesh = scene->mMeshes[node->mMeshes[i]];
 		std::string meshName = session.filepath + "_" + std::to_string(session.nodeIndex) + "_" + std::to_string(session.childIndex);
 		auto memoryManager = Engine::get()->getMemoryManagementSystem();
-		session.builder->merge(processMesh(aimesh, scene, session));
+		processMesh(aimesh, scene, session);
 		//Resource<Mesh> mesh = memoryManager->createOrGetCached<Mesh>(meshName, [&]() {  });
 		//entity.getComponent<MeshComponent>().mesh = mesh;
 
@@ -144,18 +144,11 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
 		session.childIndex = i;
-
-		//auto childEntity = pScene->createEntity(session.name); //todo fix
-		//childEntity.addComponent<RenderableComponent>();
-
-		//childEntity.setParent(entity);
-		//childEntity.setRoot(session.root);
-
 		processNode(node->mChildren[i], scene, session, entity, pScene);
 	}
 }
 
-MeshBuilder& ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporter::ModelImportSession& session)
+void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporter::ModelImportSession& session)
 {
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec3> normals;
@@ -209,12 +202,15 @@ MeshBuilder& ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, Mode
 			indices.push_back(face.mIndices[j]);
 	}
 
-	return MeshBuilder::builder()
+	(*session.builder)
 		.addPositions(positions)
 		.addNormals(normals)
 		.addTexcoords(texcoords)
 		.addIndices(indices)
 		.addTangents(tangents);
+
+
+		
 }
 
 std::vector<Resource<Texture>> ModelImporter::loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImporter::ModelImportSession& session)

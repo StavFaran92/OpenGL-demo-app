@@ -25,7 +25,7 @@ size_t Mesh::getNumOfVertices() const
 	return m_positions.size();
 }
 
-bool Mesh::build(const MeshData& mData)
+bool Mesh::build(MeshData& mData)
 {
 	// validate mesh data
 	if (mData.m_positions.size() == 0)
