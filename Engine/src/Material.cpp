@@ -36,8 +36,12 @@ bool Material::hasTexture(Texture::Type textureType) const
 
 void Material::setTextureInShader(Shader& shader, Texture::Type ttype, int slot)
 {
-	auto texture = m_textures[ttype];
-	if (!texture.get())
+	Resource<Texture> texture;
+	if (hasTexture(ttype))
+	{
+		texture = getTexture(ttype);
+	}
+	else
 	{
 		texture = Engine::get()->getContext()->getDummyTexture();
 	}

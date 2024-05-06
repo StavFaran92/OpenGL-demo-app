@@ -788,18 +788,22 @@ public:
 		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
 		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" });
 
-		auto ground = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
-		auto& groundTransfrom = ground.getComponent<Transformation>();
-		groundTransfrom.setLocalScale({ 50, .5f, 50 });
-		auto& mat = ground.addComponent<MaterialComponent>();
-		auto tex = Texture::loadTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
-		mat.begin()->get()->setTexture(Texture::Type::Albedo, Resource<Texture>(tex));
-		auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
-		auto& collisionBox = ground.addComponent<CollisionBoxComponent>(.5f);
+		{
+			auto ground = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+			auto& groundTransfrom = ground.getComponent<Transformation>();
+			groundTransfrom.setLocalScale({ 50, .5f, 50 });
+			auto& mat = ground.addComponent<MaterialComponent>();
+			auto tex = Texture::loadTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
+			mat.begin()->get()->setTexture(Texture::Type::Albedo, tex);
+			auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
+			auto& collisionBox = ground.addComponent<CollisionBoxComponent>(.5f);
+		}
 
-		auto camera = Engine::get()->getContext()->getActiveScene()->getActiveCamera();
-		camera->lookAt(0, 5, 0);
-		camera->setPosition(25, 225, 35);
+		{
+			auto camera = Engine::get()->getContext()->getActiveScene()->getActiveCamera();
+			camera->lookAt(0, 5, 0);
+			camera->setPosition(25, 225, 35);
+		}
 
 		auto sphere = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get());
 		{
@@ -813,7 +817,7 @@ public:
 
 			auto& mat = sphere.addComponent<MaterialComponent>();
 			auto tex = Texture::loadTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
-			mat.begin()->get()->setTexture(Texture::Type::Diffuse, Resource<Texture>(tex));
+			mat.begin()->get()->setTexture(Texture::Type::Diffuse, tex);
 
 			auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
 			auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);

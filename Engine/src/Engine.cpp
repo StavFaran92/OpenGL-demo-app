@@ -253,8 +253,10 @@ void Engine::close()
 
     m_isInit = false;
 
-    delete instance;
-    instance = nullptr;
+    // TODO fix
+
+    //delete instance;
+    //instance = nullptr;
 }
 
 ImguiHandler* Engine::getImguiHandler() const

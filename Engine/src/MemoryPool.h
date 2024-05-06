@@ -4,28 +4,30 @@
 #include <memory>
 #include <functional>
 #include "UUID.h"
+#include "Logger.h"
 
 template<typename T>
 class MemoryPool
 {
 public:
     
-    void add(UUID uuid, T* resource)
+    void add(UUID uid, T* resource)
     {
-        m_memory[uuid] = resource;
+        m_memory[uid] = resource;
     }
 
 private:
     template<class T>friend class Resource;
-    T* get(UUID rid)
+    T* get(UUID uid)
     {
-        return m_memory[rid];
+        return m_memory.at(uid);
     }
 
     void erase(UUID uid)
     {
-        if (m_memory.find(uid) == m_memory.end()) return;
-        delete m_memory[uid];
+        auto iter = m_memory.find(uid);
+        if (iter == m_memory.end()) return;
+        delete iter->second;
         m_memory.erase(uid);
     }
     std::unordered_map<UUID, T*> m_memory;
