@@ -18,7 +18,6 @@
 
 struct MeshData
 {
-	size_t m_numOfVertices = 0;
 	std::vector<glm::vec3> m_positions;
 	std::vector<glm::vec3> m_normals;
 	std::vector<glm::vec3> m_tangents;

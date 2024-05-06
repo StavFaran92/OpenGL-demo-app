@@ -131,19 +131,20 @@ MeshBuilder& MeshBuilder::addIndex(unsigned int index)
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::addIndices(const std::vector<unsigned int>& indices)
+MeshBuilder& MeshBuilder::addIndices(const unsigned int* indices, size_t size)
 {
-	m_data.m_indices.insert(m_data.m_indices.end(), indices.begin(), indices.end());
+	int offset = m_data.m_indices.size() > 0 ? m_data.m_indices[m_data.m_indices.size() - 1] + 1 : 0;
+	for (int i = 0; i < size; i++)
+	{
+		addIndex(indices[i] + offset);
+	}
 
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::addIndices(const unsigned int* indices, size_t size)
+MeshBuilder& MeshBuilder::addIndices(const std::vector<unsigned int>& indices)
 {
-	for (int i = 0; i < size; i++)
-	{
-		addIndex(indices[i]);
-	}
+	addIndices(&indices.data()[0], indices.size());
 
 	return *this;
 }
@@ -364,7 +365,6 @@ MeshBuilder& MeshBuilder::merge(const MeshBuilder& other)
 	addColors(other.m_data.m_colors);
 	addIndices(other.m_data.m_indices);
 
-	m_data.m_numOfVertices += other.m_data.m_numOfVertices;
 	m_data.m_layout = other.m_data.m_layout;
 
 	return *this;
