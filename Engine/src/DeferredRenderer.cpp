@@ -164,6 +164,7 @@ bool DeferredRenderer::init()
 	// Generate screen quad
 	m_quad = ScreenQuad::GenerateScreenQuad(m_scene);
 	m_quad.RemoveComponent<RenderableComponent>();
+	m_quad.RemoveComponent<ObjectComponent>();
 
 	return true;
 }

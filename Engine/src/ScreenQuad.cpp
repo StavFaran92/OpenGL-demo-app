@@ -16,6 +16,7 @@ Entity ScreenQuad::GenerateScreenQuad(Scene* scene)
 {
 	auto entity = ShapeFactory::createQuad(scene);
 	entity.RemoveComponent<RenderableComponent>();
+	entity.RemoveComponent<ObjectComponent>();
 	return entity;
 }
 
