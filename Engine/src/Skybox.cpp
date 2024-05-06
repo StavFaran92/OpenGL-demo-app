@@ -64,8 +64,11 @@ Entity Skybox::createSkyboxHelper(Resource<Texture> texture, Scene* scene)
     auto entity = ShapeFactory::createBox(scene);
 
     entity.RemoveComponent<RenderableComponent>();
-    entity.getComponent<MaterialComponent>().begin()->get()->setTexture(Texture::Type::Diffuse, Resource<Texture>(texture));
+    auto& mat = entity.getComponent<MaterialComponent>();
+    mat.begin()->get()->setTexture(Texture::Type::Diffuse, texture);
     entity.addComponent<SkyboxComponent>();
+
+    entity.RemoveComponent<ObjectComponent>();
 
     return entity;
 }

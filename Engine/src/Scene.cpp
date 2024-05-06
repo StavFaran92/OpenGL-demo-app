@@ -409,7 +409,7 @@ void Scene::draw(float deltaTime)
 	m_renderTargetFBO->bind();
 
 	for (auto&& [entity, skybox, mesh, transform, mat] : 
-		m_registry.view<SkyboxComponent, MeshComponent, Transformation, Material>().each())
+		m_registry.view<SkyboxComponent, MeshComponent, Transformation, MaterialComponent>().each())
 	{
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;
@@ -417,7 +417,7 @@ void Scene::draw(float deltaTime)
 		auto tempModel = transform.getWorldTransformation();
 		params.model = &tempModel;
 		params.shader = (m_skyboxShader.get());
-		mat.getTexture(Texture::Type::Diffuse).get()->bind();
+		mat.begin()->get()->getTexture(Texture::Type::Diffuse).get()->bind();
 
 		m_forwardRenderer->render(params);
 
