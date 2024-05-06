@@ -419,7 +419,7 @@ void Scene::draw(float deltaTime)
 		params.shader = (m_skyboxShader.get());
 		mat.begin()->get()->getTexture(Texture::Type::Diffuse).get()->bind();
 
-		m_forwardRenderer->render(params);
+		m_forwardRenderer->render(params); //this causes the many warnings issue
 
 		params.entity = nullptr;
 		params.mesh = nullptr;
