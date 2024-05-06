@@ -68,6 +68,7 @@ Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 	m_lastLoadedSceneName = path;
 
 	std::string modelName = path.substr(path.find_last_of('\\') + 1);
+	modelName = modelName.substr(0, modelName.find_first_of('.'));
 
 	//create new model
 	auto entity = pScene->createEntity(modelName);
@@ -156,11 +157,11 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 
 MeshBuilder& ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporter::ModelImportSession& session)
 {
-	auto positions = new std::vector<glm::vec3>();
-	auto normals = new std::vector<glm::vec3>();
-	auto tangents = new std::vector<glm::vec3>();
-	auto texcoords = new std::vector<glm::vec2>();
-	auto indices = new std::vector<unsigned int>();
+	std::vector<glm::vec3> positions;
+	std::vector<glm::vec3> normals;
+	std::vector<glm::vec3> tangents;
+	std::vector<glm::vec2> texcoords;
+	std::vector<unsigned int> indices;
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -171,7 +172,7 @@ MeshBuilder& ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, Mode
 			pos.x = mesh->mVertices[i].x;
 			pos.y = mesh->mVertices[i].y;
 			pos.z = mesh->mVertices[i].z;
-			positions->emplace_back(pos);
+			positions.emplace_back(pos);
 		}
 
 		if (mesh->HasNormals())
@@ -180,7 +181,7 @@ MeshBuilder& ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, Mode
 			normal.x = mesh->mNormals[i].x;
 			normal.y = mesh->mNormals[i].y;
 			normal.z = mesh->mNormals[i].z;
-			normals->emplace_back(normal);
+			normals.emplace_back(normal);
 		}
 
 		if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
@@ -188,16 +189,16 @@ MeshBuilder& ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, Mode
 			glm::vec2 vec;
 			vec.x = mesh->mTextureCoords[0][i].x;
 			vec.y = mesh->mTextureCoords[0][i].y;
-			texcoords->emplace_back(vec);
+			texcoords.emplace_back(vec);
 		}
 		else
 		{
-			texcoords->emplace_back(glm::vec2(0.0f, 0.0f));
+			texcoords.emplace_back(glm::vec2(0.0f, 0.0f));
 		}
 
 		if (mesh->HasTangentsAndBitangents())
 		{
-			tangents->emplace_back(glm::vec3{ mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z });
+			tangents.emplace_back(glm::vec3{ mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z });
 		}
 	}
 	// process indices
@@ -205,15 +206,15 @@ MeshBuilder& ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, Mode
 	{
 		aiFace face = mesh->mFaces[i];
 		for (unsigned int j = 0; j < face.mNumIndices; j++)
-			indices->push_back(face.mIndices[j]);
+			indices.push_back(face.mIndices[j]);
 	}
 
 	return MeshBuilder::builder()
-		.addPositions(*positions)
-		.addNormals(*normals)
-		.addTexcoords(*texcoords)
-		.addIndices(*indices)
-		.addTangents(*tangents);
+		.addPositions(positions)
+		.addNormals(normals)
+		.addTexcoords(texcoords)
+		.addIndices(indices)
+		.addTangents(tangents);
 }
 
 std::vector<Resource<Texture>> ModelImporter::loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImporter::ModelImportSession& session)
