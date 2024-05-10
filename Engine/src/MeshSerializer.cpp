@@ -13,6 +13,7 @@ struct BinaryLayoutInfo
     int numOfColors;
     int numOfTexcoords;
     int numOfIndices;
+    int numOfAttributes;
 };
 
 
@@ -31,6 +32,7 @@ void MeshSerializer::writeDataToBinaryFile(const MeshData& meshData, const std::
         layoutInfo.numOfColors = meshData.m_colors.size();
         layoutInfo.numOfTexcoords = meshData.m_texCoords.size();
         layoutInfo.numOfIndices = meshData.m_indices.size();
+        layoutInfo.numOfAttributes = meshData.m_layout.attribs.size();
 
         // Write layout info
         file.write(reinterpret_cast<const char*>(&layoutInfo), sizeof(BinaryLayoutInfo));
@@ -45,7 +47,7 @@ void MeshSerializer::writeDataToBinaryFile(const MeshData& meshData, const std::
         // Write indices
         file.write(reinterpret_cast<const char*>(meshData.m_indices.data()), meshData.m_indices.size() * sizeof(unsigned int));
 
-        file.write(reinterpret_cast<const char*>(&meshData.m_layout), sizeof(VertexLayout));
+        file.write(reinterpret_cast<const char*>(meshData.m_layout.attribs.data()), meshData.m_layout.attribs.size() * sizeof(LayoutAttribute));
 
         // Close the file
         file.close();
@@ -75,6 +77,7 @@ void MeshSerializer::readDataFromBinaryFile(const std::string& filename, MeshDat
         meshData.m_colors.resize(layoutInfo.numOfColors);
         meshData.m_texCoords.resize(layoutInfo.numOfTexcoords);
         meshData.m_indices.resize(layoutInfo.numOfIndices);
+        meshData.m_layout.attribs.resize(layoutInfo.numOfAttributes);
 
         // Read vertices
         file.read(reinterpret_cast<char*>(meshData.m_positions.data()), meshData.m_positions.size() * sizeof(glm::vec3));
@@ -86,10 +89,7 @@ void MeshSerializer::readDataFromBinaryFile(const std::string& filename, MeshDat
         // Read indices
         file.read(reinterpret_cast<char*>(meshData.m_indices.data()), meshData.m_indices.size() * sizeof(unsigned int));
 
-        // TODO understand why this doesnt work
-        //VertexLayout tempLayout;
-        //file.read(reinterpret_cast<char*>(&tempLayout), sizeof(VertexLayout));
-        //meshData.m_layout = tempLayout;
+        file.read(reinterpret_cast<char*>(meshData.m_layout.attribs.data()), meshData.m_layout.attribs.size() * sizeof(LayoutAttribute));
 
         // Close the file
         file.close();
