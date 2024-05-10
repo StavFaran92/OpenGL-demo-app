@@ -3,6 +3,7 @@
 #include "Logger.h"
 #include "VertexLayout.h"
 #include "Factory.h"
+#include "MeshSerializer.h"
 
 MeshBuilder& MeshBuilder::addPosition(const glm::vec3& position)
 {
@@ -316,7 +317,12 @@ Resource<Mesh> MeshBuilder::build()
 
 	mesh.get()->setVertexLayout(m_data.m_layout);
 
-	if (!mesh.get()->build(m_data))
+	MeshSerializer::writeDataToBinaryFile(m_data, mesh.getUID() + ".bin");
+
+	MeshData newMeshData;
+	MeshSerializer::readDataFromBinaryFile(mesh.getUID() + ".bin", newMeshData);
+
+	if (!mesh.get()->build(newMeshData))
 	{
 		logError("Mesh Builder failed to build mesh.");
 

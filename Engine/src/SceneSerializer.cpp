@@ -15,6 +15,15 @@
 #include "Material.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "Mesh.h"
+
+
+#include <assimp/Importer.hpp>
+#include <assimp/Exporter.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/mesh.h>
+#include <assimp/types.h>
 
 struct SerializableEntity
 {
@@ -66,6 +75,7 @@ decltype(auto) getComponentIfExists(const Entity& e)
 
 bool SceneSerializer::serialize(Scene& scene)
 {
+	// Serialize registry
 	std::vector<SerializableEntity> serializedEntities;
 
 	scene.getRegistry().each([&](auto entity) {
@@ -94,6 +104,9 @@ bool SceneSerializer::serialize(Scene& scene)
 	std::ofstream os("entities.json");
 	cereal::JSONOutputArchive archive(os);
 	archive(serializedEntities);
+
+	// Serialize assets
+	
 
 	return true;
 }
