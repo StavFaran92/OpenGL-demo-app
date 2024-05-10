@@ -86,7 +86,10 @@ void MeshSerializer::readDataFromBinaryFile(const std::string& filename, MeshDat
         // Read indices
         file.read(reinterpret_cast<char*>(meshData.m_indices.data()), meshData.m_indices.size() * sizeof(unsigned int));
 
-        file.read(reinterpret_cast<char*>(&meshData.m_layout), sizeof(VertexLayout));
+        // TODO understand why this doesnt work
+        //VertexLayout tempLayout;
+        //file.read(reinterpret_cast<char*>(&tempLayout), sizeof(VertexLayout));
+        //meshData.m_layout = tempLayout;
 
         // Close the file
         file.close();
