@@ -9,6 +9,7 @@ target_include_directories(Engine PUBLIC
 	SDL2/include/SDL2
 	spdlog/include
 	cereal/include
+	json
 	stb_image
 	imgui
 	"$ENV{PHYSX}/physx/include"

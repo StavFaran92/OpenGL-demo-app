@@ -1,44 +1,132 @@
 #include "ProjectManager.h"
 
+#include <filesystem>
+#include <fstream>
+#include <unordered_map>
+
+#include "Logger.h"
+#include "Mesh.h"
+#include "MeshSerializer.h"
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
+
+namespace fs = std::filesystem;
+
 std::shared_ptr<Context> ProjectManager::loadProject(const std::string& filePath)
 {
-	// create context
+    
+    // Check if the file exists
+    if (!fs::exists(filePath)) 
+    {
+        logError("File not found: " + filePath);
+        return nullptr;
+    }
 
-	// open file
+    // Open file
+    std::ifstream file(filePath);
+    if (!file.is_open()) 
+    {
+        logError("Failed to open file: " + filePath);
+        return nullptr;
+    }
 
-	// get scene registry file
+    // Get file directory
+    fs::path projectDir = fs::path(filePath).parent_path();
 
-	// populate scenes ECS in context
+    // open scene registry file
+    std::string ecsFilepath = filePath + "/ecs.json";
 
-	// get mesh list
+    // Open file
+    std::ifstream ecsFile(ecsFilepath);
+    if (!ecsFile.is_open())
+    {
+        logError("Failed to open file: " + ecsFilepath);
+        return nullptr;
+    }
 
-	// create mesh list
+    // Read file content into a string
+    std::string fileContent((std::istreambuf_iterator<char>(ecsFile)), std::istreambuf_iterator<char>());
 
-	// for each mesh
-		// open bin file
+    // Parse JSON
+    json ecsJson;
+    try 
+    {
+        ecsJson = json::parse(fileContent);
+    }
+    catch (const std::exception& e) {
+        logError("Failed to parse JSON: " + std::string(e.what()));
+        return nullptr;
+    }
 
-		// create Mesh Data object
+    // Create context
+    std::shared_ptr<Context> context = std::make_shared<Context>();
 
-		// create mesh
+    // Populate scenes from JSON
+    context->populateScenesFromJSON(ecsJson.dump()); // Pass JSON as string
 
-		// place mesh in map
+    // Parse JSON
+    json resourceFileJSON;
+    try 
+    {
+        resourceFileJSON = json::parse(file);
+    }
+    catch (const std::exception& e) 
+    {
+        logError("Failed to parse JSON: " + std::string(e.what()));
+        return nullptr;
+    }
 
-	// do the above for textures
+    auto iter = resourceFileJSON.find("meshes");
+    if (iter == resourceFileJSON.end())
+    {
+        logError("Could not find \"Meshes\" in JSON");
+        return nullptr;
+    }
 
-	// get scene list 
+    std::vector<std::string> meshNameList;
+    std::vector<std::string> textureList;
 
-	// for each scene
-		// get mesh component list
-		
-		// for each mesh component
-			// place mesh resource in mesh component
+    // Iterate over the "meshes" array
+    for (const auto& mesh : *iter)
+    {
+        try
+        {
+            std::string meshFileName = mesh.get<std::string>();
+            meshNameList.push_back(meshFileName);
+        }
+        catch (const std::exception& e)
+        {
+            logError("Failed to parse mesh value: " + std::string(e.what()));
+            continue; // Continue to the next mesh
+        }
+    }
 
-		// get material component list
+    // Create meshes
+    for (const auto& meshUID : meshNameList) 
+    {
+        // Open bin file
+        fs::path binFilePath = (projectDir / "bin" / meshUID).string() + ".bin";
+        std::ifstream binFile(binFilePath, std::ios::binary);
+        if (!binFile.is_open()) 
+        {
+            logError("Failed to open bin file for mesh: " + meshUID + ".bin");
+            continue; // Skip this mesh
+        }
+        MeshData meshData;
+        MeshSerializer::readDataFromBinaryFile(binFilePath.string(), meshData);
 
-		// for each material component
-			// place texture resource in material component
+        // Create mesh
+        Mesh* mesh = new Mesh();
+        Engine::get()->getMemoryPool<Mesh>()->add(meshUID, mesh);
+    }
 
-	// return context
+    // Create textures
+    for (const auto& texture : textureList) {
+        // Similar steps as above to load and create textures
+        // ...
+    }
 
-	return nullptr;
+    // Return context
+    return context;
 }
