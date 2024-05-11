@@ -34,7 +34,7 @@ bool Mesh::build(MeshData& mData)
 		return false;
 	}
 
-	if (m_layout.attribs.size() == 0)
+	if (mData.m_layout.attribs.size() == 0)
 	{
 		logError("Number of attributes cannot be 0.");
 		return false;
@@ -45,6 +45,8 @@ bool Mesh::build(MeshData& mData)
 	{
 		calculateNormals();
 	}
+
+	m_layout = mData.m_layout;
 
 	// calculate stride
 	int stride = 0;

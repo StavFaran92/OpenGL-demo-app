@@ -26,6 +26,7 @@ class ShaderLoader;
 class ResourceManager;
 class Texture;
 class Mesh;
+class ProjectManager;
 template<typename T>class MemoryPool;
 
 class EngineAPI Engine
@@ -56,6 +57,7 @@ public:
     template<>MemoryPool<Mesh>* getMemoryPool() const { return m_memoryPoolMesh.get(); }
 
     
+    void loadProject(const std::string& filePath);
 
     void pause();
     void resume();
@@ -105,6 +107,7 @@ protected:
     std::shared_ptr<ResourceManager> m_resourceManager;
     std::shared_ptr<MemoryPool<Texture>> m_memoryPoolTexture;
     std::shared_ptr<MemoryPool<Mesh>> m_memoryPoolMesh;
+    std::shared_ptr<ProjectManager> m_projectManager;
 
 };
 

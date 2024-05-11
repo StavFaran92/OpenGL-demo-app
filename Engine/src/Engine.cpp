@@ -24,6 +24,7 @@
 #include "ShaderLoader.h"
 #include "ShaderParser_tntmeijsImpl.h"
 #include "ResourceManager.h"
+#include "ProjectManager.h"
 
 #include "Application.h"
 #include "SDL2/SDL.h"
@@ -312,6 +313,11 @@ ShaderLoader* Engine::getShaderLoader() const
 ResourceManager* Engine::getResourceManager() const
 {
     return m_resourceManager.get();
+}
+
+void Engine::loadProject(const std::string& filePath)
+{
+    m_projectManager->loadProject(filePath);
 }
 
 void Engine::pause()

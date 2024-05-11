@@ -4,6 +4,8 @@
 #include "VertexLayout.h"
 #include "Factory.h"
 #include "MeshSerializer.h"
+#include "Context.h"
+#include "ProjectAssetRegistry.h"
 
 MeshBuilder& MeshBuilder::addPosition(const glm::vec3& position)
 {
@@ -286,8 +288,6 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 
 Resource<Mesh> MeshBuilder::build()
 {
-	Resource<Mesh> mesh = Factory<Mesh>::create();
-
 	if (m_data.m_positions.size() > 0)
 	{
 		enableAttribute(LayoutAttribute::Positions);
@@ -315,14 +315,15 @@ Resource<Mesh> MeshBuilder::build()
 		return getAttributeLocationInShader(l1) < getAttributeLocationInShader(l2);
 	});
 
-	mesh.get()->setVertexLayout(m_data.m_layout);
+	Resource<Mesh> mesh = Factory<Mesh>::create();
 
 	MeshSerializer::writeDataToBinaryFile(m_data, mesh.getUID() + ".bin");
+	Engine::get()->getContext()->getProjectAssetRegistry()->addMesh(mesh.getUID());
 
-	MeshData newMeshData;
-	MeshSerializer::readDataFromBinaryFile(mesh.getUID() + ".bin", newMeshData);
+	//MeshData newMeshData;
+	//MeshSerializer::readDataFromBinaryFile(mesh.getUID() + ".bin", newMeshData);
 
-	if (!mesh.get()->build(newMeshData))
+	if (!mesh.get()->build(m_data))
 	{
 		logError("Mesh Builder failed to build mesh.");
 

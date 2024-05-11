@@ -108,6 +108,11 @@ std::shared_ptr<Scene> Context::getActiveScene() const
 	return m_scenes.at(m_activeScene);
 }
 
+ProjectAssetRegistry* Context::getProjectAssetRegistry() const
+{
+	return m_projectAssetRegistry.get();
+}
+
 void Context::setActiveScene(uint32_t index)
 {
 	if (index > m_scenesCounter)

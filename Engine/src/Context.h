@@ -23,6 +23,7 @@ class EventSystem;
 class ModelImporter;
 class TextureHandler;
 class Material;
+class ProjectAssetRegistry;
 
 
 
@@ -55,6 +56,8 @@ public:
 	std::shared_ptr<Material> getDefaultMaterial() const;
 
 	std::shared_ptr<Scene> getActiveScene() const;
+
+	ProjectAssetRegistry* getProjectAssetRegistry() const;
 	
 
 	void setActiveScene(uint32_t index);
@@ -81,6 +84,7 @@ private:
 	std::shared_ptr<PickingShader> m_pickingShader = nullptr;
 	std::shared_ptr<Shader> m_normalDisplayShader = nullptr;
 	std::shared_ptr<Material> m_defaultMaterial = nullptr;
+	std::shared_ptr<ProjectAssetRegistry> m_projectAssetRegistry ;
 	Resource<Texture> m_dummyTexture;
 };
 
