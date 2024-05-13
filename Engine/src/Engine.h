@@ -58,6 +58,7 @@ public:
 
     
     void loadProject(const std::string& filePath);
+    void saveProject(const std::string& filePath);
 
     void pause();
     void resume();

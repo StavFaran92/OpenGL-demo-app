@@ -31,6 +31,7 @@ class EngineAPI Context
 {
 public:
 	Context();
+	Context(const std::string& filepath);
 
 	//bool addObject(std::shared_ptr<Object3D> object);
 	//bool removeObject(std::shared_ptr <Object3D> object);
@@ -58,6 +59,8 @@ public:
 	std::shared_ptr<Scene> getActiveScene() const;
 
 	ProjectAssetRegistry* getProjectAssetRegistry() const;
+
+	void populateScenesFromJSON(const std::string& json);
 	
 
 	void setActiveScene(uint32_t index);
@@ -70,6 +73,7 @@ private:
 	friend class Engine;
 	void update(float deltaTime);
 	void draw(float deltaTime);
+	void init();
 
 	uint32_t m_activeScene = -1;
 	uint32_t m_scenesCounter = 0;

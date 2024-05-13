@@ -6,6 +6,7 @@
 
 #include "Logger.h"
 #include "Mesh.h"
+#include "ProjectAssetRegistry.h"
 #include "MeshSerializer.h"
 #include <nlohmann/json.hpp>
 
@@ -24,8 +25,8 @@ std::shared_ptr<Context> ProjectManager::loadProject(const std::string& filePath
     }
 
     // Open file
-    std::ifstream file(filePath);
-    if (!file.is_open()) 
+    std::ifstream projectFile(filePath);
+    if (!projectFile.is_open())
     {
         logError("Failed to open file: " + filePath);
         return nullptr;
@@ -35,7 +36,7 @@ std::shared_ptr<Context> ProjectManager::loadProject(const std::string& filePath
     fs::path projectDir = fs::path(filePath).parent_path();
 
     // open scene registry file
-    std::string ecsFilepath = filePath + "/ecs.json";
+    std::string ecsFilepath = (projectDir / "entities.json").string();
 
     // Open file
     std::ifstream ecsFile(ecsFilepath);
@@ -45,14 +46,11 @@ std::shared_ptr<Context> ProjectManager::loadProject(const std::string& filePath
         return nullptr;
     }
 
-    // Read file content into a string
-    std::string fileContent((std::istreambuf_iterator<char>(ecsFile)), std::istreambuf_iterator<char>());
-
     // Parse JSON
     json ecsJson;
     try 
     {
-        ecsJson = json::parse(fileContent);
+        ecsJson = json::parse(ecsFile);
     }
     catch (const std::exception& e) {
         logError("Failed to parse JSON: " + std::string(e.what()));
@@ -60,7 +58,7 @@ std::shared_ptr<Context> ProjectManager::loadProject(const std::string& filePath
     }
 
     // Create context
-    std::shared_ptr<Context> context = std::make_shared<Context>();
+    std::shared_ptr<Context> context = std::make_shared<Context>(filePath);
 
     // Populate scenes from JSON
     context->populateScenesFromJSON(ecsJson.dump()); // Pass JSON as string
@@ -69,7 +67,7 @@ std::shared_ptr<Context> ProjectManager::loadProject(const std::string& filePath
     json resourceFileJSON;
     try 
     {
-        resourceFileJSON = json::parse(file);
+        resourceFileJSON = json::parse(projectFile);
     }
     catch (const std::exception& e) 
     {
@@ -77,36 +75,16 @@ std::shared_ptr<Context> ProjectManager::loadProject(const std::string& filePath
         return nullptr;
     }
 
-    auto iter = resourceFileJSON.find("meshes");
-    if (iter == resourceFileJSON.end())
-    {
-        logError("Could not find \"Meshes\" in JSON");
-        return nullptr;
-    }
+    auto par = context->getProjectAssetRegistry();
 
-    std::vector<std::string> meshNameList;
-    std::vector<std::string> textureList;
-
-    // Iterate over the "meshes" array
-    for (const auto& mesh : *iter)
-    {
-        try
-        {
-            std::string meshFileName = mesh.get<std::string>();
-            meshNameList.push_back(meshFileName);
-        }
-        catch (const std::exception& e)
-        {
-            logError("Failed to parse mesh value: " + std::string(e.what()));
-            continue; // Continue to the next mesh
-        }
-    }
+    std::vector<std::string> meshNameList = par->getMeshList();
+    std::vector<std::string> textureNameList;
 
     // Create meshes
     for (const auto& meshUID : meshNameList) 
     {
         // Open bin file
-        fs::path binFilePath = (projectDir / "bin" / meshUID).string() + ".bin";
+        fs::path binFilePath = (projectDir / meshUID).string() + ".bin";
         std::ifstream binFile(binFilePath, std::ios::binary);
         if (!binFile.is_open()) 
         {
@@ -118,15 +96,23 @@ std::shared_ptr<Context> ProjectManager::loadProject(const std::string& filePath
 
         // Create mesh
         Mesh* mesh = new Mesh();
+        mesh->build(meshData);
         Engine::get()->getMemoryPool<Mesh>()->add(meshUID, mesh);
     }
 
     // Create textures
-    for (const auto& texture : textureList) {
+    for (const auto& texture : textureNameList) {
         // Similar steps as above to load and create textures
         // ...
     }
 
     // Return context
-    return context;
+    return {};
+}
+
+void ProjectManager::saveProject(const std::string& filePath)
+{
+    Engine::get()->getContext()->getProjectAssetRegistry()->save();
+
+    Engine::get()->getContext()->getActiveScene()->serialize();
 }

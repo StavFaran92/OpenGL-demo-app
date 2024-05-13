@@ -317,7 +317,14 @@ ResourceManager* Engine::getResourceManager() const
 
 void Engine::loadProject(const std::string& filePath)
 {
-    m_projectManager->loadProject(filePath);
+    auto context = m_projectManager->loadProject(filePath);
+
+    m_context = context;
+}
+
+void Engine::saveProject(const std::string& filePath)
+{
+    m_projectManager->saveProject(filePath);
 }
 
 void Engine::pause()

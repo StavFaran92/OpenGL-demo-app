@@ -2,7 +2,12 @@
 #include "ApplicationConstants.h"
 
 #include <GL/glew.h>
+
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
 #include "Logger.h"
 #include "Configurations.h"
@@ -10,17 +15,17 @@
 #include "Engine.h"
 #include "Resource.h"
 #include "Factory.h"
+#include "Context.h"
+#include "ProjectAssetRegistry.h"
 
 Texture::Texture()
 	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_slot(0)
 {
-	logInfo( __FUNCTION__ );
 }
 
 Texture::Texture(const Texture& other)
 	: m_id(other.m_id), m_width(other.m_width), m_height(other.m_height), m_bitDepth(other.m_bitDepth), m_slot(other.m_slot)
 {
-	logInfo(__FUNCTION__);
 }
 
 Resource<Texture> Texture::createEmptyTexture(int width, int height)
@@ -70,6 +75,10 @@ Resource<Texture> Texture::loadTextureFromFile(const std::string& fileLocation, 
 			logError("Failed to find: {}", fileLocation.c_str());
 			return texture;
 		}
+
+		stbi_write_png(("Content/" + texture.getUID() + ".png").c_str(), texture.get()->m_width, texture.get()->m_height, 3, data, texture.get()->m_width * texture.get()->m_bitDepth);
+		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
+		//TextureSerializer::
 
 		// generate texture and bind it
 		glGenTextures(1, &texture.get()->m_id);
@@ -146,6 +155,11 @@ Resource<Texture> Texture::loadCubemapTexture(std::vector<std::string> faces)
 			logError("Cubemap tex failed to load at path: {}", faces[i]);
 			stbi_image_free(data);
 		}
+
+
+
+		//stbi_write_png(("Content/" + texture.getUID() + ".png").c_str(), width, height, nrChannels, data, texture.get()->m_width * texture.get()->m_bitDepth);
+		//Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
 
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		stbi_image_free(data);

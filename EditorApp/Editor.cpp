@@ -721,11 +721,11 @@ class GUI_Helper : public GuiMenu {
 			{
 				if (ImGui::BeginMenu("File")) 
 				{ // Start of File dropdown
-					if (ImGui::MenuItem("Open Scene", "Ctrl+O")) {
-						Engine::get()->getContext()->getActiveScene()->deserialize();
+					if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
+						Engine::get()->loadProject("Content/tmp.json");
 					}
-					if (ImGui::MenuItem("Save Scene", "Ctrl+S")) {
-						Engine::get()->getContext()->getActiveScene()->serialize();
+					if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
+						Engine::get()->saveProject("Content/tmp.json");
 					}
 					if (ImGui::MenuItem("Load Model")) {
 						showModelCreatorWindow = true;

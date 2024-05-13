@@ -17,8 +17,23 @@
 #include "Engine.h"
 #include "Texture.h"
 #include "Material.h"
+#include "ProjectAssetRegistry.h"
 
 Context::Context() : m_shaderCounter(0)
+{
+	m_projectAssetRegistry = ProjectAssetRegistry::create("Content/tmp.json");
+
+	init();
+}
+
+Context::Context(const std::string& filepath)
+{
+	m_projectAssetRegistry = ProjectAssetRegistry::parse("Content/tmp.json");
+
+	init();
+}
+
+void Context::init()
 {
 	m_reflectionShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/ReflectionShader.glsl");
 
@@ -30,10 +45,6 @@ Context::Context() : m_shaderCounter(0)
 	m_dummyTexture = Texture::createDummyTexture();
 
 	m_defaultMaterial = std::make_shared<Material>();
-	//m_normalDisplayShader = std::make_shared<Shader>("Resources\\Shaders\\normalDisplayShader.vert", "Resources\\Shaders\\normalDisplayShader.frag", "Resources\\Shaders\\normalDisplayShader.geom");
-
-	//std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
-	//AddDirectionalLight(light);
 }
 
 bool Context::addScene(std::shared_ptr<Scene> scene)
@@ -111,6 +122,15 @@ std::shared_ptr<Scene> Context::getActiveScene() const
 ProjectAssetRegistry* Context::getProjectAssetRegistry() const
 {
 	return m_projectAssetRegistry.get();
+}
+
+void Context::populateScenesFromJSON(const std::string& json)
+{
+	auto defaultScene = std::make_shared<Scene>(this);
+
+	addScene(defaultScene);
+
+	defaultScene->deserialize();
 }
 
 void Context::setActiveScene(uint32_t index)

@@ -101,7 +101,7 @@ bool SceneSerializer::serialize(Scene& scene)
 
 	//if(!std::filesystem::exists("entities.json"))
 
-	std::ofstream os("entities.json");
+	std::ofstream os("Content/entities.json");
 	cereal::JSONOutputArchive archive(os);
 	archive(serializedEntities);
 
@@ -117,7 +117,7 @@ bool SceneSerializer::deserialize(Scene& scene)
 
 	std::vector<SerializableEntity> serializedEntities;
 
-	std::ifstream is("entities.json");
+	std::ifstream is("Content/entities.json");
 	cereal::JSONInputArchive inputArchive(is);
 	inputArchive(serializedEntities);
 
@@ -128,6 +128,14 @@ bool SceneSerializer::deserialize(Scene& scene)
 		if (serializedEnt.transform)
 		{
 			entityHandler.addComponent<Transformation>(serializedEnt.transform.value());
+		}
+		if (serializedEnt.dLight)
+		{
+			entityHandler.addComponent<DirectionalLight>(serializedEnt.dLight.value());
+		}
+		if (serializedEnt.mesh)
+		{
+			entityHandler.addComponent<MeshComponent>(serializedEnt.mesh.value());
 		}
 
 	}
