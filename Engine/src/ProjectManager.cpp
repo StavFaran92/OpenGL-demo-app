@@ -107,7 +107,7 @@ std::shared_ptr<Context> ProjectManager::loadProject(const std::string& filePath
     }
 
     // Return context
-    return {};
+    return context;
 }
 
 void ProjectManager::saveProject(const std::string& filePath)

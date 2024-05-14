@@ -75,7 +75,7 @@ private:
 	void draw(float deltaTime);
 	void init();
 
-	uint32_t m_activeScene = -1;
+	int m_activeScene = -1;
 	uint32_t m_scenesCounter = 0;
 	std::map<uint32_t, std::shared_ptr<Scene>> m_scenes;
 

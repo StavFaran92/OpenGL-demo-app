@@ -55,6 +55,8 @@ bool Engine::init()
 
     m_resourceManager = std::make_shared<ResourceManager>();
 
+    m_projectManager = std::make_shared<ProjectManager>();
+
     if (!SGE_EXPORT_PACKAGE)
     {
         auto found = false;
@@ -318,6 +320,7 @@ ResourceManager* Engine::getResourceManager() const
 void Engine::loadProject(const std::string& filePath)
 {
     auto context = m_projectManager->loadProject(filePath);
+    //context->stop();
 
     m_context = context;
 }

@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <atomic>
 #include "Core.h"
 
 
@@ -109,6 +110,9 @@ protected:
     std::shared_ptr<MemoryPool<Texture>> m_memoryPoolTexture;
     std::shared_ptr<MemoryPool<Mesh>> m_memoryPoolMesh;
     std::shared_ptr<ProjectManager> m_projectManager;
+
+    std::atomic<bool> m_isPaused = false;
+    std::atomic<bool> m_isStopped = false;
 
 };
 

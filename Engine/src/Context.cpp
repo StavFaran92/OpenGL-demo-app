@@ -129,6 +129,7 @@ void Context::populateScenesFromJSON(const std::string& json)
 	auto defaultScene = std::make_shared<Scene>(this);
 
 	addScene(defaultScene);
+	m_activeScene = defaultScene->getID();
 
 	defaultScene->deserialize();
 }

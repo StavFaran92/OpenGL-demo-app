@@ -162,7 +162,7 @@ struct EngineAPI MeshComponent : public Component
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(mesh.getUID(), materialSlot);
+		archive(mesh, materialSlot);
 	}
 
 	float materialSlot = 0; // todo this will be used (probably as a list) to support multi material models

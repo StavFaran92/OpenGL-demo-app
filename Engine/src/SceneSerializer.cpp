@@ -133,11 +133,36 @@ bool SceneSerializer::deserialize(Scene& scene)
 		{
 			entityHandler.addComponent<DirectionalLight>(serializedEnt.dLight.value());
 		}
+
+		if (serializedEnt.pLight)
+		{
+			entityHandler.addComponent<PointLight>(serializedEnt.pLight.value());
+		}
+
 		if (serializedEnt.mesh)
 		{
 			entityHandler.addComponent<MeshComponent>(serializedEnt.mesh.value());
 		}
 
+		if (serializedEnt.renderableComponent)
+		{
+			entityHandler.addComponent<RenderableComponent>(serializedEnt.renderableComponent.value());
+		}
+
+		if (serializedEnt.camera)
+		{
+			entityHandler.addComponent<CameraComponent>(serializedEnt.camera.value());
+		}
+
+		if (serializedEnt.mat)
+		{
+			entityHandler.addComponent<MaterialComponent>(serializedEnt.mat.value());
+		}
+
+		if (serializedEnt.obj)
+		{
+			entityHandler.addComponent<ObjectComponent>(serializedEnt.obj.value());
+		}
 	}
 
 	return true;
