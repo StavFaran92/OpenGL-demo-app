@@ -4,6 +4,11 @@
 #include "Window.h"
 #include "commdlg.h"
 
+#include <filesystem>
+
+#include "nfd.h"
+
+namespace fs = std::filesystem;
 
 // Define a structure to represent an object in the scene hierarchy
 struct SceneObject {
@@ -723,9 +728,14 @@ class GUI_Helper : public GuiMenu {
 				{ // Start of File dropdown
 					if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
 						Engine::get()->loadProject("Content/tmp.json");
+						updateScene();
 					}
 					if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
-						Engine::get()->saveProject("Content/tmp.json");
+						nfdchar_t* outPath = NULL;
+						nfdresult_t result = NFD_PickFolder(NULL, &outPath);
+						//std::string selectedFolder = pfd::select_folder("Select any directory", "./").result();
+						Engine::get()->saveProject(outPath);
+						
 					}
 					if (ImGui::MenuItem("Load Model")) {
 						showModelCreatorWindow = true;
@@ -781,12 +791,12 @@ public:
 		
 		ImGui::SetCurrentContext((ImGuiContext * )Engine::get()->getImguiHandler()->getCurrentContext());
 
-		Skybox::CreateSkybox({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
-		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
-		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
-		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",
-		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
-		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" });
+		//Skybox::CreateSkybox({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
+		//SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
+		//SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
+		//SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",
+		//SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
+		//SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" });
 
 		{
 			auto ground = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());

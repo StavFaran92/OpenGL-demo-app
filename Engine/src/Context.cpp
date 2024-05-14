@@ -21,7 +21,7 @@
 
 Context::Context() : m_shaderCounter(0)
 {
-	m_projectAssetRegistry = ProjectAssetRegistry::create("Content/tmp.json");
+	m_projectAssetRegistry = ProjectAssetRegistry::create("Content/tmp2.json");
 
 	init();
 }

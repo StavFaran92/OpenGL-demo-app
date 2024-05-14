@@ -5,8 +5,6 @@ project(SGE)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-message(STATUS "PHYSX environment variable value: $ENV{PHYSX}")
-
 add_subdirectory(Engine)
 add_subdirectory(EditorApp)
 add_subdirectory(PhysxSample)

@@ -12,6 +12,7 @@ target_include_directories(Engine PUBLIC
 	json
 	stb_image
 	imgui
+	nativefiledialog/include
 	"$ENV{PHYSX}/physx/include"
 	"$ENV{PHYSX}/pxshared/include"
 )
@@ -21,6 +22,7 @@ target_link_directories(Engine PUBLIC
 	glew/lib/Release/x64
 	SDL2/lib
 	spdlog/lib
+	nativefiledialog/lib
 	
 	"$ENV{PHYSX}/physx/bin/win.x86_64.vc142.mt/checked"
 )
@@ -41,6 +43,7 @@ target_link_libraries(Engine PUBLIC
 	assimp-vc142-mt
 	spdlog
 	ImGui
+	nfd
 )
 
 
