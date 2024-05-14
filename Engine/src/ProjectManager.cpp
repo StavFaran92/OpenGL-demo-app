@@ -14,14 +14,14 @@ using json = nlohmann::json;
 
 namespace fs = std::filesystem;
 
-std::shared_ptr<Context> ProjectManager::loadProject(const std::string& filePath)
+void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Context>& context)
 {
     
     // Check if the file exists
     if (!fs::exists(filePath)) 
     {
         logError("File not found: " + filePath);
-        return nullptr;
+        return;
     }
 
     // Open file
@@ -29,7 +29,7 @@ std::shared_ptr<Context> ProjectManager::loadProject(const std::string& filePath
     if (!projectFile.is_open())
     {
         logError("Failed to open file: " + filePath);
-        return nullptr;
+        return ;
     }
 
     // Get file directory
@@ -43,7 +43,7 @@ std::shared_ptr<Context> ProjectManager::loadProject(const std::string& filePath
     if (!ecsFile.is_open())
     {
         logError("Failed to open file: " + ecsFilepath);
-        return nullptr;
+        return;
     }
 
     // Parse JSON
@@ -54,11 +54,8 @@ std::shared_ptr<Context> ProjectManager::loadProject(const std::string& filePath
     }
     catch (const std::exception& e) {
         logError("Failed to parse JSON: " + std::string(e.what()));
-        return nullptr;
+        return;
     }
-
-    // Create context
-    std::shared_ptr<Context> context = std::make_shared<Context>(filePath);
 
     // Populate scenes from JSON
     context->populateScenesFromJSON(ecsJson.dump()); // Pass JSON as string
@@ -72,7 +69,7 @@ std::shared_ptr<Context> ProjectManager::loadProject(const std::string& filePath
     catch (const std::exception& e) 
     {
         logError("Failed to parse JSON: " + std::string(e.what()));
-        return nullptr;
+        return ;
     }
 
     auto par = context->getProjectAssetRegistry();
@@ -105,9 +102,6 @@ std::shared_ptr<Context> ProjectManager::loadProject(const std::string& filePath
         // Similar steps as above to load and create textures
         // ...
     }
-
-    // Return context
-    return context;
 }
 
 void ProjectManager::saveProject(const std::string& filePath)

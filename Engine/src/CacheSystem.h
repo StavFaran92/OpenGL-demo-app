@@ -36,6 +36,8 @@ public:
 
 		return resource;
 	}
+
+	void clear();
 private:
 	std::unordered_map<std::string, UUID> m_associations;
 };

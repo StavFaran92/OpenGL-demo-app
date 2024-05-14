@@ -14,11 +14,11 @@ class Resource
 public:
 	static Resource<T> empty;
 
-	Resource() : m_uid(EMPTY_UUID), refCount(new int(0)) {};
+	Resource() : m_uid(EMPTY_UUID), refCount(std::make_shared<int>(0)) {};
 
-	Resource(std::nullptr_t) : m_uid(EMPTY_UUID), refCount(new int(0)) {};
+	Resource(std::nullptr_t) : m_uid(EMPTY_UUID), refCount(std::make_shared<int>(0)) {};
 
-	Resource(UUID uid) : m_uid(uid), refCount(new int(1)) {};
+	Resource(UUID uid) : m_uid(uid), refCount(std::make_shared<int>(1)) {};
 
 	Resource(const Resource<T>& other) 
 	{
@@ -81,7 +81,7 @@ public:
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(m_uid);
+		archive(m_uid, refCount);
 	}
 
 	~Resource<T>() // destructor
@@ -99,11 +99,11 @@ private:
 			{
 				Engine::get()->getMemoryPool<T>()->erase(m_uid);
 			}
-			delete refCount;
+			//delete refCount;
 			m_uid = EMPTY_UUID;
 		}
 	}
 private:
 	UUID m_uid;
-	int* refCount = nullptr;
+	std::shared_ptr<int> refCount;
 };

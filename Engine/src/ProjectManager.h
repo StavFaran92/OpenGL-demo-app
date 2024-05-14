@@ -7,6 +7,6 @@
 class ProjectManager
 {
 public:
-	std::shared_ptr<Context> loadProject(const std::string& filePath);
+	void loadProject(const std::string& filePath, std::shared_ptr<Context>& context);
 	void saveProject(const std::string& filePath);
 };

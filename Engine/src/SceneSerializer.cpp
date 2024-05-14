@@ -3,6 +3,7 @@
 #include "Scene.h"
 #include "cereal/archives/json.hpp"
 #include "cereal/types/vector.hpp"
+#include "cereal/types/memory.hpp"
 #include "cereal/types/optional.hpp"
 #include "cereal/types/polymorphic.hpp"
 #include <optional>

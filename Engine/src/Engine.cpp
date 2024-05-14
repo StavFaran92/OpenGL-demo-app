@@ -319,10 +319,11 @@ ResourceManager* Engine::getResourceManager() const
 
 void Engine::loadProject(const std::string& filePath)
 {
-    auto context = m_projectManager->loadProject(filePath);
-    //context->stop();
+    m_memoryManagementSystem->clear();
 
-    m_context = context;
+    m_context = std::make_shared<Context>(filePath);
+
+    m_projectManager->loadProject(filePath, m_context);
 }
 
 void Engine::saveProject(const std::string& filePath)
