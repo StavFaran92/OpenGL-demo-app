@@ -97,13 +97,14 @@ public:
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(m_translation, m_rotation, m_scale);
+		archive(m_translation, m_rotation, m_scale, m_parent, m_entity, m_root, m_children);
 	}
 
 private:
 	void addChild(Entity entity);
 	void removeChild(Entity entity);
 private:
+	friend class SceneSerializer;
 	glm::vec3 m_translation;
 
 	glm::quat m_rotation;

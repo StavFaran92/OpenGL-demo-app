@@ -6,6 +6,7 @@
 #include "cereal/types/memory.hpp"
 #include "cereal/types/optional.hpp"
 #include "cereal/types/polymorphic.hpp"
+#include "cereal/types/unordered_map.hpp"
 #include <optional>
 #include <fstream>
 #include <filesystem>
@@ -128,7 +129,10 @@ bool SceneSerializer::deserialize(Scene& scene)
 		auto entityHandler = Entity(e, &scene);
 		if (serializedEnt.transform)
 		{
-			entityHandler.addComponent<Transformation>(serializedEnt.transform.value());
+			auto& transform = entityHandler.addComponent<Transformation>(serializedEnt.transform.value());
+			transform.m_entity.setScene(&scene);
+			transform.m_root.setScene(&scene);
+			transform.m_parent.setScene(&scene);
 		}
 		if (serializedEnt.dLight)
 		{

@@ -223,6 +223,16 @@ public:
         return (entity_id)m_entity;
     }
 
+    void setScene(Scene* scene)
+    {
+        m_scene = scene;
+    }
+
+    template <class Archive>
+    void serialize(Archive& archive) {
+        archive(m_entity);
+    }
+
     
 
 private:
