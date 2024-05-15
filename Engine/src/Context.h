@@ -30,8 +30,7 @@ class ProjectAssetRegistry;
 class EngineAPI Context
 {
 public:
-	Context();
-	Context(const std::string& filepath);
+	Context(const std::shared_ptr<ProjectAssetRegistry>& par);
 
 	//bool addObject(std::shared_ptr<Object3D> object);
 	//bool removeObject(std::shared_ptr <Object3D> object);

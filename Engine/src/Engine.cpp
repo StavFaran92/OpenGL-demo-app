@@ -25,6 +25,7 @@
 #include "ShaderParser_tntmeijsImpl.h"
 #include "ResourceManager.h"
 #include "ProjectManager.h"
+#include "ProjectAssetRegistry.h"
 
 #include "Application.h"
 #include "SDL2/SDL.h"
@@ -34,7 +35,7 @@
 // Singleton
 Engine* Engine::instance = nullptr;
 
-bool Engine::init()
+bool Engine::init(const InitParams& initParams)
 {
     if (m_isInit)
     {
@@ -108,7 +109,19 @@ bool Engine::init()
     lParams.extendShader = true;
     m_shaderLoader = std::make_shared<ShaderLoader>(shaderParser, lParams);
 
-    m_context = std::make_shared<Context>();
+    std::shared_ptr<ProjectAssetRegistry> par;
+    if (initParams.createNewProject)
+    {
+        par = ProjectAssetRegistry::create(initParams.projectDir);
+    }
+    else
+    {
+        par = ProjectAssetRegistry::parse(initParams.projectDir);
+    }
+
+    m_projectDirectory = initParams.projectDir;
+       
+    m_context = std::make_shared<Context>(par);
 
     //auto secondScene = std::make_shared<Scene>();
     //secondScene->setPostProcess(true);
@@ -138,6 +151,11 @@ bool Engine::init()
 
     m_context->addScene(defaultScene);
     m_context->setActiveScene(defaultScene->getID());
+
+    if (!initParams.createNewProject)
+    {
+        loadProject(m_projectDirectory);
+    }
 
     m_isInit = true;
 
@@ -317,18 +335,27 @@ ResourceManager* Engine::getResourceManager() const
     return m_resourceManager.get();
 }
 
-void Engine::loadProject(const std::string& filePath)
+void Engine::loadProject(const std::string& dirPath)
 {
+    m_projectDirectory = dirPath;
+
     m_memoryManagementSystem->clear();
 
-    m_context = std::make_shared<Context>(filePath);
+    auto& par = ProjectAssetRegistry::parse(dirPath);
+    auto& filePath = par->getFilepath();
+    m_context = std::make_shared<Context>(par);
 
     m_projectManager->loadProject(filePath, m_context);
 }
 
-void Engine::saveProject(const std::string& filePath)
+void Engine::saveProject()
 {
-    m_projectManager->saveProject(filePath);
+    m_projectManager->saveProject();
+}
+
+std::string Engine::getProjectDirectory() const
+{
+    return m_projectDirectory;
 }
 
 void Engine::pause()

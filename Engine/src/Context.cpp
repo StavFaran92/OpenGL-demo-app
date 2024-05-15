@@ -19,16 +19,9 @@
 #include "Material.h"
 #include "ProjectAssetRegistry.h"
 
-Context::Context() : m_shaderCounter(0)
+Context::Context(const std::shared_ptr<ProjectAssetRegistry>& par)
 {
-	m_projectAssetRegistry = ProjectAssetRegistry::create("Content/tmp2.json");
-
-	init();
-}
-
-Context::Context(const std::string& filepath)
-{
-	m_projectAssetRegistry = ProjectAssetRegistry::parse("Content/tmp.json");
+	m_projectAssetRegistry = par;
 
 	init();
 }

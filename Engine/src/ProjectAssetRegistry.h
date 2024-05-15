@@ -12,6 +12,7 @@ public:
 	static std::shared_ptr<ProjectAssetRegistry> create(const std::string& filename);
 	static std::shared_ptr<ProjectAssetRegistry> parse(const std::string& filename);
 
+	std::string getFilepath() const;
 	void reset();
 	void load(); //????
 	void save();

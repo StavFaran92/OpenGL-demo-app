@@ -727,14 +727,13 @@ class GUI_Helper : public GuiMenu {
 				if (ImGui::BeginMenu("File")) 
 				{ // Start of File dropdown
 					if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
-						Engine::get()->loadProject("Content/tmp.json");
+						nfdchar_t* outPath = NULL;
+						nfdresult_t result = NFD_PickFolder(NULL, &outPath);
+						Engine::get()->loadProject(outPath);
 						updateScene();
 					}
 					if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
-						nfdchar_t* outPath = NULL;
-						nfdresult_t result = NFD_PickFolder(NULL, &outPath);
-						//std::string selectedFolder = pfd::select_folder("Select any directory", "./").result();
-						Engine::get()->saveProject(outPath);
+						Engine::get()->saveProject();
 						
 					}
 					if (ImGui::MenuItem("Load Model")) {

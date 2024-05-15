@@ -30,6 +30,12 @@ class Mesh;
 class ProjectManager;
 template<typename T>class MemoryPool;
 
+struct InitParams
+{
+    std::string projectDir;
+    bool createNewProject = false;
+};
+
 class EngineAPI Engine
 {
 public:
@@ -59,7 +65,8 @@ public:
 
     
     void loadProject(const std::string& filePath);
-    void saveProject(const std::string& filePath);
+    void saveProject();
+    std::string getProjectDirectory() const;
 
     void pause();
     void resume();
@@ -71,13 +78,13 @@ public:
 
 protected:
     // -------------------- Methods -------------------- //
-    friend void sgeEntry();
+    friend void sgeEntry(int, char*[]);
 
 #ifdef TESTBED
     friend class TestEngine;
 #endif
 
-    bool init();
+    bool init(const InitParams& initParams);
     void update(float deltaTime);
     void draw(float deltaTime);
     void run(Application* app);
@@ -113,6 +120,8 @@ protected:
 
     std::atomic<bool> m_isPaused = false;
     std::atomic<bool> m_isStopped = false;
+
+    std::string m_projectDirectory;
 
 };
 

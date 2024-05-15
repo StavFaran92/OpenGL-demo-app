@@ -76,7 +76,9 @@ Resource<Texture> Texture::loadTextureFromFile(const std::string& fileLocation, 
 			return texture;
 		}
 
-		stbi_write_png(("Content/" + texture.getUID() + ".png").c_str(), texture.get()->m_width, texture.get()->m_height, 3, data, texture.get()->m_width * texture.get()->m_bitDepth);
+		auto& projectDir = Engine::get()->getProjectDirectory();
+
+		stbi_write_png((projectDir + " / " + texture.getUID() + ".png").c_str(), texture.get()->m_width, texture.get()->m_height, 3, data, texture.get()->m_width * texture.get()->m_bitDepth);
 		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
 		//TextureSerializer::
 

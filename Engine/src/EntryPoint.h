@@ -4,10 +4,35 @@
 
 Application* CreateApplication();
 
-void sgeEntry()
+InitParams parseArgs(int argc, char* argv[])
 {
+    InitParams params;
+
+    // Iterate over the arguments
+    for (int i = 1; i < argc; ++i)
+    {
+        if (strcmp(argv[i], "-e") == 0 && i + 1 < argc)
+        {
+            params.projectDir = argv[i + 1];
+            ++i; // Skip the next argument since it's part of the current flag
+        }
+        else if (strcmp(argv[i], "-ec") == 0 && i + 1 < argc)
+        {
+            params.projectDir = argv[i + 1];
+            params.createNewProject = true;
+            ++i; // Skip the next argument since it's part of the current flag
+        }
+    }
+
+    return params;
+}
+
+void sgeEntry(int argc, char* argv[])
+{
+	InitParams initParams = parseArgs(argc, argv);
+
 	auto engine = Engine::get();
-	engine->init();
+	engine->init(initParams);
 
 	auto app = CreateApplication();
 	app->start();
@@ -18,9 +43,9 @@ void sgeEntry()
 	engine->close();
 }
 
-int main()
+int main(int argc, char* argv[])
 { 
-	sgeEntry();
+	sgeEntry(argc, argv);
 
 	return 0;
 }

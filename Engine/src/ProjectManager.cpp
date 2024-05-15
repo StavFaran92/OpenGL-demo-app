@@ -104,7 +104,7 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     }
 }
 
-void ProjectManager::saveProject(const std::string& filePath)
+void ProjectManager::saveProject()
 {
     Engine::get()->getContext()->getProjectAssetRegistry()->save();
 

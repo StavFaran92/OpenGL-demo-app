@@ -317,7 +317,9 @@ Resource<Mesh> MeshBuilder::build()
 
 	Resource<Mesh> mesh = Factory<Mesh>::create();
 
-	MeshSerializer::writeDataToBinaryFile(m_data, "Content/" + mesh.getUID() + ".bin");
+	auto& projectDir = Engine::get()->getProjectDirectory();
+
+	MeshSerializer::writeDataToBinaryFile(m_data, projectDir + "/" + mesh.getUID() + ".bin");
 	Engine::get()->getContext()->getProjectAssetRegistry()->addMesh(mesh.getUID());
 
 	//MeshData newMeshData;

@@ -14,8 +14,10 @@ ProjectAssetRegistry::ProjectAssetRegistry(const std::string& filename)
 
 }
 
-std::shared_ptr<ProjectAssetRegistry> ProjectAssetRegistry::create(const std::string& filename)
+std::shared_ptr<ProjectAssetRegistry> ProjectAssetRegistry::create(const std::string& dirPath)
 {
+    auto filename = dirPath + "/ProjectAssetRegistry.json";
+
     std::shared_ptr<ProjectAssetRegistry> par = std::make_shared<ProjectAssetRegistry>(filename);
 
     // Create JSON object with empty arrays for meshes and textures
@@ -38,8 +40,10 @@ std::shared_ptr<ProjectAssetRegistry> ProjectAssetRegistry::create(const std::st
     return par;
 }
 
-std::shared_ptr<ProjectAssetRegistry> ProjectAssetRegistry::parse(const std::string& filename)
+std::shared_ptr<ProjectAssetRegistry> ProjectAssetRegistry::parse(const std::string& dirPath)
 {
+    auto filename = dirPath + "/ProjectAssetRegistry.json";
+
     std::shared_ptr<ProjectAssetRegistry> par = std::make_shared<ProjectAssetRegistry>(filename);
 
     std::ifstream outputFile(filename);
@@ -107,6 +111,11 @@ std::shared_ptr<ProjectAssetRegistry> ProjectAssetRegistry::parse(const std::str
     }
 
     return par;
+}
+
+std::string ProjectAssetRegistry::getFilepath() const
+{
+    return m_filename;
 }
 
 void ProjectAssetRegistry::reset()

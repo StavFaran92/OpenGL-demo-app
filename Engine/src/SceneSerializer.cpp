@@ -18,6 +18,8 @@
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "Mesh.h"
+#include "Context.h"
+#include "ProjectAssetRegistry.h"
 
 
 #include <assimp/Importer.hpp>
@@ -102,8 +104,9 @@ bool SceneSerializer::serialize(Scene& scene)
 	});
 
 	//if(!std::filesystem::exists("entities.json"))
+	auto projectDir = Engine::get()->getProjectDirectory();
 
-	std::ofstream os("Content/entities.json");
+	std::ofstream os(projectDir + "/entities.json");
 	cereal::JSONOutputArchive archive(os);
 	archive(serializedEntities);
 
@@ -119,7 +122,9 @@ bool SceneSerializer::deserialize(Scene& scene)
 
 	std::vector<SerializableEntity> serializedEntities;
 
-	std::ifstream is("Content/entities.json");
+	auto& projectDir = Engine::get()->getProjectDirectory();
+
+	std::ifstream is(projectDir + "/entities.json");
 	cereal::JSONInputArchive inputArchive(is);
 	inputArchive(serializedEntities);
 
