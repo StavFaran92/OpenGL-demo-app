@@ -221,7 +221,7 @@ struct EngineAPI ObjectComponent : public Component
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(name, e.handlerID());
+		archive(name, e);
 	}
 
 	std::string name;

@@ -171,7 +171,8 @@ bool SceneSerializer::deserialize(Scene& scene)
 
 		if (serializedEnt.obj)
 		{
-			entityHandler.addComponent<ObjectComponent>(serializedEnt.obj.value());
+			auto& obj = entityHandler.addComponent<ObjectComponent>(serializedEnt.obj.value());
+			obj.e.setScene(&scene);
 		}
 	}
 
