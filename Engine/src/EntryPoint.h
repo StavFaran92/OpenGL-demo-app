@@ -19,7 +19,7 @@ InitParams parseArgs(int argc, char* argv[])
         else if (strcmp(argv[i], "-ec") == 0 && i + 1 < argc)
         {
             params.projectDir = argv[i + 1];
-            params.createNewProject = true;
+            params.loadExistingProject = true;
             ++i; // Skip the next argument since it's part of the current flag
         }
     }

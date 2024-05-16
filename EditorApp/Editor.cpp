@@ -792,48 +792,6 @@ public:
 		
 		ImGui::SetCurrentContext((ImGuiContext * )Engine::get()->getImguiHandler()->getCurrentContext());
 
-		//Skybox::CreateSkybox({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
-		//SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
-		//SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
-		//SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",
-		//SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
-		//SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" });
-
-		{
-			auto ground = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
-			auto& groundTransfrom = ground.getComponent<Transformation>();
-			groundTransfrom.setLocalScale({ 50, .5f, 50 });
-			auto& mat = ground.addComponent<MaterialComponent>();
-			auto tex = Texture::loadTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
-			mat.begin()->get()->setTexture(Texture::Type::Albedo, tex);
-			auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
-			auto& collisionBox = ground.addComponent<CollisionBoxComponent>(.5f);
-		}
-
-		{
-			auto camera = Engine::get()->getContext()->getActiveScene()->getActiveCamera();
-			camera->lookAt(0, 5, 0);
-			camera->setPosition(25, 225, 35);
-		}
-
-		auto sphere = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get());
-		{
-			auto random = Engine::get()->getRandomSystem();
-			auto x = random->rand() * 10 - 5;
-			auto z = random->rand() * 10 - 5;
-
-			auto& sphereTransform = sphere.getComponent<Transformation>();
-			sphereTransform.setLocalPosition({ x, 10, z });
-
-
-			auto& mat = sphere.addComponent<MaterialComponent>();
-			auto tex = Texture::loadTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
-			mat.begin()->get()->setTexture(Texture::Type::Diffuse, tex);
-
-			auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
-			auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);
-		}
-
 		updateScene();
 
 		auto gui = new GUI_Helper();

@@ -33,7 +33,7 @@ template<typename T>class MemoryPool;
 struct InitParams
 {
     std::string projectDir;
-    bool createNewProject = false;
+    bool loadExistingProject = false;
 };
 
 class EngineAPI Engine
@@ -93,6 +93,8 @@ protected:
     void SetContext(std::shared_ptr<Context> context);
     void SetWindow(std::shared_ptr<Window> window);
     void handleEvents(SDL_Event& e, bool& quit);
+
+    void createStartupScene(const std::shared_ptr<Context>& context);
 protected:
 
     Engine();

@@ -26,6 +26,8 @@
 #include "ResourceManager.h"
 #include "ProjectManager.h"
 #include "ProjectAssetRegistry.h"
+#include "ShapeFactory.h"
+#include "Material.h"
 
 #include "Application.h"
 #include "SDL2/SDL.h"
@@ -42,6 +44,8 @@ bool Engine::init(const InitParams& initParams)
         logError("Engine already started!");
         return false;
     }
+
+    m_projectDirectory = initParams.projectDir;
 
     glEnable(GL_DEPTH_TEST);
 
@@ -109,20 +113,6 @@ bool Engine::init(const InitParams& initParams)
     lParams.extendShader = true;
     m_shaderLoader = std::make_shared<ShaderLoader>(shaderParser, lParams);
 
-    std::shared_ptr<ProjectAssetRegistry> par;
-    if (initParams.createNewProject)
-    {
-        par = ProjectAssetRegistry::create(initParams.projectDir);
-    }
-    else
-    {
-        par = ProjectAssetRegistry::parse(initParams.projectDir);
-    }
-
-    m_projectDirectory = initParams.projectDir;
-       
-    m_context = std::make_shared<Context>(par);
-
     //auto secondScene = std::make_shared<Scene>();
     //secondScene->setPostProcess(true);
     //m_context->addScene(secondScene);
@@ -146,15 +136,22 @@ bool Engine::init(const InitParams& initParams)
 
     m_randomSystem = std::make_shared<RandomNumberGenerator>();
 
-    auto defaultScene = std::make_shared<Scene>(m_context.get());
-    //defaultScene->setPostProcess(true);
-
-    m_context->addScene(defaultScene);
-    m_context->setActiveScene(defaultScene->getID());
-
-    if (!initParams.createNewProject)
+    if (initParams.loadExistingProject)
     {
         loadProject(m_projectDirectory);
+    }
+    else
+    {
+        // Create a new Project
+
+        auto& par = ProjectAssetRegistry::create(initParams.projectDir);;
+        m_context = std::make_shared<Context>(par);
+        auto defaultScene = std::make_shared<Scene>(m_context.get());
+
+        m_context->addScene(defaultScene);
+        m_context->setActiveScene(defaultScene->getID());
+        
+        createStartupScene(m_context);
     }
 
     m_isInit = true;
@@ -376,6 +373,44 @@ void Engine::handleEvents(SDL_Event& e, bool& quit)
 
 
         m_eventSystem->dispatch(e);
+    }
+}
+
+void Engine::createStartupScene(const std::shared_ptr<Context>& context)
+{
+    {
+        auto ground = ShapeFactory::createBox(context->getActiveScene().get());
+        auto& groundTransfrom = ground.getComponent<Transformation>();
+        groundTransfrom.setLocalScale({ 50, .5f, 50 });
+        auto& mat = ground.addComponent<MaterialComponent>();
+        auto tex = Texture::loadTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
+        mat.begin()->get()->setTexture(Texture::Type::Albedo, tex);
+        auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
+        auto& collisionBox = ground.addComponent<CollisionBoxComponent>(.5f);
+    }
+
+    {
+        auto camera = context->getActiveScene()->getActiveCamera();
+        camera->lookAt(0, 5, 0);
+        camera->setPosition(25, 225, 35);
+    }
+
+    auto sphere = ShapeFactory::createSphere(context->getActiveScene().get());
+    {
+        auto random = Engine::get()->getRandomSystem();
+        auto x = random->rand() * 10 - 5;
+        auto z = random->rand() * 10 - 5;
+
+        auto& sphereTransform = sphere.getComponent<Transformation>();
+        sphereTransform.setLocalPosition({ x, 10, z });
+
+
+        auto& mat = sphere.addComponent<MaterialComponent>();
+        auto tex = Texture::loadTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
+        mat.begin()->get()->setTexture(Texture::Type::Diffuse, tex);
+
+        auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
+        auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);
     }
 }
 
