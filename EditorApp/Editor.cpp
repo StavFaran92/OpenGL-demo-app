@@ -729,10 +729,13 @@ class GUI_Helper : public GuiMenu {
 					if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
 						nfdchar_t* outPath = NULL;
 						nfdresult_t result = NFD_PickFolder(NULL, &outPath);
-						Engine::get()->loadProject(outPath);
-						selectedEntity = Entity::EmptyEntity;
-						updateScene();
-						free(outPath);
+						if (result == NFD_OKAY)
+						{
+							Engine::get()->loadProject(outPath);
+							selectedEntity = Entity::EmptyEntity;
+							updateScene();
+							free(outPath);
+						}
 					}
 					if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
 						Engine::get()->saveProject();

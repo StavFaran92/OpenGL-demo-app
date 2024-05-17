@@ -121,9 +121,9 @@ public:
 		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/front.jpg",
 		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/back.jpg" });
 
-		auto camera = Engine::get()->getContext()->getActiveScene()->getActiveCamera();
-		camera->lookAt(0, 5, 0);
-		camera->setPosition(25, 225, 35);
+		//auto camera = Engine::get()->getContext()->getActiveScene()->getActiveCamera();
+		//camera->lookAt(0, 5, 0);
+		//camera->setPosition(25, 225, 35);
 
 		auto gui = new GUI_Helper();
 		Engine::get()->getImguiHandler()->addGUI(gui);

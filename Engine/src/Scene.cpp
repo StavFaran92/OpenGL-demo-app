@@ -90,6 +90,11 @@ int Scene::getRenderTarget() const
 	return m_renderTargetTexture.get()->getID();
 }
 
+//void Scene::setPrimaryCamera(ICamera* camera)
+//{
+//	m_activeCamera = camera;
+//}
+
 bool Scene::serialize()
 {
 	return m_serdes.serialize(*this);
@@ -188,9 +193,7 @@ void Scene::init(Context* context)
 	
 
 
-	// Add default dir light
-	auto dLight = createEntity("Directional light");
-	dLight.addComponent<DirectionalLight>().setDirection({1, -1, 1});
+	
 	//dLight.getComponent<Transformation>().setLocalPosition({ 0 , 2, 0 });;
 	
 
@@ -206,10 +209,6 @@ void Scene::init(Context* context)
 	//	pLight.getComponent<Transformation>().setLocalPosition({ rand_x , 0, rand_y });
 	//	pLight.getComponent<RenderableComponent>().renderTechnique = RenderableComponent::Forward;
 	//}
-
-	auto editorCamera = createEntity("Camera");
-	editorCamera.addComponent<CameraComponent>();
-	m_activeCamera = editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
 
 	m_tempOutlineShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/OutlineShader.glsl");
 
@@ -301,15 +300,25 @@ void Scene::draw(float deltaTime)
 	glViewport(0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
 	m_deferredRenderer->clear();
 
+	CameraComponent* activeCamera = nullptr;
+	for (auto&& [entity, camera] : m_registry.view<CameraComponent>().each())
+	{
+		if (camera.isPrimary)
+		{
+			activeCamera = &camera;
+			break;
+		}
+	}
+
 	IRenderer::DrawQueueRenderParams params;
 	params.scene = this;
 	params.context = m_context;
 	params.registry = &m_registry;
 	params.renderer = m_forwardRenderer.get();
-	auto tempView = m_activeCamera->getView();
+	auto tempView = activeCamera->getView();
 	params.view = &tempView;
 	params.projection = &m_defaultPerspectiveProjection;
-	params.cameraPos = m_activeCamera->getPosition();
+	params.cameraPos = activeCamera->getPosition();
 	params.irradianceMap = m_irradianceMap;
 	params.prefilterEnvMap = m_prefilterEnvMap;
 	params.brdfLUT = m_BRDFIntegrationLUT;
@@ -531,7 +540,7 @@ void Scene::removeEntity(const Entity& e)
 
 ICamera* Scene::getActiveCamera() const
 {
-	return m_activeCamera;
+	return nullptr;
 }
 
 

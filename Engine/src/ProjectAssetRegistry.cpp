@@ -66,76 +66,6 @@ std::shared_ptr<ProjectAssetRegistry> ProjectAssetRegistry::parse(const std::str
 
     par->m_assetRegistry = resourceFile;
 
-    //{
-    //    auto iter = resourceFile.find("meshes");
-    //    if (iter == resourceFile.end())
-    //    {
-    //        logError("Could not find \"meshes\" in JSON");
-    //        return nullptr;
-    //    }
-
-    //    // Iterate over the "meshes" array
-    //    for (const auto& mesh : iter.value())
-    //    {
-    //        try
-    //        {
-    //            std::string meshFileName = mesh.get<std::string>();
-    //            par->addMesh(meshFileName);
-    //        }
-    //        catch (const std::exception& e)
-    //        {
-    //            logError("Failed to parse mesh value: " + std::string(e.what()));
-    //            continue; // Continue to the next mesh
-    //        }
-    //    }
-    //}
-
-    //{
-    //    auto iter = resourceFile.find("textures");
-    //    if (iter == resourceFile.end())
-    //    {
-    //        logError("Could not find \"textures\" in JSON");
-    //        return nullptr;
-    //    }
-
-    //    for (const auto& texture : iter.value())
-    //    {
-    //        try
-    //        {
-    //            std::string textureFileName = texture.get<std::string>();
-    //            par->addTexture(textureFileName);
-    //        }
-    //        catch (const std::exception& e)
-    //        {
-    //            logError("Failed to parse texture value: " + std::string(e.what()));
-    //            continue; // Continue to the next mesh
-    //        }
-    //    }
-    //}
-
-    //{
-    //    auto iter = resourceFile.find("association");
-    //    if (iter == resourceFile.end())
-    //    {
-    //        logError("Could not find \"association\" in JSON");
-    //        return nullptr;
-    //    }
-
-    //    for (const auto& association : iter.value())
-    //    {
-    //        try
-    //        {
-    //            std::string textureFileName = texture.get<std::string>();
-    //            par->addTexture(textureFileName);
-    //        }
-    //        catch (const std::exception& e)
-    //        {
-    //            logError("Failed to parse texture value: " + std::string(e.what()));
-    //            continue; // Continue to the next mesh
-    //        }
-    //    }
-    //}
-
     return par;
 }
 
@@ -158,16 +88,19 @@ void ProjectAssetRegistry::save()
 void ProjectAssetRegistry::addMesh(UUID uuid)
 {
     m_assetRegistry["meshes"].push_back(uuid);
+    sync();
 }
 
 void ProjectAssetRegistry::addTexture(UUID uuid)
 {
     m_assetRegistry["textures"].push_back(uuid);
+    sync();
 }
 
 void ProjectAssetRegistry::addAssociation(std::string name, UUID uuid)
 {
     m_assetRegistry["association"].push_back({ name, uuid });
+    sync();
 }
 
 std::vector<UUID> ProjectAssetRegistry::getMeshList() const

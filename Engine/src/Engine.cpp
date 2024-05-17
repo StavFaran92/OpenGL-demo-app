@@ -28,6 +28,8 @@
 #include "ProjectAssetRegistry.h"
 #include "ShapeFactory.h"
 #include "Material.h"
+#include "DirectionalLight.h"
+#include "EditorCamera.h"
 
 #include "Application.h"
 #include "SDL2/SDL.h"
@@ -144,10 +146,6 @@ bool Engine::init(const InitParams& initParams)
         m_memoryManagementSystem = std::make_shared<CacheSystem>();
         auto& par = ProjectAssetRegistry::create(initParams.projectDir);;
         m_context = std::make_shared<Context>(par);
-        auto defaultScene = std::make_shared<Scene>(m_context.get());
-
-        m_context->addScene(defaultScene);
-        m_context->setActiveScene(defaultScene->getID());
         
         createStartupScene(m_context);
     }
@@ -378,6 +376,19 @@ void Engine::handleEvents(SDL_Event& e, bool& quit)
 
 void Engine::createStartupScene(const std::shared_ptr<Context>& context)
 {
+    auto startupScene = std::make_shared<Scene>(m_context.get());
+
+    m_context->addScene(startupScene);
+    m_context->setActiveScene(startupScene->getID());
+
+    // Add default dir light
+    auto dLight = startupScene->createEntity("Directional light");
+    dLight.addComponent<DirectionalLight>().setDirection({ 1, -1, 1 });
+
+    auto editorCamera = startupScene->createEntity("Camera");
+    editorCamera.addComponent<CameraComponent>().isPrimary = true;
+    editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
+
     {
         auto ground = ShapeFactory::createBox(context->getActiveScene().get());
         auto& groundTransfrom = ground.getComponent<Transformation>();
@@ -390,9 +401,8 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context)
     }
 
     {
-        auto camera = context->getActiveScene()->getActiveCamera();
-        camera->lookAt(0, 5, 0);
-        camera->setPosition(25, 225, 35);
+        //editorCamera->lookAt(0, 5, 0);
+        //editorCamera->setPosition(25, 225, 35);
     }
 
     auto sphere = ShapeFactory::createSphere(context->getActiveScene().get());

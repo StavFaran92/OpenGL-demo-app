@@ -105,6 +105,8 @@ public:
 
 	int getRenderTarget() const;
 
+	//void setPrimaryCamera(ICamera* camera);
+
 	bool serialize();
 	bool deserialize();
 
@@ -161,7 +163,7 @@ private:
 
 	Shader* m_tempOutlineShader = nullptr;
 
-	ICamera* m_activeCamera = nullptr;
+	//CameraComponent* m_activeCamera = nullptr;
 
 	glm::mat4 m_defaultPerspectiveProjection;
 
