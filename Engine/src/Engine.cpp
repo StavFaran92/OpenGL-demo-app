@@ -60,12 +60,29 @@ bool Engine::init(const InitParams& initParams)
     // If create new project, check if dir is empty
     if (!initParams.loadExistingProject)
     {
-        // Iterate over the directory and check if there are any entries
-        if (std::filesystem::directory_iterator(m_projectDirectory) != std::filesystem::directory_iterator{})
+        if (!initParams.overwriteExisting)
         {
-            logError("Directory is not empty, SGE requires an empty directory to start a new project.");
-            return false;
+            // Iterate over the directory and check if there are any entries
+            if (std::filesystem::directory_iterator(m_projectDirectory) != std::filesystem::directory_iterator{})
+            {
+                logError("Directory is not empty, SGE requires an empty directory to start a new project.");
+                return false;
+            }
         }
+        else
+        {
+            // Overwrite existing files by deleting all files in the directory
+            try {
+                for (const auto& entry : std::filesystem::directory_iterator(m_projectDirectory)) {
+                    std::filesystem::remove_all(entry); // Remove file or directory
+                }
+            }
+            catch (const std::filesystem::filesystem_error& e) {
+                logError("Failed to clear the directory: " + std::string(e.what()));
+                return false;
+            }
+        }
+
     }
 
     glEnable(GL_DEPTH_TEST);

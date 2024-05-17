@@ -22,6 +22,11 @@ InitParams parseArgs(int argc, char* argv[])
             params.loadExistingProject = true;
             ++i; // Skip the next argument since it's part of the current flag
         }
+
+        else if (strcmp(argv[i], "-ov") == 0)
+        {
+            params.overwriteExisting = true;
+        }
     }
 
     return params;

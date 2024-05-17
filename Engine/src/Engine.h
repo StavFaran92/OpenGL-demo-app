@@ -34,6 +34,7 @@ struct InitParams
 {
     std::string projectDir;
     bool loadExistingProject = false;
+    bool overwriteExisting = false;
 };
 
 class EngineAPI Engine
