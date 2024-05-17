@@ -76,6 +76,11 @@ struct EngineAPI NativeScriptComponent : public Component
 			script = nullptr;
 		}
 	}
+
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(entity);
+	}
 };
 
 struct EngineAPI RigidBodyComponent : public Component

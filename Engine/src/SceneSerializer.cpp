@@ -20,6 +20,7 @@
 #include "Mesh.h"
 #include "Context.h"
 #include "ProjectAssetRegistry.h"
+#include "EditorCamera.h"
 
 
 #include <assimp/Importer.hpp>
@@ -39,7 +40,7 @@ struct SerializableEntity
 	std::optional<MeshComponent> mesh;
 	std::optional <RenderableComponent> renderableComponent;
 	std::optional<CameraComponent> camera;
-	//std::optional<NativeScriptComponent> nsc;
+	std::optional<NativeScriptComponent> nsc;
 	std::optional<MaterialComponent> mat;
 	std::optional<DirectionalLight> dLight;
 	std::optional<PointLight> pLight;
@@ -49,7 +50,7 @@ struct SerializableEntity
 	template <class Archive>
 	void serialize(Archive& archive) {
 		archive(entity, transform, rigidBody, collisionBox, collisionSphere, mesh, renderableComponent, camera,
-			mat, dLight, pLight, obj, skybox);
+			nsc, mat, dLight, pLight, obj, skybox);
 	}
 };
 
@@ -93,7 +94,7 @@ bool SceneSerializer::serialize(Scene& scene)
 			getComponentIfExists<MeshComponent>(e),
 			getComponentIfExists<RenderableComponent>(e),
 			getComponentIfExists<CameraComponent>(e),
-			//getComponentIfExists<NativeScriptComponent>(e),
+			getComponentIfExists<NativeScriptComponent>(e),
 			getComponentIfExists<MaterialComponent>(e),
 			getComponentIfExists<DirectionalLight>(e),
 			getComponentIfExists<PointLight>(e),
@@ -173,6 +174,12 @@ bool SceneSerializer::deserialize(Scene& scene)
 		{
 			auto& obj = entityHandler.addComponent<ObjectComponent>(serializedEnt.obj.value());
 			obj.e.setScene(&scene);
+		}
+
+		if (serializedEnt.nsc)
+		{
+			auto& nsc = entityHandler.addComponent<NativeScriptComponent>(serializedEnt.nsc.value());
+			nsc.bind<EditorCamera>();
 		}
 	}
 
