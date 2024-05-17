@@ -18,8 +18,10 @@ public:
 	void save();
 	void addMesh(UUID uuid);
 	void addTexture(UUID uuid);
+	void addAssociation(std::string name, UUID uuid);
 	std::vector<UUID> getMeshList() const;
 	std::vector<UUID> getTextureList() const;
+	std::unordered_map<std::string, UUID> getAssociations() const;
 
 
 private:

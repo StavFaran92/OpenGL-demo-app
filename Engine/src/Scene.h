@@ -159,7 +159,6 @@ private:
 
 	bool m_isSimulationActive = false;
 
-	Resource<Mesh>  m_tempBoxMesh = nullptr;
 	Shader* m_tempOutlineShader = nullptr;
 
 	ICamera* m_activeCamera = nullptr;

@@ -57,9 +57,6 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
         return;
     }
 
-    // Populate scenes from JSON
-    context->populateScenesFromJSON(ecsJson.dump()); // Pass JSON as string
-
     // Parse JSON
     json resourceFileJSON;
     try 
@@ -102,6 +99,9 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
         // Similar steps as above to load and create textures
         // ...
     }
+
+    // Populate scenes from JSON
+    context->populateScenesFromJSON(ecsJson.dump()); // Pass JSON as string
 }
 
 void ProjectManager::saveProject()

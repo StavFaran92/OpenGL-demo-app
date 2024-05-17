@@ -23,6 +23,7 @@ std::shared_ptr<ProjectAssetRegistry> ProjectAssetRegistry::create(const std::st
     // Create JSON object with empty arrays for meshes and textures
     par->m_assetRegistry["meshes"] = nlohmann::json::array();
     par->m_assetRegistry["textures"] = nlohmann::json::array();
+    par->m_assetRegistry["association"] = nlohmann::json::array();
 
     // Write JSON data to file
     std::ofstream outputFile(filename);
@@ -63,52 +64,77 @@ std::shared_ptr<ProjectAssetRegistry> ProjectAssetRegistry::parse(const std::str
         return nullptr;
     }
 
-    {
-        auto iter = resourceFile.find("meshes");
-        if (iter == resourceFile.end())
-        {
-            logError("Could not find \"meshes\" in JSON");
-            return nullptr;
-        }
+    par->m_assetRegistry = resourceFile;
 
-        // Iterate over the "meshes" array
-        for (const auto& mesh : iter.value())
-        {
-            try
-            {
-                std::string meshFileName = mesh.get<std::string>();
-                par->addMesh(meshFileName);
-            }
-            catch (const std::exception& e)
-            {
-                logError("Failed to parse mesh value: " + std::string(e.what()));
-                continue; // Continue to the next mesh
-            }
-        }
-    }
+    //{
+    //    auto iter = resourceFile.find("meshes");
+    //    if (iter == resourceFile.end())
+    //    {
+    //        logError("Could not find \"meshes\" in JSON");
+    //        return nullptr;
+    //    }
 
-    {
-        auto iter = resourceFile.find("textures");
-        if (iter == resourceFile.end())
-        {
-            logError("Could not find \"textures\" in JSON");
-            return nullptr;
-        }
+    //    // Iterate over the "meshes" array
+    //    for (const auto& mesh : iter.value())
+    //    {
+    //        try
+    //        {
+    //            std::string meshFileName = mesh.get<std::string>();
+    //            par->addMesh(meshFileName);
+    //        }
+    //        catch (const std::exception& e)
+    //        {
+    //            logError("Failed to parse mesh value: " + std::string(e.what()));
+    //            continue; // Continue to the next mesh
+    //        }
+    //    }
+    //}
 
-        for (const auto& texture : iter.value())
-        {
-            try
-            {
-                std::string textureFileName = texture.get<std::string>();
-                par->addTexture(textureFileName);
-            }
-            catch (const std::exception& e)
-            {
-                logError("Failed to parse texture value: " + std::string(e.what()));
-                continue; // Continue to the next mesh
-            }
-        }
-    }
+    //{
+    //    auto iter = resourceFile.find("textures");
+    //    if (iter == resourceFile.end())
+    //    {
+    //        logError("Could not find \"textures\" in JSON");
+    //        return nullptr;
+    //    }
+
+    //    for (const auto& texture : iter.value())
+    //    {
+    //        try
+    //        {
+    //            std::string textureFileName = texture.get<std::string>();
+    //            par->addTexture(textureFileName);
+    //        }
+    //        catch (const std::exception& e)
+    //        {
+    //            logError("Failed to parse texture value: " + std::string(e.what()));
+    //            continue; // Continue to the next mesh
+    //        }
+    //    }
+    //}
+
+    //{
+    //    auto iter = resourceFile.find("association");
+    //    if (iter == resourceFile.end())
+    //    {
+    //        logError("Could not find \"association\" in JSON");
+    //        return nullptr;
+    //    }
+
+    //    for (const auto& association : iter.value())
+    //    {
+    //        try
+    //        {
+    //            std::string textureFileName = texture.get<std::string>();
+    //            par->addTexture(textureFileName);
+    //        }
+    //        catch (const std::exception& e)
+    //        {
+    //            logError("Failed to parse texture value: " + std::string(e.what()));
+    //            continue; // Continue to the next mesh
+    //        }
+    //    }
+    //}
 
     return par;
 }
@@ -139,6 +165,11 @@ void ProjectAssetRegistry::addTexture(UUID uuid)
     m_assetRegistry["textures"].push_back(uuid);
 }
 
+void ProjectAssetRegistry::addAssociation(std::string name, UUID uuid)
+{
+    m_assetRegistry["association"].push_back({ name, uuid });
+}
+
 std::vector<UUID> ProjectAssetRegistry::getMeshList() const
 {
     return m_assetRegistry["meshes"].get<const std::vector<UUID>>();
@@ -147,6 +178,24 @@ std::vector<UUID> ProjectAssetRegistry::getMeshList() const
 std::vector<UUID> ProjectAssetRegistry::getTextureList() const
 {
 	return m_assetRegistry["textures"].get<std::vector<std::string>>();
+}
+
+std::unordered_map<std::string, UUID> ProjectAssetRegistry::getAssociations() const
+{
+    std::unordered_map<std::string, UUID> associations;
+
+    // Check if the "association" key exists and is an array
+    if (m_assetRegistry.contains("association") && m_assetRegistry["association"].is_array()) {
+        for (const auto& item : m_assetRegistry["association"]) {
+            // Ensure each item is an array with exactly two elements
+            if (item.is_array() && item.size() == 2 && item[0].is_string() && item[1].is_string()) {
+                std::string key = item[0];
+                UUID value = item[1];
+                associations[key] = value;
+            }
+        }
+    }
+    return associations;
 }
 
 void ProjectAssetRegistry::sync()

@@ -56,8 +56,6 @@ bool Engine::init(const InitParams& initParams)
     m_memoryPoolTexture = std::make_shared<MemoryPool<Texture>>();
     m_memoryPoolMesh = std::make_shared<MemoryPool<Mesh>>();
 
-    m_memoryManagementSystem = std::make_shared<CacheSystem>();
-
     m_resourceManager = std::make_shared<ResourceManager>();
 
     m_projectManager = std::make_shared<ProjectManager>();
@@ -143,7 +141,7 @@ bool Engine::init(const InitParams& initParams)
     else
     {
         // Create a new Project
-
+        m_memoryManagementSystem = std::make_shared<CacheSystem>();
         auto& par = ProjectAssetRegistry::create(initParams.projectDir);;
         m_context = std::make_shared<Context>(par);
         auto defaultScene = std::make_shared<Scene>(m_context.get());
@@ -336,11 +334,13 @@ void Engine::loadProject(const std::string& dirPath)
 {
     m_projectDirectory = dirPath;
 
-    m_memoryManagementSystem->clear();
+    
 
     auto& par = ProjectAssetRegistry::parse(dirPath);
     auto& filePath = par->getFilepath();
     m_context = std::make_shared<Context>(par);
+
+    m_memoryManagementSystem = std::make_shared<CacheSystem>(par->getAssociations());
 
     m_projectManager->loadProject(filePath, m_context);
 }

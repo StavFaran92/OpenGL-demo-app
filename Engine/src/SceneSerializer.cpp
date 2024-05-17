@@ -118,7 +118,7 @@ bool SceneSerializer::serialize(Scene& scene)
 
 bool SceneSerializer::deserialize(Scene& scene)
 {
-	scene.clear();
+	//scene.clear();
 
 	std::vector<SerializableEntity> serializedEntities;
 

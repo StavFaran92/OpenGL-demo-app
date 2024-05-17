@@ -6,6 +6,9 @@
 template<class T>  class Resource;
 
 #include "MemoryPool.h"
+#include "ProjectAssetRegistry.h"
+#include "Context.h"
+#include "Engine.h"
 
 class Texture;
 class Mesh;
@@ -19,6 +22,7 @@ class CacheSystem
 {
 public:
 	CacheSystem() = default;
+	CacheSystem(const std::unordered_map<std::string, UUID>& associations);
 	~CacheSystem() = default;
 
 	template<typename T>
@@ -33,6 +37,8 @@ public:
 
 		Resource<T>& resource = creationCallback();
 		m_associations[resourceName] = resource.getUID();
+
+		Engine::get()->getContext()->getProjectAssetRegistry()->addAssociation(resourceName, resource.getUID());
 
 		return resource;
 	}

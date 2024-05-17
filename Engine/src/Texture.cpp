@@ -59,7 +59,8 @@ Resource<Texture> Texture::loadTextureFromFile(const std::string& fileLocation, 
 {
 	// Check if texture is already cached to optimize the load process
 	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
-	return memoryManagementSystem->createOrGetCached<Texture>(fileLocation, [&]() {
+	std::filesystem::path path(fileLocation);
+	return memoryManagementSystem->createOrGetCached<Texture>(path.filename().string(), [&]() {
 		Resource<Texture> texture = Factory<Texture>::create();
 
 		texture.get()->m_target = GL_TEXTURE_2D;

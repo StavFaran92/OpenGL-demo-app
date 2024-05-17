@@ -211,7 +211,6 @@ void Scene::init(Context* context)
 	editorCamera.addComponent<CameraComponent>();
 	m_activeCamera = editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
 
-	m_tempBoxMesh = Box::createMesh();
 	m_tempOutlineShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/OutlineShader.glsl");
 
 	m_uboTime = std::make_shared<UniformBufferObject>(sizeof(float));
