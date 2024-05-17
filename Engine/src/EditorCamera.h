@@ -6,6 +6,9 @@
 #include "ScriptableEntity.h"
 #include "ICameraController.h"
 
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/cereal.hpp>
+
 
 class EngineAPI EditorCamera : public ICamera
 {
@@ -35,3 +38,5 @@ private:
 
 };
 
+CEREAL_REGISTER_TYPE(EditorCamera);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(ScriptableEntity, EditorCamera)

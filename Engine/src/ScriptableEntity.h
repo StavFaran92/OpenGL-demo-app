@@ -14,6 +14,11 @@ public:
 
 	Entity entity;
 
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(entity);
+	}
+
 protected:
 	virtual void onCreate() {};
 	virtual void onUpdate(float deltaTime) {};
@@ -21,4 +26,5 @@ protected:
 
 	friend NativeScriptComponent;
 	friend Scene;
+	friend SceneSerializer;
 };

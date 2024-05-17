@@ -179,7 +179,9 @@ bool SceneSerializer::deserialize(Scene& scene)
 		if (serializedEnt.nsc)
 		{
 			auto& nsc = entityHandler.addComponent<NativeScriptComponent>(serializedEnt.nsc.value());
-			nsc.bind<EditorCamera>();
+			nsc.entity.setScene(&scene);
+			nsc.script->entity.setScene(&scene);
+			nsc.script->onCreate(); // todo move to scene start play
 		}
 	}
 

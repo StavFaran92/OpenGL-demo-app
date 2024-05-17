@@ -53,7 +53,7 @@ struct EngineAPI RenderableComponent : public Component
 struct EngineAPI NativeScriptComponent : public Component
 {
 	NativeScriptComponent() = default;
-	ScriptableEntity* script = nullptr;
+	std::shared_ptr<ScriptableEntity> script = nullptr;
 	Entity entity = Entity::EmptyEntity;
 
 	template<typename T, typename... Args>
@@ -61,25 +61,25 @@ struct EngineAPI NativeScriptComponent : public Component
 	{
 		static_assert(std::is_base_of<ScriptableEntity, T>::value, "T must inherit from ScriptableEntity");
 
-		script = new T(std::forward<Args>(args)...);
+		script = std::make_shared< T>(std::forward<Args>(args)...);
 		script->entity = entity;
 		script->onCreate();
 
-		return static_cast<T*>(script);
+		return static_cast<T*>(script.get());
 	}
 
 	void unbind()
 	{
 		if (script)
 		{
-			delete script;
+			//delete script;
 			script = nullptr;
 		}
 	}
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(entity);
+		archive(entity, script);
 	}
 };
 
