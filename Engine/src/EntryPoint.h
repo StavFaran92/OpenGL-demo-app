@@ -32,7 +32,7 @@ void sgeEntry(int argc, char* argv[])
 	InitParams initParams = parseArgs(argc, argv);
 
 	auto engine = Engine::get();
-	engine->init(initParams);
+    if (!engine->init(initParams)) return;
 
 	auto app = CreateApplication();
 	app->start();

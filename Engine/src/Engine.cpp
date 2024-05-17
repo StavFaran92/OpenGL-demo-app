@@ -36,6 +36,8 @@
 
 #include "GL/glew.h"
 
+#include <filesystem>
+
 // Singleton
 Engine* Engine::instance = nullptr;
 
@@ -48,6 +50,23 @@ bool Engine::init(const InitParams& initParams)
     }
 
     m_projectDirectory = initParams.projectDir;
+
+    if (!std::filesystem::exists(m_projectDirectory) || !std::filesystem::is_directory(m_projectDirectory)) 
+    {
+        logError("Path does not exist or is not a directory");
+        return false;
+    }
+
+    // If create new project, check if dir is empty
+    if (!initParams.loadExistingProject)
+    {
+        // Iterate over the directory and check if there are any entries
+        if (std::filesystem::directory_iterator(m_projectDirectory) != std::filesystem::directory_iterator{})
+        {
+            logError("Directory is not empty, SGE requires an empty directory to start a new project.");
+            return false;
+        }
+    }
 
     glEnable(GL_DEPTH_TEST);
 
