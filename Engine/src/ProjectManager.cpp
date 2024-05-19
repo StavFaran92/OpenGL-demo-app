@@ -101,12 +101,14 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     {
         // Open bin file
         fs::path imageFilePath = (projectDir / textureUID).string() + ".png";
+        Texture::TextureData textureData = Texture::extractTextureDataFromFile(imageFilePath.string());
+        
         //Texture::create2DTextureFromFile(imageFilePath.string(), false);
 
-        //// Create mesh
-        //Texture* texture = new Texture();
-        //texture->build(meshData);
-        //Engine::get()->getMemoryPool<Texture>()->add(textureUID, texture);
+        // Create texture
+        Texture* texture = new Texture();
+        texture->build(textureData);
+        Engine::get()->getMemoryPool<Texture>()->add(textureUID, texture);
     }
 
     // Populate scenes from JSON

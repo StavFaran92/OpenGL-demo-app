@@ -35,10 +35,18 @@ Resource<Texture> Texture::createEmptyTexture(int width, int height)
 
 Resource<Texture> Texture::createEmptyTexture(int width, int height, int internalFormat, int format, int type)
 {
-	return create2DTextureFromBuffer(width, height, internalFormat, format, type, {
+	TextureData textureData;
+	textureData.width = width;
+	textureData.height = height;
+	textureData.internalFormat = internalFormat;
+	textureData.format = format;
+	textureData.type = type;
+	textureData.params = {
 		{GL_TEXTURE_MIN_FILTER, GL_NEAREST },
 		{GL_TEXTURE_MAG_FILTER, GL_NEAREST },
-		}, NULL);
+	};
+
+	return create2DTextureFromBuffer(textureData);
 }
 
 Resource<Texture> Texture::create2DTextureFromFile(const std::string& fileLocation, bool flip/* = FLIP_TEXTURE*/)
@@ -48,72 +56,52 @@ Resource<Texture> Texture::create2DTextureFromFile(const std::string& fileLocati
 	std::filesystem::path path(fileLocation);
 	return memoryManagementSystem->createOrGetCached<Texture>(path.filename().string(), [&]() {
 		
+		// todo use RAII
+		TextureData textureData = extractTextureDataFromFile(fileLocation);
 
-		int target = GL_TEXTURE_2D;
-		int width = 0;
-		int height = 0;
-		int bpp = 0;
-
-		// flip the image
-		stbi_set_flip_vertically_on_load(flip);
-
-		// load texture from file
-		unsigned char* data = stbi_load(fileLocation.c_str(), &width, &height, &bpp, 0);
-
-		// load validation
-		if (!data) 
-		{
-			logError("Failed to find: {}", fileLocation.c_str());
-			return Resource<Texture>::empty;
-		}
-
-		GLenum format = GL_RGB;
-		if (bpp == 1)
-			format = GL_RED;
-		else if (bpp == 3)
-			format = GL_RGB;
-		else if (bpp == 4)
-			format = GL_RGBA;
-
-
-		Resource<Texture> texture = create2DTextureFromBuffer(width, height, format, format, GL_UNSIGNED_BYTE,
-		{
+		textureData.type = GL_UNSIGNED_BYTE;
+		textureData.params = {
 			{ GL_TEXTURE_WRAP_S, GL_REPEAT},
 			{ GL_TEXTURE_WRAP_T, GL_REPEAT},
 			{ GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR},
 			{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
-		}, data);
+		};
 
-		stbi_image_free(data);
+		stbi_set_flip_vertically_on_load(flip);
+
+		Resource<Texture> texture = create2DTextureFromBuffer(textureData);
+
+		auto& projectDir = Engine::get()->getProjectDirectory();
+		stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), textureData.width, textureData.height, textureData.bpp, textureData.data, textureData.width * textureData.bpp);
+		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
+
+		stbi_image_free(textureData.data);
 
 		return texture;
 	});
 }
 
-Resource<Texture> Texture::create2DTextureFromBuffer(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, const void* data)
+Resource<Texture> Texture::create2DTextureFromBuffer(const TextureData& textureData)
 {
 	Resource<Texture> texture = Factory<Texture>::create();
 
-	texture.get()->m_target = GL_TEXTURE_2D;
-	texture.get()->m_width = width;
-	texture.get()->m_height = height;
-
-	// generate texture
-	glGenTextures(1, &texture.get()->m_id);
-	texture.get()->bind();
-
-	for (auto& [paramKey, paramValue] : params)
-	{
-		glTexParameteri(GL_TEXTURE_2D, paramKey, paramValue);
-	}
-
-	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	
-
-	texture.get()->unbind();
+	texture.get()->build(textureData);
 
 	return texture;
+}
+
+Resource<Texture> Texture::create2DTextureFromBuffer(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, void* data)
+{
+	TextureData textureData;
+	textureData.width = width;
+	textureData.height = height;
+	textureData.internalFormat = internalFormat;
+	textureData.format = format;
+	textureData.type = type;
+	textureData.params = params;
+	textureData.data = data;
+
+	return create2DTextureFromBuffer(textureData);
 }
 
 Resource<Texture> Texture::loadCubemapTexture(std::vector<std::string> faces)
@@ -233,6 +221,52 @@ Resource<Texture> Texture::createDummyTexture()
 	texture.get()->unbind();
 
 	return texture;
+}
+
+Texture::TextureData Texture::extractTextureDataFromFile(const std::string& fileLocation)
+{
+	TextureData textureData;
+	textureData.target = GL_TEXTURE_2D;
+
+	textureData.data = stbi_load(fileLocation.c_str(), &textureData.width, &textureData.height, &textureData.bpp, 0);
+
+	// load validation
+	if (!textureData.data)
+	{
+		logError("Failed to find: {}", fileLocation.c_str());
+		return {};
+	}
+
+	GLenum format = GL_RGB;
+	if (textureData.bpp == 1)
+		textureData.format = GL_RED;
+	else if (textureData.bpp == 3)
+		textureData.format = GL_RGB;
+	else if (textureData.bpp == 4)
+		textureData.format = GL_RGBA;
+
+	return textureData;
+}
+
+void Texture::build(const TextureData& textureData)
+{
+	m_target = textureData.target;
+	m_width = textureData.width;
+	m_height = textureData.height;
+
+	// generate texture
+	glGenTextures(1, &m_id);
+	bind();
+
+	for (auto& [paramKey, paramValue] : textureData.params)
+	{
+		glTexParameteri(GL_TEXTURE_2D, paramKey, paramValue);
+	}
+
+	glTexImage2D(GL_TEXTURE_2D, 0, textureData.internalFormat, m_width, m_height, 0, textureData.format, textureData.type, textureData.data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	unbind();
 }
 
 std::string Texture::textureTypeToString(Type type)

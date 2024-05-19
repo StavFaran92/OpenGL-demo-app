@@ -29,6 +29,19 @@ public:
 		None
 	};
 
+	struct TextureData
+	{
+		int width = 0;
+		int height = 0;
+		int bpp = 0;
+		int internalFormat = 0;
+		int format = 0;
+		int target = 0;
+		int type = 0;
+		std::map<int, int> params;
+		void* data = nullptr;
+	};
+
 	/** Constructor */
 	Texture();
 
@@ -67,8 +80,9 @@ public:
 	 *
 	 * \return				A pointer to the loaded texture
 	 */
-	static Resource<Texture> create2DTextureFromBuffer(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, const void* data);
+	static Resource<Texture> create2DTextureFromBuffer(const TextureData& textureData);
 
+	static Resource<Texture> create2DTextureFromBuffer(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, void* data);
 	/**
 	 * Load a cubemap texture using the specified faces file locations.
 	 * 
@@ -83,6 +97,10 @@ public:
 	static Resource<Texture> createCubemapTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps = false);
 
 	static Resource<Texture> createDummyTexture();
+
+	static Texture::TextureData extractTextureDataFromFile(const std::string& fileLocation);
+
+	void build(const TextureData& textureData);
 
 	/**
 	 * Converts a texture type to a string.
