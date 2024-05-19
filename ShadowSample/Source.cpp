@@ -31,7 +31,7 @@ public:
 			auto box = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 			box.getComponent<Transformation>().translate({ 0, 2, 0 });
 			auto& mat = box.addComponent<Material>();
-			auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/checkers.jpg");
+			auto tex = Texture::create2DTextureFromFile("Resources/Content/Textures/checkers.jpg");
 			mat.setTexture(Texture::Type::Albedo, Resource<Texture>(tex));
 			//auto& nsc = box.addComponent<NativeScriptComponent>();
 			//nsc.bind<CustomBoxBehaviour>();
@@ -43,7 +43,7 @@ public:
 			auto& groundTransfrom = ground.getComponent<Transformation>();
 			groundTransfrom.setLocalScale({ 50, .5f, 50 });
 			auto& mat = ground.addComponent<Material>();
-			auto tex = Texture::loadTextureFromFile("Resources/Content/Textures/floor.jpg");
+			auto tex = Texture::create2DTextureFromFile("Resources/Content/Textures/floor.jpg");
 			mat.setTexture(Texture::Type::Albedo, Resource<Texture>(tex));
 		}
 

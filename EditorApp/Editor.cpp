@@ -326,31 +326,31 @@ void ShowModelCreatorWindow()
 
 			if (!textureAlbedoPathBuffer.empty())
 			{
-				auto albedoMap = Texture::loadTextureFromFile(textureAlbedoPathBuffer.c_str(), false);
+				auto albedoMap = Texture::create2DTextureFromFile(textureAlbedoPathBuffer.c_str(), false);
 				mat.begin()->get()->setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
 			}
 
 			if (!textureRoughnessPathBuffer.empty())
 			{
-				auto roughnessMap = Texture::loadTextureFromFile(textureRoughnessPathBuffer.c_str(), false);
+				auto roughnessMap = Texture::create2DTextureFromFile(textureRoughnessPathBuffer.c_str(), false);
 				mat.begin()->get()->setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
 			}
 
 			if (!textureNormalPathBuffer.empty())
 			{
-				auto normalMap = Texture::loadTextureFromFile(textureNormalPathBuffer.c_str(), false);
+				auto normalMap = Texture::create2DTextureFromFile(textureNormalPathBuffer.c_str(), false);
 				mat.begin()->get()->setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
 			}
 
 			if (!textureMetallicPathBuffer.empty())
 			{
-				auto metallicMap = Texture::loadTextureFromFile(textureMetallicPathBuffer.c_str(), false);
+				auto metallicMap = Texture::create2DTextureFromFile(textureMetallicPathBuffer.c_str(), false);
 				mat.begin()->get()->setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
 			}
 
 			if (!textureAmbientOcclusionPathBuffer.empty())
 			{
-				auto aoMap = Texture::loadTextureFromFile(textureAmbientOcclusionPathBuffer.c_str(), false);
+				auto aoMap = Texture::create2DTextureFromFile(textureAmbientOcclusionPathBuffer.c_str(), false);
 				mat.begin()->get()->setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
 			}
 

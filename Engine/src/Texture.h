@@ -60,14 +60,14 @@ public:
 	 * \param isFlipped		Should flip the texture vertically
 	 * \return				A pointer to the loaded texture
 	 */
-	static Resource<Texture> loadTextureFromFile(const std::string& fileLocation, bool flip = FLIP_TEXTURE);
+	static Resource<Texture> create2DTextureFromFile(const std::string& fileLocation, bool flip = FLIP_TEXTURE);
 
 	/**
 	 * Create a texture using predefined data
 	 *
 	 * \return				A pointer to the loaded texture
 	 */
-	static Resource<Texture> createTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, void* data);
+	static Resource<Texture> create2DTextureFromBuffer(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, const void* data);
 
 	/**
 	 * Load a cubemap texture using the specified faces file locations.

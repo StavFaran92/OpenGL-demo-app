@@ -430,7 +430,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context)
         auto& groundTransfrom = ground.getComponent<Transformation>();
         groundTransfrom.setLocalScale({ 50, .5f, 50 });
         auto& mat = ground.addComponent<MaterialComponent>();
-        auto tex = Texture::loadTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
+        auto tex = Texture::create2DTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
         mat.begin()->get()->setTexture(Texture::Type::Albedo, tex);
         auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
         auto& collisionBox = ground.addComponent<CollisionBoxComponent>(.5f);
@@ -452,7 +452,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context)
 
 
         auto& mat = sphere.addComponent<MaterialComponent>();
-        auto tex = Texture::loadTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
+        auto tex = Texture::create2DTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
         mat.begin()->get()->setTexture(Texture::Type::Diffuse, tex);
 
         auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);

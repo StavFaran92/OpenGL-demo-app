@@ -35,85 +35,88 @@ Resource<Texture> Texture::createEmptyTexture(int width, int height)
 
 Resource<Texture> Texture::createEmptyTexture(int width, int height, int internalFormat, int format, int type)
 {
-	Resource<Texture> texture = Factory<Texture>::create();
-
-	texture.get()->m_target = GL_TEXTURE_2D;
-	texture.get()->m_width = width;
-	texture.get()->m_height = height;
-
-	// generate texture
-	glGenTextures(1, &texture.get()->m_id);
-	texture.get()->bind();
-
-	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, NULL);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	texture.get()->unbind();
-
-	return texture;
+	return create2DTextureFromBuffer(width, height, internalFormat, format, type, {
+		{GL_TEXTURE_MIN_FILTER, GL_NEAREST },
+		{GL_TEXTURE_MAG_FILTER, GL_NEAREST },
+		}, NULL);
 }
 
-Resource<Texture> Texture::loadTextureFromFile(const std::string& fileLocation, bool flip/* = FLIP_TEXTURE*/)
+Resource<Texture> Texture::create2DTextureFromFile(const std::string& fileLocation, bool flip/* = FLIP_TEXTURE*/)
 {
 	// Check if texture is already cached to optimize the load process
 	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
 	std::filesystem::path path(fileLocation);
 	return memoryManagementSystem->createOrGetCached<Texture>(path.filename().string(), [&]() {
-		Resource<Texture> texture = Factory<Texture>::create();
+		
 
-		texture.get()->m_target = GL_TEXTURE_2D;
+		int target = GL_TEXTURE_2D;
+		int width = 0;
+		int height = 0;
+		int bpp = 0;
 
 		// flip the image
 		stbi_set_flip_vertically_on_load(flip);
 
 		// load texture from file
-		unsigned char* data = stbi_load(fileLocation.c_str(), &texture.get()->m_width, &texture.get()->m_height, &texture.get()->m_bitDepth, 0);
+		unsigned char* data = stbi_load(fileLocation.c_str(), &width, &height, &bpp, 0);
 
 		// load validation
-		if (!data) {
+		if (!data) 
+		{
 			logError("Failed to find: {}", fileLocation.c_str());
-			return texture;
+			return Resource<Texture>::empty;
 		}
 
-		auto& projectDir = Engine::get()->getProjectDirectory();
-
-		stbi_write_png((projectDir + " / " + texture.getUID() + ".png").c_str(), texture.get()->m_width, texture.get()->m_height, 3, data, texture.get()->m_width * texture.get()->m_bitDepth);
-		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
-		//TextureSerializer::
-
-		// generate texture and bind it
-		glGenTextures(1, &texture.get()->m_id);
-		texture.get()->bind();
-
 		GLenum format = GL_RGB;
-		if (texture.get()->m_bitDepth == 1)
+		if (bpp == 1)
 			format = GL_RED;
-		else if (texture.get()->m_bitDepth == 3)
+		else if (bpp == 3)
 			format = GL_RGB;
-		else if (texture.get()->m_bitDepth == 4)
+		else if (bpp == 4)
 			format = GL_RGBA;
 
-		// sets the texture parameters
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		// generate texture and mipmaps
-		glTexImage2D(GL_TEXTURE_2D, 0, format, texture.get()->m_width, texture.get()->m_height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
+		Resource<Texture> texture = create2DTextureFromBuffer(width, height, format, format, GL_UNSIGNED_BYTE,
+		{
+			{ GL_TEXTURE_WRAP_S, GL_REPEAT},
+			{ GL_TEXTURE_WRAP_T, GL_REPEAT},
+			{ GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR},
+			{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
+		}, data);
 
-		// unbind texture and release the image.
-		texture.get()->unbind();
+		auto& projectDir = Engine::get()->getProjectDirectory();
+		stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), width, height, bpp, data, width * bpp);
+		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
+
+		
+		//texture.get()->m_target = GL_TEXTURE_2D;
+		//texture.get()->m_width = width;
+		//texture.get()->m_height = height;
+		//texture.get()->m_bitDepth = bpp;
+
+		//// generate texture and bind it
+		//glGenTextures(1, &texture.get()->m_id);
+		//texture.get()->bind();
+
+		//// sets the texture parameters
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		//// generate texture and mipmaps
+		//glTexImage2D(GL_TEXTURE_2D, 0, format, texture.get()->m_width, texture.get()->m_height, 0, format, GL_UNSIGNED_BYTE, data);
+		//glGenerateMipmap(GL_TEXTURE_2D);
+
+		//// unbind texture and release the image.
+		//texture.get()->unbind();
 		stbi_image_free(data);
 
 		return texture;
 	});
 }
 
-Resource<Texture> Texture::createTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, void* data)
+Resource<Texture> Texture::create2DTextureFromBuffer(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, const void* data)
 {
 	Resource<Texture> texture = Factory<Texture>::create();
 
@@ -125,12 +128,14 @@ Resource<Texture> Texture::createTexture(int width, int height, int internalForm
 	glGenTextures(1, &texture.get()->m_id);
 	texture.get()->bind();
 
-	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
-
 	for (auto& [paramKey, paramValue] : params)
 	{
 		glTexParameteri(GL_TEXTURE_2D, paramKey, paramValue);
 	}
+
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
+
+	
 
 	texture.get()->unbind();
 

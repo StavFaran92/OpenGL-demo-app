@@ -97,7 +97,7 @@ bool DeferredRenderer::setupSSAO()
 			});
 	}
 
-	m_ssaoNoiseTexture = Texture::createTexture(4, 4,
+	m_ssaoNoiseTexture = Texture::create2DTextureFromBuffer(4, 4,
 		GL_RGBA16F,
 		GL_RGB,
 		GL_FLOAT, {

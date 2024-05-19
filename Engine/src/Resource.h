@@ -107,3 +107,6 @@ private:
 	UUID m_uid;
 	std::shared_ptr<int> refCount;
 };
+
+template<typename T>
+inline Resource<T> Resource<T>::empty;

@@ -8,6 +8,8 @@
 #include "Mesh.h"
 #include "ProjectAssetRegistry.h"
 #include "MeshSerializer.h"
+#include "Texture.h"
+//#include "TextureSerializer.h"
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -72,7 +74,7 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     auto par = context->getProjectAssetRegistry();
 
     std::vector<std::string> meshNameList = par->getMeshList();
-    std::vector<std::string> textureNameList;
+    std::vector<std::string> textureNameList = par->getTextureList();
 
     // Create meshes
     for (const auto& meshUID : meshNameList) 
@@ -95,9 +97,16 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     }
 
     // Create textures
-    for (const auto& texture : textureNameList) {
-        // Similar steps as above to load and create textures
-        // ...
+    for (const auto& textureUID : textureNameList) 
+    {
+        // Open bin file
+        fs::path imageFilePath = (projectDir / textureUID).string() + ".png";
+        //Texture::create2DTextureFromFile(imageFilePath.string(), false);
+
+        //// Create mesh
+        //Texture* texture = new Texture();
+        //texture->build(meshData);
+        //Engine::get()->getMemoryPool<Texture>()->add(textureUID, texture);
     }
 
     // Populate scenes from JSON
