@@ -84,32 +84,6 @@ Resource<Texture> Texture::create2DTextureFromFile(const std::string& fileLocati
 			{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
 		}, data);
 
-		auto& projectDir = Engine::get()->getProjectDirectory();
-		stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), width, height, bpp, data, width * bpp);
-		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
-
-		
-		//texture.get()->m_target = GL_TEXTURE_2D;
-		//texture.get()->m_width = width;
-		//texture.get()->m_height = height;
-		//texture.get()->m_bitDepth = bpp;
-
-		//// generate texture and bind it
-		//glGenTextures(1, &texture.get()->m_id);
-		//texture.get()->bind();
-
-		//// sets the texture parameters
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		//// generate texture and mipmaps
-		//glTexImage2D(GL_TEXTURE_2D, 0, format, texture.get()->m_width, texture.get()->m_height, 0, format, GL_UNSIGNED_BYTE, data);
-		//glGenerateMipmap(GL_TEXTURE_2D);
-
-		//// unbind texture and release the image.
-		//texture.get()->unbind();
 		stbi_image_free(data);
 
 		return texture;
@@ -134,7 +108,7 @@ Resource<Texture> Texture::create2DTextureFromBuffer(int width, int height, int 
 	}
 
 	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
-
+	glGenerateMipmap(GL_TEXTURE_2D);
 	
 
 	texture.get()->unbind();
