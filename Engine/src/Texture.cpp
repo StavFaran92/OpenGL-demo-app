@@ -60,14 +60,6 @@ Resource<Texture> Texture::create2DTextureFromFile(const std::string& fileLocati
 		// todo use RAII
 		TextureData textureData = extractTextureDataFromFile(fileLocation);
 
-		textureData.type = GL_UNSIGNED_BYTE;
-		textureData.params = {
-			{ GL_TEXTURE_WRAP_S, GL_REPEAT},
-			{ GL_TEXTURE_WRAP_T, GL_REPEAT},
-			{ GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR},
-			{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
-		};
-
 		stbi_set_flip_vertically_on_load(flip);
 
 		Resource<Texture> texture = create2DTextureFromBuffer(textureData);
@@ -247,6 +239,14 @@ Texture::TextureData Texture::extractTextureDataFromFile(const std::string& file
 		textureData.format = GL_RGBA;
 
 	textureData.internalFormat = textureData.format;
+
+	textureData.type = GL_UNSIGNED_BYTE;
+	textureData.params = {
+		{ GL_TEXTURE_WRAP_S, GL_REPEAT},
+		{ GL_TEXTURE_WRAP_T, GL_REPEAT},
+		{ GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR},
+		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
+	};
 
 	return textureData;
 }

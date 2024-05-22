@@ -12,8 +12,6 @@
 //#include "TextureSerializer.h"
 #include <nlohmann/json.hpp>
 
-#include <GL/glew.h> // todo remove
-
 using json = nlohmann::json;
 
 namespace fs = std::filesystem;
@@ -104,19 +102,6 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
         // Open bin file
         fs::path imageFilePath = (projectDir / textureUID).string() + ".png";
         Texture::TextureData textureData = Texture::extractTextureDataFromFile(imageFilePath.string());
-
-
-        // todo remove
-
-        textureData.type = GL_UNSIGNED_BYTE;
-        textureData.params = {
-            { GL_TEXTURE_WRAP_S, GL_REPEAT},
-            { GL_TEXTURE_WRAP_T, GL_REPEAT},
-            { GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR},
-            { GL_TEXTURE_MAG_FILTER, GL_LINEAR},
-        };
-        
-        //Texture::create2DTextureFromFile(imageFilePath.string(), false);
 
         // Create texture
         Texture* texture = new Texture();
