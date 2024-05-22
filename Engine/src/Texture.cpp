@@ -36,6 +36,7 @@ Resource<Texture> Texture::createEmptyTexture(int width, int height)
 Resource<Texture> Texture::createEmptyTexture(int width, int height, int internalFormat, int format, int type)
 {
 	TextureData textureData;
+	textureData.target = GL_TEXTURE_2D;
 	textureData.width = width;
 	textureData.height = height;
 	textureData.internalFormat = internalFormat;
@@ -244,6 +245,8 @@ Texture::TextureData Texture::extractTextureDataFromFile(const std::string& file
 		textureData.format = GL_RGB;
 	else if (textureData.bpp == 4)
 		textureData.format = GL_RGBA;
+
+	textureData.internalFormat = textureData.format;
 
 	return textureData;
 }
