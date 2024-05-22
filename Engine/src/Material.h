@@ -30,7 +30,7 @@ public:
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(m_specularIntensity);
+		archive(m_textures);
 	}
 
 protected:
@@ -38,8 +38,5 @@ protected:
 	void setTextureInShader(Shader& shader, Texture::Type ttype, int slot);
 
 protected:
-	float m_specularIntensity = 0.f;
-	float m_shininess = 32.f;
-
 	std::map<Texture::Type, Resource<Texture>> m_textures;
 };
