@@ -41,14 +41,14 @@ vec3 cartesianToPolar(vec2 uv)
     uv /= 2.0; // [-.5, .5]
     uv += 0.5; // [0, 1]
     
-    float theta = uv.x * PI; // theta [0, PI]
-    float phi = uv.y * 2.0 * PI; // phi [0, 2 * PI]
+    float phi = uv.x * 2.0 * PI; // phi [0, 2 * PI]
+    float theta = uv.y * PI; // theta [0, PI]
 
     // extract x y z from theta and phi
     // x = sin(theta) * cos(phi)
     // y = sin(theta) * sin(phi)
     // z = cos(theta)
-    vec3 v = vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+    vec3 v = vec3(sin(theta) * cos(phi), cos(theta), sin(theta) * sin(phi));
     return v;
 }
 
