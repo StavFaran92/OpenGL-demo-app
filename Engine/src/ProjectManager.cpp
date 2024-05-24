@@ -37,28 +37,6 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     // Get file directory
     fs::path projectDir = fs::path(filePath).parent_path();
 
-    // open scene registry file
-    //std::string ecsFilepath = (projectDir / "entities.json").string();
-
-    // Open file
-    //std::ifstream ecsFile(ecsFilepath);
-    //if (!ecsFile.is_open())
-    //{
-    //    logError("Failed to open file: " + ecsFilepath);
-    //    return;
-    //}
-
-    //// Parse JSON
-    //json ecsJson;
-    //try 
-    //{
-    //    ecsJson = json::parse(ecsFile);
-    //}
-    //catch (const std::exception& e) {
-    //    logError("Failed to parse JSON: " + std::string(e.what()));
-    //    return;
-    //}
-
     // Parse JSON
     json resourceFileJSON;
     try 
@@ -108,9 +86,6 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
         texture->build(textureData);
         Engine::get()->getMemoryPool<Texture>()->add(textureUID, texture);
     }
-
-    // Populate scenes from JSON
-    //context->populateScenesFromJSON(ecsJson.dump()); // Pass JSON as string
 
     context->deserialize();
 }

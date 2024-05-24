@@ -122,14 +122,12 @@ Resource<Texture> Texture::loadCubemapTexture(std::vector<std::string> faces)
 			stbi_image_free(data);
 		}
 
-
-
-		//stbi_write_png(("Content/" + texture.getUID() + ".png").c_str(), width, height, nrChannels, data, texture.get()->m_width * texture.get()->m_bitDepth);
-		//Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
-
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		stbi_image_free(data);
 	}
+
+	//EquirectangularToCubemapConverter::fromCubemapToEquirectangular(texture, )
+
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
