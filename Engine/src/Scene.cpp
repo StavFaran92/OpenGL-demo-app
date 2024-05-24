@@ -96,16 +96,6 @@ int Scene::getRenderTarget() const
 //	m_activeCamera = camera;
 //}
 
-bool Scene::serialize()
-{
-	return m_serdes.serialize(*this);
-}
-
-bool Scene::deserialize()
-{
-	return m_serdes.deserialize(*this);
-}
-
 void Scene::init(Context* context)
 {
 	m_context = context;
@@ -512,6 +502,11 @@ void Scene::removeRenderCallback(RenderCallback* callback)
 }
 
 entt::registry& Scene::getRegistry()
+{
+	return m_registry;
+}
+
+const entt::registry& Scene::getRegistry() const
 {
 	return m_registry;
 }

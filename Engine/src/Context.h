@@ -60,6 +60,12 @@ public:
 
 	//Resource<Texture> getDummyTexture();
 
+	const std::map<uint32_t, std::shared_ptr<Scene>>& getAllScenes() const;
+	uint32_t getActiveSceneID() const;
+
+	void serialize() const;
+	void deserialize();
+
 	void close();
 
 private:

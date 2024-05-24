@@ -13,7 +13,6 @@
 
 #include "glm/glm.hpp"
 #include "IRenderer.h"
-#include "SceneSerializer.h"
 
 
 class Model;
@@ -92,6 +91,7 @@ public:
 	void removeRenderCallback(RenderCallback* callback);
 
 	entt::registry& getRegistry();
+	const entt::registry& getRegistry() const;
 
 	Entity createEntity();
 	Entity createEntity(const std::string& name);
@@ -106,9 +106,6 @@ public:
 	int getRenderTarget() const;
 
 	//void setPrimaryCamera(ICamera* camera);
-
-	bool serialize();
-	bool deserialize();
 
 private:
 	// -------------------- Methods -------------------- //
@@ -177,6 +174,4 @@ private:
 	Resource<Texture> m_prefilterEnvMap;
 	Resource<Texture> m_BRDFIntegrationLUT;
 	std::shared_ptr<Shader> m_skyboxShader;
-
-	SceneSerializer m_serdes;
 };

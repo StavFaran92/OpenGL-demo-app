@@ -19,6 +19,8 @@
 #include "Material.h"
 #include "ProjectAssetRegistry.h"
 
+#include "SceneSerializer.h"
+
 Context::Context(const std::shared_ptr<ProjectAssetRegistry>& par)
 {
 	m_projectAssetRegistry = par;
@@ -28,9 +30,6 @@ Context::Context(const std::shared_ptr<ProjectAssetRegistry>& par)
 
 void Context::init()
 {
-	//m_dummyTexture = Texture::createDummyTexture();
-
-	//m_defaultMaterial = std::make_shared<Material>();
 }
 
 bool Context::addScene(std::shared_ptr<Scene> scene)
@@ -92,12 +91,12 @@ ProjectAssetRegistry* Context::getProjectAssetRegistry() const
 
 void Context::populateScenesFromJSON(const std::string& json)
 {
-	auto defaultScene = std::make_shared<Scene>(this);
+	//auto defaultScene = std::make_shared<Scene>(this);
 
-	addScene(defaultScene);
-	m_activeScene = defaultScene->getID();
+	//addScene(defaultScene);
+	//m_activeScene = defaultScene->getID();
 
-	defaultScene->deserialize();
+	//defaultScene->deserialize();
 }
 
 void Context::setActiveScene(uint32_t index)
@@ -115,6 +114,63 @@ void Context::setActiveScene(uint32_t index)
 //{
 //	return m_dummyTexture;
 //}
+
+const std::map<uint32_t, std::shared_ptr<Scene>>& Context::getAllScenes() const
+{
+	return m_scenes;
+}
+
+uint32_t Context::getActiveSceneID() const
+{
+	return m_activeScene;
+}
+
+void Context::serialize() const
+{
+	SerializedContext serializedContext;
+
+	for (auto& [id, scene] : m_scenes)
+	{
+		SerializedScene serializedScene = SceneSerializer::serializeScene(*scene.get());
+		serializedContext.serializedScenes[id] = serializedScene;
+	}
+
+	serializedContext.activeScene = getActiveSceneID();
+
+	auto projectDir = Engine::get()->getProjectDirectory();
+
+	std::ofstream os(projectDir + "/entities.json");
+	cereal::JSONOutputArchive archive(os);
+	archive(serializedContext);
+
+	m_projectAssetRegistry->save();
+
+	logInfo("Successfully serialized Context.");
+}
+
+void Context::deserialize()
+{
+	SerializedContext serializedContext;
+
+	auto& projectDir = Engine::get()->getProjectDirectory();
+
+	std::ifstream is(projectDir + "/entities.json");
+	cereal::JSONInputArchive inputArchive(is);
+	inputArchive(serializedContext);
+
+	m_scenes.clear();
+
+	for (auto& [id, serializedScene] : serializedContext.serializedScenes)
+	{
+		std::shared_ptr<Scene> scene = std::make_shared<Scene>(this);
+		SceneSerializer::deserializeScene(serializedScene, *scene.get());
+		m_scenes[id] = scene;
+	}
+
+	m_activeScene = serializedContext.activeScene;
+
+	logInfo("Successfully deserialized Context.");
+}
 
 
 

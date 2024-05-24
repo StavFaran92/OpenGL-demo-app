@@ -38,26 +38,26 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     fs::path projectDir = fs::path(filePath).parent_path();
 
     // open scene registry file
-    std::string ecsFilepath = (projectDir / "entities.json").string();
+    //std::string ecsFilepath = (projectDir / "entities.json").string();
 
     // Open file
-    std::ifstream ecsFile(ecsFilepath);
-    if (!ecsFile.is_open())
-    {
-        logError("Failed to open file: " + ecsFilepath);
-        return;
-    }
+    //std::ifstream ecsFile(ecsFilepath);
+    //if (!ecsFile.is_open())
+    //{
+    //    logError("Failed to open file: " + ecsFilepath);
+    //    return;
+    //}
 
-    // Parse JSON
-    json ecsJson;
-    try 
-    {
-        ecsJson = json::parse(ecsFile);
-    }
-    catch (const std::exception& e) {
-        logError("Failed to parse JSON: " + std::string(e.what()));
-        return;
-    }
+    //// Parse JSON
+    //json ecsJson;
+    //try 
+    //{
+    //    ecsJson = json::parse(ecsFile);
+    //}
+    //catch (const std::exception& e) {
+    //    logError("Failed to parse JSON: " + std::string(e.what()));
+    //    return;
+    //}
 
     // Parse JSON
     json resourceFileJSON;
@@ -110,12 +110,12 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     }
 
     // Populate scenes from JSON
-    context->populateScenesFromJSON(ecsJson.dump()); // Pass JSON as string
+    //context->populateScenesFromJSON(ecsJson.dump()); // Pass JSON as string
+
+    context->deserialize();
 }
 
 void ProjectManager::saveProject()
 {
-    Engine::get()->getContext()->getProjectAssetRegistry()->save();
-
-    Engine::get()->getContext()->getActiveScene()->serialize();
+    Engine::get()->getContext()->serialize();
 }

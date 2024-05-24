@@ -6,6 +6,7 @@
 
 struct NativeScriptComponent;
 class Scene;
+class SceneSerializer;
 
 class EngineAPI ScriptableEntity
 {
