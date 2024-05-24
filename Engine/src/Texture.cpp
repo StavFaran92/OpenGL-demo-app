@@ -18,6 +18,8 @@
 #include "Context.h"
 #include "ProjectAssetRegistry.h"
 
+#include "EquirectangularToCubemapConverter.h" // todo remove
+
 Texture::Texture()
 	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_slot(0)
 {

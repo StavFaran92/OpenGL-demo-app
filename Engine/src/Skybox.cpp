@@ -30,6 +30,8 @@ Entity Skybox::CreateSkybox(const SkyboxFaces& faces, Scene* scene)
     std::vector<std::string> facesVec{faces.right, faces.left, faces.top, faces.bottom, faces.front, faces.back};
 
     auto textureHandler = Texture::loadCubemapTexture(facesVec);
+
+    EquirectangularToCubemapConverter::fromCubemapToEquirectangular(textureHandler, scene);
     
     return createSkyboxHelper(textureHandler, scene);
 }
@@ -43,7 +45,7 @@ Entity Skybox::CreateSkybox(TexType type, Resource<Texture> texture, Scene* scen
 
     if (type == TexType::EQUIRECTANGULAR)
     {
-        texture = EquirectangularToCubemapConverter::convert(texture, scene);
+        texture = EquirectangularToCubemapConverter::fromEquirectangularToCubemap(texture, scene);
     }
 
     return createSkyboxHelper(texture, scene);
