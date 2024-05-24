@@ -192,6 +192,8 @@ bool Engine::init(const InitParams& initParams)
         m_context = std::make_shared<Context>(par);
         
         createStartupScene(m_context);
+
+        saveProject();
     }
 
     m_isInit = true;
