@@ -30,6 +30,8 @@
 #include "Material.h"
 #include "DirectionalLight.h"
 #include "EditorCamera.h"
+#include "CommonShaders.h"
+#include "CommonTextures.h"
 
 #include "Application.h"
 #include "SDL2/SDL.h"
@@ -129,6 +131,8 @@ bool Engine::init(const InitParams& initParams)
         m_resourceManager->setRootDir("./");
     }
 
+    m_defaultMaterial = std::make_shared<Material>();
+
     m_objectManager = std::make_shared<ObjectManager>();
 
     ObjectFactory::init(m_objectManager.get());
@@ -169,6 +173,10 @@ bool Engine::init(const InitParams& initParams)
         logError("Physics System init failed!");
         return false;
     }
+
+    m_commonShaders = std::make_shared<CommonShaders>();
+
+    m_commonTextures = std::make_shared<CommonTextures>();
 
     m_randomSystem = std::make_shared<RandomNumberGenerator>();
 
@@ -364,6 +372,16 @@ ResourceManager* Engine::getResourceManager() const
     return m_resourceManager.get();
 }
 
+CommonShaders* Engine::getCommonShaders() const
+{
+    return m_commonShaders.get();
+}
+
+CommonTextures* Engine::getCommonTextures() const
+{
+    return m_commonTextures.get();
+}
+
 void Engine::loadProject(const std::string& dirPath)
 {
     m_projectDirectory = dirPath;
@@ -387,6 +405,11 @@ void Engine::saveProject()
 std::string Engine::getProjectDirectory() const
 {
     return m_projectDirectory;
+}
+
+std::shared_ptr<Material> Engine::getDefaultMaterial() const
+{
+    return m_defaultMaterial;
 }
 
 void Engine::pause()

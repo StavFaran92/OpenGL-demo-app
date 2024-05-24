@@ -22,6 +22,7 @@
 #include "Shader.h"
 #include "Component.h"
 #include "Transformation.h"
+#include "CommonShaders.h"
 
 
 Renderer::Renderer(std::shared_ptr<FrameBufferObject> renderTarget, Scene* scene)
@@ -71,7 +72,7 @@ void Renderer::renderScene(DrawQueueRenderParams& renderParams)
         renderParams.mesh = entityHandler.getComponent<MeshComponent>().mesh.get();
         auto tempModel = entityHandler.getComponent<Transformation>().getWorldTransformation();
         renderParams.model = &tempModel;
-        renderParams.shader = Engine::get()->getContext()->getStandardShader();
+        renderParams.shader = Engine::get()->getCommonShaders()->getShader(CommonShaders::ShaderType::PHONG_SHADER).get();
 
         // TODO rethink this feature
         Shader* attachedShader = renderParams.entity->tryGetComponentInParent<Shader>();

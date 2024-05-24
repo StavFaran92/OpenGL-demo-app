@@ -5,6 +5,7 @@
 
 #include "Engine.h"
 #include "Context.h"
+#include "CommonTextures.h"
 
 Material::Material()
 {}
@@ -43,7 +44,7 @@ void Material::setTextureInShader(Shader& shader, Texture::Type ttype, int slot)
 	}
 	else
 	{
-		texture = Engine::get()->getContext()->getDummyTexture();
+		texture = Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1);
 	}
 
 	// Activate texture unit i

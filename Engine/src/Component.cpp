@@ -6,6 +6,6 @@
 
 MaterialComponent::MaterialComponent()
 {
-	auto mat = std::make_shared<Material>(*Engine::get()->getContext()->getDefaultMaterial().get());
+	auto mat = Engine::get()->getDefaultMaterial();
 	materials.push_back(mat);
 }

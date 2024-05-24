@@ -41,19 +41,13 @@ public:
 	bool AddShader(std::shared_ptr<Shader> shader);
 	bool RemoveShader(std::shared_ptr<Shader> shader);
 
-	Shader* GetReflectionShader() const;
-	Shader* GetRefractiveShader() const;
-	Shader* getStandardShader() const;
-	PickingShader* getPickingShader() const;
-	Shader* getNormalDisplayShader() const;
-
 	Window* getWindow() const;
 	IRenderer* getRenderer() const;
 	ImguiHandler* getImguiHandler() const;
 	Input* getInput() const;
 	EventSystem* getEventSystem() const;
 	ModelImporter* getModelImporter() const;
-	std::shared_ptr<Material> getDefaultMaterial() const;
+	//std::shared_ptr<Material> getDefaultMaterial() const;
 
 	std::shared_ptr<Scene> getActiveScene() const;
 
@@ -64,7 +58,7 @@ public:
 
 	void setActiveScene(uint32_t index);
 
-	Resource<Texture> getDummyTexture();
+	//Resource<Texture> getDummyTexture();
 
 	void close();
 
@@ -81,14 +75,7 @@ private:
 	std::map<uint32_t, std::shared_ptr<Shader>> m_shaders;
 	uint32_t m_shaderCounter = 0;
 
-	std::shared_ptr<Shader> m_reflectionShader = nullptr;
-	std::shared_ptr<Shader> m_refractiveShader = nullptr;
-	std::shared_ptr<Shader> m_phongShader = nullptr;
-	std::shared_ptr<PickingShader> m_pickingShader = nullptr;
-	std::shared_ptr<Shader> m_normalDisplayShader = nullptr;
-	std::shared_ptr<Material> m_defaultMaterial = nullptr;
-	std::shared_ptr<ProjectAssetRegistry> m_projectAssetRegistry ;
-	Resource<Texture> m_dummyTexture;
+	std::shared_ptr<ProjectAssetRegistry> m_projectAssetRegistry;
 };
 
 

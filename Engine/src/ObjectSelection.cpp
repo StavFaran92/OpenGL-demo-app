@@ -10,6 +10,7 @@
 #include "Scene.h"
 #include "Context.h"
 #include "Shader.h"
+#include "CommonShaders.h"
 
 #include "Logger.h"
 
@@ -29,7 +30,7 @@ ObjectSelection::ObjectSelection(Context* context, Scene* scene)
 
 		auto drawQueueRenderParams = (IRenderer::DrawQueueRenderParams*)params;
 
-		auto phongShader = context->getStandardShader();
+		auto phongShader = Engine::get()->getCommonShaders()->getShader(CommonShaders::ShaderType::PHONG_SHADER);
 		phongShader->use();
 
 		// If model is selected highlight it's color

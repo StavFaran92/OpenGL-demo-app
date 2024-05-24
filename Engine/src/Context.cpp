@@ -28,16 +28,9 @@ Context::Context(const std::shared_ptr<ProjectAssetRegistry>& par)
 
 void Context::init()
 {
-	m_reflectionShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/ReflectionShader.glsl");
+	//m_dummyTexture = Texture::createDummyTexture();
 
-	m_refractiveShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/RefractionShader.glsl");
-
-
-	m_pickingShader = Shader::createShared<PickingShader>();
-
-	m_dummyTexture = Texture::createDummyTexture();
-
-	m_defaultMaterial = std::make_shared<Material>();
+	//m_defaultMaterial = std::make_shared<Material>();
 }
 
 bool Context::addScene(std::shared_ptr<Scene> scene)
@@ -84,26 +77,6 @@ bool Context::RemoveShader(std::shared_ptr<Shader> shader)
 	return true;
 }
 
-Shader* Context::GetReflectionShader() const
-{
-	return m_reflectionShader.get();
-}
-
-Shader* Context::GetRefractiveShader() const
-{
-	return m_refractiveShader.get();
-}
-
-Shader* Context::getStandardShader() const
-{
-	return m_phongShader.get();
-}
-
-PickingShader* Context::getPickingShader() const
-{
-	return m_pickingShader.get();
-}
-
 std::shared_ptr<Scene> Context::getActiveScene() const
 {
 	if (m_activeScene == -1)
@@ -138,10 +111,10 @@ void Context::setActiveScene(uint32_t index)
 	m_activeScene = index;
 }
 
-Resource<Texture> Context::getDummyTexture()
-{
-	return m_dummyTexture;
-}
+//Resource<Texture> Context::getDummyTexture()
+//{
+//	return m_dummyTexture;
+//}
 
 
 
@@ -164,11 +137,6 @@ void Context::draw(float deltaTime)
 		return;
 
 	m_scenes[m_activeScene]->draw(deltaTime);
-}
-
-Shader* Context::getNormalDisplayShader() const
-{
-	return m_normalDisplayShader.get();
 }
 
 Window* Context::getWindow() const
@@ -201,14 +169,13 @@ ModelImporter* Context::getModelImporter() const
 	return Engine::get()->getModelImporter();
 }
 
-std::shared_ptr<Material> Context::getDefaultMaterial() const
-{
-	return m_defaultMaterial;
-}
+//std::shared_ptr<Material> Context::getDefaultMaterial() const
+//{
+//	return m_defaultMaterial;
+//}
 
 void Context::close()
 {
 	m_scenes.clear();
 	m_shaders.clear();
-	m_dummyTexture.release();
 }

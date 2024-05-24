@@ -28,6 +28,10 @@ class ResourceManager;
 class Texture;
 class Mesh;
 class ProjectManager;
+class Material;
+class Texture;
+class CommonShaders;
+class CommonTextures;
 template<typename T>class MemoryPool;
 
 struct InitParams
@@ -60,14 +64,17 @@ public:
     RandomNumberGenerator* getRandomSystem() const;
     ShaderLoader* getShaderLoader() const;
     ResourceManager* getResourceManager() const;
+    CommonShaders* getCommonShaders() const;
+    CommonTextures* getCommonTextures() const;
     template<typename T>MemoryPool<T>* getMemoryPool() const {};
     template<>MemoryPool<Texture>* getMemoryPool() const { return m_memoryPoolTexture.get(); }
     template<>MemoryPool<Mesh>* getMemoryPool() const { return m_memoryPoolMesh.get(); }
-
     
     void loadProject(const std::string& filePath);
     void saveProject();
     std::string getProjectDirectory() const;
+
+    std::shared_ptr<Material> getDefaultMaterial() const;
 
     void pause();
     void resume();
@@ -104,9 +111,10 @@ protected:
     static Engine* instance;
 
     bool m_isInit = false;
-    std::shared_ptr<Window> m_window = nullptr;
-    std::shared_ptr<Context> m_context = nullptr;
-    std::shared_ptr<ImguiHandler> m_imguiHandler = nullptr;
+
+    std::shared_ptr<Window> m_window;
+    std::shared_ptr<Context> m_context;
+    std::shared_ptr<ImguiHandler> m_imguiHandler;
     std::shared_ptr<Input> m_input;
     std::shared_ptr<EventSystem> m_eventSystem;
     std::shared_ptr<ModelImporter> m_modelImporter;
@@ -120,6 +128,10 @@ protected:
     std::shared_ptr<MemoryPool<Texture>> m_memoryPoolTexture;
     std::shared_ptr<MemoryPool<Mesh>> m_memoryPoolMesh;
     std::shared_ptr<ProjectManager> m_projectManager;
+    std::shared_ptr<CommonShaders> m_commonShaders;
+    std::shared_ptr<CommonTextures> m_commonTextures;
+
+    std::shared_ptr<Material> m_defaultMaterial;
 
     std::atomic<bool> m_isPaused = false;
     std::atomic<bool> m_isStopped = false;

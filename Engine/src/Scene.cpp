@@ -46,6 +46,7 @@
 #include "ShapeFactory.h"
 #include <GL/glew.h>
 #include "EquirectangularToCubemapConverter.h"
+#include "CommonTextures.h"
 #include "IBL.h"
 
 
@@ -216,10 +217,10 @@ void Scene::init(Context* context)
 	m_uboTime->attachToBindPoint(0);
 
 	// Create irradiance map using created cubemap
-	m_irradianceMap = context->getDummyTexture();
+	m_irradianceMap = Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1);;
 
 	// Create prefilter env map using created cubemap
-	m_prefilterEnvMap = context->getDummyTexture();
+	m_prefilterEnvMap = Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1);;
 
 	// Create BRDF look up texture
 	m_BRDFIntegrationLUT = IBL::generateBRDFIntegrationLUT(this);
