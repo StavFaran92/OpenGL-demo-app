@@ -16,7 +16,7 @@ out vec3 localPos;
 void main()
 {
     localPos = pos;
-    gl_Position = projection * view * vec4(pos, 1.0);
+    gl_Position = vec4(pos.x, pos.y, 0.0, 1.0); 
 }
 
 #frag 
@@ -36,19 +36,19 @@ out vec4 FragColor;
 
 uniform samplerCube cubemap;
 
-const vec2 invAtan = vec2(0.1591, 0.3183);
 vec3 cartesianToPolar(vec2 uv)
 {
-    uv -= 0.5; // [-.5, .5]
-    uv /= invAtan; // multiply by 2PI and PI to transform to [theta, phi]
-    float theta = uv.x;
-    float phi = uv.y;
+    uv /= 2.0; // [-.5, .5]
+    uv += 0.5; // [0, 1]
+    
+    float theta = uv.x * PI; // theta [0, PI]
+    float phi = uv.y * 2.0 * PI; // phi [0, 2 * PI]
 
     // extract x y z from theta and phi
     // x = sin(theta) * cos(phi)
     // y = sin(theta) * sin(phi)
     // z = cos(theta)
-    vec3 v = vec3(sin(phi) * cos(theta), sin(phi) * sin(theta), cos(phi));
+    vec3 v = vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
     return v;
 }
 

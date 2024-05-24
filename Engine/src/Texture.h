@@ -39,6 +39,7 @@ public:
 		int target = 0;
 		int type = 0;
 		std::map<int, int> params;
+		bool genMipMap = false;
 		void* data = nullptr;
 	};
 

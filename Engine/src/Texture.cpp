@@ -88,6 +88,7 @@ Resource<Texture> Texture::create2DTextureFromBuffer(const TextureData& textureD
 Resource<Texture> Texture::create2DTextureFromBuffer(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, void* data)
 {
 	TextureData textureData;
+	textureData.target = GL_TEXTURE_2D;
 	textureData.width = width;
 	textureData.height = height;
 	textureData.internalFormat = internalFormat;
@@ -250,6 +251,8 @@ Texture::TextureData Texture::extractTextureDataFromFile(const std::string& file
 		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
 	};
 
+	textureData.genMipMap = true;
+
 	return textureData;
 }
 
@@ -269,7 +272,11 @@ void Texture::build(const TextureData& textureData)
 	}
 
 	glTexImage2D(GL_TEXTURE_2D, 0, textureData.internalFormat, m_width, m_height, 0, textureData.format, textureData.type, textureData.data);
-	glGenerateMipmap(GL_TEXTURE_2D);
+
+	if (textureData.genMipMap)
+	{
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
 
 	unbind();
 }
