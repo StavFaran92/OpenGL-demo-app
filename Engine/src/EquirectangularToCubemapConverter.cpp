@@ -64,6 +64,8 @@ Resource<Texture> EquirectangularToCubemapConverter::fromEquirectangularToCubema
 	
 
 	auto box = ShapeFactory::createBox(scene);
+	box.RemoveComponent<RenderableComponent>();
+	box.RemoveComponent<ObjectComponent>();
 	auto vao = box.getComponent<MeshComponent>().mesh.get()->getVAO();
 
 	// render to cube
