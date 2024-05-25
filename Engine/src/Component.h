@@ -234,3 +234,16 @@ struct EngineAPI ObjectComponent : public Component
 	std::string name;
 	Entity e = Entity::EmptyEntity;
 };
+
+struct EngineAPI ShaderComponent : public Component
+{
+	ShaderComponent() = default;
+	ShaderComponent(Shader* shader) : m_shader(shader) {};
+
+	//template <class Archive>
+	//void serialize(Archive& archive) {
+	//	archive(m_shader);
+	//}
+
+	Shader* m_shader = nullptr;
+};

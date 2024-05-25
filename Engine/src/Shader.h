@@ -39,7 +39,7 @@ public:
 
 	inline unsigned int getID() const;
 
-	void setValue(const std::string& name, const Value& v);
+	void setUniformValue(const std::string& name, const Value& v);
 
 	int getUniformLocation(const std::string& name);
 
@@ -51,8 +51,7 @@ public:
 
 	void bindUniformBlockToBindPoint(const std::string& uniformBlockName, int bindPointIndex);
 
-	static Shader* PhongShader();
-	static Shader* SolidColorShader();
+	bool build();
 
 	virtual ~Shader();
 
@@ -93,9 +92,7 @@ private:
 protected:
 	unsigned int m_id;
 	std::unordered_map<std::string, int> m_uniformLocationCache;
-	std::string m_vertexShaderFilepath;
-	std::string m_FragmentShaderFilepath;
-	std::string m_geometryShaderFilepath;
+
 	std::string m_glslFilePath;
 
 	static uint32_t s_activeShader;

@@ -11,4 +11,5 @@ add_subdirectory(PhysxSample)
 add_subdirectory(NormalMapSample)
 add_subdirectory(Sandbox)
 add_subdirectory(ShadowSample)
+add_subdirectory(OceanSample)
 

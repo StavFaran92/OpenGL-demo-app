@@ -54,7 +54,7 @@ void Material::setTextureInShader(Shader& shader, Texture::Type ttype, int slot)
 	glBindTexture(GL_TEXTURE_2D, texture.get()->getID());
 
 	// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
-	shader.setValue("material." + Texture::textureTypeToString(ttype), slot);
+	shader.setUniformValue("material." + Texture::textureTypeToString(ttype), slot);
 }
 
 void Material::setTexturesInShader(Shader& shader)

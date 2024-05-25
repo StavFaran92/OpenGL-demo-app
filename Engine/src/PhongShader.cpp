@@ -15,7 +15,7 @@ void PhongShader::updateDirLights(Shader* shader, entt::registry& registry)
 		auto& pLight = view.get<DirectionalLight>(*it);
 		pLight.useLight(*shader, i);
 	}
-	shader->setValue("dirLightCount", i);
+	shader->setUniformValue("dirLightCount", i);
 }
 
 void PhongShader::updatePointLights(Shader* shader, entt::registry& registry)
@@ -28,8 +28,8 @@ void PhongShader::updatePointLights(Shader* shader, entt::registry& registry)
 	{
 		auto& pLight = view.get<PointLight>(*it);
 		auto& transform = view.get<Transformation>(*it);
-		shader->setValue("pointLights[" + std::to_string(i) + "]" + ".position", transform.getLocalPosition());
+		shader->setUniformValue("pointLights[" + std::to_string(i) + "]" + ".position", transform.getLocalPosition());
 		pLight.useLight(*shader, i);
 	}
-	shader->setValue("pointLightCount", i);
+	shader->setUniformValue("pointLightCount", i);
 }

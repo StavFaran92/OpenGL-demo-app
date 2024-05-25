@@ -101,7 +101,7 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 	auto drawQueueRenderParams = *params;
 
 	drawQueueRenderParams.shader = m_simpleDepthShader.get();
-	drawQueueRenderParams.shader->setValue("lightSpaceMatrix", m_lightSpaceMatrix);
+	drawQueueRenderParams.shader->setUniformValue("lightSpaceMatrix", m_lightSpaceMatrix);
 
 	// Render Scene 
 	for (auto&& [entity, mesh, transform, renderable] : 
@@ -112,7 +112,7 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 		Entity entityhandler{ entity, m_scene };
 		drawQueueRenderParams.entity = &entityhandler;
 		drawQueueRenderParams.mesh = mesh.mesh.get();
-		drawQueueRenderParams.shader->setValue("model", transform.getWorldTransformation());
+		drawQueueRenderParams.shader->setUniformValue("model", transform.getWorldTransformation());
 		//auto tempModel = transform.getWorldTransformation();
 		drawQueueRenderParams.model = nullptr;
 		drawQueueRenderParams.view = nullptr;

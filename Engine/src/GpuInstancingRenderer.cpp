@@ -22,7 +22,7 @@ void GpuInstancingRenderer::render(const DrawQueueRenderParams& renderParams)
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(GL_ARRAY_BUFFER, m_amount * sizeof(glm::mat4), &batch.getMatrices()[0], GL_STATIC_DRAW);
 
-	renderParams.shader->setValue("isGpuInstanced", 1);
+	renderParams.shader->setUniformValue("isGpuInstanced", 1);
 
 	Renderer::render(renderParams);
 }

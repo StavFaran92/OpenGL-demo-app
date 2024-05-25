@@ -8,10 +8,10 @@ PickingShader::PickingShader() : Shader(SGE_ROOT_DIR + "Resources/Engine/Shaders
 
 void PickingShader::setObjectIndex(unsigned int index)
 {
-	setValue("objectIndex", index);
+	setUniformValue("objectIndex", index);
 }
 
 void PickingShader::setDrawIndex(unsigned int index)
 {
-	setValue("drawIndex", index);
+	setUniformValue("drawIndex", index);
 }

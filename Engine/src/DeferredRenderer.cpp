@@ -319,37 +319,37 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	// Todo solve slots issue
 	m_positionTexture.get()->setSlot(0);
 	m_positionTexture.get()->bind();
-	m_lightPassShader->setValue("gPosition", 0);
+	m_lightPassShader->setUniformValue("gPosition", 0);
 
 	m_normalTexture.get()->setSlot(1);
 	m_normalTexture.get()->bind();
-	m_lightPassShader->setValue("gNormal", 1);
+	m_lightPassShader->setUniformValue("gNormal", 1);
 
 	m_albedoTexture.get()->setSlot(2);
 	m_albedoTexture.get()->bind();
-	m_lightPassShader->setValue("gAlbedo", 2);
+	m_lightPassShader->setUniformValue("gAlbedo", 2);
 
 	m_MRATexture.get()->setSlot(3);
 	m_MRATexture.get()->bind();
-	m_lightPassShader->setValue("gMRA", 3);
+	m_lightPassShader->setUniformValue("gMRA", 3);
 
 	renderParams.irradianceMap.get()->setSlot(4);
 	renderParams.irradianceMap.get()->bind();
-	m_lightPassShader->setValue("gIrradianceMap", 4);
+	m_lightPassShader->setUniformValue("gIrradianceMap", 4);
 
 
 	renderParams.prefilterEnvMap.get()->setSlot(5);
 	renderParams.prefilterEnvMap.get()->bind();
-	m_lightPassShader->setValue("gPrefilterEnvMap", 5);
+	m_lightPassShader->setUniformValue("gPrefilterEnvMap", 5);
 
 
 	renderParams.brdfLUT.get()->setSlot(6);
 	renderParams.brdfLUT.get()->bind();
-	m_lightPassShader->setValue("gBRDFIntegrationLUT", 6);
+	m_lightPassShader->setUniformValue("gBRDFIntegrationLUT", 6);
 
 	renderParams.shadowMap.get()->setSlot(7);
 	renderParams.shadowMap.get()->bind();
-	m_lightPassShader->setValue("gShadowMap", 7);
+	m_lightPassShader->setUniformValue("gShadowMap", 7);
 
 #if 0
 	m_ssaoBlurColorBuffer->setSlot(3);
@@ -365,8 +365,8 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_lightPassShader->bindUniformBlockToBindPoint("Time", 0);
 	m_lightPassShader->bindUniformBlockToBindPoint("Lights", 1);
 
-	m_lightPassShader->setValue("cameraPos", renderParams.cameraPos);
-	m_lightPassShader->setValue("lightSpaceMatrix", renderParams.lightSpaceMatrix);
+	m_lightPassShader->setUniformValue("cameraPos", renderParams.cameraPos);
+	m_lightPassShader->setUniformValue("lightSpaceMatrix", renderParams.lightSpaceMatrix);
 
 	{
 		// render to quad

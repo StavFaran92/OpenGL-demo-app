@@ -118,7 +118,7 @@ void Shader::use()
 
 	for (auto it = m_delayedProperties.begin(); it != m_delayedProperties.end(); ++it)
 	{
-		setValue(it->first, it->second);
+		setUniformValue(it->first, it->second);
 	}
 
 	m_delayedProperties.clear();
@@ -191,7 +191,7 @@ inline unsigned int Shader::getID() const
 	return m_id;
 }
 
-void Shader::setValue(const std::string& name, const Value& v)
+void Shader::setUniformValue(const std::string& name, const Value& v)
 {
 	if (s_activeShader != m_id)
 	{
@@ -258,20 +258,6 @@ void Shader::setMat3(const std::string& name, const glm::mat3& v)
 void Shader::setMat4(const std::string& name, const glm::mat4& v)
 {
 	glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(v));
-}
-
-Shader* Shader::PhongShader()
-{
-	Shader* shader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/shader.glsl");
-
-	return shader;
-}
-
-Shader* Shader::SolidColorShader()
-{
-	Shader* shader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/LightShader.glsl");
-
-	return shader;
 }
 
 void Shader::setModelMatrix(glm::mat4 model)

@@ -22,27 +22,27 @@ void GUIHandler::display()
     static float amplitude = 0.5f;
 
     if (ImGui::InputFloat("amplitude", &amplitude))
-        m_shader->setValue("amplitude", amplitude);
+        m_shader->setUniformValue("amplitude", amplitude);
 
     static auto waveDir = glm::vec2(1, 0);
 
     if (ImGui::InputFloat2("wave Direction (x,y)", glm::value_ptr(waveDir)))
-        m_shader->setValue("waveDirection", waveDir);
+        m_shader->setUniformValue("waveDirection", waveDir);
 
     static float waveLength = 2.0f;
 
     if (ImGui::InputFloat("wave Length", &waveLength))
-        m_shader->setValue("waveLength", waveLength);
+        m_shader->setUniformValue("waveLength", waveLength);
 
     static float waveSpeed = 5.0f;
 
     if (ImGui::InputFloat("wave Speed", &waveSpeed))
-        m_shader->setValue("waveSpeed", waveSpeed);
+        m_shader->setUniformValue("waveSpeed", waveSpeed);
 
     static float steepness = .5f;
 
     if (ImGui::SliderFloat("Steepness", &steepness, 0, 1))
-        m_shader->setValue("steepness", steepness);
+        m_shader->setUniformValue("steepness", steepness);
 
     ImGui::PopItemWidth();
 

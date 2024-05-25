@@ -57,7 +57,7 @@ Resource<Texture> EquirectangularToCubemapConverter::fromEquirectangularToCubema
 
 	equirectangularShader->use();
 	equirectangularShader->setProjectionMatrix(captureProjection);
-	equirectangularShader->setValue("equirectangularMap", 0);
+	equirectangularShader->setUniformValue("equirectangularMap", 0);
 
 	equirectangularTexture.get()->setSlot(0);
 	equirectangularTexture.get()->bind();
@@ -124,7 +124,7 @@ Resource<Texture> EquirectangularToCubemapConverter::fromCubemapToEquirectangula
 	glViewport(0, 0, 2048, 2048);
 
 	cubemapToEquirectangularShader->use();
-	cubemapToEquirectangularShader->setValue("cubemap", 0);
+	cubemapToEquirectangularShader->setUniformValue("cubemap", 0);
 
 	cubemapTexture.get()->setSlot(0);
 	cubemapTexture.get()->bind();

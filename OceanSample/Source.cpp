@@ -20,23 +20,18 @@ public:
 		//planeModel.object()->rotate({0,1,0}, 90);
 		//plane.object()->scale(10, 1, 10);
 
-		//Shader* shader = Shader::create<Shader>("Resources/Content/Shaders/OceanVertexShader.vert", "Resources/Content/Shaders/OceanFragmentShader.glsl");
-		//shader->SetEnableLights(true);
-		//shader->SetEnableMaterials(true);
-		//shader->SetEnableTextures(true);
-		//shader->setValue("amplitude", .5f);
-		//shader->setValue("waveDirection", glm::vec2(1,0));
-		//shader->setValue("waveLength", 2.f);
-		//shader->setValue("waveSpeed", 5.0f);
-		//shader->setValue("steepness", .5f);
-		//auto& shaderRef = quad.addComponent<Shader>(shader);
+		Shader* shader = ShaderBuilder::create("Resources/Content/Shaders/OceanVertexShader.glsl")
+			.addUniform("amplitude", ShaderBuilder::UniformType::FLOAT)
+			.addUniform("waveDirection", ShaderBuilder::UniformType::VEC2)
+			.addUniform("waveLength", ShaderBuilder::UniformType::FLOAT)
+			.addUniform("waveSpeed", ShaderBuilder::UniformType::FLOAT)
+			.addUniform("steepness", ShaderBuilder::UniformType::FLOAT)
+			.build();
 
-		//auto dLight = getContext()->getActiveScene()->createEntity();
-		//dLight.addComponent<PointLight>(glm::vec3{ 1,1,1 }, 1.f, 1.f, Attenuation());
-		//dLight.addComponent<Transformation>(dLight, glm::vec3{ 0,0,2 });
+		quad.addComponent<ShaderComponent>(shader);
 
-		//auto gui = new GUIHandler(&shaderRef);
-		//Engine::get()->getImguiHandler()->addGUI(gui);
+		auto gui = new GUIHandler(shader);
+		Engine::get()->getImguiHandler()->addGUI(gui);
 
 	}
 

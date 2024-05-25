@@ -56,7 +56,7 @@ Resource<Texture> IBL::generateIrradianceMap(Resource<Texture> environmentMap, S
 
 	irradianceShader->use();
 	irradianceShader->setProjectionMatrix(captureProjection);
-	irradianceShader->setValue("environmentMap", 0);
+	irradianceShader->setUniformValue("environmentMap", 0);
 
 	environmentMap.get()->setSlot(0);
 	environmentMap.get()->bind();
@@ -130,7 +130,7 @@ Resource<Texture> IBL::generatePrefilterEnvMap(Resource<Texture> environmentMap,
 
 	prefilterShader->use();
 	prefilterShader->setProjectionMatrix(captureProjection);
-	prefilterShader->setValue("environmentMap", 0);
+	prefilterShader->setUniformValue("environmentMap", 0);
 
 	environmentMap.get()->setSlot(0);
 	environmentMap.get()->bind();
@@ -156,7 +156,7 @@ Resource<Texture> IBL::generatePrefilterEnvMap(Resource<Texture> environmentMap,
 		glViewport(0, 0, mipWidth, mipHeight);
 		
 		float roughness = (float)mip / (maxMipLevel - 1);
-		prefilterShader->setValue("roughness", roughness);
+		prefilterShader->setUniformValue("roughness", roughness);
 
 		for (int i = 0; i < 6; i++)
 		{

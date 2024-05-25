@@ -25,7 +25,7 @@ void PointLight::useLight(Shader& shader, int index)
 	Light::useLight(shader, index);
 
 	
-	shader.setValue(m_name + "["+std::to_string(index) +"]"+ ".constant", m_attenuation.constant);
-	shader.setValue(m_name + "["+std::to_string(index) +"]"+ ".linear", m_attenuation.linear);
-	shader.setValue(m_name + "["+std::to_string(index) +"]"+ ".quadratic", m_attenuation.quadratic);
+	shader.setUniformValue(m_name + "["+std::to_string(index) +"]"+ ".constant", m_attenuation.constant);
+	shader.setUniformValue(m_name + "["+std::to_string(index) +"]"+ ".linear", m_attenuation.linear);
+	shader.setUniformValue(m_name + "["+std::to_string(index) +"]"+ ".quadratic", m_attenuation.quadratic);
 }
