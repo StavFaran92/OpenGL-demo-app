@@ -29,14 +29,23 @@ out VS_OUT {
 
 // ----- Methods ----- //
 
+#ifdef CUSTOM_SHADER
+#custom_vert
+#endif
+
 void main()
 {
+	vec3 aPos = pos;
+#ifdef CUSTOM_SHADER
+	aPos = vert(aPos);
+#endif
+
 	mat4 modelViewMat = view * model;
 	vs_out.texCoord = tex;
 	vs_out.normal = mat3(transpose(inverse(model))) * norm;
-	vs_out.fragPos = (model * vec4(pos, 1.0)).xyz;
+	vs_out.fragPos = (model * vec4(aPos, 1.0)).xyz;
 
-	gl_Position = projection * modelViewMat * vec4(pos, 1.0);
+	gl_Position = projection * modelViewMat * vec4(aPos, 1.0);
 }
 
 #frag

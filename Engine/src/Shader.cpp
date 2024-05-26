@@ -19,7 +19,7 @@ Shader::Shader(const std::string& glslFilePath) :
 	m_id(0),
 	m_glslFilePath(glslFilePath)
 {
-	std::string fullShaderCode = Engine::get()->getShaderLoader()->readShader(glslFilePath);
+	std::string& fullShaderCode = Engine::get()->getShaderLoader()->readShader(glslFilePath);
 
 	ShaderLoader::ShadersInfo shaders;
 	Engine::get()->getShaderLoader()->parseGLSLShader(fullShaderCode, shaders);

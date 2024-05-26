@@ -20,13 +20,7 @@ public:
 		//planeModel.object()->rotate({0,1,0}, 90);
 		//plane.object()->scale(10, 1, 10);
 
-		Shader* shader = ShaderBuilder::create("Resources/Content/Shaders/OceanVertexShader.glsl")
-			.addUniform("amplitude", ShaderBuilder::UniformType::FLOAT)
-			.addUniform("waveDirection", ShaderBuilder::UniformType::VEC2)
-			.addUniform("waveLength", ShaderBuilder::UniformType::FLOAT)
-			.addUniform("waveSpeed", ShaderBuilder::UniformType::FLOAT)
-			.addUniform("steepness", ShaderBuilder::UniformType::FLOAT)
-			.build();
+		Shader* shader = ShaderBuilder::create("Resources/Content/Shaders/OceanShader.glsl").build();
 
 		quad.addComponent<ShaderComponent>(shader);
 

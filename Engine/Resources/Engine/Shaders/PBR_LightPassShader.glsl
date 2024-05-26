@@ -196,6 +196,10 @@ float shadowCalculations(vec4 fragPos)
 
 uniform vec3 cameraPos;
 
+#ifdef CUSTOM_SHADER
+#custom_frag
+#endif
+
 void main() 
 { 
 	// retrieve data from G-buffer
@@ -262,6 +266,10 @@ void main()
 
 	// Gamma correction
 	color = pow(color, vec3(1.0/2.2));
+
+#ifdef CUSTOM_SHADER
+	color = frag(color);
+#endif
     
     FragColor = vec4(color, 1.0);
 } 

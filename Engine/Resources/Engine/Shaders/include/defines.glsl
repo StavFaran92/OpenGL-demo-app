@@ -12,3 +12,4 @@ const float lightDiffuse = .5f;
 const float lightSpecular = 1.f;
 
 const float PI = 3.14159265359;
+const float PI2 = 6.28318530718;
