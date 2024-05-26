@@ -238,12 +238,13 @@ struct EngineAPI ObjectComponent : public Component
 struct EngineAPI ShaderComponent : public Component
 {
 	ShaderComponent() = default;
-	ShaderComponent(Shader* shader) : m_shader(shader) {};
+	ShaderComponent(Shader* vertexShader, Shader* fragmentShader) : m_vertexShader(vertexShader), m_fragmentShader(fragmentShader) {};
 
 	//template <class Archive>
 	//void serialize(Archive& archive) {
 	//	archive(m_shader);
 	//}
 
-	Shader* m_shader = nullptr;
+	Shader* m_vertexShader = nullptr;
+	Shader* m_fragmentShader = nullptr;
 };

@@ -214,13 +214,13 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	glEnable(GL_DEPTH_TEST);
 
 	// bind gBuffer
-	m_gBuffer.bind();
+	//m_gBuffer.bind();
 
 	// clear color and buffers
-	clear();
+	//clear();
 
-	// bind vShader 
-	m_gBufferShader->use();
+	//// bind vShader 
+	//m_gBufferShader->use();
 
 	// Render all objects
 	for (auto& entityHandler : *renderParams.entityGroup)
@@ -229,7 +229,11 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 		renderParams.mesh = entityHandler.getComponent<MeshComponent>().mesh.get();
 		auto tempModel = entityHandler.getComponent<Transformation>().getWorldTransformation();
 		renderParams.model = &tempModel;
-		renderParams.shader = m_gBufferShader.get();
+
+		auto shader = entityHandler.tryGetComponent<ShaderComponent>();
+		renderParams.shader = shader ? shader->m_vertexShader : m_gBufferShader.get();
+		renderParams.shader->use();
+
 		MaterialComponent& mat = renderParams.entity->getRoot().getComponent<MaterialComponent>();
 
 		renderParams.material = mat.begin()->get();

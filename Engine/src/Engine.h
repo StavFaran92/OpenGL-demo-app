@@ -39,6 +39,7 @@ struct InitParams
     std::string projectDir;
     bool loadExistingProject = false;
     bool overwriteExisting = false;
+    bool templateScene = false;
 };
 
 class EngineAPI Engine
@@ -102,7 +103,7 @@ protected:
     void SetWindow(std::shared_ptr<Window> window);
     void handleEvents(SDL_Event& e, bool& quit);
 
-    void createStartupScene(const std::shared_ptr<Context>& context);
+    void createStartupScene(const std::shared_ptr<Context>& context, const InitParams& initParams);
 protected:
 
     Engine();

@@ -118,8 +118,10 @@ ShaderBuilder& ShaderBuilder::create(const std::string& filePath)
 
 ShaderBuilder::ShaderBuilder(const std::string& filePath) : m_filepath(filePath) { }
 
-Shader* ShaderBuilder::build()
+ShaderComponent ShaderBuilder::build()
 {
+	ShaderComponent shaderComponent;
+
 	std::string& customShaderSource = Engine::get()->getShaderLoader()->readShader(m_filepath);
 
 	ShaderLoader::ShadersInfo customShaders;
@@ -140,6 +142,8 @@ Shader* ShaderBuilder::build()
 		// build shader geom
 		Shader* shader = new Shader();
 		shader->BuildShaders(shaders.vertexCode, shaders.fragmentCode, "");
+
+		shaderComponent.m_vertexShader = shader;
 	}
 
 	if (!customShaders.fragmentCode.empty())
@@ -157,11 +161,13 @@ Shader* ShaderBuilder::build()
 		// build shader light
 		Shader* shader = new Shader();
 		shader->BuildShaders(shaders.vertexCode, shaders.fragmentCode, "");
+
+		shaderComponent.m_fragmentShader = shader;
 	}
 
 
 
 	delete this;
 
-	return false;
+	return shaderComponent;
 }

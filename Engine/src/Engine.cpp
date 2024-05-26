@@ -191,7 +191,7 @@ bool Engine::init(const InitParams& initParams)
         auto& par = ProjectAssetRegistry::create(initParams.projectDir);;
         m_context = std::make_shared<Context>(par);
         
-        createStartupScene(m_context);
+        createStartupScene(m_context, initParams);
 
         saveProject();
     }
@@ -435,7 +435,7 @@ void Engine::handleEvents(SDL_Event& e, bool& quit)
     }
 }
 
-void Engine::createStartupScene(const std::shared_ptr<Context>& context)
+void Engine::createStartupScene(const std::shared_ptr<Context>& context, const InitParams& initParams)
 {
     auto startupScene = std::make_shared<Scene>(m_context.get());
 
@@ -457,38 +457,42 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context)
     editorCamera.addComponent<CameraComponent>().isPrimary = true;
     editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
 
+    if (initParams.templateScene)
     {
-        auto ground = ShapeFactory::createBox(context->getActiveScene().get());
-        auto& groundTransfrom = ground.getComponent<Transformation>();
-        groundTransfrom.setLocalScale({ 50, .5f, 50 });
-        auto& mat = ground.addComponent<MaterialComponent>();
-        auto tex = Texture::create2DTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
-        mat.begin()->get()->setTexture(Texture::Type::Albedo, tex);
-        auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
-        auto& collisionBox = ground.addComponent<CollisionBoxComponent>(.5f);
-    }
 
-    {
-        //editorCamera->lookAt(0, 5, 0);
-        //editorCamera->setPosition(25, 225, 35);
-    }
+        {
+            auto ground = ShapeFactory::createBox(context->getActiveScene().get());
+            auto& groundTransfrom = ground.getComponent<Transformation>();
+            groundTransfrom.setLocalScale({ 50, .5f, 50 });
+            auto& mat = ground.addComponent<MaterialComponent>();
+            auto tex = Texture::create2DTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
+            mat.begin()->get()->setTexture(Texture::Type::Albedo, tex);
+            auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
+            auto& collisionBox = ground.addComponent<CollisionBoxComponent>(.5f);
+        }
 
-    auto sphere = ShapeFactory::createSphere(context->getActiveScene().get());
-    {
-        auto random = Engine::get()->getRandomSystem();
-        auto x = random->rand() * 10 - 5;
-        auto z = random->rand() * 10 - 5;
+        {
+            //editorCamera->lookAt(0, 5, 0);
+            //editorCamera->setPosition(25, 225, 35);
+        }
 
-        auto& sphereTransform = sphere.getComponent<Transformation>();
-        sphereTransform.setLocalPosition({ x, 10, z });
+        auto sphere = ShapeFactory::createSphere(context->getActiveScene().get());
+        {
+            auto random = Engine::get()->getRandomSystem();
+            auto x = random->rand() * 10 - 5;
+            auto z = random->rand() * 10 - 5;
+
+            auto& sphereTransform = sphere.getComponent<Transformation>();
+            sphereTransform.setLocalPosition({ x, 10, z });
 
 
-        auto& mat = sphere.addComponent<MaterialComponent>();
-        auto tex = Texture::create2DTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
-        mat.begin()->get()->setTexture(Texture::Type::Diffuse, tex);
+            auto& mat = sphere.addComponent<MaterialComponent>();
+            auto tex = Texture::create2DTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
+            mat.begin()->get()->setTexture(Texture::Type::Diffuse, tex);
 
-        auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
-        auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);
+            auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
+            auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);
+        }
     }
 }
 

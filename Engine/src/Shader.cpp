@@ -112,6 +112,8 @@ bool Shader::ValidateProgramLink()
 
 void Shader::use()
 {
+	if (s_activeShader == m_id) return;
+
 	s_activeShader = m_id;
 
 	glUseProgram(m_id);

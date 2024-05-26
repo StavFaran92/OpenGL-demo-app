@@ -27,6 +27,11 @@ InitParams parseArgs(int argc, char* argv[])
         {
             params.overwriteExisting = true;
         }
+
+        else if (strcmp(argv[i], "-ts") == 0)
+        {
+            params.templateScene = true;
+        }
     }
 
     return params;

@@ -361,8 +361,34 @@ void Scene::draw(float deltaTime)
 		iter++;
 	}
 
-	params.entityGroup = &deferredRendererEntityGroup;
+	std::vector<Entity> builtInShaderEntityGroup;
+	std::vector<Entity> customShaderEntityGroup;
+	for (const auto& e : deferredRendererEntityGroup)
+	{
+		if (e.HasComponent<ShaderComponent>())
+		{
+			customShaderEntityGroup.push_back(e);
+			
+		}
+		else
+		{
+			builtInShaderEntityGroup.push_back(e);
+		}
+	}
 
+	
+
+	glBindFramebuffer(GL_FRAMEBUFFER, m_deferredRenderer->getGBuffer().getID());
+	m_deferredRenderer->clear();
+
+	// Render entities with built-in shader
+	params.entityGroup = &builtInShaderEntityGroup;
+	m_deferredRenderer->renderScene(params);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, m_deferredRenderer->getGBuffer().getID());
+
+	// Render entities with custom shader
+	params.entityGroup = &customShaderEntityGroup;
 	m_deferredRenderer->renderScene(params);
 
 	const FrameBufferObject& gBuffer = m_deferredRenderer->getGBuffer();
