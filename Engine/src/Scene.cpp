@@ -385,11 +385,14 @@ void Scene::draw(float deltaTime)
 	params.entityGroup = &builtInShaderEntityGroup;
 	m_deferredRenderer->renderScene(params);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, m_deferredRenderer->getGBuffer().getID());
+	//glBindFramebuffer(GL_FRAMEBUFFER, m_deferredRenderer->getGBuffer().getID());
 
 	// Render entities with custom shader
-	params.entityGroup = &customShaderEntityGroup;
-	m_deferredRenderer->renderScene(params);
+	for (auto& e : customShaderEntityGroup)
+	{
+		params.entity = &e;
+		m_deferredRenderer->renderSceneUsingCustomShader(params);
+	}
 
 	const FrameBufferObject& gBuffer = m_deferredRenderer->getGBuffer();
 	auto rTarget = m_forwardRenderer->getRenderTarget();

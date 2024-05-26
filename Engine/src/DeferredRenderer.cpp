@@ -209,6 +209,106 @@ void DeferredRenderer::render(const DrawQueueRenderParams& renderParams)
 	//renderParams.shader->release();
 }
 
+void DeferredRenderer::renderSceneUsingCustomShader(DrawQueueRenderParams& renderParams)
+{
+	m_gBuffer.bind();
+
+	glEnable(GL_DEPTH_TEST);
+
+	
+	
+	
+
+
+	renderParams.entity = renderParams.entity;
+	renderParams.mesh = renderParams.entity->getComponent<MeshComponent>().mesh.get();
+	auto tempModel = renderParams.entity->getComponent<Transformation>().getWorldTransformation();
+	auto& shaderComponent = renderParams.entity->getComponent<ShaderComponent>();
+	Shader* vertexShader = shaderComponent.m_vertexShader ? shaderComponent.m_vertexShader : m_gBufferShader.get();
+	Shader* fragmentShader = shaderComponent.m_fragmentShader ? shaderComponent.m_fragmentShader : m_lightPassShader.get();
+	vertexShader->use();
+	renderParams.shader = vertexShader;
+	renderParams.model = &tempModel;
+
+	MaterialComponent& mat = renderParams.entity->getRoot().getComponent<MaterialComponent>();
+
+	renderParams.material = mat.begin()->get();
+
+	// draw model
+	render(renderParams);
+
+	// unbind gBuffer
+	m_gBuffer.unbind();
+
+
+	glDisable(GL_DEPTH_TEST);
+
+	// bind textures
+	// Todo solve slots issue
+	m_positionTexture.get()->setSlot(0);
+	m_positionTexture.get()->bind();
+	fragmentShader->setUniformValue("gPosition", 0);
+
+	m_normalTexture.get()->setSlot(1);
+	m_normalTexture.get()->bind();
+	fragmentShader->setUniformValue("gNormal", 1);
+
+	m_albedoTexture.get()->setSlot(2);
+	m_albedoTexture.get()->bind();
+	fragmentShader->setUniformValue("gAlbedo", 2);
+
+	m_MRATexture.get()->setSlot(3);
+	m_MRATexture.get()->bind();
+	fragmentShader->setUniformValue("gMRA", 3);
+
+	renderParams.irradianceMap.get()->setSlot(4);
+	renderParams.irradianceMap.get()->bind();
+	fragmentShader->setUniformValue("gIrradianceMap", 4);
+
+
+	renderParams.prefilterEnvMap.get()->setSlot(5);
+	renderParams.prefilterEnvMap.get()->bind();
+	fragmentShader->setUniformValue("gPrefilterEnvMap", 5);
+
+
+	renderParams.brdfLUT.get()->setSlot(6);
+	renderParams.brdfLUT.get()->bind();
+	fragmentShader->setUniformValue("gBRDFIntegrationLUT", 6);
+
+	renderParams.shadowMap.get()->setSlot(7);
+	renderParams.shadowMap.get()->bind();
+	fragmentShader->setUniformValue("gShadowMap", 7);
+
+#if 0
+	m_ssaoBlurColorBuffer->setSlot(3);
+	m_ssaoBlurColorBuffer->bind();
+	m_lightPassShader->setValue("gSSAOColorBuffer", 3);
+#endif
+
+	m_renderTargetFBO->bind();
+
+	// bind fShader
+	fragmentShader->use();
+
+	fragmentShader->bindUniformBlockToBindPoint("Time", 0);
+	fragmentShader->bindUniformBlockToBindPoint("Lights", 1);
+
+	fragmentShader->setUniformValue("cameraPos", renderParams.cameraPos);
+	fragmentShader->setUniformValue("lightSpaceMatrix", renderParams.lightSpaceMatrix);
+
+	{
+		// render to quad
+		auto& mesh = m_quad.getComponent<MeshComponent>();
+
+		DrawQueueRenderParams renderParams2D;
+		auto vao = mesh.mesh.get()->getVAO();
+
+		RenderCommand::drawIndexed(vao);
+	}
+
+	m_renderTargetFBO->unbind();
+}
+
 void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 {
 	glEnable(GL_DEPTH_TEST);

@@ -28,3 +28,9 @@ vec3 vert(vec3 aPos)
     return vPos;
 }
 
+#frag
+
+vec3 frag(vec3 color)
+{
+	return vec3(0.0f, 0.329f, 0.576f) * color;
+}

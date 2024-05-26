@@ -19,6 +19,7 @@ public:
 	bool init() override;
 	void render(const DrawQueueRenderParams& renderParams) override;
 	void renderScene(DrawQueueRenderParams& renderParams) override;
+	void renderSceneUsingCustomShader(DrawQueueRenderParams& renderParams);
 	uint32_t getRenderTarget() const override;
 
 	const FrameBufferObject& getGBuffer() const;
