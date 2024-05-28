@@ -6,9 +6,8 @@ uniform float waveLength;
 uniform float waveSpeed;
 uniform float steepness;
 
-vec3 vert(vec3 aPos)
+void vert(inout vec3 aPos, inout vec3 aNorm)
 {
-	vec3 vPos = aPos;
 	float w = PI2 / waveLength;
 	float pSpeed = 2 * waveSpeed / waveLength;
 	float q = steepness / (w * amplitude);
@@ -17,20 +16,18 @@ vec3 vert(vec3 aPos)
 
 	float a = dot(vec2(pos.x, pos.y),dir) * w + time * pSpeed;
 
-	vPos.x = pos.x + q * amplitude * dir.x * cos(a);
-	vPos.y = pos.y + q * amplitude * dir.y * cos(a);
-	vPos.z = - amplitude * sin(a);
+	aPos.x = pos.x + q * amplitude * dir.x * cos(a);
+	aPos.y = pos.y + q * amplitude * dir.y * cos(a);
+	aPos.z = - amplitude * sin(a);
 	
-	// Normal.x = - dir.x * w * amplitude * cos(a);
-	// Normal.y = - dir.y * w * amplitude * cos(a);
-	// Normal.z = 1 - q * w * amplitude * sin(a);
-
-    return vPos;
+	aNorm.x = - dir.x * w * amplitude * cos(a);
+	aNorm.y = - dir.y * w * amplitude * cos(a);
+	aNorm.z = 1 - q * w * amplitude * sin(a);
 }
 
 #frag
 
-vec3 frag(vec3 color)
+void frag(inout vec3 color)
 {
-	return vec3(0.0f, 0.329f, 0.576f) * color;
+	color = vec3(0.0f, 0.329f, 0.576f) * color;
 }
