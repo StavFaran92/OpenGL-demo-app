@@ -6,10 +6,12 @@ layout (location = 1) in vec3 norm;
 layout (location = 2) in vec2 tex;
 
 out vec2 TexCoords;
+out vec2 ScreenUV;
 
 void main()
 {
     TexCoords = tex;
+	ScreenUV = vec2(aPos.x,aPos.y) ;
 
     gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0); 
 } 
@@ -30,6 +32,7 @@ const float MAX_REFLECTION_LOD = 4.0;
 // ----- In ----- //
 
 in vec2 TexCoords;
+in vec2 ScreenUV;
 
 // ----- Out ----- //
 
@@ -197,6 +200,11 @@ float shadowCalculations(vec4 fragPos)
 float getPixelDepth()
 {
 	return length(cameraPos - texture(gPosition, TexCoords).rgb);
+}
+
+vec2 getScreenUV()
+{
+	return ScreenUV;
 }
 
 #ifdef CUSTOM_SHADER
