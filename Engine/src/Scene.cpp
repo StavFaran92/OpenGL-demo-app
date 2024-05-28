@@ -47,6 +47,7 @@
 #include <GL/glew.h>
 #include "EquirectangularToCubemapConverter.h"
 #include "CommonTextures.h"
+#include "RenderCommand.h"
 #include "IBL.h"
 
 
@@ -306,8 +307,7 @@ void Scene::draw(float deltaTime)
 	params.context = m_context;
 	params.registry = &m_registry;
 	params.renderer = m_forwardRenderer.get();
-	auto tempView = activeCamera->getView();
-	params.view = &tempView;
+	params.view = &activeCamera->getView();
 	params.projection = &m_defaultPerspectiveProjection;
 	params.cameraPos = activeCamera->getPosition();
 	params.irradianceMap = m_irradianceMap;
@@ -436,23 +436,20 @@ void Scene::draw(float deltaTime)
 	m_skyboxShader->use();
 	m_renderTargetFBO->bind();
 
+	m_skyboxShader->setViewMatrix(*params.view);
+	m_skyboxShader->setProjectionMatrix(*params.projection);
+
 	for (auto&& [entity, skybox, mesh, transform, mat] : 
 		m_registry.view<SkyboxComponent, MeshComponent, Transformation, MaterialComponent>().each())
 	{
 		Entity entityhandler{ entity, this };
 		params.entity = &entityhandler;
 		params.mesh = mesh.mesh.get();
-		auto tempModel = transform.getWorldTransformation();
-		params.model = &tempModel;
-		params.shader = (m_skyboxShader.get());
+		params.model = &transform.getWorldTransformation();
 		mat.begin()->get()->getTexture(Texture::Type::Diffuse).get()->bind();
 
-		m_forwardRenderer->render(params); //this causes the many warnings issue
-
-		params.entity = nullptr;
-		params.mesh = nullptr;
-		params.shader = nullptr;
-		params.model = nullptr;
+		auto vao = params.mesh->getVAO();
+		RenderCommand::drawIndexed(vao);
 	}
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);

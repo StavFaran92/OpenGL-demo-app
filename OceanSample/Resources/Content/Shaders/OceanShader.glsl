@@ -29,5 +29,6 @@ void vert(inout vec3 aPos, inout vec3 aNorm)
 
 void frag(inout vec3 color)
 {
-	color = vec3(0.0f, 0.329f, 0.576f) * color;
+	// color = vec3(0.0f, 0.329f, 0.576f) * color;
+	color = getPixelNormal() * color;
 }

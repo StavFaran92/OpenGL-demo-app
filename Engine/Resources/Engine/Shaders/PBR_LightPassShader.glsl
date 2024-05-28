@@ -207,6 +207,16 @@ vec2 getScreenUV()
 	return ScreenUV;
 }
 
+vec3 getPixelPosition()
+{
+	return texture(gPosition, TexCoords).rgb;
+}
+
+vec3 getPixelNormal()
+{
+	return texture(gNormal, TexCoords).rgb;
+}
+
 #ifdef CUSTOM_SHADER
 #custom_frag
 #endif
