@@ -26,7 +26,7 @@ public:
 		shader.m_vertexShader->setUniformValue("amplitude", 0.5f);
 		shader.m_vertexShader->setUniformValue("waveDirection", glm::vec2(1, 0));
 		shader.m_vertexShader->setUniformValue("waveLength", 2.0f);
-		shader.m_vertexShader->setUniformValue("waveSpeed", 5.0f);
+		shader.m_vertexShader->setUniformValue("waveSpeed", 1.0f);
 		shader.m_vertexShader->setUniformValue("steepness", .5f);
 
 		auto gui = new GUIHandler(shader.m_vertexShader);

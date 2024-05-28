@@ -45,7 +45,7 @@ uniform samplerCube gIrradianceMap;
 uniform samplerCube gPrefilterEnvMap;
 uniform sampler2D gBRDFIntegrationLUT;
 uniform sampler2D gShadowMap;
-
+uniform vec3 cameraPos;
 
 // ----- Forward Declerations ----- //
 
@@ -194,7 +194,10 @@ float shadowCalculations(vec4 fragPos)
 	return shadow;
 }
 
-uniform vec3 cameraPos;
+float getPixelDepth()
+{
+	return length(cameraPos - texture(gPosition, TexCoords).rgb);
+}
 
 #ifdef CUSTOM_SHADER
 #custom_frag
