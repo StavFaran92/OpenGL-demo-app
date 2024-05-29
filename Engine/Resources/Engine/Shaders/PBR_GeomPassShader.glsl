@@ -41,14 +41,14 @@ float getTime()
 void main()
 {
 	vec3 aPos = pos;
-	vec3 aNorm = norm;
+	vec3 aNorm = mat3(transpose(inverse(model))) * norm;
 #ifdef CUSTOM_SHADER
 	vert(aPos, aNorm);
 #endif
 
 	mat4 modelViewMat = view * model;
 	vs_out.texCoord = tex;
-	vs_out.normal = mat3(transpose(inverse(model))) * aNorm;
+	vs_out.normal =  aNorm;
 	vs_out.fragPos = (model * vec4(aPos, 1.0)).xyz;
 
 	gl_Position = projection * modelViewMat * vec4(aPos, 1.0);
