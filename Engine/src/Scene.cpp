@@ -430,7 +430,7 @@ void Scene::draw(float deltaTime)
 
 #endif
 
-	// For some reason this group destroys the entities
+	// Render skybox
 	glDepthMask(GL_FALSE);
 	glDepthFunc(GL_LEQUAL);
 	m_skyboxShader->use();

@@ -5,7 +5,7 @@
 
 class Texture;
 
-class CommonTextures
+class EngineAPI CommonTextures
 {
 public:
 	enum class TextureType

@@ -29,6 +29,16 @@ void vert(inout vec3 aPos, inout vec3 aNorm)
 
 void frag(inout vec3 color)
 {
-	// color = vec3(0.0f, 0.329f, 0.576f) * color;
-	color = getPixelNormal() * color;
+	float pixelDistance = getCameraPosition().y - getPixelPosition().y;
+	pixelDistance /= 100.0;
+	pixelDistance = pow(pixelDistance, 0.2); 
+
+	// do feresnel maybe
+
+	pixelDistance = clamp(pixelDistance, 0.0, 1.0);
+	vec3 colorA = vec3(0.023497, 0.451692, 1.0);
+    vec3 colorB = vec3(0.0, 0.05938, 0.135417);
+
+	color = mix(colorA, colorB, pixelDistance) * color;
+	// color = getPixelNormal() *;
 }

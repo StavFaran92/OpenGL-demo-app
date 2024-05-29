@@ -17,7 +17,7 @@ public:
 		auto& planeTransform = quad.getComponent<Transformation>();
 		planeTransform.rotate({ 1,0,0 }, 90);
 		planeTransform.rotate({ 0,1,0 }, 90);
-		planeTransform.scale({ 10, 10, 1 });
+		planeTransform.scale({ 20, 20, 1 });
 
 		auto& shader = ShaderBuilder::create("Resources/Content/Shaders/OceanShader.glsl").build();
 
@@ -28,6 +28,8 @@ public:
 		shader.m_vertexShader->setUniformValue("waveLength", 2.0f);
 		shader.m_vertexShader->setUniformValue("waveSpeed", 1.0f);
 		shader.m_vertexShader->setUniformValue("steepness", .5f);
+
+		quad.getComponent<MaterialComponent>().materials[0]->setTexture(Texture::Type::Roughness, Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::BLACK_1X1));
 
 		auto gui = new GUIHandler(shader.m_vertexShader);
 		Engine::get()->getImguiHandler()->addGUI(gui);

@@ -217,6 +217,11 @@ vec3 getPixelNormal()
 	return texture(gNormal, TexCoords).rgb;
 }
 
+vec3 getCameraPosition()
+{
+	return cameraPos;
+}
+
 #ifdef CUSTOM_SHADER
 #custom_frag
 #endif

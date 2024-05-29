@@ -4,7 +4,11 @@
 
 CommonTextures::CommonTextures()
 {
-	m_textures[TextureType::WHITE_1X1] = Texture::createDummyTexture();
+	unsigned char whiteColor[3] = {255, 255, 255};
+	m_textures[TextureType::WHITE_1X1] = Texture::createDummyTexture(whiteColor);
+
+	unsigned char blackColor[3] = { 0, 0, 0 };
+	m_textures[TextureType::BLACK_1X1] = Texture::createDummyTexture(blackColor);
 }
 
 void CommonTextures::close()

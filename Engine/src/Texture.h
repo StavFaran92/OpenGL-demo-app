@@ -97,7 +97,7 @@ public:
 
 	static Resource<Texture> createCubemapTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps = false);
 
-	static Resource<Texture> createDummyTexture();
+	static Resource<Texture> createDummyTexture(unsigned char data[3]);
 
 	static Texture::TextureData extractTextureDataFromFile(const std::string& fileLocation);
 

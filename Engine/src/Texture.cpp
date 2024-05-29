@@ -191,7 +191,7 @@ Resource<Texture> Texture::createCubemapTexture(int width, int height, int inter
 	return texture;
 }
 
-Resource<Texture> Texture::createDummyTexture()
+Resource<Texture> Texture::createDummyTexture(unsigned char data[3])
 {
 	Resource<Texture> texture = Factory<Texture>::create();
 
@@ -202,8 +202,6 @@ Resource<Texture> Texture::createDummyTexture()
 	// generate texture
 	glGenTextures(1, &texture.get()->m_id);
 	texture.get()->bind();
-
-	unsigned char data[3] = { 255, 255, 255 }; // RGB values for white
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
