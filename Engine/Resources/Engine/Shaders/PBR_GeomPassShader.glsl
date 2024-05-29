@@ -29,6 +29,11 @@ out VS_OUT {
 
 // ----- Methods ----- //
 
+float getTime()
+{
+	return time;
+}
+
 #ifdef CUSTOM_SHADER
 #custom_vert
 #endif

@@ -4,6 +4,7 @@
 #include "GUIHandler.h"
 
 
+
 class Sandbox : public Application
 {
 public:
@@ -19,10 +20,28 @@ public:
 		planeTransform.rotate({ 0,1,0 }, 90);
 		planeTransform.scale({ 20, 20, 1 });
 
-		auto& shader = ShaderBuilder::create("Resources/Content/Shaders/OceanShader.glsl").build();
+		createOcean(quad);
+	}
 
-		auto brickTexture = Texture::create2DTextureFromFile("Resources/Content/Textures/brick.png");
-		shader.addTexture("testTex", brickTexture);
+private:
+	void createPool(Entity quad)
+	{
+		auto& shader = ShaderBuilder::create("Resources/Content/Shaders/WaterShader.glsl").build();
+
+		auto brickTexture = Texture::create2DTextureFromFile("Resources/Content/Textures/water_new_height.png");
+		shader.addTexture("waterNormalSampler", brickTexture);
+
+		quad.addComponent<ShaderComponent>(shader);
+
+		quad.getComponent<MaterialComponent>().materials[0]->setTexture(Texture::Type::Roughness, Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::BLACK_1X1));
+
+		auto gui = new GUIHandler(shader.m_vertexShader);
+		Engine::get()->getImguiHandler()->addGUI(gui);
+	}
+
+	void createOcean(Entity quad)
+	{
+		auto& shader = ShaderBuilder::create("Resources/Content/Shaders/OceanShader.glsl").build();
 
 		quad.addComponent<ShaderComponent>(shader);
 
@@ -33,10 +52,6 @@ public:
 		shader.m_vertexShader->setUniformValue("steepness", .5f);
 
 		quad.getComponent<MaterialComponent>().materials[0]->setTexture(Texture::Type::Roughness, Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::BLACK_1X1));
-
-		auto gui = new GUIHandler(shader.m_vertexShader);
-		Engine::get()->getImguiHandler()->addGUI(gui);
-
 	}
 
 };

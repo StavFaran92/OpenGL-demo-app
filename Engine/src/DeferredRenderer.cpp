@@ -234,6 +234,17 @@ void DeferredRenderer::renderSceneUsingCustomShader(DrawQueueRenderParams& rende
 
 	renderParams.material = mat.begin()->get();
 
+	{
+		int currentSlot = 8;
+		for (const auto& [texName, texture] : shaderComponent.customTextures)
+		{
+			texture.get()->setSlot(currentSlot);
+			texture.get()->bind();
+			vertexShader->setUniformValue(texName, currentSlot);
+			currentSlot++;
+		}
+	}
+
 	// draw model
 	render(renderParams);
 
@@ -279,15 +290,17 @@ void DeferredRenderer::renderSceneUsingCustomShader(DrawQueueRenderParams& rende
 	renderParams.shadowMap.get()->bind();
 	fragmentShader->setUniformValue("gShadowMap", 7);
 
-	// This needs to be fixed since the texture limit will might eventually reached.
-	int currentSlot = 8;
-	for (const auto& [texName, texture] : shaderComponent.customTextures)
-	{
-		texture.get()->setSlot(currentSlot);
-		texture.get()->bind();
-		fragmentShader->setUniformValue(texName, currentSlot);
-		currentSlot++;
-	}
+	//{
+	//	// This needs to be fixed since the texture limit will might eventually reached.
+	//	int currentSlot = 8;
+	//	for (const auto& [texName, texture] : shaderComponent.customTextures)
+	//	{
+	//		texture.get()->setSlot(currentSlot);
+	//		texture.get()->bind();
+	//		fragmentShader->setUniformValue(texName, currentSlot);
+	//		currentSlot++;
+	//	}
+	//}
 	
 
 #if 0

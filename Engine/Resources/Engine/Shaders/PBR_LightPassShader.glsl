@@ -227,6 +227,11 @@ vec2 getTexCoords()
 	return TexCoords;
 }
 
+float getTime()
+{
+	return time;
+}
+
 #ifdef CUSTOM_SHADER
 #custom_frag
 #endif
