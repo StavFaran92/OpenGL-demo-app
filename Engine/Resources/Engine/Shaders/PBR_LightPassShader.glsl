@@ -222,6 +222,11 @@ vec3 getCameraPosition()
 	return cameraPos;
 }
 
+vec2 getTexCoords()
+{
+	return TexCoords;
+}
+
 #ifdef CUSTOM_SHADER
 #custom_frag
 #endif

@@ -240,6 +240,11 @@ struct EngineAPI ShaderComponent : public Component
 	ShaderComponent() = default;
 	ShaderComponent(Shader* vertexShader, Shader* fragmentShader) : m_vertexShader(vertexShader), m_fragmentShader(fragmentShader) {};
 
+	void addTexture(const std::string& name, Resource<Texture> texture)
+	{
+		customTextures[name] = texture;
+	}
+
 	//template <class Archive>
 	//void serialize(Archive& archive) {
 	//	archive(m_shader);
@@ -247,4 +252,6 @@ struct EngineAPI ShaderComponent : public Component
 
 	Shader* m_vertexShader = nullptr;
 	Shader* m_fragmentShader = nullptr;
+
+	std::map<std::string, Resource<Texture>> customTextures;
 };

@@ -279,6 +279,17 @@ void DeferredRenderer::renderSceneUsingCustomShader(DrawQueueRenderParams& rende
 	renderParams.shadowMap.get()->bind();
 	fragmentShader->setUniformValue("gShadowMap", 7);
 
+	// This needs to be fixed since the texture limit will might eventually reached.
+	int currentSlot = 8;
+	for (const auto& [texName, texture] : shaderComponent.customTextures)
+	{
+		texture.get()->setSlot(currentSlot);
+		texture.get()->bind();
+		fragmentShader->setUniformValue(texName, currentSlot);
+		currentSlot++;
+	}
+	
+
 #if 0
 	m_ssaoBlurColorBuffer->setSlot(3);
 	m_ssaoBlurColorBuffer->bind();

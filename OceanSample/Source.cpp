@@ -21,6 +21,9 @@ public:
 
 		auto& shader = ShaderBuilder::create("Resources/Content/Shaders/OceanShader.glsl").build();
 
+		auto brickTexture = Texture::create2DTextureFromFile("Resources/Content/Textures/brick.png");
+		shader.addTexture("testTex", brickTexture);
+
 		quad.addComponent<ShaderComponent>(shader);
 
 		shader.m_vertexShader->setUniformValue("amplitude", 0.5f);
