@@ -8,6 +8,8 @@
 
 #include "nfd.h"
 
+#include "ImGuizmo.h"
+
 namespace fs = std::filesystem;
 
 // Define a structure to represent an object in the scene hierarchy
@@ -517,6 +519,30 @@ void RenderInspectorWindow(float width, float height)
 
 			transform.setLocalRotation(rotation);
 			transform.setLocalScale(scale);
+			
+
+			glm::mat4 glmMat = transform.getLocalTransformation();
+			float* matrixPtr = glm::value_ptr(glmMat);
+
+			ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
+			ImGuiIO& io = ImGui::GetIO();
+			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+			float viewManipulateRight = io.DisplaySize.x;
+			float viewManipulateTop = 0;
+
+			auto camView = Engine::get()->getContext()->getActiveScene()->getActiveCameraView();
+			const float* camViewPtr = glm::value_ptr(camView);
+
+			auto projection = Engine::get()->getContext()->getActiveScene()->getProjection();
+			const float* projectionPtr = glm::value_ptr(projection);
+
+			ImGuizmo::SetDrawlist();
+			ImGuizmo::Manipulate(camViewPtr, projectionPtr, ImGuizmo::TRANSLATE, mCurrentGizmoMode, matrixPtr, NULL, /*useSnap ? &snap[0] :*/ NULL, /*boundSizing ? bounds :*/ NULL,/* boundSizingSnap ? boundsSnap :*/ NULL);
+
+			//ImGuizmo::ViewManipulate(camViewPtr, 100.f, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010);
+
+
+
 
 			ImGui::Separator();
 		}

@@ -1,4 +1,5 @@
 add_subdirectory(imgui)
+add_subdirectory(ImGuizmo)
 
 target_include_directories(Engine PUBLIC 	
 	assimp/include
@@ -12,6 +13,7 @@ target_include_directories(Engine PUBLIC
 	json
 	stb_image
 	imgui
+	ImGuizmo
 	nativefiledialog/include
 	"$ENV{PHYSX}/physx/include"
 	"$ENV{PHYSX}/pxshared/include"
@@ -44,6 +46,7 @@ target_link_libraries(Engine PUBLIC
 	spdlog
 	ImGui
 	nfd
+	ImGuizmo
 )
 
 

@@ -19,7 +19,7 @@ public:
 		planeTransform.rotate({ 1,0,0 }, 90);
 		planeTransform.rotate({ 0,1,0 }, 90);
 		//planeTransform.rotate({ 1,0,0 }, 180);
-		planeTransform.scale({ 20, 20, 1 });
+		planeTransform.scale({ 100, 100, 1 });
 
 		createPool(quad);
 	}

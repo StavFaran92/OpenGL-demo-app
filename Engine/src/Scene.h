@@ -97,13 +97,15 @@ public:
 	Entity createEntity(const std::string& name);
 	void removeEntity(const Entity& e);
 
-	ICamera* getActiveCamera() const;
+	glm::mat4 getActiveCameraView() const;
 	
 	void displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params);
 
 	void setIBLData(Resource<Texture> irradianceMap, Resource<Texture> prefilterEnvMap);
 
 	int getRenderTarget() const;
+
+	glm::mat4 getProjection() const;
 
 	//void setPrimaryCamera(ICamera* camera);
 

@@ -140,7 +140,7 @@ struct EngineAPI CollisionMeshComponent : public Component
 struct EngineAPI CameraComponent : public Component
 {
 	CameraComponent() = default;
-	glm::mat4 getView()
+	glm::mat4 getView() const
 	{
 		return glm::lookAt(position, center, up);
 	}

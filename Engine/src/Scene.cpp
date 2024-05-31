@@ -92,6 +92,11 @@ int Scene::getRenderTarget() const
 	return m_renderTargetTexture.get()->getID();
 }
 
+glm::mat4 Scene::getProjection() const
+{
+	return m_defaultPerspectiveProjection;
+}
+
 //void Scene::setPrimaryCamera(ICamera* camera)
 //{
 //	m_activeCamera = camera;
@@ -560,9 +565,16 @@ void Scene::removeEntity(const Entity& e)
 	logDebug("Removed entity: " + std::to_string(id));
 }
 
-ICamera* Scene::getActiveCamera() const
+glm::mat4 Scene::getActiveCameraView() const
 {
-	return nullptr;
+	CameraComponent* activeCamera = nullptr;
+	for (auto&& [entity, camera] : m_registry.view<CameraComponent>().each())
+	{
+		if (camera.isPrimary)
+		{
+			return camera.getView();
+		}
+	}
 }
 
 

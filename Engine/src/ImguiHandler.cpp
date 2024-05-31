@@ -9,6 +9,7 @@
 #include "imgui_impl_opengl3.h"
 
 #include "GuiMenu.h"
+#include "ImGuizmo.h"
 
 bool ImguiHandler::init(SDL_Window* window, const SDL_GLContext& context)
 {
@@ -56,6 +57,7 @@ void ImguiHandler::render()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
 
 	for (auto& gui : m_guiList)
 	{
