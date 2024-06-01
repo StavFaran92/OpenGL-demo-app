@@ -466,29 +466,69 @@ void RenderViewWindow(float width, float height)
 
 	if (selectedEntity != Entity::EmptyEntity)
 	{
-		ImGui::LabelText("", "Transformation");
+		// Define the size and position of the inner window
+		float innerWindowWidth = 350.0f;
+		float innerWindowHeight = 150.0f;
+		ImGui::SetNextWindowPos(ImVec2(startX + 5, 50)); // Adjust position as needed
+		ImGui::SetNextWindowSize(ImVec2(innerWindowWidth, innerWindowHeight)); // Adjust size as needed
+
+		// Transformation mode enum and current mode variable
+		enum TransformMode { TRANSLATE, ROTATE, SCALE, UNIVERSAL };
+		static TransformMode currentMode = TRANSLATE;
+
+		// Gizmo mode variable
+		static ImGuizmo::MODE currentGizmoMode = ImGuizmo::LOCAL;
+
+		// Snap options
+		static bool useSnap = false;
+		static float snapValues[3] = { 1.0f, 1.0f, 1.0f };
+
 		auto& transform = selectedEntity.getComponent<Transformation>();
 
-		glm::vec3& pos = transform.getLocalPosition();
-		glm::vec3& rotation = transform.getLocalRotationVec3(); // todo fix
-		glm::vec3& scale = transform.getLocalScale();
-
-		if (ImGui::InputFloat3("Position", (float*)&pos))
+		if (ImGui::BeginChild("TransformWindow", ImVec2(innerWindowWidth, innerWindowHeight), true))
 		{
-			transform.setLocalPosition(pos);
+			ImGui::LabelText("", "Transformation");
+
+			// Radio buttons for transformation mode
+			ImGui::RadioButton("Translate", (int*)&currentMode, TRANSLATE);
+			ImGui::SameLine();
+			ImGui::RadioButton("Rotate", (int*)&currentMode, ROTATE);
+			ImGui::SameLine();
+			ImGui::RadioButton("Scale", (int*)&currentMode, SCALE);
+			ImGui::SameLine();
+			ImGui::RadioButton("Universal", (int*)&currentMode, UNIVERSAL);
+
+			// Checkbox for snap
+			ImGui::Checkbox("Use Snap", &useSnap);
+
+			// Input fields for snap values
+			if (currentMode == TRANSLATE)
+			{
+				ImGui::InputFloat3("Snap Translate", snapValues);
+			}
+			else if (currentMode == ROTATE)
+			{
+				ImGui::InputFloat("Snap Angle", &snapValues[0]);
+			}
+			else if (currentMode == SCALE)
+			{
+				ImGui::InputFloat("Snap Scale", &snapValues[0]);
+			}
+
+			// Button to toggle between local and world gizmo modes
+			if (ImGui::Button(currentGizmoMode == ImGuizmo::LOCAL ? "Switch to World" : "Switch to Local"))
+			{
+				currentGizmoMode = (currentGizmoMode == ImGuizmo::LOCAL) ? ImGuizmo::WORLD : ImGuizmo::LOCAL;
+			}
+
+			ImGui::EndChild(); // End the inner window
 		}
-		ImGui::InputFloat3("Rotation", (float*)&rotation);
-		ImGui::InputFloat3("Scale", (float*)&scale);
 
-
-		transform.setLocalRotation(rotation);
-		transform.setLocalScale(scale);
+		
 
 
 		glm::mat4 glmMat = transform.getLocalTransformation();
 		float* matrixPtr = glm::value_ptr(glmMat);
-
-		ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
 
 		auto camView = Engine::get()->getContext()->getActiveScene()->getActiveCameraView();
 		const float* camViewPtr = glm::value_ptr(camView);
@@ -499,12 +539,32 @@ void RenderViewWindow(float width, float height)
 		ImGuizmo::SetDrawlist();
 		ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-		ImGuizmo::Manipulate(camViewPtr, projectionPtr, ImGuizmo::TRANSLATE, mCurrentGizmoMode, matrixPtr, NULL, /*useSnap ? &snap[0] :*/ NULL, /*boundSizing ? bounds :*/ NULL,/* boundSizingSnap ? boundsSnap :*/ NULL);
+		// Set the operation mode based on the selected radio button
+		ImGuizmo::OPERATION operationMode;
+		switch (currentMode)
+		{
+		case TRANSLATE:
+			operationMode = ImGuizmo::TRANSLATE;
+			break;
+		case ROTATE:
+			operationMode = ImGuizmo::ROTATE;
+			break;
+		case SCALE:
+			operationMode = ImGuizmo::SCALE;
+			break;
+		case UNIVERSAL:
+			operationMode = ImGuizmo::UNIVERSAL;
+			break;
+		}
+
+		ImGuizmo::Manipulate(camViewPtr, projectionPtr, operationMode, currentGizmoMode, matrixPtr, NULL, useSnap ? &snapValues[0] : NULL, /*boundSizing ? bounds :*/ NULL,/* boundSizingSnap ? boundsSnap :*/ NULL);
 
 		float matrixTranslation[3], matrixRotation[3], matrixScale[3];
 		ImGuizmo::DecomposeMatrixToComponents(matrixPtr, matrixTranslation, matrixRotation, matrixScale);
 
 		transform.setLocalPosition(glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]));
+		transform.setLocalRotation(glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]));
+		transform.setLocalScale(glm::vec3(matrixScale[0], matrixScale[1], matrixScale[2]));
 	}
 
 	ImGui::End();
