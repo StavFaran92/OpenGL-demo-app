@@ -9,6 +9,7 @@
 #include "nfd.h"
 
 #include "ImGuizmo.h"
+#include "imgui_internal.h"
 
 namespace fs = std::filesystem;
 
@@ -453,14 +454,58 @@ void RenderSceneHierarchyWindow(float width, float height)
 void RenderViewWindow(float width, float height) 
 {
 	float windowWidth = width * 0.6f - 10;
+	float windowHeight = height * 0.8f;
 	float startX = width * 0.2f + 10; // Add a gap of 10 pixels
 	ImGui::SetNextWindowPos(ImVec2(startX, 25)); // Adjust vertical position to make space for the menu bar
-	ImGui::SetNextWindowSize(ImVec2(windowWidth, height * 0.8f));
+	ImGui::SetNextWindowSize(ImVec2(windowWidth, windowHeight));
 	ImGui::Begin("View", nullptr, style | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
 	// Display the texture
-	ImVec2 imageSize(windowWidth, height * 0.8f);
+	ImVec2 imageSize(windowWidth, windowHeight);
 	ImGui::Image(reinterpret_cast<ImTextureID>(Engine::get()->getContext()->getActiveScene()->getRenderTarget()), imageSize, ImVec2(0, 1), ImVec2(1, 0));
+
+	if (selectedEntity != Entity::EmptyEntity)
+	{
+		ImGui::LabelText("", "Transformation");
+		auto& transform = selectedEntity.getComponent<Transformation>();
+
+		glm::vec3& pos = transform.getLocalPosition();
+		glm::vec3& rotation = transform.getLocalRotationVec3(); // todo fix
+		glm::vec3& scale = transform.getLocalScale();
+
+		if (ImGui::InputFloat3("Position", (float*)&pos))
+		{
+			transform.setLocalPosition(pos);
+		}
+		ImGui::InputFloat3("Rotation", (float*)&rotation);
+		ImGui::InputFloat3("Scale", (float*)&scale);
+
+
+		transform.setLocalRotation(rotation);
+		transform.setLocalScale(scale);
+
+
+		glm::mat4 glmMat = transform.getLocalTransformation();
+		float* matrixPtr = glm::value_ptr(glmMat);
+
+		ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
+
+		auto camView = Engine::get()->getContext()->getActiveScene()->getActiveCameraView();
+		const float* camViewPtr = glm::value_ptr(camView);
+
+		auto projection = Engine::get()->getContext()->getActiveScene()->getProjection();
+		const float* projectionPtr = glm::value_ptr(projection);
+
+		ImGuizmo::SetDrawlist();
+		ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+		ImGuizmo::Manipulate(camViewPtr, projectionPtr, ImGuizmo::TRANSLATE, mCurrentGizmoMode, matrixPtr, NULL, /*useSnap ? &snap[0] :*/ NULL, /*boundSizing ? bounds :*/ NULL,/* boundSizingSnap ? boundsSnap :*/ NULL);
+
+		float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+		ImGuizmo::DecomposeMatrixToComponents(matrixPtr, matrixTranslation, matrixRotation, matrixScale);
+
+		transform.setLocalPosition(glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]));
+	}
 
 	ImGui::End();
 }
@@ -519,25 +564,6 @@ void RenderInspectorWindow(float width, float height)
 
 			transform.setLocalRotation(rotation);
 			transform.setLocalScale(scale);
-			
-
-			glm::mat4 glmMat = transform.getLocalTransformation();
-			float* matrixPtr = glm::value_ptr(glmMat);
-
-			ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
-			ImGuiIO& io = ImGui::GetIO();
-			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-			float viewManipulateRight = io.DisplaySize.x;
-			float viewManipulateTop = 0;
-
-			auto camView = Engine::get()->getContext()->getActiveScene()->getActiveCameraView();
-			const float* camViewPtr = glm::value_ptr(camView);
-
-			auto projection = Engine::get()->getContext()->getActiveScene()->getProjection();
-			const float* projectionPtr = glm::value_ptr(projection);
-
-			ImGuizmo::SetDrawlist();
-			ImGuizmo::Manipulate(camViewPtr, projectionPtr, ImGuizmo::TRANSLATE, mCurrentGizmoMode, matrixPtr, NULL, /*useSnap ? &snap[0] :*/ NULL, /*boundSizing ? bounds :*/ NULL,/* boundSizingSnap ? boundsSnap :*/ NULL);
 
 			//ImGuizmo::ViewManipulate(camViewPtr, 100.f, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010);
 
@@ -797,8 +823,8 @@ class GUI_Helper : public GuiMenu {
 		}
 
 		// Render UI
+		RenderViewWindow(screenWidth, screenHeight);
 		RenderSceneHierarchyWindow(screenWidth, screenHeight);
-		//RenderViewWindow(screenWidth, screenHeight);
 		RenderInspectorWindow(screenWidth, screenHeight);
 		RenderAssetViewWindow(screenWidth, screenHeight); // Add the Asset View window
 
