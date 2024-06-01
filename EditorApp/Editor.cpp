@@ -467,8 +467,8 @@ void RenderViewWindow(float width, float height)
 	if (selectedEntity != Entity::EmptyEntity)
 	{
 		// Define the size and position of the inner window
-		float innerWindowWidth = 350.0f;
-		float innerWindowHeight = 150.0f;
+		float innerWindowWidth = windowWidth - 10;
+		float innerWindowHeight = 40.0f;
 		ImGui::SetNextWindowPos(ImVec2(startX + 5, 50)); // Adjust position as needed
 		ImGui::SetNextWindowSize(ImVec2(innerWindowWidth, innerWindowHeight)); // Adjust size as needed
 
@@ -487,8 +487,6 @@ void RenderViewWindow(float width, float height)
 
 		if (ImGui::BeginChild("TransformWindow", ImVec2(innerWindowWidth, innerWindowHeight), true))
 		{
-			ImGui::LabelText("", "Transformation");
-
 			// Radio buttons for transformation mode
 			ImGui::RadioButton("Translate", (int*)&currentMode, TRANSLATE);
 			ImGui::SameLine();
@@ -498,34 +496,40 @@ void RenderViewWindow(float width, float height)
 			ImGui::SameLine();
 			ImGui::RadioButton("Universal", (int*)&currentMode, UNIVERSAL);
 
-			// Checkbox for snap
-			ImGui::Checkbox("Use Snap", &useSnap);
-
-			// Input fields for snap values
-			if (currentMode == TRANSLATE)
-			{
-				ImGui::InputFloat3("Snap Translate", snapValues);
-			}
-			else if (currentMode == ROTATE)
-			{
-				ImGui::InputFloat("Snap Angle", &snapValues[0]);
-			}
-			else if (currentMode == SCALE)
-			{
-				ImGui::InputFloat("Snap Scale", &snapValues[0]);
-			}
-
 			// Button to toggle between local and world gizmo modes
-			if (ImGui::Button(currentGizmoMode == ImGuizmo::LOCAL ? "Switch to World" : "Switch to Local"))
+			ImGui::SameLine();
+			if (ImGui::Button(currentGizmoMode == ImGuizmo::LOCAL ? "Local" : "World"))
 			{
 				currentGizmoMode = (currentGizmoMode == ImGuizmo::LOCAL) ? ImGuizmo::WORLD : ImGuizmo::LOCAL;
 			}
 
+			// Checkbox for snap
+			ImGui::SameLine();
+			ImGui::Checkbox("Snap", &useSnap);
+
+			// Input fields for snap values
+			ImGui::SameLine();
+			float snapInputWidth = 80.0f;
+			if (currentMode == TRANSLATE)
+			{
+				ImGui::SetNextItemWidth(snapInputWidth * 3);
+				ImGui::InputFloat3("Snap Translate", snapValues);
+			}
+			else if (currentMode == ROTATE)
+			{
+				ImGui::SetNextItemWidth(snapInputWidth);
+				ImGui::InputFloat("Snap Angle", &snapValues[0]);
+			}
+			else if (currentMode == SCALE)
+			{
+				ImGui::SetNextItemWidth(snapInputWidth);
+				ImGui::InputFloat("Snap Scale", &snapValues[0]);
+			}
+
+			
+
 			ImGui::EndChild(); // End the inner window
 		}
-
-		
-
 
 		glm::mat4 glmMat = transform.getLocalTransformation();
 		float* matrixPtr = glm::value_ptr(glmMat);
@@ -540,7 +544,7 @@ void RenderViewWindow(float width, float height)
 		ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
 		// Set the operation mode based on the selected radio button
-		ImGuizmo::OPERATION operationMode;
+		ImGuizmo::OPERATION operationMode = ImGuizmo::TRANSLATE;
 		switch (currentMode)
 		{
 		case TRANSLATE:
