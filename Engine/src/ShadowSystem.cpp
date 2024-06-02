@@ -84,16 +84,19 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 	//todo verify exists
 
 	// Generate Orthogonal projection
-	float near_plane = 1.0f, far_plane = 20.f;
-	glm::mat4 lightProjection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);
+	float near_plane = 1.0f, far_plane = 40.f;
+	glm::mat4 lightProjection = glm::ortho(-30.0f, 30.0f, -30.0f, 30.0f, near_plane, far_plane);
 
-	auto right = glm::normalize(glm::cross(dirLight.getDirection(), { 0,0,1 }));
-	auto up = glm::normalize(glm::cross(dirLight.getDirection(), right));
+	auto& trans = e.getComponent<Transformation>();
+	auto& direction = trans.getLocalRotationVec3();
+
+	auto right = glm::normalize(glm::cross(direction, { 0,0,1 }));
+	auto up = glm::normalize(glm::cross(direction, right));
 
 	// Generate lookAt light matrix 
 	glm::mat4 dirLightView = glm::lookAt(
 		glm::vec3(0.0f, 10.0f, 0.0f),
-		glm::vec3(0.0f, 10.0f, 0.0f) + dirLight.getDirection(),
+		glm::vec3(0.0f, 10.0f, 0.0f) + direction,
 		up);
 
 	m_lightSpaceMatrix = lightProjection * dirLightView;

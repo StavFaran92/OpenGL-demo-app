@@ -451,7 +451,8 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
 
     // Add default dir light
     auto dLight = startupScene->createEntity("Directional light");
-    dLight.addComponent<DirectionalLight>().setDirection({ 1, -1, 1 });
+    dLight.addComponent<DirectionalLight>();
+    dLight.getComponent<Transformation>().setLocalRotation(glm::vec3(0, -1, 0));
 
     auto editorCamera = startupScene->createEntity("Camera");
     editorCamera.addComponent<CameraComponent>().isPrimary = true;
