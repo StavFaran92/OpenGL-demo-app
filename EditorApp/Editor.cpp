@@ -561,13 +561,13 @@ void RenderViewWindow(float width, float height)
 			break;
 		}
 
-		ImGuizmo::Manipulate(camViewPtr, projectionPtr, operationMode, currentGizmoMode, matrixPtr, NULL, useSnap ? &snapValues[0] : NULL, /*boundSizing ? bounds :*/ NULL,/* boundSizingSnap ? boundsSnap :*/ NULL);
+		ImGuizmo::Manipulate(camViewPtr, projectionPtr, operationMode, currentGizmoMode, matrixPtr, NULL, useSnap ? &snapValues[0] : NULL, NULL, NULL);
 
 		float matrixTranslation[3], matrixRotation[3], matrixScale[3];
 		ImGuizmo::DecomposeMatrixToComponents(matrixPtr, matrixTranslation, matrixRotation, matrixScale);
 
 		transform.setLocalPosition(glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]));
-		transform.setLocalRotation(glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]));
+		transform.setLocalRotation(glm::vec3(Constants::toRadians * matrixRotation[0], Constants::toRadians* matrixRotation[1], Constants::toRadians* matrixRotation[2]));
 		transform.setLocalScale(glm::vec3(matrixScale[0], matrixScale[1], matrixScale[2]));
 	}
 
