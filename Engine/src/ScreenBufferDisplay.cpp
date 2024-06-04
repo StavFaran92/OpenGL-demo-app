@@ -24,7 +24,7 @@ ScreenBufferDisplay::ScreenBufferDisplay(Scene* scene)
 bool ScreenBufferDisplay::init(int windowWidth, int windowHeight)
 {
 	// Generate screen quad
-	m_quad = ScreenQuad::GenerateScreenQuad(m_scene);
+	m_quad = ScreenQuad::GenerateScreenQuad(&m_scene->getRegistry());
 	
 	// Generate screen shader
 	m_screenShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/ScreenBufferDisplayShader.glsl");

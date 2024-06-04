@@ -90,14 +90,14 @@ public:
 	 * \param faces		the faces file locations to load the cubemap using
 	 * \return			A pointer to the loaded texture
 	 */
-	static Resource<Texture> loadCubemapTexture(std::vector<std::string> faces);
+	static Resource<Texture> createCubemapTextureFromFile(const std::vector<std::string>& fileLocations);
+	static Resource<Texture> createCubemapTextureFromFile(const std::string& fileLocation);
 
-	static Resource<Texture> createCubemapTexture(int width, int height, int internalFormat, int format, int type);
+	static Resource<Texture> createEmptyCubemapTexture(int width, int height, int internalFormat, int format, int type);
 
+	static Resource<Texture> createEmptyCubemapTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps = false);
 
-	static Resource<Texture> createCubemapTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps = false);
-
-	static Resource<Texture> createDummyTexture(unsigned char data[3]);
+	static Resource<Texture> createDummyTexture(unsigned char color[3]);
 
 	static Texture::TextureData extractTextureDataFromFile(const std::string& fileLocation);
 

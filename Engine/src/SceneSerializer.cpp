@@ -5,8 +5,8 @@ SerializedScene SceneSerializer::serializeScene(Scene& scene)
 	// Serialize registry
 	SerializedScene serializedScene;
 
-	scene.getRegistry().each([&](auto entity) {
-		Entity e(entity, &scene);
+	scene.getRegistry().get().each([&](auto entity) {
+		Entity e(entity, &scene.getRegistry());
 		
 		SerializableEntity se{ entity, 
 			getComponentIfExists<Transformation>(e),
@@ -36,14 +36,14 @@ void SceneSerializer::deserializeScene(const SerializedScene& serializedScene, S
 
 	for (auto& serializedEnt : serializedScene.serializedEntities)
 	{
-		auto e = scene.getRegistry().create(serializedEnt.entity);
-		auto entityHandler = Entity(e, &scene);
+		auto e = scene.getRegistry().get().create(serializedEnt.entity);
+		auto entityHandler = Entity(e, &scene.getRegistry());
 		if (serializedEnt.transform)
 		{
 			auto& transform = entityHandler.addComponent<Transformation>(serializedEnt.transform.value());
-			transform.m_entity.setScene(&scene);
-			transform.m_root.setScene(&scene);
-			transform.m_parent.setScene(&scene);
+			transform.m_entity.setRegistry(&scene.getRegistry());
+			transform.m_root.setRegistry(&scene.getRegistry());
+			transform.m_parent.setRegistry(&scene.getRegistry());
 		}
 		if (serializedEnt.dLight)
 		{
@@ -78,14 +78,14 @@ void SceneSerializer::deserializeScene(const SerializedScene& serializedScene, S
 		if (serializedEnt.obj)
 		{
 			auto& obj = entityHandler.addComponent<ObjectComponent>(serializedEnt.obj.value());
-			obj.e.setScene(&scene);
+			obj.e.setRegistry(&scene.getRegistry());
 		}
 
 		if (serializedEnt.nsc)
 		{
 			auto& nsc = entityHandler.addComponent<NativeScriptComponent>(serializedEnt.nsc.value());
-			nsc.entity.setScene(&scene);
-			nsc.script->entity.setScene(&scene);
+			nsc.entity.setRegistry(&scene.getRegistry());
+			nsc.script->entity.setRegistry(&scene.getRegistry());
 			nsc.script->onCreate(); // todo move to scene start play
 		}
 	}

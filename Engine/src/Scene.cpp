@@ -49,6 +49,7 @@
 #include "CommonTextures.h"
 #include "RenderCommand.h"
 #include "IBL.h"
+#include "Registry.h"
 
 
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
@@ -105,6 +106,8 @@ glm::mat4 Scene::getProjection() const
 void Scene::init(Context* context)
 {
 	m_context = context;
+
+	m_registry = std::make_shared<SGE_Regsitry>();
 
 	auto width = Engine::get()->getWindow()->getWidth();
 	auto height = Engine::get()->getWindow()->getHeight();
@@ -223,12 +226,12 @@ void Scene::init(Context* context)
 
 	m_skyboxShader = Shader::createShared<Shader>(SGE_ROOT_DIR +"Resources/Engine/Shaders/SkyboxShader.glsl");
 
-	m_registry.on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
-	m_registry.on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
-	m_registry.on_construct<CollisionSphereComponent>().connect<&Scene::onCollisionConstruct>(this);
-	m_registry.on_construct<CollisionMeshComponent>().connect<&Scene::onCollisionConstruct>(this);
+	m_registry->get().on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
+	m_registry->get().on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
+	m_registry->get().on_construct<CollisionSphereComponent>().connect<&Scene::onCollisionConstruct>(this);
+	m_registry->get().on_construct<CollisionMeshComponent>().connect<&Scene::onCollisionConstruct>(this);
 	
-	m_registry.on_destroy<RigidBodyComponent>().connect<&Scene::onRigidBodyDestroy>(this);
+	m_registry->get().on_destroy<RigidBodyComponent>().connect<&Scene::onRigidBodyDestroy>(this);
 }
 
 void Scene::update(float deltaTime)
@@ -244,7 +247,7 @@ void Scene::update(float deltaTime)
 	}
 
 	// Run all User Scriptable Entities scripts
-	for (auto&& [entity, nsc] : m_registry.view<NativeScriptComponent>().each())
+	for (auto&& [entity, nsc] : m_registry->get().view<NativeScriptComponent>().each())
 	{
 		if (!nsc.script)
 		{
@@ -268,7 +271,7 @@ void Scene::update(float deltaTime)
 		for (physx::PxRigidActor* actor : actors)
 		{
 			entity_id id = *(entity_id*)actor->userData;
-			Entity e{ entt::entity(id), this };
+			Entity e{ entt::entity(id), m_registry.get() };
 			auto& transform = e.getComponent<Transformation>();
 
 			physx::PxTransform pxTransform = actor->getGlobalPose();
@@ -298,7 +301,7 @@ void Scene::draw(float deltaTime)
 	m_deferredRenderer->clear();
 
 	CameraComponent* activeCamera = nullptr;
-	for (auto&& [entity, camera] : m_registry.view<CameraComponent>().each())
+	for (auto&& [entity, camera] : m_registry->get().view<CameraComponent>().each())
 	{
 		if (camera.isPrimary)
 		{
@@ -310,7 +313,7 @@ void Scene::draw(float deltaTime)
 	IRenderer::DrawQueueRenderParams params;
 	params.scene = this;
 	params.context = m_context;
-	params.registry = &m_registry;
+	params.registry = &m_registry->get();
 	params.renderer = m_forwardRenderer.get();
 	params.view = &activeCamera->getView();
 	params.projection = &m_defaultPerspectiveProjection;
@@ -343,7 +346,7 @@ void Scene::draw(float deltaTime)
 	m_uboTime->unbind();
 
 
-	auto view = m_registry.view<MeshComponent, Transformation, RenderableComponent>();
+	auto view = m_registry->get().view<MeshComponent, Transformation, RenderableComponent>();
 
 	// TODO consider optimizing this
 	std::vector<Entity> deferredRendererEntityGroup;
@@ -351,7 +354,7 @@ void Scene::draw(float deltaTime)
 	auto iter = view.begin();
 	while (iter != view.end())
 	{
-		Entity entityhandler{ *iter, this };
+		Entity entityhandler{ *iter, m_registry.get() };
 
 		auto& renderable = entityhandler.getComponent<RenderableComponent>();
 		if (renderable.renderTechnique == RenderableComponent::RenderTechnique::Deferred)
@@ -445,9 +448,9 @@ void Scene::draw(float deltaTime)
 	m_skyboxShader->setProjectionMatrix(*params.projection);
 
 	for (auto&& [entity, skybox, mesh, transform, mat] : 
-		m_registry.view<SkyboxComponent, MeshComponent, Transformation, MaterialComponent>().each())
+		m_registry->get().view<SkyboxComponent, MeshComponent, Transformation, MaterialComponent>().each())
 	{
-		Entity entityhandler{ entity, this };
+		Entity entityhandler{ entity, m_registry.get()};
 		params.entity = &entityhandler;
 		params.mesh = mesh.mesh.get();
 		params.model = &transform.getWorldTransformation();
@@ -532,14 +535,14 @@ void Scene::removeRenderCallback(RenderCallback* callback)
 	}
 }
 
-entt::registry& Scene::getRegistry()
+SGE_Regsitry& Scene::getRegistry()
 {
-	return m_registry;
+	return *m_registry.get();
 }
 
-const entt::registry& Scene::getRegistry() const
+const SGE_Regsitry& Scene::getRegistry() const
 {
-	return m_registry;
+	return *m_registry.get();
 }
 
 Entity Scene::createEntity()
@@ -550,25 +553,18 @@ Entity Scene::createEntity()
 
 Entity Scene::createEntity(const std::string& name)
 {
-	entt::entity e = m_registry.create();
-	auto entityHandler = Entity(e, this);
-	entityHandler.addComponent<Transformation>(entityHandler);
-	entityHandler.addComponent<ObjectComponent>(entityHandler, name); //todo fix
-	return entityHandler;
+	return m_registry->createEntity(name);
 }
 
 void Scene::removeEntity(const Entity& e)
 {
-	auto id = e.handlerID();
-	m_registry.destroy(e.handler());
-
-	logDebug("Removed entity: " + std::to_string(id));
+	m_registry->removeEntity(e);
 }
 
 glm::mat4 Scene::getActiveCameraView() const
 {
 	CameraComponent* activeCamera = nullptr;
-	for (auto&& [entity, camera] : m_registry.view<CameraComponent>().each())
+	for (auto&& [entity, camera] : m_registry->get().view<CameraComponent>().each())
 	{
 		if (camera.isPrimary)
 		{
@@ -580,7 +576,7 @@ glm::mat4 Scene::getActiveCameraView() const
 
 void Scene::clear()
 {
-	m_registry.clear();
+	m_registry->get().clear();
 }
 
 Scene::Scene(Context* context)
@@ -737,7 +733,7 @@ void Scene::startSimulation()
 
 void Scene::createSimulationActors(PhysicsSystem* physicsSystem)
 {
-	for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
+	for (auto&& [entity, rb] : m_registry->get().view<RigidBodyComponent>().each())
 	{
 		createActor(entity, physicsSystem, rb);
 	}
@@ -745,7 +741,7 @@ void Scene::createSimulationActors(PhysicsSystem* physicsSystem)
 
 void Scene::createActor(entt::entity entity, PhysicsSystem* physicsSystem, RigidBodyComponent& rb)
 {
-	Entity e{ entity, this };
+	Entity e{ entity, m_registry.get() };
 
 	auto& transform = e.getComponent<Transformation>();
 	auto body = physicsSystem->createRigidBody(transform, rb.type, rb.mass);
@@ -760,7 +756,7 @@ void Scene::createActor(entt::entity entity, PhysicsSystem* physicsSystem, Rigid
 
 void Scene::removeActor(entt::entity entity, PhysicsSystem* physicsSystem, RigidBodyComponent& rb)
 {
-	Entity e{ entity, this };
+	Entity e{ entity, m_registry.get() };
 
 	auto& rBody = e.getComponent<RigidBodyComponent>();
 	m_PhysicsScene->removeActor(*(physx::PxRigidActor*)rBody.simulatedBody);
@@ -847,7 +843,7 @@ void Scene::onRigidBodyConstruct(entt::registry& registry, entt::entity entity)
 
 	if (m_isSimulationActive)
 	{
-		Entity e(entity, this);
+		Entity e(entity, m_registry.get());
 		auto physicsSystem = Engine::get()->getPhysicsSystem();
 		auto& rb = e.getComponent<RigidBodyComponent>();
 		createActor(entity, physicsSystem, rb);
@@ -858,7 +854,7 @@ void Scene::onRigidBodyDestroy(entt::registry& registry, entt::entity entity)
 {
 	if (m_isSimulationActive)
 	{
-		Entity e(entity, this);
+		Entity e(entity, m_registry.get());
 		auto physicsSystem = Engine::get()->getPhysicsSystem();
 		auto& rb = e.getComponent<RigidBodyComponent>();
 		removeActor(entity, physicsSystem, rb);
@@ -869,7 +865,7 @@ void Scene::onCollisionConstruct(entt::registry& registry, entt::entity entity)
 {
 	if (m_isSimulationActive)
 	{
-		Entity e(entity, this);
+		Entity e(entity, m_registry.get());
 		auto rb = e.tryGetComponentInParent<RigidBodyComponent>(true);
 		if (rb)
 		{

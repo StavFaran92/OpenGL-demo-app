@@ -3,11 +3,11 @@
 #include "Quad.h"
 
 class Entity;
-class Scene;
+class SGE_Regsitry;
 
 class ScreenQuad
 {
 public:
-	static Entity GenerateScreenQuad(Scene* scene);
+	static Entity GenerateScreenQuad(SGE_Regsitry* registry);
 };
 

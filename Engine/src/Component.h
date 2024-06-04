@@ -6,6 +6,7 @@
 
 #include "ScriptableEntity.h"
 #include "Configurations.h"
+#include "Mesh.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 class Scene;

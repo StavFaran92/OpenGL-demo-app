@@ -108,7 +108,7 @@ void LightSystem::setLightsInUBO(const IRenderer::DrawQueueRenderParams* params)
 		for (auto it = view.begin(); it != view.end(); ++it, ++i)
 		{
 			auto& dLight = view.get<DirectionalLight>(*it);
-			Entity e(*it, params->scene);
+			Entity e(*it, &params->scene->getRegistry());
 			auto& dir = e.getComponent<Transformation>().getLocalRotationVec3();
 
 			DirLightUBORep dirLightUBO;

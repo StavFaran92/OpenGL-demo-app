@@ -15,11 +15,12 @@
 #include "Entity.h"
 #include "Component.h"
 #include "Mesh.h"
+#include "Context.h"
 
 #include "Engine.h"
 
 
-Resource<Texture> EquirectangularToCubemapConverter::fromEquirectangularToCubemap(Resource<Texture> equirectangularTexture, Scene* scene)
+Resource<Texture> EquirectangularToCubemapConverter::fromEquirectangularToCubemap(Resource<Texture> equirectangularTexture)
 {
 	auto equirectangularShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/EquirectangularToCubemap.glsl");
 
@@ -29,7 +30,7 @@ Resource<Texture> EquirectangularToCubemapConverter::fromEquirectangularToCubema
 	fbo.bind();
 
 	// Generate cubemap
-	auto cubemap = Texture::createCubemapTexture(512, 512, GL_RGB16F, GL_RGB, GL_FLOAT);
+	auto cubemap = Texture::createEmptyCubemapTexture(512, 512, GL_RGB16F, GL_RGB, GL_FLOAT);
 
 	RenderBufferObject rbo{ 512, 512 };
 	fbo.attachRenderBuffer(rbo.GetID(), FrameBufferObject::AttachmentType::Depth);
@@ -63,7 +64,7 @@ Resource<Texture> EquirectangularToCubemapConverter::fromEquirectangularToCubema
 	equirectangularTexture.get()->bind();
 	
 
-	auto box = ShapeFactory::createBox(scene);
+	auto box = ShapeFactory::createBox(&Engine::get()->getContext()->getRegistry());
 	box.RemoveComponent<RenderableComponent>();
 	box.RemoveComponent<ObjectComponent>();
 	auto vao = box.getComponent<MeshComponent>().mesh.get()->getVAO();
@@ -90,7 +91,7 @@ Resource<Texture> EquirectangularToCubemapConverter::fromEquirectangularToCubema
 	return cubemap;
 }
 
-Resource<Texture> EquirectangularToCubemapConverter::fromCubemapToEquirectangular(Resource<Texture> cubemapTexture, Scene* scene)
+Resource<Texture> EquirectangularToCubemapConverter::fromCubemapToEquirectangular(Resource<Texture> cubemapTexture)
 {
 	auto cubemapToEquirectangularShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/CubemapToEquirectangular.glsl");
 
@@ -130,7 +131,7 @@ Resource<Texture> EquirectangularToCubemapConverter::fromCubemapToEquirectangula
 	cubemapTexture.get()->bind();
 
 
-	auto quad = ShapeFactory::createQuad(scene);
+	auto quad = ShapeFactory::createQuad(&Engine::get()->getContext()->getRegistry());
 	quad.RemoveComponent<RenderableComponent>();
 	quad.RemoveComponent<ObjectComponent>();
 	auto vao = quad.getComponent<MeshComponent>().mesh.get()->getVAO();

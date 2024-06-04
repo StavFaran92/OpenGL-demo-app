@@ -11,43 +11,44 @@
 #include "Scene.h"
 #include "Transformation.h"
 #include "Shader.h"
+#include "Registry.h"
 //#include "RenderableComponent.h"
 #include "Component.h"
 #include "CacheSystem.h"
 
-Entity ShapeFactory::createEntity(Scene* scene, const std::string& name)
+Entity ShapeFactory::createEntity(SGE_Regsitry* registry, const std::string& name)
 {
-	auto entity = scene->createEntity(name);
+	auto entity = registry->createEntity(name);
 	entity.addComponent<RenderableComponent>();
 	entity.addComponent<MaterialComponent>();
 	entity.addComponent<MeshComponent>();
 	return entity;
 }
 
-Entity ShapeFactory::createBox(Scene* scene)
+Entity ShapeFactory::createBox(SGE_Regsitry* registry)
 {
 	static int createdBoxCount = 0;
-	auto entity = createEntity(scene, "Box_" + std::to_string(createdBoxCount++));
+	auto entity = createEntity(registry, "Box_" + std::to_string(createdBoxCount++));
 	auto memoryManager = Engine::get()->getMemoryManagementSystem();
 	Resource<Mesh> mesh = memoryManager->createOrGetCached<Mesh>("SGE_BOX_MESH", []() {return Box::createMesh(); });
 	entity.getComponent<MeshComponent>().mesh = mesh;
 	return entity;
 }
 
-Entity ShapeFactory::createQuad(Scene* scene)
+Entity ShapeFactory::createQuad(SGE_Regsitry* registry)
 {
 	static int createdQuadCount = 0;
-	auto entity = createEntity(scene, "Quad_" + std::to_string(createdQuadCount++));
+	auto entity = createEntity(registry, "Quad_" + std::to_string(createdQuadCount++));
 	auto memoryManager = Engine::get()->getMemoryManagementSystem();
 	Resource<Mesh> mesh = memoryManager->createOrGetCached<Mesh>("SGE_QUAD_MESH", []() {return Quad::createMesh(); });
 	entity.getComponent<MeshComponent>().mesh = mesh;
 	return entity;
 }
 
-Entity ShapeFactory::createSphere(Scene* scene)
+Entity ShapeFactory::createSphere(SGE_Regsitry* registry)
 {
 	static int createdSphereCount = 0;
-	auto entity = createEntity(scene, "Sphere_" + std::to_string(createdSphereCount++));
+	auto entity = createEntity(registry, "Sphere_" + std::to_string(createdSphereCount++));
 	auto memoryManager = Engine::get()->getMemoryManagementSystem();
 	Resource<Mesh> mesh = memoryManager->createOrGetCached<Mesh>("SGE_SPHERE_MESH", []() {return Sphere::createMesh(1, 36, 36); });
 	entity.getComponent<MeshComponent>().mesh = mesh;

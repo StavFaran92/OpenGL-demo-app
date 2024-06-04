@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "Entity.h"
+#include "Resource.h"
 
 class FrameBufferObject;
 class RenderBufferObject;

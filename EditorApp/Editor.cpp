@@ -27,7 +27,7 @@ std::vector<SceneObject> sceneObjects
 void updateScene()
 {
 	sceneObjects.clear();
-	for (auto&& [entity, obj] : Engine::get()->getContext()->getActiveScene()->getRegistry().view<ObjectComponent>().each())
+	for (auto&& [entity, obj] : Engine::get()->getContext()->getActiveScene()->getRegistry().get().view<ObjectComponent>().each())
 	{
 		sceneObjects.emplace_back(SceneObject{ obj.name, obj.e });
 	}
@@ -163,7 +163,7 @@ void ShowPrimitiveCreatorWindow()
 			}
 			else if (shape == PrimitiveType::Cube)
 			{
-				entity = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+				entity = ShapeFactory::createBox(&Engine::get()->getContext()->getActiveScene()->getRegistry());
 			}
 
 			assert(entity);

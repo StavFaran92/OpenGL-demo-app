@@ -24,6 +24,7 @@ class ModelImporter;
 class TextureHandler;
 class Material;
 class ProjectAssetRegistry;
+class SGE_Regsitry;
 
 
 
@@ -54,6 +55,8 @@ public:
 	ProjectAssetRegistry* getProjectAssetRegistry() const;
 
 	void populateScenesFromJSON(const std::string& json);
+
+	SGE_Regsitry& getRegistry() const;
 	
 
 	void setActiveScene(uint32_t index);
@@ -82,6 +85,8 @@ private:
 	uint32_t m_shaderCounter = 0;
 
 	std::shared_ptr<ProjectAssetRegistry> m_projectAssetRegistry;
+
+	std::shared_ptr<SGE_Regsitry> m_orphanRegistry;
 };
 
 

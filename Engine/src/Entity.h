@@ -1,10 +1,7 @@
 #pragma once
 
 #include "Core.h"
-#include "entt/entt.hpp"
-#include "Scene.h"
-//#include "Component.h"
-
+#include "Registry.h"
 
 using entity_id = entt::id_type;
 struct NativeScriptComponent;
@@ -27,8 +24,12 @@ public:
      * @brief Constructs an entity belonging to a scene
      * @param scene Pointer to the scene the entity belongs to
      */
-    Entity(entt::entity e, Scene* scene)
-        : m_entity(e), m_scene(scene)
+    //Entity(entt::entity e, std::shared_ptr<SGE_Regsitry> registry)
+    //    : m_entity(e), m_registry(registry)
+    //{}
+
+    Entity(entt::entity e, SGE_Regsitry* registry)
+        : m_entity(e), m_registry(registry)
     {}
 
     ~Entity() {};
@@ -47,10 +48,10 @@ public:
 
         if constexpr (std::is_same_v<T, NativeScriptComponent>)
         {
-            componentInstance->entity = Entity(m_entity, m_scene);
+            componentInstance->entity = Entity(m_entity, m_registry);
         }
 
-        T& component = m_scene->getRegistry().emplace_or_replace<T>(m_entity, *componentInstance);
+        T& component = m_registry->getRegistry().emplace_or_replace<T>(m_entity, *componentInstance);
 
         m_components.insert(typeid(T).name());
 
@@ -71,11 +72,11 @@ public:
 
         assert(valid() && "Invalid entity.");
 
-        T& component = m_scene->getRegistry().emplace_or_replace<T>(m_entity, std::forward<Args>(args)...);
+        T& component = m_registry->getRegistry().emplace_or_replace<T>(m_entity, std::forward<Args>(args)...);
 
         if constexpr (std::is_same_v<T, NativeScriptComponent>)
         {
-            component.entity = Entity(m_entity, m_scene);
+            component.entity = Entity(m_entity, m_registry);
         }
 
         m_components.insert(typeid(T).name());
@@ -94,15 +95,15 @@ public:
         static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component.");
 
         assert(valid() && "Invalid entity.");
-        assert(m_scene->getRegistry().has<T>(m_entity) && "Component does not exist.");
-        return m_scene->getRegistry().get<T>(m_entity);
+        assert(m_registry->getRegistry().has<T>(m_entity) && "Component does not exist.");
+        return m_registry->getRegistry().get<T>(m_entity);
     }
 
     template<typename T>
     T* tryGetComponent()
     {
         assert(valid() && "Invalid entity.");
-        return m_scene->getRegistry().try_get<T>(m_entity);
+        return m_registry->getRegistry().try_get<T>(m_entity);
     }
 
     template<typename T>
@@ -159,7 +160,7 @@ public:
     bool HasComponent() const
     {
         assert(valid() && "Invalid entity.");
-        return m_scene->getRegistry().any_of<T>(m_entity);
+        return m_registry->getRegistry().any_of<T>(m_entity);
     }
 
     /**
@@ -170,7 +171,7 @@ public:
     void RemoveComponent()
     {
         assert(valid() && "Invalid entity.");
-        m_scene->getRegistry().remove<T>(m_entity);
+        m_registry->getRegistry().remove<T>(m_entity);
 
         m_components.erase(typeid(T).name());
 
@@ -178,7 +179,7 @@ public:
 
     void remove()
     {
-        m_scene->removeEntity(*this);
+        m_registry->removeEntity(*this);
     }
 
     //TODO fix this , 
@@ -200,17 +201,17 @@ public:
      */
     bool valid() const
     {
-        return m_scene != nullptr && m_entity != entt::null && m_scene->getRegistry().valid(m_entity);
+        return m_registry != nullptr && m_entity != entt::null && m_registry->getRegistry().valid(m_entity);
     }
 
     bool operator==(const Entity& other)
     {
-        return m_scene == other.m_scene && m_entity == other.m_entity;
+        return m_registry == other.m_registry && m_entity == other.m_entity;
     }
 
     bool operator!=(const Entity& other)
     {
-        return m_scene != other.m_scene || m_entity != other.m_entity;
+        return m_registry != other.m_registry || m_entity != other.m_entity;
     }
 
     inline entt::entity handler() const
@@ -223,9 +224,9 @@ public:
         return (entity_id)m_entity;
     }
 
-    void setScene(Scene* scene)
+    void setRegistry(SGE_Regsitry* registry)
     {
-        m_scene = scene;
+        m_registry = registry;
     }
 
     template <class Archive>
@@ -236,7 +237,7 @@ public:
     
 
 private:
-    Scene* m_scene = nullptr;  ///< Scene the entity belongs to
+    SGE_Regsitry* m_registry = nullptr;  ///< Scene the entity belongs to
     entt::entity m_entity{ entt::null };  ///< ENTT entity instance
 
     // TODO remove

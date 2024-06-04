@@ -78,7 +78,7 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 
 	// Configure Shadow pass matrices
 	auto entt = params->registry->view<DirectionalLight>().front();
-	Entity e{ entt, params->scene };
+	Entity e{ entt, &params->scene->getRegistry()};
 	auto& dirLight = e.getComponent<DirectionalLight>();
 
 	//todo verify exists
@@ -112,7 +112,7 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 	{
 		
 
-		Entity entityhandler{ entity, m_scene };
+		Entity entityhandler{ entity, &m_scene->getRegistry()};
 		drawQueueRenderParams.entity = &entityhandler;
 		drawQueueRenderParams.mesh = mesh.mesh.get();
 		drawQueueRenderParams.shader->setUniformValue("model", transform.getWorldTransformation());

@@ -100,7 +100,7 @@ Resource<Texture> Texture::create2DTextureFromBuffer(int width, int height, int 
 	return create2DTextureFromBuffer(textureData);
 }
 
-Resource<Texture> Texture::loadCubemapTexture(std::vector<std::string> faces)
+Resource<Texture> Texture::createCubemapTextureFromFile(const std::vector<std::string>& faces)
 {
 	Resource<Texture> texture = Factory<Texture>::create();
 
@@ -126,7 +126,7 @@ Resource<Texture> Texture::loadCubemapTexture(std::vector<std::string> faces)
 		stbi_image_free(data);
 	}
 
-	//EquirectangularToCubemapConverter::fromCubemapToEquirectangular(texture, )
+	auto equirectTex = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(texture);
 
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -139,7 +139,12 @@ Resource<Texture> Texture::loadCubemapTexture(std::vector<std::string> faces)
 	return texture;
 }
 
-Resource<Texture> Texture::createCubemapTexture(int width, int height, int internalFormat, int format, int type)
+Resource<Texture> Texture::createCubemapTextureFromFile(const std::string& fileLocation)
+{
+	return Resource<Texture>();
+}
+
+Resource<Texture> Texture::createEmptyCubemapTexture(int width, int height, int internalFormat, int format, int type)
 {
 	Resource<Texture> texture = Factory<Texture>::create();
 
@@ -163,7 +168,7 @@ Resource<Texture> Texture::createCubemapTexture(int width, int height, int inter
 	return texture;
 }
 
-Resource<Texture> Texture::createCubemapTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps)
+Resource<Texture> Texture::createEmptyCubemapTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps)
 {
 	Resource<Texture> texture = Factory<Texture>::create();
 

@@ -14,6 +14,7 @@
 #include "Component.h"
 #include "Context.h"
 #include "Engine.h"
+#include "Scene.h"
 
 #include "EditorCamera.h"
 #include "cube.h"
@@ -29,10 +30,10 @@ Entity Skybox::CreateSkybox(const SkyboxFaces& faces, Scene* scene)
 
     std::vector<std::string> facesVec{faces.right, faces.left, faces.top, faces.bottom, faces.front, faces.back};
 
-    auto textureHandler = Texture::loadCubemapTexture(facesVec);
+    auto textureHandler = Texture::createCubemapTextureFromFile(facesVec);
 
-    auto equirectnagular = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(textureHandler, scene);
-    EquirectangularToCubemapConverter::fromEquirectangularToCubemap(equirectnagular, scene);
+    auto equirectnagular = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(textureHandler);
+    EquirectangularToCubemapConverter::fromEquirectangularToCubemap(equirectnagular);
     
     return createSkyboxHelper(textureHandler, scene);
 }
@@ -46,7 +47,7 @@ Entity Skybox::CreateSkybox(TexType type, Resource<Texture> texture, Scene* scen
 
     if (type == TexType::EQUIRECTANGULAR)
     {
-        texture = EquirectangularToCubemapConverter::fromEquirectangularToCubemap(texture, scene);
+        texture = EquirectangularToCubemapConverter::fromEquirectangularToCubemap(texture);
     }
 
     return createSkyboxHelper(texture, scene);
@@ -64,7 +65,7 @@ Entity Skybox::createSkyboxHelper(Resource<Texture> texture, Scene* scene)
 
     texture.get()->setSlot(0);
 
-    auto entity = ShapeFactory::createBox(scene);
+    auto entity = ShapeFactory::createBox(&scene->getRegistry());
 
     entity.RemoveComponent<RenderableComponent>();
     auto& mat = entity.getComponent<MaterialComponent>();

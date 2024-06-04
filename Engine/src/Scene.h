@@ -9,7 +9,6 @@
 #include <functional>
 
 #include "Core.h"
-#include "entt/entt.hpp"
 
 #include "glm/glm.hpp"
 #include "IRenderer.h"
@@ -45,6 +44,7 @@ class DeferredRenderer;
 class FrameBufferObject;
 class RenderBufferObject;
 class TextureHandler;
+class SGE_Regsitry;
 struct RigidBodyComponent;
 namespace physx {
 	class PxScene;
@@ -90,8 +90,8 @@ public:
 	RenderCallback* addRenderCallback(RenderPhase renderPhase, RenderCallback renderCallback);
 	void removeRenderCallback(RenderCallback* callback);
 
-	entt::registry& getRegistry();
-	const entt::registry& getRegistry() const;
+	SGE_Regsitry& getRegistry();
+	const SGE_Regsitry& getRegistry() const;
 
 	Entity createEntity();
 	Entity createEntity(const std::string& name);
@@ -153,7 +153,7 @@ private:
 	std::shared_ptr<ShadowSystem> m_shadowSystem;
 	std::shared_ptr<LightSystem> m_lightSystem;
 
-	entt::registry m_registry;
+	std::shared_ptr<SGE_Regsitry> m_registry;
 	std::map<RenderPhase, std::vector<RenderCallback>> m_renderCallbacks;
 
 	physx::PxScene* m_PhysicsScene = nullptr;

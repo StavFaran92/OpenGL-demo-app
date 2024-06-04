@@ -6,15 +6,15 @@
 #include "Core.h"
 
 class Entity;
-class Scene;
+class SGE_Regsitry;
 
 class EngineAPI ShapeFactory
 {
 public:
-	static Entity createBox(Scene* scene);
-	static Entity createQuad(Scene* scene);
-	static Entity createSphere(Scene* scene);
+	static Entity createBox(SGE_Regsitry* registry);
+	static Entity createQuad(SGE_Regsitry* registry);
+	static Entity createSphere(SGE_Regsitry* registry);
 
 private:
-	static Entity createEntity(Scene* scene, const std::string& name);
+	static Entity createEntity(SGE_Regsitry* registry, const std::string& name);
 };

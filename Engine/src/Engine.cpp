@@ -462,7 +462,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
     {
 
         {
-            auto ground = ShapeFactory::createBox(context->getActiveScene().get());
+            auto ground = ShapeFactory::createBox(&context->getActiveScene()->getRegistry());
             auto& groundTransfrom = ground.getComponent<Transformation>();
             groundTransfrom.setLocalScale({ 50, .5f, 50 });
             auto& mat = ground.addComponent<MaterialComponent>();
@@ -477,7 +477,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
             //editorCamera->setPosition(25, 225, 35);
         }
 
-        auto sphere = ShapeFactory::createSphere(context->getActiveScene().get());
+        auto sphere = ShapeFactory::createSphere(&context->getActiveScene()->getRegistry());
         {
             auto random = Engine::get()->getRandomSystem();
             auto x = random->rand() * 10 - 5;

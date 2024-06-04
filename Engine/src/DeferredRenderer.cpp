@@ -13,6 +13,7 @@
 #include "Material.h"
 #include "Random.h"
 #include "RenderCommand.h"
+#include "Context.h"
 
 static float lerp(float a, float b, float t)
 {
@@ -162,7 +163,7 @@ bool DeferredRenderer::init()
 	//setupSSAO();
 
 	// Generate screen quad
-	m_quad = ScreenQuad::GenerateScreenQuad(m_scene);
+	m_quad = ScreenQuad::GenerateScreenQuad(&Engine::get()->getContext()->getRegistry());
 	m_quad.RemoveComponent<RenderableComponent>();
 	m_quad.RemoveComponent<ObjectComponent>();
 

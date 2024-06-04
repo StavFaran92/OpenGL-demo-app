@@ -15,6 +15,7 @@
 #include "Entity.h"
 #include "Component.h"
 #include "Mesh.h"
+#include "Context.h"
 
 #include "Engine.h"
 
@@ -28,7 +29,7 @@ Resource<Texture> IBL::generateIrradianceMap(Resource<Texture> environmentMap, S
 	fbo.bind();
 
 	// Generate cubemap
-	auto irradianceMap = Texture::createCubemapTexture(32, 32, GL_RGB16F, GL_RGB, GL_FLOAT);
+	auto irradianceMap = Texture::createEmptyCubemapTexture(32, 32, GL_RGB16F, GL_RGB, GL_FLOAT);
 
 	RenderBufferObject rbo{ 32, 32 };
 	fbo.attachRenderBuffer(rbo.GetID(), FrameBufferObject::AttachmentType::Depth);
@@ -62,7 +63,7 @@ Resource<Texture> IBL::generateIrradianceMap(Resource<Texture> environmentMap, S
 	environmentMap.get()->bind();
 
 
-	auto box = ShapeFactory::createBox(scene);
+	auto box = ShapeFactory::createBox(&Engine::get()->getContext()->getRegistry());
 	box.RemoveComponent<RenderableComponent>();
 	box.RemoveComponent<ObjectComponent>();
 	auto vao = box.getComponent<MeshComponent>().mesh.get()->getVAO();
@@ -99,7 +100,7 @@ Resource<Texture> IBL::generatePrefilterEnvMap(Resource<Texture> environmentMap,
 	fbo.bind();
 
 	// Generate cubemap
-	auto prefilterEnvMap = Texture::createCubemapTexture(128, 128, GL_RGB16F, GL_RGB, GL_FLOAT, {
+	auto prefilterEnvMap = Texture::createEmptyCubemapTexture(128, 128, GL_RGB16F, GL_RGB, GL_FLOAT, {
 		{ GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR },
 		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR },
 		{ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE },
@@ -136,7 +137,7 @@ Resource<Texture> IBL::generatePrefilterEnvMap(Resource<Texture> environmentMap,
 	environmentMap.get()->bind();
 
 
-	auto box = ShapeFactory::createBox(scene);
+	auto box = ShapeFactory::createBox(&Engine::get()->getContext()->getRegistry());
 	box.RemoveComponent<RenderableComponent>();
 	box.RemoveComponent<ObjectComponent>();
 	auto vao = box.getComponent<MeshComponent>().mesh.get()->getVAO();
@@ -214,7 +215,7 @@ Resource<Texture> IBL::generateBRDFIntegrationLUT(Scene* scene)
 
 	BRDFIntegrationShader->use();
 
-	auto quad = ShapeFactory::createQuad(scene);
+	auto quad = ShapeFactory::createQuad(&Engine::get()->getContext()->getRegistry());
 	quad.RemoveComponent<RenderableComponent>();
 	quad.RemoveComponent<ObjectComponent>();
 

@@ -16,6 +16,7 @@
 #include "Shader.h"
 #include "Engine.h"
 #include "CacheSystem.h"
+#include "Scene.h"
 
 ModelImporter::ModelImporter()
 {

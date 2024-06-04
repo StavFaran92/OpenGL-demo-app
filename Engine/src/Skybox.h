@@ -2,8 +2,10 @@
 
 #include "Core.h"
 #include "Entity.h"
+#include "Resource.h"
 
 class TextureHandler;
+class Scene;
 
 class EngineAPI Skybox
 {

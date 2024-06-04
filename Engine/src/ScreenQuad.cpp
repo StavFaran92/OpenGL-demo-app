@@ -12,9 +12,9 @@
 
 #include "RenderableComponent.h"
 
-Entity ScreenQuad::GenerateScreenQuad(Scene* scene)
+Entity ScreenQuad::GenerateScreenQuad(SGE_Regsitry* registry)
 {
-	auto entity = ShapeFactory::createQuad(scene);
+	auto entity = ShapeFactory::createQuad(registry);
 	entity.RemoveComponent<RenderableComponent>();
 	entity.RemoveComponent<ObjectComponent>();
 	return entity;

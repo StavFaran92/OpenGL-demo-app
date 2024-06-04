@@ -25,11 +25,12 @@ Context::Context(const std::shared_ptr<ProjectAssetRegistry>& par)
 {
 	m_projectAssetRegistry = par;
 
-	init();
+	m_orphanRegistry = std::make_shared<SGE_Regsitry>();
 }
 
 void Context::init()
 {
+	
 }
 
 bool Context::addScene(std::shared_ptr<Scene> scene)
@@ -97,6 +98,11 @@ void Context::populateScenesFromJSON(const std::string& json)
 	//m_activeScene = defaultScene->getID();
 
 	//defaultScene->deserialize();
+}
+
+SGE_Regsitry& Context::getRegistry() const
+{
+	return *m_orphanRegistry.get();
 }
 
 void Context::setActiveScene(uint32_t index)

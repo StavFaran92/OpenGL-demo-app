@@ -5,6 +5,7 @@
 #include "IProjector.h"
 #include "ObjectHandler.h"
 #include "Entity.h"
+#include "Resource.h"
 
 class FrameBufferObject;
 class RenderBufferObject;
