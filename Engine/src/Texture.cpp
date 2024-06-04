@@ -126,7 +126,16 @@ Resource<Texture> Texture::createCubemapTextureFromFile(const std::vector<std::s
 		stbi_image_free(data);
 	}
 
-	auto equirectTex = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(texture);
+	//auto equirectangularTex = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(texture);
+
+	//// Allocate memory for the pixels
+	//void* pixels = malloc(2048 * 2048 * 3);
+
+	//glReadPixels(0, 0, 2048, 2048, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+
+	//auto& projectDir = Engine::get()->getProjectDirectory();
+	//stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), 2048, 2048, 3, pixels, 2048 * 3);
+	//Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
 
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
