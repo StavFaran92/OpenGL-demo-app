@@ -102,52 +102,24 @@ Resource<Texture> Texture::create2DTextureFromBuffer(int width, int height, int 
 
 Resource<Texture> Texture::createCubemapTextureFromFile(const std::vector<std::string>& faces)
 {
-	Resource<Texture> texture = Factory<Texture>::create();
+	// Check if texture is already cached to optimize the load process
+	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
+	std::filesystem::path path(faces[0]);
+	return memoryManagementSystem->createOrGetCached<Texture>(path.filename().string(), [&]() {
 
-	texture.get()->m_target = GL_TEXTURE_CUBE_MAP;
+		// todo use RAII
+		TextureData textureData = extractCubemapDataFromMultipleFiles(faces);
 
-	glGenTextures(1, &texture.get()->m_id);
-	texture.get()->bind();
+		Resource<Texture> texture = create2DTextureFromBuffer(textureData);
 
-	// flip the image
-	stbi_set_flip_vertically_on_load(false);
+		auto& projectDir = Engine::get()->getProjectDirectory();
+		stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), textureData.width, textureData.height, textureData.bpp, textureData.data, textureData.width * textureData.bpp);
+		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
 
-	int width, height, nrChannels;
-	for (unsigned int i = 0; i < faces.size(); i++)
-	{
-		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-		if (!data)
-		{
-			logError("Cubemap tex failed to load at path: {}", faces[i]);
-			stbi_image_free(data);
-		}
+		free(textureData.data);
 
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		stbi_image_free(data);
-	}
-
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	auto equirectangularTex = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(texture);
-
-	equirectangularTex.get()->bind();
-
-	// Allocate memory for the pixels
-	void* pixels = malloc(1024 * 1024 * 3);
-
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
-
-	auto& projectDir = Engine::get()->getProjectDirectory();
-	stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), 1024, 1024, 3, pixels, 1024 * 3);
-	Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
-
-	texture.get()->unbind();
-
-	return texture;
+		return texture;
+	});
 }
 
 Resource<Texture> Texture::createCubemapTextureFromFile(const std::string& fileLocation)
@@ -264,6 +236,70 @@ Texture::TextureData Texture::extractTextureDataFromFile(const std::string& file
 	};
 
 	textureData.genMipMap = true;
+
+	return textureData;
+}
+
+Texture::TextureData Texture::extractCubemapDataFromMultipleFiles(const std::vector<std::string>& files)
+{
+	TextureData textureData;
+	textureData.target = GL_TEXTURE_2D;
+
+	Resource<Texture> texture = Factory<Texture>::create();
+
+	texture.get()->m_target = GL_TEXTURE_CUBE_MAP;
+
+	glGenTextures(1, &texture.get()->m_id);
+	texture.get()->bind();
+
+	// flip the image
+	stbi_set_flip_vertically_on_load(false);
+
+	int width, height, nrChannels;
+	for (unsigned int i = 0; i < files.size(); i++)
+	{
+		unsigned char* data = stbi_load(files[i].c_str(), &width, &height, &nrChannels, 0);
+		if (!data)
+		{
+			logError("Cubemap tex failed to load at path: {}", files[i]);
+			stbi_image_free(data);
+		}
+
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		stbi_image_free(data);
+	}
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	auto equirectangularTex = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(texture);
+
+	equirectangularTex.get()->bind();
+
+	// Allocate memory for the pixels
+	void* pixels = malloc(1024 * 1024 * 3);
+
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+
+	textureData.data = pixels;
+	textureData.width = 1024;
+	textureData.height = 1024;
+	textureData.bpp = 3;
+	textureData.format = GL_RGB;
+	textureData.internalFormat = textureData.format;
+
+	textureData.type = GL_UNSIGNED_BYTE;
+	textureData.params = {
+		{ GL_TEXTURE_WRAP_S, GL_REPEAT},
+		{ GL_TEXTURE_WRAP_T, GL_REPEAT},
+		{ GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR},
+		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
+	};
+
+	textureData.genMipMap = false;
 
 	return textureData;
 }

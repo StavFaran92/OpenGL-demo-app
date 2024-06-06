@@ -101,6 +101,8 @@ public:
 
 	static Texture::TextureData extractTextureDataFromFile(const std::string& fileLocation);
 
+	static Texture::TextureData Texture::extractCubemapDataFromMultipleFiles(const std::vector<std::string>& files);
+
 	void build(const TextureData& textureData);
 
 	/**
