@@ -32,8 +32,8 @@ Entity Skybox::CreateSkybox(const SkyboxFaces& faces, Scene* scene)
 
     auto textureHandler = Texture::createCubemapTextureFromFile(facesVec);
 
-    auto equirectnagular = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(textureHandler);
-    EquirectangularToCubemapConverter::fromEquirectangularToCubemap(equirectnagular);
+    //auto equirectnagular = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(textureHandler);
+    //EquirectangularToCubemapConverter::fromEquirectangularToCubemap(equirectnagular);
     
     return createSkyboxHelper(textureHandler, scene);
 }
