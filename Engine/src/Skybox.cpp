@@ -60,8 +60,6 @@ Entity Skybox::createSkyboxHelper(Resource<Texture> texture, Scene* scene)
 
     scene->setIBLData(irradianceMap, prefilterEnvMap);
 
-    texture.get()->setSlot(0);
-
     auto entity = ShapeFactory::createBox(&scene->getRegistry());
 
     entity.RemoveComponent<RenderableComponent>();

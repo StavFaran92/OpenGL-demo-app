@@ -447,8 +447,8 @@ void Scene::draw(float deltaTime)
 	m_skyboxShader->setViewMatrix(*params.view);
 	m_skyboxShader->setProjectionMatrix(*params.projection);
 
-	for (auto&& [entity, skybox, mesh, transform, mat] : 
-		m_registry->get().view<SkyboxComponent, MeshComponent, Transformation, MaterialComponent>().each())
+	for (auto&& [entity, skybox, mesh, transform] : 
+		m_registry->get().view<SkyboxComponent, MeshComponent, Transformation>().each())
 	{
 		Entity entityhandler{ entity, m_registry.get()};
 		params.entity = &entityhandler;
