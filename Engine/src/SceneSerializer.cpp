@@ -81,6 +81,11 @@ void SceneSerializer::deserializeScene(const SerializedScene& serializedScene, S
 			obj.e.setRegistry(&scene.getRegistry());
 		}
 
+		if (serializedEnt.skybox)
+		{
+			auto& obj = entityHandler.addComponent<SkyboxComponent>(serializedEnt.skybox.value());
+		}
+
 		if (serializedEnt.nsc)
 		{
 			auto& nsc = entityHandler.addComponent<NativeScriptComponent>(serializedEnt.nsc.value());

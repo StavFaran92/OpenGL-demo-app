@@ -31,9 +31,6 @@ Entity Skybox::CreateSkybox(const SkyboxFaces& faces, Scene* scene)
     std::vector<std::string> facesVec{faces.right, faces.left, faces.top, faces.bottom, faces.front, faces.back};
 
     auto textureHandler = Texture::createCubemapTextureFromFile(facesVec);
-
-    //auto equirectnagular = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(textureHandler);
-    //EquirectangularToCubemapConverter::fromEquirectangularToCubemap(equirectnagular);
     
     return createSkyboxHelper(textureHandler, scene);
 }
@@ -68,9 +65,7 @@ Entity Skybox::createSkyboxHelper(Resource<Texture> texture, Scene* scene)
     auto entity = ShapeFactory::createBox(&scene->getRegistry());
 
     entity.RemoveComponent<RenderableComponent>();
-    auto& mat = entity.getComponent<MaterialComponent>();
-    mat.begin()->get()->setTexture(Texture::Type::Diffuse, texture);
-    entity.addComponent<SkyboxComponent>();
+    entity.addComponent<SkyboxComponent>(texture);
 
     entity.RemoveComponent<ObjectComponent>();
 

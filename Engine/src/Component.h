@@ -23,14 +23,18 @@ struct EngineAPI TagComponent : public Component
 	[[maybe_unused]] bool empty = false;
 };
 
-struct EngineAPI SkyboxComponent : public TagComponent
+struct EngineAPI SkyboxComponent : public Component
 {
-	float t; // todo fix
+	SkyboxComponent() = default;
+
+	SkyboxComponent(Resource<Texture> skyboxImage) : skyboxImage(skyboxImage) {}
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(t);
+		archive(skyboxImage);
 	}
+
+	Resource<Texture> skyboxImage;
 };
 
 struct EngineAPI RenderableComponent : public Component

@@ -299,7 +299,7 @@ Texture::TextureData Texture::extractCubemapDataFromMultipleFiles(const std::vec
 		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
 	};
 
-	textureData.genMipMap = false;
+	textureData.genMipMap = true;
 
 	return textureData;
 }

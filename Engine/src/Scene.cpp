@@ -454,7 +454,8 @@ void Scene::draw(float deltaTime)
 		params.entity = &entityhandler;
 		params.mesh = mesh.mesh.get();
 		params.model = &transform.getWorldTransformation();
-		mat.begin()->get()->getTexture(Texture::Type::Diffuse).get()->bind();
+		skybox.skyboxImage.get()->bind();
+		skybox.skyboxImage.get()->setSlot(0);
 
 		auto vao = params.mesh->getVAO();
 		RenderCommand::drawIndexed(vao);

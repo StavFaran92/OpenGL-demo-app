@@ -20,11 +20,20 @@ void main()
 
 #version 330 core
 
-uniform samplerCube skybox;
+uniform sampler2D skybox;
 in vec3 TexCoords3D;
 out vec4 color;
 
+const vec2 invAtan = vec2(0.1591, 0.3183);
+vec2 SampleSphericalMap(vec3 v)
+{
+    vec2 uv = vec2(atan(v.z, v.x), asin(v.y)); // theta and phi
+    uv *= invAtan; // divide by 2PI and PI to transform to [-.5, .5]
+    uv += 0.5; // convert to [0, 1]
+    return uv;
+}
+
 void main()
 {    
-    color = vec4(texture(skybox, TexCoords3D).xyz, 1.0);
+    color = vec4(texture(skybox, SampleSphericalMap(TexCoords3D)).rgb, 1.0);
 }
