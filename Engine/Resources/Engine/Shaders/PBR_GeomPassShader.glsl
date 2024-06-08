@@ -6,6 +6,8 @@ layout (location = 0) in vec3 pos;
 layout (location = 1) in vec3 norm;
 layout (location = 2) in vec2 tex;
 
+layout (location = 6) in mat4 instanceModel;
+
 // ----- Definitions ----- //
 
 #include ../../../../Engine/Resources/Engine/Shaders/include/defines.glsl
@@ -40,18 +42,24 @@ float getTime()
 
 void main()
 {
+	mat4 aModel = model;
+
+	if(isGpuInstanced)
+	{
+		aModel = instanceModel;
+	}
+
 	vec3 aPos = pos;
-	vec3 aNorm = mat3(transpose(inverse(model))) * norm;
+	vec3 aNorm = mat3(transpose(inverse(aModel))) * norm;
 #ifdef CUSTOM_SHADER
 	vert(aPos, aNorm);
 #endif
 
-	mat4 modelViewMat = view * model;
 	vs_out.texCoord = tex;
 	vs_out.normal =  aNorm;
-	vs_out.fragPos = (model * vec4(aPos, 1.0)).xyz;
+	vs_out.fragPos = (aModel * vec4(aPos, 1.0)).xyz;
 
-	gl_Position = projection * modelViewMat * vec4(aPos, 1.0);
+	gl_Position = projection * view * aModel * vec4(aPos, 1.0);
 }
 
 #frag

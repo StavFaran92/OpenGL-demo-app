@@ -81,7 +81,7 @@ Resource<Texture> IBL::generateIrradianceMap(Resource<Texture> environmentMap, S
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// render cube
-		RenderCommand::drawIndexed(vao);
+		RenderCommand::draw(vao);
 	}
 
 	environmentMap.get()->unbind();
@@ -170,7 +170,7 @@ Resource<Texture> IBL::generatePrefilterEnvMap(Resource<Texture> environmentMap,
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			// render cube
-			RenderCommand::drawIndexed(vao);
+			RenderCommand::draw(vao);
 		}
 	}
 
@@ -224,7 +224,7 @@ Resource<Texture> IBL::generateBRDFIntegrationLUT(Scene* scene)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// render to quad
-	RenderCommand::drawIndexed(vao);
+	RenderCommand::draw(vao);
 
 	fbo.unbind();
 

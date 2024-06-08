@@ -18,6 +18,11 @@ enum class LayoutAttribute// : int
 	Texcoords,
 	Colors,
 	Tangents,
+
+	InstanceModel_0,
+	InstanceModel_1,
+	InstanceModel_2,
+	InstanceModel_3,
 };
 
 const std::map<LayoutAttribute, size_t> g_attributeToSizeMap =
@@ -27,6 +32,11 @@ const std::map<LayoutAttribute, size_t> g_attributeToSizeMap =
 	{ LayoutAttribute::Texcoords, 2 },
 	{ LayoutAttribute::Colors, 3 },
 	{ LayoutAttribute::Tangents, 3 },
+
+	{ LayoutAttribute::InstanceModel_0, 4 },
+	{ LayoutAttribute::InstanceModel_1, 4 },
+	{ LayoutAttribute::InstanceModel_2, 4 },
+	{ LayoutAttribute::InstanceModel_3, 4 },
 };
 
 size_t getAttributeSize(LayoutAttribute attribute);
@@ -38,6 +48,11 @@ const std::map<LayoutAttribute, size_t> g_attributeToLocationMap =
 	{ LayoutAttribute::Texcoords, 2 },
 	{ LayoutAttribute::Colors, 3 },
 	{ LayoutAttribute::Tangents, 4 },
+
+	{ LayoutAttribute::InstanceModel_0, 6 },
+	{ LayoutAttribute::InstanceModel_1, 7 },
+	{ LayoutAttribute::InstanceModel_2, 8 },
+	{ LayoutAttribute::InstanceModel_3, 9 },
 };
 
 size_t getAttributeLocationInShader(LayoutAttribute attribute);

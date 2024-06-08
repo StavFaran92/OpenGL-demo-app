@@ -64,7 +64,7 @@ public:
 	void setWorldRotation(glm::quat quat);
 	void setLocalScale(glm::vec3 scale);
 
-	glm::mat4 getWorldTransformation();
+	glm::mat4 getWorldTransformation() const;
 	glm::vec3 getLocalPosition() const;
 	glm::vec3 getWorldPosition() const;
 	glm::quat getLocalRotationQuat() const;
@@ -85,7 +85,7 @@ public:
 	void rotateLerp(glm::vec3 axis, float angle, float t);
 	void rotateAroundLerp(glm::vec3 pivot, glm::vec3 axis, float angle, float t);
 	void getWorldTransformation(glm::mat4& mat);
-	glm::mat4 getLocalTransformation();
+	glm::mat4 getLocalTransformation() const;
 
 	void setParent(Entity parent);
 	void removeParent();

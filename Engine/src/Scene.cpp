@@ -19,8 +19,6 @@
 #include "ObjectManager.h"
 #include "ObjectHandler.h"
 #include "Configurations.h"
-#include "GpuInstancingRenderer.h"
-#include "InstanceBatch.h"
 #include "Shader.h"
 #include "Entity.h"
 #include "Transformation.h"
@@ -28,7 +26,6 @@
 #include "RenderableComponent.h"
 #include "Component.h"
 #include "Shader.h"
-#include "InstanceBatch.h"
 #include "SkyboxRenderer.h"
 #include "Material.h"
 #include "ScriptableEntity.h"
@@ -458,7 +455,7 @@ void Scene::draw(float deltaTime)
 		skybox.skyboxImage.get()->setSlot(0);
 
 		auto vao = params.mesh->getVAO();
-		RenderCommand::drawIndexed(vao);
+		RenderCommand::draw(vao);
 	}
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);

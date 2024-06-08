@@ -79,6 +79,11 @@ public:
 		clean();
 	}
 
+	bool isEmpty() const
+	{
+		return m_uid == EMPTY_UUID;
+	}
+
 	template <class Archive>
 	void serialize(Archive& archive) {
 		archive(m_uid, refCount);

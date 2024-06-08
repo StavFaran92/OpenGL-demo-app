@@ -172,23 +172,9 @@ bool DeferredRenderer::init()
 
 void DeferredRenderer::render(const DrawQueueRenderParams& renderParams)
 {
-	// Model
-    if (renderParams.model)
-    {
-        renderParams.shader->setModelMatrix(*renderParams.model);
-    }
-
-    // View
-    if (renderParams.view)
-    {
-        renderParams.shader->setViewMatrix(*renderParams.view);
-    }
-
-    // Projection
-    if (renderParams.projection)
-    {
-        renderParams.shader->setProjectionMatrix(*renderParams.projection);
-    }
+    renderParams.shader->setModelMatrix(*renderParams.model);
+    renderParams.shader->setViewMatrix(*renderParams.view);
+    renderParams.shader->setProjectionMatrix(*renderParams.projection);
 
     if (renderParams.material)
     {
@@ -199,7 +185,17 @@ void DeferredRenderer::render(const DrawQueueRenderParams& renderParams)
     renderParams.shader->bindUniformBlockToBindPoint("Lights", 1);
 
 	// Draw
-	draw(*renderParams.mesh->getVAO());
+	auto instanceBatch = renderParams.entity->tryGetComponent<InstanceBatch>();
+	if (!instanceBatch)
+	{
+		renderParams.shader->setUniformValue("isGpuInstanced", false);
+		RenderCommand::draw(renderParams.mesh->getVAO());
+	}
+	else
+	{
+		renderParams.shader->setUniformValue("isGpuInstanced", true);
+		RenderCommand::drawInstanced(renderParams.mesh->getVAO(), instanceBatch->getCount());
+	}
 
 	// Release
 	if (renderParams.material)
@@ -328,7 +324,7 @@ void DeferredRenderer::renderSceneUsingCustomShader(DrawQueueRenderParams& rende
 		DrawQueueRenderParams renderParams2D;
 		auto vao = mesh.mesh.get()->getVAO();
 
-		RenderCommand::drawIndexed(vao);
+		RenderCommand::draw(vao);
 	}
 
 	m_renderTargetFBO->unbind();
@@ -504,7 +500,7 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 		DrawQueueRenderParams renderParams2D;
 		auto vao = mesh.mesh.get()->getVAO();
 
-		RenderCommand::drawIndexed(vao);
+		RenderCommand::draw(vao);
 	}
 
 	m_renderTargetFBO->unbind();

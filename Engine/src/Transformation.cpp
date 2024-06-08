@@ -3,7 +3,7 @@
 #include "LinearAlgebraUtil.h"
 #include "Logger.h"
 
-glm::mat4 Transformation::getWorldTransformation() 
+glm::mat4 Transformation::getWorldTransformation() const
 {
 	auto parent = m_entity.getParent();
 	if (parent.valid())
@@ -22,7 +22,7 @@ void Transformation::getWorldTransformation(glm::mat4& mat)
 	mat = getWorldTransformation();
 }
 
-glm::mat4 Transformation::getLocalTransformation()
+glm::mat4 Transformation::getLocalTransformation() const
 {
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_translation);
 	glm::mat4 rotationMatrix = glm::mat4_cast(m_rotation);

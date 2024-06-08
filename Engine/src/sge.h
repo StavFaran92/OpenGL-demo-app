@@ -46,7 +46,6 @@
 #include "ObjectFactory.h"
 #include "ObjectHandler.h"
 #include "GuiMenu.h"
-#include "InstanceBatch.h"
 #include "Shader.h"
 #include "Entity.h"
 #include "ShapeFactory.h"

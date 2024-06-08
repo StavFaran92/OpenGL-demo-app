@@ -260,3 +260,33 @@ struct EngineAPI ShaderComponent : public Component
 
 	std::map<std::string, Resource<Texture>> customTextures;
 };
+
+struct EngineAPI InstanceBatch : public Component
+{
+public:
+	InstanceBatch();
+
+	InstanceBatch(const std::vector<Transformation>& transformations, Resource<Mesh> mesh);
+	
+
+	void addTransformation(const Transformation& transformation);
+
+	const glm::mat4* getMatrices() const
+	{
+		return matrices.data();
+	}
+	size_t getCount() const
+	{
+		return matrices.size();
+	}
+
+private:
+	void build();
+	
+
+private:
+	std::vector<glm::mat4> matrices;
+	Resource<Mesh> mesh;
+	unsigned int m_id = 0;
+};
+

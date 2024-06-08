@@ -762,6 +762,16 @@ void RenderInspectorWindow(float width, float height)
 			ImGui::Separator();
 		}
 
+		if (selectedEntity.HasComponent<InstanceBatch>())
+		{
+
+			ImGui::LabelText("", "Instance Batch");
+			auto& instanceBatch = selectedEntity.getComponent<InstanceBatch>();
+			//instanceBatch.
+
+			ImGui::Separator();
+		}
+
 		if (ImGui::Button("Add Component", ImVec2(windowWidth, 0)))
 		{
 			ImGui::OpenPopup("AddComponentPopup");
@@ -802,6 +812,15 @@ void RenderInspectorWindow(float width, float height)
 			if (ImGui::MenuItem("Script"))
 			{
 				selectedEntity.addComponent<NativeScriptComponent>();
+			}
+
+			if (ImGui::MenuItem("InstanceBatch"))
+			{
+				auto meshComponent = selectedEntity.tryGetComponent<MeshComponent>();
+				if (meshComponent)
+				{
+					selectedEntity.addComponent<InstanceBatch>(std::vector<Transformation>{}, meshComponent->mesh);
+				}
 			}
 
 			ImGui::EndPopup();

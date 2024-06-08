@@ -82,7 +82,7 @@ Resource<Texture> EquirectangularToCubemapConverter::fromEquirectangularToCubema
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// render cube
-		RenderCommand::drawIndexed(vao);
+		RenderCommand::draw(vao);
 	}
 
 	equirectangularTexture.get()->unbind();
@@ -141,7 +141,7 @@ Resource<Texture> EquirectangularToCubemapConverter::fromCubemapToEquirectangula
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// render cube
-	RenderCommand::drawIndexed(vao);
+	RenderCommand::draw(vao);
 
 	fbo.unbind();
 
