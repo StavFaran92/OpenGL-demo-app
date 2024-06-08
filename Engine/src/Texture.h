@@ -10,8 +10,6 @@
 #include "Configurations.h"
 #include "Resource.h"
 
-class TextureHandler;
-
 class EngineAPI Texture
 {
 public:
@@ -84,24 +82,10 @@ public:
 	static Resource<Texture> create2DTextureFromBuffer(const TextureData& textureData);
 
 	static Resource<Texture> create2DTextureFromBuffer(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, void* data);
-	/**
-	 * Load a cubemap texture using the specified faces file locations.
-	 * 
-	 * \param faces		the faces file locations to load the cubemap using
-	 * \return			A pointer to the loaded texture
-	 */
-	static Resource<Texture> createCubemapTextureFromFile(const std::vector<std::string>& fileLocations);
-	static Resource<Texture> createCubemapTextureFromFile(const std::string& fileLocation);
-
-	static Resource<Texture> createEmptyCubemapTexture(int width, int height, int internalFormat, int format, int type);
-
-	static Resource<Texture> createEmptyCubemapTexture(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps = false);
 
 	static Resource<Texture> createDummyTexture(unsigned char color[3]);
 
 	static Texture::TextureData extractTextureDataFromFile(const std::string& fileLocation);
-
-	static Texture::TextureData Texture::extractCubemapDataFromMultipleFiles(const std::vector<std::string>& files);
 
 	void build(const TextureData& textureData);
 

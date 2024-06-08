@@ -30,6 +30,7 @@ class Mesh;
 class ProjectManager;
 class Material;
 class Texture;
+class Cubemap;
 class CommonShaders;
 class CommonTextures;
 template<typename T>class MemoryPool;
@@ -70,6 +71,7 @@ public:
     template<typename T>MemoryPool<T>* getMemoryPool() const {};
     template<>MemoryPool<Texture>* getMemoryPool() const { return m_memoryPoolTexture.get(); }
     template<>MemoryPool<Mesh>* getMemoryPool() const { return m_memoryPoolMesh.get(); }
+    template<>MemoryPool<Cubemap>* getMemoryPool() const { return m_memoryPoolCubemap.get(); }
     
     void loadProject(const std::string& filePath);
     void saveProject();
@@ -128,6 +130,7 @@ protected:
     std::shared_ptr<ResourceManager> m_resourceManager;
     std::shared_ptr<MemoryPool<Texture>> m_memoryPoolTexture;
     std::shared_ptr<MemoryPool<Mesh>> m_memoryPoolMesh;
+    std::shared_ptr<MemoryPool<Cubemap>> m_memoryPoolCubemap;
     std::shared_ptr<ProjectManager> m_projectManager;
     std::shared_ptr<CommonShaders> m_commonShaders;
     std::shared_ptr<CommonTextures> m_commonTextures;
