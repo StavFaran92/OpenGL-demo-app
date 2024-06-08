@@ -186,7 +186,7 @@ void Scene::init(Context* context)
 		logError("Light System init failed!");
 	}
 
-	m_defaultPerspectiveProjection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 100.0f);
+	m_defaultPerspectiveProjection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 300.0f);
 	
 
 
@@ -420,20 +420,6 @@ void Scene::draw(float deltaTime)
 	params.entityGroup = &forwardRendererEntityGroup;
 
 	m_forwardRenderer->renderScene(params);
-
-#if 0
-	// POST Render Phase
-	// Iterate GPU instancing batches
-	for (auto&& [entity, mesh, instanceBatch] : m_registry.view<MeshComponent, InstanceBatch>().each())
-	{
-		// draw model
-		Entity entityhandler{ entity, this };
-		params.entity = &entityhandler;
-		params.mesh = mesh.mesh.get();
-		m_deferredRenderer->render(params);
-	}
-
-#endif
 
 	// Render skybox
 	glDepthMask(GL_FALSE);
