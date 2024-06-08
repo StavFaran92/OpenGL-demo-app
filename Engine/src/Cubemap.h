@@ -28,15 +28,16 @@ public:
 		void* data[6]{nullptr};
 	};
 
-	static Resource<Texture> createCubemapFromFile(const std::vector<std::string>& fileLocations);
-	static Resource<Texture> createCubemapFromFile(const std::string& fileLocation);
+	static Resource<Texture> createCubemapFromCubemapFiles(const std::vector<std::string>& fileLocations);
+	static Resource<Texture> createCubemapFromEquirectangularFile(const std::string& fileLocation);
+
 	static Resource<Texture> createCubemapFromBuffer(const CubemapData& cubemapData);
 
 	static Resource<Texture> createEmptyCubemap(int width, int height, int internalFormat, int format, int type);
-
 	static Resource<Texture> createEmptyCubemap(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps = false);
 
-	static Cubemap::CubemapData Cubemap::extractCubemapDataFromMultipleFiles(const std::vector<std::string>& files);
+	static Cubemap::CubemapData extractCubemapDataFromEquirectangularFile(const std::string& fileLocation);
+	static Cubemap::CubemapData extractCubemapDataFromCubemapFiles(const std::vector<std::string>& files);
 
 	static Resource<Texture> build(const CubemapData& textureData);
 };

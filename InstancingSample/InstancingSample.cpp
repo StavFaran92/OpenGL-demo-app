@@ -22,43 +22,54 @@ public:
 		//SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
 		//SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" });
 
+		
+
 		auto importer = getContext()->getModelImporter();
 		auto rock = importer->loadModelFromFile("C:/Users/Stav/Downloads/rock1-ue/rock2.obj", getContext()->getActiveScene().get());
 
-		auto& trans = rock.getComponent<Transformation>();
-		trans.setLocalScale({.1f, .1f, .1f});
-
-		auto mat = std::make_shared<Material>();
+		auto rockMat = std::make_shared<Material>();
 		
 		auto albedoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/rock1-ue/rock1-albedo.png", false);
-		mat->setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
+		rockMat->setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
 		auto roughnessMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/rock1-ue/rock1-roughness.png", false);
-		mat->setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
+		rockMat->setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
 		auto normalMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/rock1-ue/rock1-normal_dx.png", false);
-		mat->setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
+		rockMat->setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
 		auto metallicMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/rock1-ue/rock1-metallic.png", false);
-		mat->setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
+		rockMat->setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
 		auto aoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/rock1-ue/rock1-ao.png", false);
-		mat->setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
+		rockMat->setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
 
-		rock.getComponent<MaterialComponent>().addMaterial(mat);
+		rock.getComponent<MaterialComponent>().addMaterial(rockMat);
 
-		//std::vector<Transformation> transformations;
+		std::vector<Transformation> transformations;
 
-		//const int gridLength = 100;
+		const int rocksCount = 50;
+		
+		auto random = Engine::get()->getRandomSystem();
+		
 
-		//for (int i = 0; i < gridLength; i++)
-		//{
-		//	for (int j = 0; j < gridLength; j++)
-		//	{
-		//		Transformation trans(box, {(i - gridLength / 2) * 2, 0, (j - gridLength / 2) * 2});
-		//		transformations.push_back(trans);
-		//	}
-		//}
+		for (int i = 0; i < rocksCount; i++)
+		{
+			float angle = (float)i * 2 * Constants::PI / rocksCount;
+			Transformation trans(rock);
+			trans.setLocalPosition({ cos(angle) * 200, 0, sin(angle) * 200 });
+			trans.setLocalScale({ .05f + random->rand() * .05f, .1f + random->rand() * .05f, .1f + random->rand() * .05f });
+			transformations.push_back(trans);
+		}
 
-		//auto& meshComponent = box.getComponent<MeshComponent>();
+		auto& meshComponent = rock.getComponent<MeshComponent>();
 
-		//box.addComponent<InstanceBatch>(transformations, meshComponent.mesh);
+		rock.addComponent<InstanceBatch>(transformations, meshComponent.mesh);
+
+		auto sphere = ShapeFactory::createSphere(&getContext()->getActiveScene()->getRegistry());
+		auto& trans = sphere.getComponent<Transformation>();
+		trans.setLocalScale({ 10, 10, 10 });
+
+		auto sphereMat = std::make_shared<Material>();
+		//sphereMat->setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
+		//sphereMat->setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
+		sphere.getComponent<MaterialComponent>().addMaterial(sphereMat);
 	}
 
 };

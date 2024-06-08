@@ -31,7 +31,7 @@ Entity Skybox::CreateSkybox(const SkyboxFaces& faces, Scene* scene)
 
     std::vector<std::string> facesVec{faces.right, faces.left, faces.top, faces.bottom, faces.front, faces.back};
 
-    auto textureHandler = Cubemap::createCubemapFromFile(facesVec);
+    auto textureHandler = Cubemap::createCubemapFromCubemapFiles(facesVec);
     
     return createSkyboxHelper(textureHandler, scene);
 }

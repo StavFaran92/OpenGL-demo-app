@@ -22,7 +22,7 @@
 
 #include "EquirectangularToCubemapConverter.h"
 
-Resource<Texture> Cubemap::createCubemapFromFile(const std::vector<std::string>& faces)
+Resource<Texture> Cubemap::createCubemapFromCubemapFiles(const std::vector<std::string>& faces)
 {
 	// Check if texture is already cached to optimize the load process
 	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
@@ -30,7 +30,7 @@ Resource<Texture> Cubemap::createCubemapFromFile(const std::vector<std::string>&
 	return memoryManagementSystem->createOrGetCached<Texture>(path.filename().string(), [&]() {
 
 		// todo use RAII
-		CubemapData cubemapData = extractCubemapDataFromMultipleFiles(faces);
+		CubemapData cubemapData = extractCubemapDataFromCubemapFiles(faces);
 
 		Resource<Texture> cubemap = createCubemapFromBuffer(cubemapData);
 
@@ -53,9 +53,64 @@ Resource<Texture> Cubemap::createCubemapFromFile(const std::vector<std::string>&
 	});
 }
 
-Resource<Texture> Cubemap::createCubemapFromFile(const std::string& fileLocation)
+Cubemap::CubemapData Cubemap::extractCubemapDataFromEquirectangularFile(const std::string& fileLocation)
 {
-	return Resource<Texture>();
+	//CubemapData cubemapData;
+	//cubemapData.target = GL_TEXTURE_CUBE_MAP;
+
+	//int width, height, nrChannels;
+	//for (unsigned int i = 0; i < files.size(); i++)
+	//{
+	//	cubemapData.data[i] = stbi_load(files[i].c_str(), &cubemapData.width, &cubemapData.height, &cubemapData.bpp, 0);
+	//}
+
+	//cubemapData.format = GL_RGB;
+	//cubemapData.internalFormat = GL_RGB;
+
+	//cubemapData.type = GL_UNSIGNED_BYTE;
+	//cubemapData.params = {
+	//	{ GL_TEXTURE_MIN_FILTER, GL_LINEAR},
+	//	{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
+	//	{ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE},
+	//	{ GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE},
+	//	{ GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE},
+	//};
+
+	//cubemapData.genMipMap = false;
+
+	//return cubemapData;
+	return {};
+}
+
+Resource<Texture> Cubemap::createCubemapFromEquirectangularFile(const std::string& fileLocation)
+{
+	// Check if texture is already cached to optimize the load process
+	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
+	std::filesystem::path path(fileLocation);
+	return memoryManagementSystem->createOrGetCached<Texture>(path.filename().string(), [&]() {
+
+		// todo use RAII
+		CubemapData cubemapData = extractCubemapDataFromEquirectangularFile(fileLocation);
+
+		Resource<Texture> cubemap = createCubemapFromBuffer(cubemapData);
+
+		Resource<Texture> equirectangularMap = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(cubemap);
+
+		equirectangularMap.get()->bind();
+
+		// Allocate memory for the pixels
+		void* pixels = malloc(1024 * 1024 * 3);
+
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+
+		auto& projectDir = Engine::get()->getProjectDirectory();
+		stbi_write_png((projectDir + "/" + equirectangularMap.getUID() + ".png").c_str(), 1024, 1024, 3, pixels, 1024 * 3);
+		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(equirectangularMap.getUID());
+
+		//free(cubemapData.data);
+
+		return cubemap;
+		});
 }
 
 Resource<Texture> Cubemap::createCubemapFromBuffer(const CubemapData& cubemapData)
@@ -99,7 +154,7 @@ Resource<Texture> Cubemap::createEmptyCubemap(int width, int height, int interna
 	return createCubemapFromBuffer(cubemapData);
 }
 
-Cubemap::CubemapData Cubemap::extractCubemapDataFromMultipleFiles(const std::vector<std::string>& files)
+Cubemap::CubemapData Cubemap::extractCubemapDataFromCubemapFiles(const std::vector<std::string>& files)
 {
 	CubemapData cubemapData;
 	cubemapData.target = GL_TEXTURE_CUBE_MAP;
