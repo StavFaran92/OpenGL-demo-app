@@ -16,6 +16,7 @@
 #include "Component.h"
 #include "Mesh.h"
 #include "Context.h"
+#include "Cubemap.h"
 
 #include "Engine.h"
 
@@ -29,7 +30,7 @@ Resource<Texture> IBL::generateIrradianceMap(Resource<Texture> environmentMap, S
 	fbo.bind();
 
 	// Generate cubemap
-	auto irradianceMap = Texture::createEmptyCubemapTexture(32, 32, GL_RGB16F, GL_RGB, GL_FLOAT);
+	auto irradianceMap = Cubemap::createEmptyCubemap(32, 32, GL_RGB16F, GL_RGB, GL_FLOAT);
 
 	RenderBufferObject rbo{ 32, 32 };
 	fbo.attachRenderBuffer(rbo.GetID(), FrameBufferObject::AttachmentType::Depth);
@@ -100,7 +101,7 @@ Resource<Texture> IBL::generatePrefilterEnvMap(Resource<Texture> environmentMap,
 	fbo.bind();
 
 	// Generate cubemap
-	auto prefilterEnvMap = Texture::createEmptyCubemapTexture(128, 128, GL_RGB16F, GL_RGB, GL_FLOAT, {
+	auto prefilterEnvMap = Cubemap::createEmptyCubemap(128, 128, GL_RGB16F, GL_RGB, GL_FLOAT, {
 		{ GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR },
 		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR },
 		{ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE },

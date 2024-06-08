@@ -95,7 +95,6 @@ bool Engine::init(const InitParams& initParams)
 
     m_memoryPoolTexture = std::make_shared<MemoryPool<Texture>>();
     m_memoryPoolMesh = std::make_shared<MemoryPool<Mesh>>();
-    m_memoryPoolCubemap = std::make_shared<MemoryPool<Cubemap>>();
 
     m_resourceManager = std::make_shared<ResourceManager>();
 

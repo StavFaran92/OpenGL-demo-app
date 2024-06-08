@@ -16,6 +16,7 @@
 #include "Component.h"
 #include "Mesh.h"
 #include "Context.h"
+#include "Cubemap.h"
 
 #include "Engine.h"
 
@@ -30,7 +31,7 @@ Resource<Texture> EquirectangularToCubemapConverter::fromEquirectangularToCubema
 	fbo.bind();
 
 	// Generate cubemap
-	auto cubemap = Texture::createEmptyCubemapTexture(512, 512, GL_RGB16F, GL_RGB, GL_FLOAT);
+	auto cubemap = Cubemap::createEmptyCubemap(512, 512, GL_RGB16F, GL_RGB, GL_FLOAT);
 
 	RenderBufferObject rbo{ 512, 512 };
 	fbo.attachRenderBuffer(rbo.GetID(), FrameBufferObject::AttachmentType::Depth);

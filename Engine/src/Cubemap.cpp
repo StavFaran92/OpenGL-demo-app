@@ -18,45 +18,52 @@
 #include "Context.h"
 #include "ProjectAssetRegistry.h"
 
-#include "EquirectangularToCubemapConverter.h" // todo remove
+#include "Texture.h" 
 
-Resource<Cubemap> Cubemap::createCubemapFromFile(const std::vector<std::string>& faces)
+#include "EquirectangularToCubemapConverter.h"
+
+Resource<Texture> Cubemap::createCubemapFromFile(const std::vector<std::string>& faces)
 {
 	// Check if texture is already cached to optimize the load process
 	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
 	std::filesystem::path path(faces[0]);
-	return memoryManagementSystem->createOrGetCached<Cubemap>(path.filename().string(), [&]() {
+	return memoryManagementSystem->createOrGetCached<Texture>(path.filename().string(), [&]() {
 
 		// todo use RAII
 		CubemapData cubemapData = extractCubemapDataFromMultipleFiles(faces);
 
-		Resource<Cubemap> texture = createCubemapFromBuffer(cubemapData);
+		Resource<Texture> cubemap = createCubemapFromBuffer(cubemapData);
+
+		Resource<Texture> equirectangularMap = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(cubemap);
+
+		equirectangularMap.get()->bind();
+
+		// Allocate memory for the pixels
+		void* pixels = malloc(1024 * 1024 * 3);
+
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 
 		auto& projectDir = Engine::get()->getProjectDirectory();
-		stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), cubemapData.width, cubemapData.height, cubemapData.bpp, cubemapData.data, cubemapData.width * cubemapData.bpp);
-		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
+		stbi_write_png((projectDir + "/" + equirectangularMap.getUID() + ".png").c_str(), 1024, 1024, 3, pixels, 1024 * 3);
+		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(equirectangularMap.getUID());
 
-		free(cubemapData.data);
+		//free(cubemapData.data);
 
-		return texture;
+		return cubemap;
 	});
 }
 
-Resource<Cubemap> Cubemap::createCubemapFromFile(const std::string& fileLocation)
+Resource<Texture> Cubemap::createCubemapFromFile(const std::string& fileLocation)
 {
-	return Resource<Cubemap>();
+	return Resource<Texture>();
 }
 
-Resource<Cubemap> Cubemap::createCubemapFromBuffer(const CubemapData& cubemapData)
+Resource<Texture> Cubemap::createCubemapFromBuffer(const CubemapData& cubemapData)
 {
-	Resource<Cubemap> cubemap = Factory<Cubemap>::create();
-
-	cubemap.get()->build(cubemapData);
-
-	return cubemap;
+	return build(cubemapData);
 }
 
-Resource<Cubemap> Cubemap::createEmptyCubemap(int width, int height, int internalFormat, int format, int type)
+Resource<Texture> Cubemap::createEmptyCubemap(int width, int height, int internalFormat, int format, int type)
 {
 	CubemapData cubemapData;
 	cubemapData.target = GL_TEXTURE_CUBE_MAP;
@@ -77,7 +84,7 @@ Resource<Cubemap> Cubemap::createEmptyCubemap(int width, int height, int interna
 	return createCubemapFromBuffer(cubemapData);
 }
 
-Resource<Cubemap> Cubemap::createEmptyCubemap(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps)
+Resource<Texture> Cubemap::createEmptyCubemap(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps)
 {
 	CubemapData cubemapData;
 	cubemapData.target = GL_TEXTURE_CUBE_MAP;
@@ -120,15 +127,17 @@ Cubemap::CubemapData Cubemap::extractCubemapDataFromMultipleFiles(const std::vec
 	return cubemapData;
 }
 
-void Cubemap::build(const CubemapData& textureData)
+Resource<Texture> Cubemap::build(const CubemapData& textureData)
 {
-	m_target = textureData.target;
-	m_width = textureData.width;
-	m_height = textureData.height;
+	Resource<Texture> texture = Factory<Texture>::create();
+
+	texture.get()->m_target = textureData.target;
+	texture.get()->m_width = textureData.width;
+	texture.get()->m_height = textureData.height;
 
 	// generate texture
-	glGenTextures(1, &m_id);
-	bind();
+	glGenTextures(1, &texture.get()->m_id);
+	texture.get()->bind();
 
 	for (auto& [paramKey, paramValue] : textureData.params)
 	{
@@ -137,50 +146,15 @@ void Cubemap::build(const CubemapData& textureData)
 
 	for (int i = 0; i < 6; i++)
 	{
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, textureData.internalFormat, m_width, m_height, 0, textureData.format, textureData.type, textureData.data[i]);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, textureData.internalFormat, texture.get()->m_width, texture.get()->m_height, 0, textureData.format, textureData.type, textureData.data[i]);
+		stbi_image_free(textureData.data[i]);
 	}
 	if (textureData.genMipMap)
 	{
 		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 	}
 
-	unbind();
-}
+	texture.get()->unbind();
 
-void Cubemap::bind() const
-{
-	glActiveTexture(GL_TEXTURE0 + m_slot);
-	glBindTexture(m_target, m_id);
-}
-
-void Cubemap::unbind() const
-{
-	glActiveTexture(GL_TEXTURE0 + m_slot);
-	glBindTexture(m_target, 0);
-}
-
-void Cubemap::flip()
-{
-	m_flipped = !m_flipped;
-}
-
-bool Cubemap::isFlipped() const
-{
-	return m_flipped;
-}
-
-unsigned int Cubemap::getID() const
-{
-	return m_id;
-}
-
-void Cubemap::clear()
-{
-	glDeleteTextures(1, &m_id);
-}
-
-Cubemap::~Cubemap()
-{
-	logInfo( __FUNCTION__ );
-	clear();
+	return texture;
 }

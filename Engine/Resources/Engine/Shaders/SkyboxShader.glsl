@@ -20,7 +20,7 @@ void main()
 
 #version 330 core
 
-uniform sampler2D skybox;
+uniform samplerCube skybox;
 in vec3 TexCoords3D;
 out vec4 color;
 
@@ -35,5 +35,5 @@ vec2 SampleSphericalMap(vec3 v)
 
 void main()
 {    
-    color = vec4(texture(skybox, SampleSphericalMap(TexCoords3D)).rgb, 1.0);
+    color = vec4(texture(skybox, TexCoords3D).rgb, 1.0);
 }

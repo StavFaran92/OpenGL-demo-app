@@ -215,14 +215,20 @@ struct EngineAPI MaterialComponent : public Component
 
 	void addMaterial(const std::shared_ptr<Material>& mat)
 	{
+		if (isUsingDefault)
+		{
+			materials.clear();
+			isUsingDefault = false;
+		}
 		materials.push_back(mat);
 	}
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(materials);
+		archive(materials, isUsingDefault);
 	}
 
+	bool isUsingDefault = true;
 	std::vector<std::shared_ptr<Material>> materials;
 };
 

@@ -15,6 +15,7 @@
 #include "Context.h"
 #include "Engine.h"
 #include "Scene.h"
+#include "Cubemap.h"
 
 #include "EditorCamera.h"
 #include "cube.h"
@@ -30,7 +31,7 @@ Entity Skybox::CreateSkybox(const SkyboxFaces& faces, Scene* scene)
 
     std::vector<std::string> facesVec{faces.right, faces.left, faces.top, faces.bottom, faces.front, faces.back};
 
-    auto textureHandler = Texture::createCubemapTextureFromFile(facesVec);
+    auto textureHandler = Cubemap::createCubemapFromFile(facesVec);
     
     return createSkyboxHelper(textureHandler, scene);
 }

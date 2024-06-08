@@ -41,7 +41,7 @@ public:
 		auto aoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/rock1-ue/rock1-ao.png", false);
 		mat->setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
 
-		rock.addComponent<MaterialComponent>().addMaterial(mat);
+		rock.getComponent<MaterialComponent>().addMaterial(mat);
 
 		//std::vector<Transformation> transformations;
 

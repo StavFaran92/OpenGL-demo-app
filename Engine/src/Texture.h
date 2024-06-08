@@ -113,6 +113,7 @@ public:
 	~Texture();
 private:
 	void ClearTexture();
+	friend class Cubemap;
 
 private:
 	uint32_t m_id;
