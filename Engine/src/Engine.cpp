@@ -442,13 +442,6 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
     m_context->addScene(startupScene);
     m_context->setActiveScene(startupScene->getID());
 
-    Skybox::CreateSkybox({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
-        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
-        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
-        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",
-        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
-        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" });
-
     // Add default dir light
     auto dLight = startupScene->createEntity("Directional light");
     dLight.addComponent<DirectionalLight>();
@@ -460,6 +453,13 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
 
     if (initParams.templateScene)
     {
+        Skybox::CreateSkybox({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
+            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
+            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
+            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",
+            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
+            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" });
+
 
         {
             auto ground = ShapeFactory::createBox(&context->getActiveScene()->getRegistry());

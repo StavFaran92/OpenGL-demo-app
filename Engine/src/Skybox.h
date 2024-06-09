@@ -25,6 +25,8 @@ public:
         std::string back;
     };
 public:
+    static Entity CreateSkybox(const std::string& equirectnagularMap, Scene* scene = nullptr);
+
     static Entity CreateSkybox(const SkyboxFaces& faces, Scene* scene = nullptr);
 
     static Entity CreateSkybox(TexType type, Resource<Texture> texture, Scene* scene = nullptr);

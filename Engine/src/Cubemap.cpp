@@ -44,8 +44,8 @@ Resource<Texture> Cubemap::createCubemapFromCubemapFiles(const std::vector<std::
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 
 		auto& projectDir = Engine::get()->getProjectDirectory();
-		stbi_write_png((projectDir + "/" + equirectangularMap.getUID() + ".png").c_str(), 1024, 1024, 3, pixels, 1024 * 3);
-		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(equirectangularMap.getUID());
+		stbi_write_png((projectDir + "/" + cubemap.getUID() + ".png").c_str(), 1024, 1024, 3, pixels, 1024 * 3);
+		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(cubemap.getUID());
 
 		//free(cubemapData.data);
 
@@ -55,31 +55,33 @@ Resource<Texture> Cubemap::createCubemapFromCubemapFiles(const std::vector<std::
 
 Cubemap::CubemapData Cubemap::extractCubemapDataFromEquirectangularFile(const std::string& fileLocation)
 {
-	//CubemapData cubemapData;
-	//cubemapData.target = GL_TEXTURE_CUBE_MAP;
 
-	//int width, height, nrChannels;
-	//for (unsigned int i = 0; i < files.size(); i++)
-	//{
-	//	cubemapData.data[i] = stbi_load(files[i].c_str(), &cubemapData.width, &cubemapData.height, &cubemapData.bpp, 0);
-	//}
 
-	//cubemapData.format = GL_RGB;
-	//cubemapData.internalFormat = GL_RGB;
+	auto equirectangularMap = Texture::create2DTextureFromFile(fileLocation);
+	
 
-	//cubemapData.type = GL_UNSIGNED_BYTE;
-	//cubemapData.params = {
-	//	{ GL_TEXTURE_MIN_FILTER, GL_LINEAR},
-	//	{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
-	//	{ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE},
-	//	{ GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE},
-	//	{ GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE},
-	//};
+	CubemapData cubemapData;
+	cubemapData.target = GL_TEXTURE_CUBE_MAP;
 
-	//cubemapData.genMipMap = false;
+	int width, height, nrChannels;
+	cubemapData.data[0] = stbi_load(fileLocation.c_str(), &cubemapData.width, &cubemapData.height, &cubemapData.bpp, 0);
 
-	//return cubemapData;
-	return {};
+	cubemapData.format = GL_RGB;
+	cubemapData.internalFormat = GL_RGB;
+
+	cubemapData.type = GL_UNSIGNED_BYTE;
+	cubemapData.params = {
+		{ GL_TEXTURE_MIN_FILTER, GL_LINEAR},
+		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
+		{ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE},
+		{ GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE},
+		{ GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE},
+	};
+
+	cubemapData.genMipMap = false;
+
+	return cubemapData;
+	//return {};
 }
 
 Resource<Texture> Cubemap::createCubemapFromEquirectangularFile(const std::string& fileLocation)
@@ -89,14 +91,18 @@ Resource<Texture> Cubemap::createCubemapFromEquirectangularFile(const std::strin
 	std::filesystem::path path(fileLocation);
 	return memoryManagementSystem->createOrGetCached<Texture>(path.filename().string(), [&]() {
 
+		//open equirect file
+		//create equirect texture
+		auto equirectangularMap = Texture::create2DTextureFromFile(fileLocation);
+		//convert equirect to cubemap
+		auto cubemap = EquirectangularToCubemapConverter::fromEquirectangularToCubemap(equirectangularMap);
+
 		// todo use RAII
-		CubemapData cubemapData = extractCubemapDataFromEquirectangularFile(fileLocation);
+		//CubemapData cubemapData = extractCubemapDataFromEquirectangularFile(fileLocation);
 
-		Resource<Texture> cubemap = createCubemapFromBuffer(cubemapData);
+		//Resource<Texture> cubemap = createCubemapFromBuffer(cubemapData);
 
-		Resource<Texture> equirectangularMap = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(cubemap);
-
-		equirectangularMap.get()->bind();
+		cubemap.get()->bind();
 
 		// Allocate memory for the pixels
 		void* pixels = malloc(1024 * 1024 * 3);
@@ -104,13 +110,13 @@ Resource<Texture> Cubemap::createCubemapFromEquirectangularFile(const std::strin
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 
 		auto& projectDir = Engine::get()->getProjectDirectory();
-		stbi_write_png((projectDir + "/" + equirectangularMap.getUID() + ".png").c_str(), 1024, 1024, 3, pixels, 1024 * 3);
-		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(equirectangularMap.getUID());
+		stbi_write_png((projectDir + "/" + cubemap.getUID() + ".png").c_str(), 1024, 1024, 3, pixels, 1024 * 3);
+		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(cubemap.getUID());
 
-		//free(cubemapData.data);
+		free(pixels);
 
 		return cubemap;
-		});
+	});
 }
 
 Resource<Texture> Cubemap::createCubemapFromBuffer(const CubemapData& cubemapData)

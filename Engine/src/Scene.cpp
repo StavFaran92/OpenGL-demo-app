@@ -186,7 +186,7 @@ void Scene::init(Context* context)
 		logError("Light System init failed!");
 	}
 
-	m_defaultPerspectiveProjection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 300.0f);
+	m_defaultPerspectiveProjection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 1000.0f);
 	
 
 

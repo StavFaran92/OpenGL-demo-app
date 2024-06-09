@@ -22,6 +22,18 @@
 #include "EquirectangularToCubemapConverter.h"
 #include "IBL.h"
 
+Entity Skybox::CreateSkybox(const std::string& equirectnagularMap, Scene* scene)
+{
+    if (!scene)
+    {
+        scene = Engine::get()->getContext()->getActiveScene().get();
+    }
+
+    auto textureHandler = Cubemap::createCubemapFromEquirectangularFile(equirectnagularMap);
+
+    return createSkyboxHelper(textureHandler, scene);
+}
+
 Entity Skybox::CreateSkybox(const SkyboxFaces& faces, Scene* scene)
 {
     if (!scene)
