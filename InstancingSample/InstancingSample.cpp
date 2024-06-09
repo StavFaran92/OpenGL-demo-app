@@ -14,7 +14,12 @@ public:
 
 	void start() override
 	{
-		Skybox::CreateSkybox("C:/Users/Stav/Downloads/kloppenheim_02_puresky_8k_v2.hdr");
+		Skybox::CreateSkybox({ "C:/Users/Stav/Pictures/stars_bg_v2.png", 
+			"C:/Users/Stav/Pictures/stars_bg_v2.png" ,
+			"C:/Users/Stav/Pictures/stars_bg_v2.png" ,
+			"C:/Users/Stav/Pictures/stars_bg_v2.png" ,
+			"C:/Users/Stav/Pictures/stars_bg_v2.png" ,
+			"C:/Users/Stav/Pictures/stars_bg_v2.png" });
 
 
 		auto& camera = getContext()->getActiveScene()->getActiveCamera();
