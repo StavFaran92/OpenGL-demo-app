@@ -450,6 +450,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
     auto editorCamera = startupScene->createEntity("Camera");
     editorCamera.addComponent<CameraComponent>().isPrimary = true;
     editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
+    startupScene->setActiveCamera(editorCamera);
 
     if (initParams.templateScene)
     {

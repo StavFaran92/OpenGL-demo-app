@@ -46,7 +46,7 @@ void main()
 
 	if(isGpuInstanced)
 	{
-		aModel = instanceModel;
+		aModel = model * instanceModel;
 	}
 
 	vec3 aPos = pos;

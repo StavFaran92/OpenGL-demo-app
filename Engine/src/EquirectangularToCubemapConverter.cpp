@@ -31,9 +31,9 @@ Resource<Texture> EquirectangularToCubemapConverter::fromEquirectangularToCubema
 	fbo.bind();
 
 	// Generate cubemap
-	auto cubemap = Cubemap::createEmptyCubemap(512, 512, GL_RGB16F, GL_RGB, GL_FLOAT);
+	auto cubemap = Cubemap::createEmptyCubemap(2048, 2048, GL_RGB16F, GL_RGB, GL_FLOAT);
 
-	RenderBufferObject rbo{ 512, 512 };
+	RenderBufferObject rbo{ 2048, 2048 };
 	fbo.attachRenderBuffer(rbo.GetID(), FrameBufferObject::AttachmentType::Depth);
 
 	if (!fbo.isComplete())
@@ -55,7 +55,7 @@ Resource<Texture> EquirectangularToCubemapConverter::fromEquirectangularToCubema
 	};
 
 	// set viewport
-	glViewport(0, 0, 512, 512);
+	glViewport(0, 0, 2048, 2048);
 
 	equirectangularShader->use();
 	equirectangularShader->setProjectionMatrix(captureProjection);

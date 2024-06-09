@@ -1,12 +1,11 @@
 #include "EntryPoint.h"
 #include "sge.h"
 
-class CustomBoxBehaviour : public ScriptableEntity
+class MovingAstroeidScript : public ScriptableEntity
 {
-	virtual void onCreate() override
-	{
-		std::cout << "Box was created modafaka.\n";
-	}
+	virtual void onUpdate(float deltaTime) {
+		entity.getComponent<Transformation>().rotate({ 0, 1, 0 }, .01f);
+	};
 };
 
 class Sandbox : public Application
@@ -15,8 +14,11 @@ public:
 
 	void start() override
 	{
-		//Skybox::CreateSkybox("C:/Users/Stav/Downloads/black-white-starry-night2.jpg");
+		Skybox::CreateSkybox("C:/Users/Stav/Downloads/kloppenheim_02_puresky_8k_v2.hdr");
 
+
+		auto& camera = getContext()->getActiveScene()->getActiveCamera();
+		camera->setPosition(-450, 40, 0);
 		
 		{
 			auto importer = getContext()->getModelImporter();
@@ -45,6 +47,7 @@ public:
 
 			{
 				const int rocksCount = 100000;
+				//const int rocksCount = 1000;
 				for (int i = 0; i < rocksCount; i++)
 				{
 					float angle = (float)i * 2 * Constants::PI / rocksCount;
@@ -58,6 +61,8 @@ public:
 
 				auto& meshComponent = rock.getComponent<MeshComponent>();
 				rock.addComponent<InstanceBatch>(transformations, meshComponent.mesh);
+
+				rock.addComponent<NativeScriptComponent>().bind<MovingAstroeidScript>();
 			}
 		}
 

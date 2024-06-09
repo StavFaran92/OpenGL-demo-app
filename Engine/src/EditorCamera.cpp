@@ -35,7 +35,11 @@ void EditorCamera::lookAt(float x, float y, float z)
 
 void EditorCamera::setPosition(float x, float y, float z)
 {
-	//entity.getComponent<Transformation>().setWorldPosition({ x, y, z } );
+	//entity.getComponent<Transformation>().setLocalPosition({ x, y, z } );
+
+	m_cameraComponent->position = {x,y,z};
+
+	m_cameraController->calculateOrientation();
 
 	//m_distance = distance;
 	//m_angleX = angleX;

@@ -13,7 +13,7 @@ public:
 	virtual glm::mat4 getView() = 0;
 	virtual glm::vec3 getPosition() = 0;
 	virtual void lookAt(float x, float y, float z) = 0;
-	virtual void setPosition(float distance, float angleX, float angleY) = 0;
+	virtual void setPosition(float x, float y, float z) = 0;
 
 	virtual ~ICamera() = default;
 };

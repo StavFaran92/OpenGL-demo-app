@@ -45,6 +45,7 @@ class FrameBufferObject;
 class RenderBufferObject;
 class TextureHandler;
 class SGE_Regsitry;
+class Entity;
 struct RigidBodyComponent;
 namespace physx {
 	class PxScene;
@@ -106,6 +107,9 @@ public:
 	int getRenderTarget() const;
 
 	glm::mat4 getProjection() const;
+
+	std::shared_ptr<ICamera> getActiveCamera() const;
+	void setActiveCamera(Entity e);
 
 	//void setPrimaryCamera(ICamera* camera);
 
@@ -176,4 +180,6 @@ private:
 	Resource<Texture> m_prefilterEnvMap;
 	Resource<Texture> m_BRDFIntegrationLUT;
 	std::shared_ptr<Shader> m_skyboxShader;
+
+	std::shared_ptr<ICamera> m_activeCamera;
 };

@@ -95,6 +95,16 @@ glm::mat4 Scene::getProjection() const
 	return m_defaultPerspectiveProjection;
 }
 
+std::shared_ptr<ICamera> Scene::getActiveCamera() const
+{
+	return m_activeCamera;
+}
+
+void Scene::setActiveCamera(Entity e)
+{
+	m_activeCamera = std::dynamic_pointer_cast<ICamera>(e.getComponent<NativeScriptComponent>().script);
+}
+
 //void Scene::setPrimaryCamera(ICamera* camera)
 //{
 //	m_activeCamera = camera;
