@@ -15,6 +15,7 @@ namespace fs = std::filesystem;
 
 static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype);
 void AddColoredLabel(const char* label);
+static void displayTransformation(Transformation& transform);
 
 template<typename T> 
 static void displayComponent(const std::string& componentName, std::function<void(T&)> func)
@@ -47,6 +48,28 @@ static void displayComponent(const std::string& componentName, std::function<voi
 		func(component);
 
 		ImGui::Separator();
+	}
+}
+
+static void displayTransformation(Transformation& transform)
+{
+	glm::vec3& pos = transform.getLocalPosition();
+	glm::vec3& rotation = transform.getLocalRotationVec3();
+	glm::vec3& scale = transform.getLocalScale();
+
+	// Position slider
+	if (ImGui::DragFloat3("Position", glm::value_ptr(pos))) {
+		transform.setLocalPosition(pos);
+	}
+
+	// Rotation slider (Euler angles)
+	if (ImGui::DragFloat3("Rotation", glm::value_ptr(rotation))) {
+		transform.setLocalRotation(rotation);
+	}
+
+	// Scale slider
+	if (ImGui::DragFloat3("Scale", glm::value_ptr(scale))) {
+		transform.setLocalScale(scale);
 	}
 }
 
@@ -632,20 +655,7 @@ void RenderInspectorWindow(float width, float height)
 	if (selectedEntity != Entity::EmptyEntity)
 	{
 		displayComponent<Transformation>("Transformation", [](Transformation& transform) {
-			glm::vec3& pos = transform.getLocalPosition();
-			glm::vec3& rotation = transform.getLocalRotationVec3(); // todo fix
-			glm::vec3& scale = transform.getLocalScale();
-
-			if (ImGui::InputFloat3("Position", (float*)&pos))
-			{
-				transform.setLocalPosition(pos);
-			}
-			ImGui::InputFloat3("Rotation", (float*)&rotation);
-			ImGui::InputFloat3("Scale", (float*)&scale);
-
-
-			transform.setLocalRotation(rotation);
-			transform.setLocalScale(scale);
+			displayTransformation(transform);
 		});
 
 		displayComponent<RigidBodyComponent>("RigidBody", [](RigidBodyComponent& rBody) {
