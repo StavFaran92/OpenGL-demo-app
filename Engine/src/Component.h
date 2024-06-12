@@ -139,7 +139,7 @@ struct EngineAPI CollisionMeshComponent : public Component
 	}
 
 	bool isConvex = false;
-	Mesh* mesh = nullptr;
+	Resource<Mesh> mesh = Resource<Mesh>::empty;
 };
 
 struct EngineAPI CameraComponent : public Component

@@ -775,6 +775,9 @@ void RenderInspectorWindow(float width, float height)
 			ImGui::InputFloat("Radius", &collisionBox.radius);
 			});
 
+		displayComponent<CollisionMeshComponent>("Collision Mesh", [](CollisionMeshComponent& collisionMesh) {
+			});
+
 		displayComponent<MeshComponent>("Mesh", [](MeshComponent& meshComponent) {
 			if (meshComponent.mesh.isEmpty()) return;
 
@@ -904,6 +907,16 @@ void RenderInspectorWindow(float width, float height)
 			if (ImGui::MenuItem("Collision Sphere"))
 			{
 				selectedEntity.addComponent<CollisionSphereComponent>();
+			}
+
+			if (ImGui::MenuItem("Collision Mesh"))
+			{
+				auto meshComponent = selectedEntity.tryGetComponent<MeshComponent>();
+				if (meshComponent)
+				{
+					auto& meshCollisions = selectedEntity.addComponent<CollisionMeshComponent>();
+					meshCollisions.mesh = meshComponent->mesh;
+				}
 			}
 
 			if (ImGui::MenuItem("Mesh"))

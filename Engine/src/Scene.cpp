@@ -795,12 +795,9 @@ void Scene::createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body,
 	}
 	else if (e.HasComponent<CollisionMeshComponent>())
 	{
-		auto meshComponent = e.tryGetComponent<MeshComponent>();
-		if (meshComponent)
-		{
-			const std::vector<glm::vec3>& apos = meshComponent->mesh.get()->getPositions();
-			shape = physicsSystem->createConvexMeshShape(apos);
-		}
+		auto collisionMeshComponent = e.getComponent<CollisionMeshComponent>();
+		const std::vector<glm::vec3>& apos = collisionMeshComponent.mesh.get()->getPositions();
+		shape = physicsSystem->createConvexMeshShape(apos);
 	}
 
 	if (shape)

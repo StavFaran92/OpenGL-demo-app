@@ -138,7 +138,7 @@ bool Mesh::build(MeshData& mData)
 
 	m_vao->AttachBuffer(*m_vbo, m_ibo.get(), m_layout);
 
-	//m_positions = std::move(mData.m_positions);
+	m_positions = mData.m_positions;
 	//m_normals = std::move(mData.m_normals);
 
 	return true;
