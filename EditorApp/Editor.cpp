@@ -29,13 +29,17 @@ static void displayComponent(const std::string& componentName, std::function<voi
 		ImVec2 windowSize = ImGui::GetWindowSize();
 
 		// Adjust the cursor position to place the button at the top right
-		ImGui::SetCursorPos(ImVec2(windowSize.x - 25.0f, cursorPos.y - ImGui::GetTextLineHeightWithSpacing() - 8.0f));
-		if (ImGui::Button("X")) {
-			// Handle the button click event to remove the component
-			selectedEntity.RemoveComponent<T>();
-			ImGui::EndGroup(); // End the group early if the component is removed
-			updateScene();
-			return;
+		if (!std::is_same<T, Transformation>::value)
+		{
+			ImGui::SetCursorPos(ImVec2(windowSize.x - 25.0f, cursorPos.y - ImGui::GetTextLineHeightWithSpacing() - 8.0f));
+			if (ImGui::Button("X")) {
+				// You cannot erase transformation
+
+				selectedEntity.RemoveComponent<T>();
+				ImGui::EndGroup(); // End the group early if the component is removed
+				updateScene();
+				return;
+			}
 		}
 
 		func(component);
@@ -96,7 +100,6 @@ void AddColoredLabel(const char* label)
 	// Render the label text
 	ImGui::SetCursorScreenPos(textPos);
 	ImGui::TextUnformatted(label);
-
 
 	ImGui::Dummy(ImVec2(0.0f, 2.0f)); // Add a vertical gap
 }
