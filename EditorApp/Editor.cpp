@@ -585,18 +585,39 @@ static const char* renderTechniqueStrList[]{
 	"Defererred"
 };
 
-static void addTextureEditWidget(const Material& mat, const std::string& name, Texture::Type ttype)
+static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype)
 {
 	unsigned int tid = 0;
-	if (mat.hasTexture(ttype))
+	if (mat->hasTexture(ttype))
 	{
-		tid = mat.getTexture(ttype).get()->getID();
+		tid = mat->getTexture(ttype).get()->getID();
 	}
 
-	ImGui::Text(name.c_str());
-	ImGui::SameLine();
 	ImVec2 imageSize(20, 20);
 	ImGui::Image(reinterpret_cast<ImTextureID>(tid), imageSize, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+
+	if (ImGui::IsItemClicked()) {
+		nfdchar_t* outPath = NULL;
+		nfdresult_t result = NFD_OpenDialog("png,jpg,bmp,tga", NULL, &outPath);
+
+		if (result == NFD_OKAY) {
+			// Load the new texture and set it to the material
+			auto& tex = Texture::create2DTextureFromFile(outPath, false);
+
+			mat->setTexture(ttype, tex);
+			free(outPath); // Don't forget to free the memory
+		}
+		else if (result == NFD_CANCEL) {
+			// User canceled, do nothing
+		}
+		else {
+			// Error handling
+			std::cerr << "Error: " << NFD_GetError() << std::endl;
+		}
+	}
+
+	ImGui::SameLine();
+	ImGui::Text(name.c_str());
 }
 
 void RenderInspectorWindow(float width, float height) 
@@ -708,16 +729,26 @@ void RenderInspectorWindow(float width, float height)
 			ImGui::Separator();
 		}
 
-		if (selectedEntity.HasComponent<Material>())
+		if (selectedEntity.HasComponent<MaterialComponent>()) 
 		{
-			ImGui::LabelText("", "Material");
-			auto& mat = *selectedEntity.getComponent<MaterialComponent>().begin()->get();
+			ImGui::LabelText("", "Materials");
+			auto& materials = selectedEntity.getComponent<MaterialComponent>();
 
-			addTextureEditWidget(mat, "Albedo", Texture::Type::Albedo);
-			addTextureEditWidget(mat, "Normal", Texture::Type::Normal);
-			addTextureEditWidget(mat, "Metallic", Texture::Type::Metallic);
-			addTextureEditWidget(mat, "Roughness", Texture::Type::Roughness);
-			addTextureEditWidget(mat, "Occlusion", Texture::Type::AmbientOcclusion);
+			int index = 0;
+			for (auto& mat : materials) 
+			{
+				// Start a new collapsible header for each material
+				if (ImGui::CollapsingHeader(("Material " + std::to_string(index)).c_str())) 
+				{
+					// Add texture edit widgets for the material
+					addTextureEditWidget(mat, "Albedo", Texture::Type::Albedo);
+					addTextureEditWidget(mat, "Normal", Texture::Type::Normal);
+					addTextureEditWidget(mat, "Metallic", Texture::Type::Metallic);
+					addTextureEditWidget(mat, "Roughness", Texture::Type::Roughness);
+					addTextureEditWidget(mat, "Occlusion", Texture::Type::AmbientOcclusion);
+				}
+				++index;
+			}
 
 			ImGui::Separator();
 		}

@@ -84,7 +84,7 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 	//todo verify exists
 
 	// Generate Orthogonal projection
-	float near_plane = 1.0f, far_plane = 40.f;
+	float near_plane = 1.0f, far_plane = 200.f;
 	glm::mat4 lightProjection = glm::ortho(-30.0f, 30.0f, -30.0f, 30.0f, near_plane, far_plane);
 
 	auto& trans = e.getComponent<Transformation>();
