@@ -51,6 +51,40 @@ static void displayComponent(const std::string& componentName, std::function<voi
 	}
 }
 
+void RenderSimulationControlView(float width, float height)
+{
+	float windowWidth = width * 0.6f - 10;
+	float windowHeight = 35;
+	float startX = width * 0.2f + 10; // Add a gap of 10 pixels
+	ImGui::SetNextWindowPos(ImVec2(startX, 25)); // Adjust vertical position to make space for the menu bar
+	ImGui::SetNextWindowSize(ImVec2(windowWidth, windowHeight));
+
+	ImGui::Begin("Centered Buttons", nullptr, ImGuiWindowFlags_NoDecoration);
+
+	// Center align the buttons
+	ImGui::SetCursorPosX((windowWidth - 100) * 0.5f);
+
+	static bool startButtonPressed = false;
+
+	// Draw the button based on the current state
+	if (startButtonPressed) {
+		if (ImGui::Button("STOP", ImVec2(70, 0))) {
+			// Handle stop button click
+			startButtonPressed = false; // Toggle the state
+			Engine::get()->getContext()->getActiveScene()->stopSimulation();
+		}
+	}
+	else {
+		if (ImGui::Button("START", ImVec2(70, 0))) {
+			// Handle start button click
+			startButtonPressed = true; // Toggle the state
+			Engine::get()->getContext()->getActiveScene()->startSimulation();
+		}
+	}
+
+	ImGui::End(); // End the window
+}
+
 static void displayTransformation(Transformation& transform)
 {
 	glm::vec3& pos = transform.getLocalPosition();
@@ -58,17 +92,20 @@ static void displayTransformation(Transformation& transform)
 	glm::vec3& scale = transform.getLocalScale();
 
 	// Position slider
-	if (ImGui::DragFloat3("Position", glm::value_ptr(pos))) {
+	if (ImGui::DragFloat3("Position", glm::value_ptr(pos))) 
+	{
 		transform.setLocalPosition(pos);
 	}
 
 	// Rotation slider (Euler angles)
-	if (ImGui::DragFloat3("Rotation", glm::value_ptr(rotation))) {
+	if (ImGui::DragFloat3("Rotation", glm::value_ptr(rotation))) 
+	{
 		transform.setLocalRotation(rotation);
 	}
 
 	// Scale slider
-	if (ImGui::DragFloat3("Scale", glm::value_ptr(scale))) {
+	if (ImGui::DragFloat3("Scale", glm::value_ptr(scale))) 
+	{
 		transform.setLocalScale(scale);
 	}
 }
@@ -339,6 +376,12 @@ void RenderSceneHierarchyWindow(float width, float height)
 
 	if (ImGui::BeginPopup("AddObjectToScenePopup")) 
 	{
+		if (ImGui::MenuItem("Entity"))
+		{
+			Engine::get()->getContext()->getActiveScene()->createEntity();
+			updateScene();
+			selectedEntity = sceneObjects[0].e;
+		}
 		if (ImGui::BeginMenu("Primitive")) 
 		{ // Begin the submenu
 			if (ImGui::MenuItem("Cube")) 
@@ -454,9 +497,9 @@ void RenderViewWindow(float width, float height)
 	float windowWidth = width * 0.6f - 10;
 	float windowHeight = height * 0.8f;
 	float startX = width * 0.2f + 10; // Add a gap of 10 pixels
-	ImGui::SetNextWindowPos(ImVec2(startX, 25)); // Adjust vertical position to make space for the menu bar
-	ImGui::SetNextWindowSize(ImVec2(windowWidth, windowHeight));
-	ImGui::Begin("View", nullptr, style | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+	ImGui::SetNextWindowPos(ImVec2(startX, 65)); // Adjust vertical position to make space for the menu bar
+	ImGui::SetNextWindowSize(ImVec2(windowWidth, windowHeight - 40));
+	ImGui::Begin("View", nullptr, style | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoDecoration);
 
 	// Display the texture
 	ImVec2 imageSize(windowWidth, windowHeight);
@@ -466,8 +509,8 @@ void RenderViewWindow(float width, float height)
 	{
 		// Define the size and position of the inner window
 		float innerWindowWidth = windowWidth - 10;
-		float innerWindowHeight = 40.0f;
-		ImGui::SetNextWindowPos(ImVec2(startX + 5, 50)); // Adjust position as needed
+		float innerWindowHeight = 35.0f;
+		ImGui::SetNextWindowPos(ImVec2(startX + 7, 72)); // Adjust position as needed
 		ImGui::SetNextWindowSize(ImVec2(innerWindowWidth, innerWindowHeight)); // Adjust size as needed
 
 		// Transformation mode enum and current mode variable
@@ -672,6 +715,7 @@ void RenderInspectorWindow(float width, float height)
 			});
 
 		displayComponent<MeshComponent>("Mesh", [](MeshComponent& meshComponent) {
+			if (meshComponent.mesh.isEmpty()) return;
 			ImGui::Text("Number of vertices: %d", (int)meshComponent.mesh.get()->getNumOfVertices());
 			});
 
@@ -870,6 +914,7 @@ class GUI_Helper : public GuiMenu {
 		}
 
 		// Render UI
+		RenderSimulationControlView(screenWidth, screenHeight);
 		RenderViewWindow(screenWidth, screenHeight);
 		RenderSceneHierarchyWindow(screenWidth, screenHeight);
 		RenderInspectorWindow(screenWidth, screenHeight);

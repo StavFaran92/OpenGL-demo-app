@@ -178,7 +178,7 @@ struct EngineAPI MeshComponent : public Component
 	}
 
 	float materialSlot = 0; // todo this will be used (probably as a list) to support multi material models
-	Resource<Mesh> mesh;
+	Resource<Mesh> mesh = Resource<Mesh>::empty;
 };
 
 //struct EngineAPI MeshArrayRendererComponent : public Component

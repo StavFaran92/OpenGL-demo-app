@@ -243,63 +243,67 @@ void Scene::init(Context* context)
 
 void Scene::update(float deltaTime)
 {
-	// Advance all coroutines
-	auto coroutines = m_coroutineManager->getAllCoroutines();
-	for (int i = 0; i < coroutines.size(); i++)
+	if (m_isSimulationActive)
 	{
-		if ((*coroutines[i])(deltaTime))
-		{
-			m_coroutineManager->removeCoroutine(i);
-		}
-	}
 
-	// Run all User Scriptable Entities scripts
-	for (auto&& [entity, nsc] : m_registry->get().view<NativeScriptComponent>().each())
-	{
-		if (!nsc.script)
+		// Advance all coroutines
+		auto coroutines = m_coroutineManager->getAllCoroutines();
+		for (int i = 0; i < coroutines.size(); i++)
 		{
-			logWarning("Native Script cannot be Null, did you forget to call Bind()?");
-			continue;
+			if ((*coroutines[i])(deltaTime))
+			{
+				m_coroutineManager->removeCoroutine(i);
+			}
 		}
 
-		nsc.script->onUpdate(deltaTime);
-	}
-
-	// Physics
-	m_PhysicsScene->simulate(1/120.f);
-	m_PhysicsScene->fetchResults(true);
-
-	physx::PxU32 nbActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
-	if (nbActors)
-	{
-		std::vector<physx::PxRigidActor*> actors(nbActors);
-		m_PhysicsScene->getActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC, reinterpret_cast<physx::PxActor**>(&actors[0]), nbActors);
-
-		for (physx::PxRigidActor* actor : actors)
+		// Run all User Scriptable Entities scripts
+		for (auto&& [entity, nsc] : m_registry->get().view<NativeScriptComponent>().each())
 		{
-			entity_id id = *(entity_id*)actor->userData;
-			Entity e{ entt::entity(id), m_registry.get() };
-			auto& transform = e.getComponent<Transformation>();
+			if (!nsc.script)
+			{
+				logWarning("Native Script cannot be Null, did you forget to call Bind()?");
+				continue;
+			}
 
-			physx::PxTransform pxTransform = actor->getGlobalPose();
-			PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
+			nsc.script->onUpdate(deltaTime);
 		}
+
+		// Physics
+		m_PhysicsScene->simulate(1 / 120.f);
+		m_PhysicsScene->fetchResults(true);
+
+		physx::PxU32 nbActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
+		if (nbActors)
+		{
+			std::vector<physx::PxRigidActor*> actors(nbActors);
+			m_PhysicsScene->getActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC, reinterpret_cast<physx::PxActor**>(&actors[0]), nbActors);
+
+			for (physx::PxRigidActor* actor : actors)
+			{
+				entity_id id = *(entity_id*)actor->userData;
+				Entity e{ entt::entity(id), m_registry.get() };
+				auto& transform = e.getComponent<Transformation>();
+
+				physx::PxTransform pxTransform = actor->getGlobalPose();
+				PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
+			}
+		}
+
+		//for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
+		//{
+		//	Entity e{ entity, this };
+		//	auto& transform = e.getComponent<Transformation>();
+		//	physx::PxRigidActor* actor = (physx::PxRigidActor*)rb.simulatedBody;
+		//	
+		//	physx::PxTransform pxTransform = actor->getGlobalPose();
+		//	PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
+		//}
+
+		//for (auto&& [entity, transformation] : m_registry.view<Transformation>().each())
+		//{
+		//	transformation.update(deltaTime);
+		//}
 	}
-
-	//for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
-	//{
-	//	Entity e{ entity, this };
-	//	auto& transform = e.getComponent<Transformation>();
-	//	physx::PxRigidActor* actor = (physx::PxRigidActor*)rb.simulatedBody;
-	//	
-	//	physx::PxTransform pxTransform = actor->getGlobalPose();
-	//	PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
-	//}
-
-	//for (auto&& [entity, transformation] : m_registry.view<Transformation>().each())
-	//{
-	//	transformation.update(deltaTime);
-	//}
 }
 
 void Scene::draw(float deltaTime)

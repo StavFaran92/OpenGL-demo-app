@@ -111,6 +111,10 @@ public:
 	std::shared_ptr<ICamera> getActiveCamera() const;
 	void setActiveCamera(Entity e);
 
+	void startSimulation();
+	void stopSimulation();
+	bool isSimulationActive() const;
+
 	//void setPrimaryCamera(ICamera* camera);
 
 private:
@@ -121,12 +125,12 @@ private:
 	inline void SetID(uint32_t id) { m_id = id; }
 	void draw(float deltaTime);
 
-	void startSimulation();
+	
 	void createSimulationActors(PhysicsSystem* physicsSystem);
 	void createActor(entt::entity entity, PhysicsSystem* physicsSystem, RigidBodyComponent& rb);
 	void removeActor(entt::entity entity, PhysicsSystem* physicsSystem, RigidBodyComponent& rb);
-	void stopSimulation();
-	bool isSimulationActive() const;
+	
+	
 	void createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body, Entity e, bool recursive);
 
 	void onRigidBodyConstruct(entt::registry& registry, entt::entity entity);
