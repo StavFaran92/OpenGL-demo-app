@@ -663,7 +663,10 @@ void Scene::startSimulation()
 
 	auto physicsSystem = Engine::get()->getPhysicsSystem();
 
-	createSimulationActors(physicsSystem);
+	for (auto&& [entity, rb] : m_registry->get().view<RigidBodyComponent>().each())
+	{
+		createActor(entity, rb);
+	}
 
 	//for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
 	//{
@@ -729,22 +732,14 @@ void Scene::startSimulation()
 	m_isSimulationActive = true;
 }
 
-void Scene::createSimulationActors(PhysicsSystem* physicsSystem)
-{
-	for (auto&& [entity, rb] : m_registry->get().view<RigidBodyComponent>().each())
-	{
-		createActor(entity, physicsSystem, rb);
-	}
-}
-
-void Scene::createActor(entt::entity entity, PhysicsSystem* physicsSystem, RigidBodyComponent& rb)
+void Scene::createActor(entt::entity entity, RigidBodyComponent& rb)
 {
 	Entity e{ entity, m_registry.get() };
 
 	auto& transform = e.getComponent<Transformation>();
-	auto body = physicsSystem->createRigidBody(transform, rb.type, rb.mass);
+	auto body = Engine::get()->getPhysicsSystem()->createRigidBody(transform, rb.type, rb.mass);
 
-	createShape(physicsSystem, body, e, true);
+	createShape(Engine::get()->getPhysicsSystem(), body, e, true);
 
 	m_PhysicsScene->addActor(*body);
 	entity_id* id = new entity_id(e.handlerID());
@@ -752,7 +747,7 @@ void Scene::createActor(entt::entity entity, PhysicsSystem* physicsSystem, Rigid
 	rb.simulatedBody = (void*)body;
 }
 
-void Scene::removeActor(entt::entity entity, PhysicsSystem* physicsSystem, RigidBodyComponent& rb)
+void Scene::removeActor(entt::entity entity, RigidBodyComponent& rb)
 {
 	Entity e{ entity, m_registry.get() };
 
@@ -767,6 +762,12 @@ void Scene::stopSimulation()
 		logWarning("Simulation already stopped.");
 		return;
 	}
+
+	for (auto&& [entity, rb] : m_registry->get().view<RigidBodyComponent>().each())
+	{
+		removeActor(entity, rb);
+	}
+
 
 	m_isSimulationActive = false;
 }
@@ -844,7 +845,7 @@ void Scene::onRigidBodyConstruct(entt::registry& registry, entt::entity entity)
 		Entity e(entity, m_registry.get());
 		auto physicsSystem = Engine::get()->getPhysicsSystem();
 		auto& rb = e.getComponent<RigidBodyComponent>();
-		createActor(entity, physicsSystem, rb);
+		createActor(entity, rb);
 	}
 }
 
@@ -855,7 +856,7 @@ void Scene::onRigidBodyDestroy(entt::registry& registry, entt::entity entity)
 		Entity e(entity, m_registry.get());
 		auto physicsSystem = Engine::get()->getPhysicsSystem();
 		auto& rb = e.getComponent<RigidBodyComponent>();
-		removeActor(entity, physicsSystem, rb);
+		removeActor(entity, rb);
 	}
 }
 

@@ -126,9 +126,8 @@ private:
 	void draw(float deltaTime);
 
 	
-	void createSimulationActors(PhysicsSystem* physicsSystem);
-	void createActor(entt::entity entity, PhysicsSystem* physicsSystem, RigidBodyComponent& rb);
-	void removeActor(entt::entity entity, PhysicsSystem* physicsSystem, RigidBodyComponent& rb);
+	void createActor(entt::entity entity, RigidBodyComponent& rb);
+	void removeActor(entt::entity entity, RigidBodyComponent& rb);
 	
 	
 	void createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body, Entity e, bool recursive);
