@@ -45,6 +45,30 @@ auto style = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus 
 static const char* g_supportedFormats = "All formats (*.obj *.blend *.fbx *.dae)\0*.obj;*.blend;*.fbx;*.dae\0obj files (*.obj)\0*.obj\0Blender 3D (*.blend)\0*.blend\0Autodesk 3D (*.fbx)\0*.fbx\0Collada (*dae)\0*.dae\0";
 static const char* g_supportedTextureFormats = "All formats (*.png *.jpg)\0";
 
+void AddColoredLabel(const char* label) 
+{
+	// Draw a blue background using ImGuiCol_Header color
+	ImVec2 startPos = ImGui::GetCursorScreenPos();
+	ImVec2 endPos = ImVec2(startPos.x + ImGui::GetContentRegionAvail().x, startPos.y + ImGui::GetTextLineHeightWithSpacing());
+	ImGui::GetWindowDrawList()->AddRectFilled(startPos, endPos, ImGui::GetColorU32(ImGuiCol_Header));
+
+	// Calculate the vertical offset to center the text within the rectangle
+	float offsetY = (ImGui::GetTextLineHeightWithSpacing() - ImGui::GetFrameHeight()) * 0.5f;
+
+	// Calculate padding values
+	float paddingX = 5.0f;
+	float paddingY = 2.0f;
+
+	// Adjust the text position to center it vertically and add padding
+	ImVec2 textPos = ImVec2(startPos.x + paddingX, startPos.y + offsetY + paddingY);
+
+	// Render the label text
+	ImGui::SetCursorScreenPos(textPos);
+	ImGui::TextUnformatted(label);
+
+
+	ImGui::Dummy(ImVec2(0.0f, 2.0f)); // Add a vertical gap
+}
 
 std::string OpenFile(const char* filter)
 {
@@ -619,6 +643,33 @@ static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::strin
 	ImGui::Text(name.c_str());
 }
 
+static void addSkyboxTextureEditWidget(SkyboxComponent& skybox)
+{
+	
+
+	ImVec2 imageSize(50, 50);
+	ImGui::Image(reinterpret_cast<ImTextureID>(skybox.skyboxImage.get()->getID()), imageSize, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+
+	//if (ImGui::IsItemClicked()) {
+
+	//	const char* supportedImageFormats[4] = { "*.png", "*.jpg", "*.bmp", "*.tga" };
+	//	const char* texturetoUsePath = tinyfd_openFileDialog(
+	//		"Select A texture to load",
+	//		"",
+	//		4,
+	//		supportedImageFormats,
+	//		"image files",
+	//		0);
+
+	//	if (texturetoUsePath) {
+	//		// Load the new texture and set it to the material
+	//		auto& tex = Texture::create2DTextureFromFile(texturetoUsePath, false);
+
+	//		mat->setTexture(ttype, tex);
+	//	}
+	//}
+}
+
 void RenderInspectorWindow(float width, float height) 
 {
 	float windowWidth = width * 0.2f - 5;
@@ -631,7 +682,8 @@ void RenderInspectorWindow(float width, float height)
 	{
 		if (selectedEntity.HasComponent<Transformation>())
 		{
-			ImGui::LabelText("", "Transformation");
+			AddColoredLabel("Transformation"); // Blue background, white text
+
 			auto& transform = selectedEntity.getComponent<Transformation>();
 
 			glm::vec3& pos = transform.getLocalPosition();
@@ -659,7 +711,7 @@ void RenderInspectorWindow(float width, float height)
 
 		if (selectedEntity.HasComponent<RigidBodyComponent>())
 		{
-			ImGui::LabelText("", "RigidBody");
+			AddColoredLabel("RigidBody");
 			auto& rBody = selectedEntity.getComponent<RigidBodyComponent>();
 
 			ImGui::Combo("##Type", (int*)&rBody.type, rigidyBodyTypesStrList, IM_ARRAYSIZE(rigidyBodyTypesStrList));
@@ -670,7 +722,7 @@ void RenderInspectorWindow(float width, float height)
 
 		if (selectedEntity.HasComponent<CollisionBoxComponent>())
 		{
-			ImGui::LabelText("", "Collision Box");
+			AddColoredLabel("Collision Box");
 			auto& collisionBox = selectedEntity.getComponent<CollisionBoxComponent>();
 
 			ImGui::InputFloat("Half Extent", &collisionBox.halfExtent);
@@ -680,7 +732,7 @@ void RenderInspectorWindow(float width, float height)
 
 		if (selectedEntity.HasComponent<CollisionSphereComponent>())
 		{
-			ImGui::LabelText("", "Collision Sphere");
+			AddColoredLabel("Collision Sphere");
 			auto& collisionBox = selectedEntity.getComponent<CollisionSphereComponent>();
 
 			ImGui::InputFloat("Radius", &collisionBox.radius);
@@ -690,7 +742,7 @@ void RenderInspectorWindow(float width, float height)
 
 		if (selectedEntity.HasComponent<MeshComponent>())
 		{
-			ImGui::LabelText("", "Mesh");
+			AddColoredLabel("Mesh");
 			auto& meshComponent = selectedEntity.getComponent<MeshComponent>();
 			;
 			ImGui::Text("Number of vertices: %d", (int)meshComponent.mesh.get()->getNumOfVertices());
@@ -700,7 +752,7 @@ void RenderInspectorWindow(float width, float height)
 
 		if (selectedEntity.HasComponent<RenderableComponent>())
 		{
-			ImGui::LabelText("", "Renderer");
+			AddColoredLabel("Renderer");
 			auto& renderComponent = selectedEntity.getComponent<RenderableComponent>();
 
 			ImGui::Combo("##Technique", (int*)&renderComponent.renderTechnique, renderTechniqueStrList, IM_ARRAYSIZE(renderTechniqueStrList));
@@ -710,7 +762,7 @@ void RenderInspectorWindow(float width, float height)
 
 		if (selectedEntity.HasComponent<CameraComponent>())
 		{
-			ImGui::LabelText("", "Camera");
+			AddColoredLabel("Camera");
 			auto& cameraComponent = selectedEntity.getComponent<CameraComponent>();
 
 			// TBD
@@ -720,7 +772,7 @@ void RenderInspectorWindow(float width, float height)
 
 		if (selectedEntity.HasComponent<NativeScriptComponent>())
 		{
-			ImGui::LabelText("", "Script");
+			AddColoredLabel("Script");
 			auto& nsc = selectedEntity.getComponent<NativeScriptComponent>();
 
 			// TBD
@@ -730,7 +782,7 @@ void RenderInspectorWindow(float width, float height)
 
 		if (selectedEntity.HasComponent<MaterialComponent>()) 
 		{
-			ImGui::LabelText("", "Materials");
+			AddColoredLabel("Materials");
 			auto& materials = selectedEntity.getComponent<MaterialComponent>();
 
 			int index = 0;
@@ -754,7 +806,7 @@ void RenderInspectorWindow(float width, float height)
 
 		if (selectedEntity.HasComponent<DirectionalLight>())
 		{
-			ImGui::LabelText("", "Directional Light");
+			AddColoredLabel("Directional Light");
 			auto& dLight = selectedEntity.getComponent<DirectionalLight>();
 
 
@@ -770,7 +822,7 @@ void RenderInspectorWindow(float width, float height)
 		if (selectedEntity.HasComponent<PointLight>())
 		{
 
-			ImGui::LabelText("", "Point Light");
+			AddColoredLabel("Point Light");
 			auto& pLight = selectedEntity.getComponent<PointLight>();
 
 
@@ -795,8 +847,20 @@ void RenderInspectorWindow(float width, float height)
 		if (selectedEntity.HasComponent<InstanceBatch>())
 		{
 
-			ImGui::LabelText("", "Instance Batch");
+			AddColoredLabel("Instance Batch");
 			auto& instanceBatch = selectedEntity.getComponent<InstanceBatch>();
+			//instanceBatch.
+
+			ImGui::Separator();
+		}
+
+		if (selectedEntity.HasComponent<SkyboxComponent>())
+		{
+
+			AddColoredLabel("Skybox");
+			auto& skybox = selectedEntity.getComponent<SkyboxComponent>();
+
+			addSkyboxTextureEditWidget(skybox);
 			//instanceBatch.
 
 			ImGui::Separator();
