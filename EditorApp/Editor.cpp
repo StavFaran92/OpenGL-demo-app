@@ -849,6 +849,29 @@ void RenderAssetViewWindow(float width, float height) {
 	ImGui::SetNextWindowPos(ImVec2(startX, startY));
 	ImGui::SetNextWindowSize(ImVec2(windowWidth, height * 0.2f - 35)); // Adjust height as needed
 	ImGui::Begin("Asset View", nullptr, style);
+	ImVec2 listBoxSize(windowWidth, height * 0.2f - 35);
+
+	auto& meshList = Engine::get()->getMemoryPool<Mesh>()->getAll();
+
+	if (ImGui::TreeNode("Meshes")) {
+		for (int i = 0; i < meshList.size(); i++) {
+			if (ImGui::Selectable(meshList[i].c_str())) {
+				// Do something when a mesh is selected
+			}
+		}
+		ImGui::TreePop();
+	}
+
+	auto& textureList = Engine::get()->getMemoryPool<Texture>()->getAll();
+
+	if (ImGui::TreeNode("Textures")) {
+		for (int i = 0; i < textureList.size(); i++) {
+			if (ImGui::Selectable(textureList[i].c_str())) {
+				// Do something when a mesh is selected
+			}
+		}
+		ImGui::TreePop();
+	}
 	// Render asset view content here
 	ImGui::End();
 }

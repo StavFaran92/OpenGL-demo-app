@@ -16,6 +16,16 @@ public:
         m_memory[uid] = resource;
     }
 
+    std::vector<std::string> getAll() const
+    {
+        std::vector<std::string> result;
+        for (auto [uuid, _] : m_memory)
+        {
+            result.push_back(uuid);
+        }
+        return result;
+    }
+
 private:
     template<class T>friend class Resource;
     T* get(UUID uid)
