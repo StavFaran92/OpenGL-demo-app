@@ -13,6 +13,8 @@
 
 namespace fs = std::filesystem;
 
+static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype);
+
 // Define a structure to represent an object in the scene hierarchy
 struct SceneObject {
 	std::string name;
@@ -119,103 +121,6 @@ enum class LightType {
 	PointLight = 1
 };
 
-enum class PrimitiveType
-{
-	Quad,
-	Cube,
-	Sphere
-
-};
-
-void ShowPrimitiveCreatorWindow()
-{
-	if (showPrimitiveCreatorWindow)
-	{
-		ImGui::SetNextWindowSize({ 400, 300 }, ImGuiCond_Appearing);
-		ImGui::Begin("Primitve Creator");
-
-		static bool flipTexture = false;
-		static ImGuiTextBuffer texturePath;
-		static std::string path = "";
-		static glm::vec3 pos(0.f, 0.f, 0.f);
-		static glm::vec3 rotation(0.f, 0.f, 0.f);
-		static glm::vec3 scale(1.f, 1.f, 1.f);
-		static PrimitiveType shape = PrimitiveType::Quad;
-		//static Model:: type = Model::PrimitiveType::Quad;
-
-
-		ImGui::LabelText("", "Shape");
-		ImGui::RadioButton("Quad", (int*)&shape, 0);
-		ImGui::RadioButton("Cube", (int*)&shape, 1);
-
-		//ImGui::RadioButton("Texture", (int*)&type, 0);
-		//ImGui::RadioButton("Reflection", (int*)&type, 1);
-		//ImGui::RadioButton("Refractive", (int*)&type, 2);
-		ImGui::LabelText("", "Texture");
-		if (ImGui::Button("Browse"))
-		{
-			auto filePath = OpenFile(g_supportedFormats);
-			if (!filePath.empty())
-			{
-				texturePath.clear();
-				texturePath.append(filePath.c_str());
-				path = texturePath.c_str();
-			}
-		}
-		ImGui::SameLine();
-		ImGui::TextUnformatted(texturePath.begin(), texturePath.end());
-
-		ImGui::Checkbox("Flip Texture", &flipTexture);
-
-		ImGui::LabelText("", "Transformation");
-		ImGui::InputFloat3("Position", (float*)&pos);
-		ImGui::InputFloat3("Rotation", (float*)&rotation);
-		ImGui::InputFloat3("Scale", (float*)&scale);
-
-		if (ImGui::Button("Ok"))
-		{
-			//todo validate input
-
-			//logInfo("Open file: " + path);
-
-			//auto texture = Texture::loadTextureFromFile(texturePath.c_str(), flipTexture);
-
-			Entity entity;
-			if (shape == PrimitiveType::Quad)
-			{
-				//entity = ModelBuilder::builder<Quad>().build();
-			}
-			else if (shape == PrimitiveType::Cube)
-			{
-				entity = ShapeFactory::createBox(&Engine::get()->getContext()->getActiveScene()->getRegistry());
-			}
-
-			assert(entity);
-
-			if (entity.valid())
-			{
-				entity.getComponent<Transformation>().setLocalPosition(pos);
-				entity.getComponent<Transformation>().setLocalScale(scale);
-
-				//logInfo("Added Entity successfully.");
-			}
-
-			showPrimitiveCreatorWindow = false;
-
-			updateScene();
-
-
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel"))
-		{
-			showModelCreatorWindow = false;
-		}
-
-		ImGui::End();
-	}
-}
-
 void LightCreatorWindow()
 {
 	if (ShowLightCreatorWindow)
@@ -304,15 +209,9 @@ void ShowModelCreatorWindow()
 	if (showModelCreatorWindow)
 	{
 		ImGui::SetNextWindowSize({ 400, 300 }, ImGuiCond_Appearing);
-		ImGui::Begin("Model Creator", false, ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::Begin("Import model", false, ImGuiWindowFlags_AlwaysAutoResize);
 
 		static ImGuiTextBuffer modelPathBuffer;
-		static ImGuiTextBuffer textureAlbedoPathBuffer;
-		static ImGuiTextBuffer textureSpecularPathBuffer;
-		static ImGuiTextBuffer textureNormalPathBuffer;
-		static ImGuiTextBuffer textureMetallicPathBuffer;
-		static ImGuiTextBuffer textureRoughnessPathBuffer;
-		static ImGuiTextBuffer textureAmbientOcclusionPathBuffer;
 
 		static glm::vec3 pos(0.f, 0.f, 0.f);
 		static glm::vec3 rotation(0.f, 0.f, 0.f);
@@ -325,70 +224,37 @@ void ShowModelCreatorWindow()
 		ImGui::LabelText("", "Texture");
 
 		// Textures
-		addAssetLoadWidget("Albedo", textureAlbedoPathBuffer, g_supportedTextureFormats);
-		//addAssetLoadWidget("Specular", textureSpecularPathBuffer, g_supportedTextureFormats);
-		addAssetLoadWidget("Normal", textureNormalPathBuffer, g_supportedTextureFormats);
-		addAssetLoadWidget("Metallic", textureMetallicPathBuffer, g_supportedTextureFormats);
-		addAssetLoadWidget("Roghuness", textureRoughnessPathBuffer, g_supportedTextureFormats);
-		addAssetLoadWidget("Occlusion", textureAmbientOcclusionPathBuffer, g_supportedTextureFormats);
+		static std::shared_ptr<Material> mat;
+		if(!mat) mat = std::make_shared<Material>(*Engine::get()->getDefaultMaterial().get());
 
-		ImGui::Separator();
-
-		ImGui::LabelText("", "Transformation");
-		ImGui::InputFloat3("Position", (float*)&pos);
-		ImGui::InputFloat3("Rotation", (float*)&rotation);
-		ImGui::InputFloat3("Scale", (float*)&scale);
+		addTextureEditWidget(mat, "Albedo", Texture::Type::Albedo);
+		addTextureEditWidget(mat, "Normal", Texture::Type::Normal);
+		addTextureEditWidget(mat, "Metallic", Texture::Type::Metallic);
+		addTextureEditWidget(mat, "Roughness", Texture::Type::Roughness);
+		addTextureEditWidget(mat, "Occlusion", Texture::Type::AmbientOcclusion);
 
 		ImGui::Separator();
 
 		if (ImGui::Button("Ok"))
 		{
-			//todo validate input
+			if (modelPathBuffer.empty())
+			{
+				logError("Model Path not specified.")
+				showModelCreatorWindow = false;
+				return;
+			}
 
-			//logInfo("Open file: " + path);
+			//todo validate input
 
 			auto entity = Engine::get()->getModelImporter()->loadModelFromFile(modelPathBuffer.c_str(), Engine::get()->getContext()->getActiveScene().get());
 
-			auto& mat = entity.getComponent<MaterialComponent>();
-
-			if (!textureAlbedoPathBuffer.empty())
-			{
-				auto albedoMap = Texture::create2DTextureFromFile(textureAlbedoPathBuffer.c_str(), false);
-				mat.begin()->get()->setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
-			}
-
-			if (!textureRoughnessPathBuffer.empty())
-			{
-				auto roughnessMap = Texture::create2DTextureFromFile(textureRoughnessPathBuffer.c_str(), false);
-				mat.begin()->get()->setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
-			}
-
-			if (!textureNormalPathBuffer.empty())
-			{
-				auto normalMap = Texture::create2DTextureFromFile(textureNormalPathBuffer.c_str(), false);
-				mat.begin()->get()->setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
-			}
-
-			if (!textureMetallicPathBuffer.empty())
-			{
-				auto metallicMap = Texture::create2DTextureFromFile(textureMetallicPathBuffer.c_str(), false);
-				mat.begin()->get()->setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
-			}
-
-			if (!textureAmbientOcclusionPathBuffer.empty())
-			{
-				auto aoMap = Texture::create2DTextureFromFile(textureAmbientOcclusionPathBuffer.c_str(), false);
-				mat.begin()->get()->setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
-			}
-
-			entity.getComponent<Transformation>().setLocalPosition(pos);
-			entity.getComponent<Transformation>().setLocalScale(scale);
+			entity.getComponent<MaterialComponent>().addMaterial(mat);
+			mat = nullptr;
+			modelPathBuffer.clear();
 
 			showModelCreatorWindow = false;
 
 			updateScene();
-
-			//logInfo("Added Model successfully.");
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Cancel"))
@@ -411,7 +277,58 @@ void RenderSceneHierarchyWindow(float width, float height)
 
 	if (ImGui::Button("+", ImVec2(windowWidth, 0)))
 	{
+		ImGui::OpenPopup("AddObjectToScenePopup");
+	}
 
+	if (ImGui::BeginPopup("AddObjectToScenePopup")) 
+	{
+		if (ImGui::BeginMenu("Primitive")) 
+		{ // Begin the submenu
+			if (ImGui::MenuItem("Cube")) 
+			{
+				ShapeFactory::createBox(&Engine::get()->getContext()->getActiveScene()->getRegistry());
+				updateScene();
+				selectedEntity = sceneObjects[0].e;
+			}
+			if (ImGui::MenuItem("Sphere")) 
+			{
+				ShapeFactory::createSphere(&Engine::get()->getContext()->getActiveScene()->getRegistry());
+				updateScene();
+				selectedEntity = sceneObjects[0].e;
+			}
+			if (ImGui::MenuItem("Quad")) 
+			{
+				ShapeFactory::createQuad(&Engine::get()->getContext()->getActiveScene()->getRegistry());
+				updateScene();
+				selectedEntity = sceneObjects[0].e;
+			}
+
+			ImGui::EndMenu(); // End the submenu
+		}
+
+		if (ImGui::BeginMenu("Light"))
+		{ // Begin the submenu
+			if (ImGui::MenuItem("Directional Light"))
+			{
+				auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
+				e.addComponent<DirectionalLight>(glm::vec3{ 0,0,0 }, glm::vec3{0,-1,0}, 1.f, 1.f);
+				updateScene();
+				selectedEntity = sceneObjects[0].e;
+			}
+			if (ImGui::MenuItem("Point Light"))
+			{
+
+				auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
+				e.addComponent<PointLight>(glm::vec3{ 0,0,0 }, 1.f, 1.f, Attenuation());
+				updateScene();
+				selectedEntity = sceneObjects[0].e;
+			}
+
+			ImGui::EndMenu(); // End the submenu
+		}
+
+		// Add more submenus or menu items as needed
+		ImGui::EndPopup();
 	}
 
 	// Calculate the size of the list box accounting for padding
@@ -974,14 +891,8 @@ class GUI_Helper : public GuiMenu {
 						Engine::get()->saveProject();
 						
 					}
-					if (ImGui::MenuItem("Load Model")) {
+					if (ImGui::MenuItem("Import")) {
 						showModelCreatorWindow = true;
-					}
-					if (ImGui::MenuItem("Add Light")) {
-						ShowLightCreatorWindow = true;
-					}
-					if (ImGui::MenuItem("Add Primitive")) {
-						showPrimitiveCreatorWindow = true;
 					}
 					ImGui::Separator(); // Optional: Add a separator
 					if (ImGui::MenuItem("Quit", "Alt+F4")) {
@@ -1010,8 +921,6 @@ class GUI_Helper : public GuiMenu {
 		RenderAssetViewWindow(screenWidth, screenHeight); // Add the Asset View window
 
 		ShowModelCreatorWindow();
-		LightCreatorWindow();
-		ShowPrimitiveCreatorWindow();
 	}
 };
 
