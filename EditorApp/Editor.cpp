@@ -13,9 +13,16 @@
 
 namespace fs = std::filesystem;
 
+static bool ShowLightCreatorWindow = false;
+static bool showModelCreatorWindow = false;
+static bool showModelInspectorWindow = false;
+static bool showPrimitiveCreatorWindow = false;
+static bool showMeshSelector = false;
+
 static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype);
 void AddColoredLabel(const char* label);
 static void displayTransformation(Transformation& transform, bool& isChanged);
+static void displaySelectMeshWindow();
 
 template<typename T> 
 static void displayComponent(const std::string& componentName, std::function<void(T&)> func)
@@ -113,6 +120,59 @@ static void displayTransformation(Transformation& transform, bool& isChanged)
 	}
 }
 
+static void displaySelectMeshWindow(std::string& uuid)
+{
+	if (showMeshSelector) 
+	{
+		ImGui::Begin("Select Mesh", &showMeshSelector, ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::Text("Available Meshes:");
+		ImGui::Separator();
+
+		static int selectedMeshIndex = -1;
+
+		auto& meshList = Engine::get()->getMemoryPool<Mesh>()->getAll();
+
+		for (int i = 0; i < meshList.size(); i++) 
+		{
+			bool isSelected = (selectedMeshIndex == i);
+			if (isSelected)
+			{
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.2f, 0.2f, 1.0f)); // Change background color
+			}
+			if (!isSelected)
+			{
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Default color
+			}
+
+			if (ImGui::Selectable(meshList[i].c_str())) 
+			{
+				selectedMeshIndex = i;
+			}
+
+			ImGui::PopStyleColor();
+		}
+
+		ImGui::Separator();
+
+		if (ImGui::Button("OK")) {
+			if (selectedMeshIndex >= 0 && selectedMeshIndex < meshList.size()) 
+			{
+				uuid = meshList[selectedMeshIndex];
+				
+			}
+			showMeshSelector = false;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel")) {
+			showMeshSelector = false;
+		}
+
+		ImGui::End();
+	}
+}
+
 // Define a structure to represent an object in the scene hierarchy
 struct SceneObject {
 	std::string name;
@@ -133,10 +193,7 @@ void updateScene()
 	}
 }
 
-static bool ShowLightCreatorWindow = false;
-static bool showModelCreatorWindow = false;
-static bool showModelInspectorWindow = false;
-static bool showPrimitiveCreatorWindow = false;
+
 
 Entity  selectedEntity = Entity::EmptyEntity;
 
@@ -720,7 +777,27 @@ void RenderInspectorWindow(float width, float height)
 
 		displayComponent<MeshComponent>("Mesh", [](MeshComponent& meshComponent) {
 			if (meshComponent.mesh.isEmpty()) return;
+
 			ImGui::Text("Number of vertices: %d", (int)meshComponent.mesh.get()->getNumOfVertices());
+
+			// Button to trigger some action
+			if (ImGui::Button("Select Mesh")) 
+			{
+				showMeshSelector = true;
+			}
+
+			std::string selectedMeshUID;
+			displaySelectMeshWindow(selectedMeshUID);
+
+			if (!selectedMeshUID.empty())
+			{
+				meshComponent.mesh = Resource<Mesh>(selectedMeshUID);
+			}
+
+			ImGui::SameLine();
+
+			// Text display field
+			ImGui::Text(meshComponent.mesh.getUID().c_str());
 			});
 
 		displayComponent<RenderableComponent>("Renderer", [](RenderableComponent& renderComponent) {
@@ -967,6 +1044,7 @@ class GUI_Helper : public GuiMenu {
 		RenderAssetViewWindow(screenWidth, screenHeight); // Add the Asset View window
 
 		ShowModelCreatorWindow();
+		
 	}
 };
 
