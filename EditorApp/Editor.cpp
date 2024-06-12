@@ -32,6 +32,7 @@ static void displayComponent(const std::string& componentName, std::function<voi
 		if (!std::is_same<T, Transformation>::value)
 		{
 			ImGui::SetCursorPos(ImVec2(windowSize.x - 25.0f, cursorPos.y - ImGui::GetTextLineHeightWithSpacing() - 8.0f));
+			ImGui::PushID(componentName.c_str());
 			if (ImGui::Button("X")) {
 				// You cannot erase transformation
 
@@ -40,6 +41,7 @@ static void displayComponent(const std::string& componentName, std::function<voi
 				updateScene();
 				return;
 			}
+			ImGui::PopID();
 		}
 
 		func(component);
