@@ -44,7 +44,7 @@ public:
 
 			rock.getComponent<MaterialComponent>().addMaterial(rockMat);
 
-			std::vector<Transformation> transformations;
+			std::vector<std::shared_ptr<Transformation>> transformations;
 
 
 
@@ -56,11 +56,11 @@ public:
 				for (int i = 0; i < rocksCount; i++)
 				{
 					float angle = (float)i * 2 * Constants::PI / rocksCount;
-					Transformation trans(rock);
-					trans.setLocalPosition({ cos(angle) * 400 + random->rand() * 100, random->rand() * 10, sin(angle) * 400 + random->rand() * 100 });
+					auto trans = std::make_shared<Transformation>(rock);
+					trans->setLocalPosition({ cos(angle) * 400 + random->rand() * 100, random->rand() * 10, sin(angle) * 400 + random->rand() * 100 });
 					auto scaleFactor = random->rand() * .005f;
-					trans.setLocalScale({ .001f + scaleFactor, .001f + scaleFactor, .001f + scaleFactor });
-					trans.setLocalRotation(glm::vec3{ random->rand() * 2 * Constants::PI, random->rand() * 2 * Constants::PI, random->rand() * 2 * Constants::PI });
+					trans->setLocalScale({ .001f + scaleFactor, .001f + scaleFactor, .001f + scaleFactor });
+					trans->setLocalRotation(glm::vec3{ random->rand() * 2 * Constants::PI, random->rand() * 2 * Constants::PI, random->rand() * 2 * Constants::PI });
 					transformations.push_back(trans);
 				}
 

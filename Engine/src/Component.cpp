@@ -17,35 +17,48 @@ InstanceBatch::InstanceBatch()
 	glGenBuffers(1, &m_id);
 }
 
-InstanceBatch::InstanceBatch(const std::vector<Transformation>& transformations, Resource<Mesh> mesh)
-	: mesh(mesh)
+InstanceBatch::InstanceBatch(const std::vector<std::shared_ptr<Transformation>>& transformations, Resource<Mesh> mesh)
+	: mesh(mesh), transformations(transformations)
 {
 	glGenBuffers(1, &m_id);
 
+	build();
+}
+
+void InstanceBatch::addTransformation(const std::shared_ptr<Transformation>& transformation)
+{
+	transformations.push_back(transformation);
+
+	build();
+}
+
+std::vector<std::shared_ptr<Transformation>>& InstanceBatch::getTransformations()
+{
+	return transformations;
+}
+
+const std::vector<glm::mat4> InstanceBatch::getMatrices() const
+{
+	std::vector<glm::mat4> matrices;
 	matrices.reserve(transformations.size());
 
 	for (int i = 0; i < transformations.size(); i++)
 	{
-		matrices.push_back(transformations[i].getWorldTransformation());
+		matrices.push_back(transformations[i]->getWorldTransformation());
 	}
 
-	build();
-}
-
-void InstanceBatch::addTransformation(const Transformation& transformation)
-{
-	matrices.push_back(transformation.getWorldTransformation());
-
-	build();
+	return matrices;
 }
 
 void InstanceBatch::build()
 {
-	if (mesh.isEmpty() || matrices.empty()) return;
+	if (mesh.isEmpty() || transformations.empty()) return;
+
+	auto matrices = getMatrices();
 
 	mesh.get()->getVAO()->Bind();
 	glBindBuffer(GL_ARRAY_BUFFER, m_id);
-	glBufferData(GL_ARRAY_BUFFER, getCount() * sizeof(glm::mat4), &matrices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, getCount() * sizeof(glm::mat4), matrices.data(), GL_STATIC_DRAW);
 
 	//VertexLayout layout;
 	//layout.attribs = {

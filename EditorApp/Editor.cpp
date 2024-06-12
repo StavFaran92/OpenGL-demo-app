@@ -15,7 +15,7 @@ namespace fs = std::filesystem;
 
 static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype);
 void AddColoredLabel(const char* label);
-static void displayTransformation(Transformation& transform);
+static void displayTransformation(Transformation& transform, bool& isChanged);
 
 template<typename T> 
 static void displayComponent(const std::string& componentName, std::function<void(T&)> func)
@@ -85,7 +85,7 @@ void RenderSimulationControlView(float width, float height)
 	ImGui::End(); // End the window
 }
 
-static void displayTransformation(Transformation& transform)
+static void displayTransformation(Transformation& transform, bool& isChanged)
 {
 	glm::vec3& pos = transform.getLocalPosition();
 	glm::vec3& rotation = transform.getLocalRotationVec3();
@@ -95,18 +95,21 @@ static void displayTransformation(Transformation& transform)
 	if (ImGui::DragFloat3("Position", glm::value_ptr(pos))) 
 	{
 		transform.setLocalPosition(pos);
+		isChanged = true;
 	}
 
 	// Rotation slider (Euler angles)
 	if (ImGui::DragFloat3("Rotation", glm::value_ptr(rotation))) 
 	{
 		transform.setLocalRotation(rotation);
+		isChanged = true;
 	}
 
 	// Scale slider
 	if (ImGui::DragFloat3("Scale", glm::value_ptr(scale))) 
 	{
 		transform.setLocalScale(scale);
+		isChanged = true;
 	}
 }
 
@@ -693,12 +696,13 @@ void RenderInspectorWindow(float width, float height)
 	float startX = width * 0.8f + 5; // Add a gap of 5 pixels
 	ImGui::SetNextWindowPos(ImVec2(startX, 25)); // Adjust vertical position to make space for the menu bar
 	ImGui::SetNextWindowSize(ImVec2(windowWidth - 5, height * 0.8f));
-	ImGui::Begin("Inspector", nullptr, style);
+	ImGui::Begin("Inspector", nullptr, style | ImGuiWindowFlags_NoScrollbar);
 
 	if (selectedEntity != Entity::EmptyEntity)
 	{
 		displayComponent<Transformation>("Transformation", [](Transformation& transform) {
-			displayTransformation(transform);
+			bool isChanged = false;
+			displayTransformation(transform, isChanged);
 		});
 
 		displayComponent<RigidBodyComponent>("RigidBody", [](RigidBodyComponent& rBody) {
@@ -751,31 +755,47 @@ void RenderInspectorWindow(float width, float height)
 
 		displayComponent<DirectionalLight>("Directional Light", [](DirectionalLight& dLight) {
 			auto& color = dLight.getColor();
-			if (ImGui::InputFloat3("Color", (float*)&color))
-			{
+			if (ImGui::ColorEdit3("Color", glm::value_ptr(color))) {
 				dLight.SetColor(color);
 			}
 			});
 
 		displayComponent<PointLight>("Point Light", [](PointLight& pLight) {
 			auto& color = pLight.getColor();
-			if (ImGui::InputFloat3("Color", (float*)&color))
-			{
+			if (ImGui::ColorEdit3("Color", glm::value_ptr(color))) {
 				pLight.SetColor(color);
 			}
 
 			Attenuation& attenuation = pLight.getAttenuation();
 			ImGui::LabelText("", "Attenuation");
-			if (ImGui::SliderFloat("constant", (float*)&attenuation.constant, 0.f, 1.f) ||
-				ImGui::SliderFloat("linear", (float*)&attenuation.linear, 0.f, 1.f) ||
-				ImGui::SliderFloat("quadratic", (float*)&attenuation.quadratic, 0.f, 1.f))
-			{
-				pLight.SetAttenuation(attenuation);
-			}
-			});
+			ImGui::DragFloat("constant", &attenuation.constant, 0.01f);
+			ImGui::DragFloat("linear", &attenuation.linear, 0.01f);
+			ImGui::DragFloat("quadratic", &attenuation.quadratic, 0.01f);
+			pLight.SetAttenuation(attenuation);
+		});
 
 		displayComponent<InstanceBatch>("Instance Batch", [](InstanceBatch& instanceBatch) {
-			// Instance batch specific UI
+			auto& transformations = instanceBatch.getTransformations();
+
+			if (ImGui::Button("Add Transformation")) {
+				instanceBatch.addTransformation(std::make_shared<Transformation>(selectedEntity));
+			}
+
+			if (ImGui::BeginChild("Transformations List", ImVec2(0, 200), true)) {
+				bool isChanged = false;
+				for (size_t i = 0; i < transformations.size(); ++i) {
+					if (ImGui::TreeNode((void*)(intptr_t)i, "Transformation %zu", i)) {
+						displayTransformation(*transformations[i], isChanged);
+						
+						ImGui::TreePop();
+					}
+				}
+				if (isChanged)
+				{
+					instanceBatch.build();
+				}
+				ImGui::EndChild();
+			}
 			});
 
 		displayComponent<SkyboxComponent>("Skybox", [](SkyboxComponent& skybox) {
@@ -829,7 +849,7 @@ void RenderInspectorWindow(float width, float height)
 				auto meshComponent = selectedEntity.tryGetComponent<MeshComponent>();
 				if (meshComponent)
 				{
-					selectedEntity.addComponent<InstanceBatch>(std::vector<Transformation>{}, meshComponent->mesh);
+					selectedEntity.addComponent<InstanceBatch>(std::vector<std::shared_ptr<Transformation>>{}, meshComponent->mesh);
 				}
 			}
 
