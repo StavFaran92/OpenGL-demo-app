@@ -1,5 +1,6 @@
 add_subdirectory(imgui)
 add_subdirectory(ImGuizmo)
+add_subdirectory(tinyfiledialogs)
 
 target_include_directories(Engine PUBLIC 	
 	assimp/include
@@ -15,6 +16,7 @@ target_include_directories(Engine PUBLIC
 	imgui
 	ImGuizmo
 	nativefiledialog/include
+	tinyfiledialogs
 	"$ENV{PHYSX}/physx/include"
 	"$ENV{PHYSX}/pxshared/include"
 )
@@ -47,6 +49,7 @@ target_link_libraries(Engine PUBLIC
 	ImGui
 	nfd
 	ImGuizmo
+	tinyfiledialogs
 )
 
 

@@ -6,10 +6,10 @@
 
 #include <filesystem>
 
-#include "nfd.h"
-
 #include "ImGuizmo.h"
 #include "imgui_internal.h"
+
+#include "tinyfiledialogs.h"
 
 namespace fs = std::filesystem;
 
@@ -597,22 +597,21 @@ static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::strin
 	ImGui::Image(reinterpret_cast<ImTextureID>(tid), imageSize, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
 
 	if (ImGui::IsItemClicked()) {
-		nfdchar_t* outPath = NULL;
-		nfdresult_t result = NFD_OpenDialog("png,jpg,bmp,tga", NULL, &outPath);
 
-		if (result == NFD_OKAY) {
+		const char* supportedImageFormats[4] = { "*.png", "*.jpg", "*.bmp", "*.tga" };
+		const char* texturetoUsePath = tinyfd_openFileDialog(
+			"Select A texture to load",
+			"",
+			4,
+			supportedImageFormats,
+			"image files",
+			0);
+
+		if (texturetoUsePath) {
 			// Load the new texture and set it to the material
-			auto& tex = Texture::create2DTextureFromFile(outPath, false);
+			auto& tex = Texture::create2DTextureFromFile(texturetoUsePath, false);
 
 			mat->setTexture(ttype, tex);
-			free(outPath); // Don't forget to free the memory
-		}
-		else if (result == NFD_CANCEL) {
-			// User canceled, do nothing
-		}
-		else {
-			// Error handling
-			std::cerr << "Error: " << NFD_GetError() << std::endl;
 		}
 	}
 
@@ -893,14 +892,18 @@ class GUI_Helper : public GuiMenu {
 				if (ImGui::BeginMenu("File")) 
 				{ // Start of File dropdown
 					if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
-						nfdchar_t* outPath = NULL;
-						nfdresult_t result = NFD_PickFolder(NULL, &outPath);
-						if (result == NFD_OKAY)
+
+
+						const char* lTheSelectFolderName = tinyfd_selectFolderDialog(
+							"let us just select a directory", "../../");
+
+						//nfdchar_t* outPath = NULL;
+						//nfdresult_t result = NFD_PickFolder(NULL, &outPath);
+						if (lTheSelectFolderName)
 						{
-							Engine::get()->loadProject(outPath);
+							Engine::get()->loadProject(lTheSelectFolderName);
 							selectedEntity = Entity::EmptyEntity;
 							updateScene();
-							free(outPath);
 						}
 					}
 					if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
