@@ -14,6 +14,35 @@
 namespace fs = std::filesystem;
 
 static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype);
+void AddColoredLabel(const char* label);
+
+template<typename T> 
+static void displayComponent(const std::string& componentName, std::function<void(T&)> func)
+{
+	if (selectedEntity.HasComponent<T>())
+	{
+		AddColoredLabel(componentName.c_str());
+		auto& component = selectedEntity.getComponent<T>();
+
+		// Get the current cursor position and window dimensions
+		ImVec2 cursorPos = ImGui::GetCursorPos();
+		ImVec2 windowSize = ImGui::GetWindowSize();
+
+		// Adjust the cursor position to place the button at the top right
+		ImGui::SetCursorPos(ImVec2(windowSize.x - 25.0f, cursorPos.y - ImGui::GetTextLineHeightWithSpacing() - 8.0f));
+		if (ImGui::Button("X")) {
+			// Handle the button click event to remove the component
+			selectedEntity.RemoveComponent<T>();
+			ImGui::EndGroup(); // End the group early if the component is removed
+			updateScene();
+			return;
+		}
+
+		func(component);
+
+		ImGui::Separator();
+	}
+}
 
 // Define a structure to represent an object in the scene hierarchy
 struct SceneObject {
@@ -597,12 +626,7 @@ void RenderInspectorWindow(float width, float height)
 
 	if (selectedEntity != Entity::EmptyEntity)
 	{
-		if (selectedEntity.HasComponent<Transformation>())
-		{
-			AddColoredLabel("Transformation"); // Blue background, white text
-
-			auto& transform = selectedEntity.getComponent<Transformation>();
-
+		displayComponent<Transformation>("Transformation", [](Transformation& transform) {
 			glm::vec3& pos = transform.getLocalPosition();
 			glm::vec3& rotation = transform.getLocalRotationVec3(); // todo fix
 			glm::vec3& scale = transform.getLocalScale();
@@ -617,96 +641,43 @@ void RenderInspectorWindow(float width, float height)
 
 			transform.setLocalRotation(rotation);
 			transform.setLocalScale(scale);
+		});
 
-			//ImGuizmo::ViewManipulate(camViewPtr, 100.f, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010);
-
-
-
-
-			ImGui::Separator();
-		}
-
-		if (selectedEntity.HasComponent<RigidBodyComponent>())
-		{
-			AddColoredLabel("RigidBody");
-			auto& rBody = selectedEntity.getComponent<RigidBodyComponent>();
-
+		displayComponent<RigidBodyComponent>("RigidBody", [](RigidBodyComponent& rBody) {
 			ImGui::Combo("##Type", (int*)&rBody.type, rigidyBodyTypesStrList, IM_ARRAYSIZE(rigidyBodyTypesStrList));
 			ImGui::InputFloat("Mass", &rBody.mass);
+		});
 
-			ImGui::Separator();
-		}
-
-		if (selectedEntity.HasComponent<CollisionBoxComponent>())
-		{
-			AddColoredLabel("Collision Box");
-			auto& collisionBox = selectedEntity.getComponent<CollisionBoxComponent>();
-
+		displayComponent<CollisionBoxComponent>("Collision Box", [](CollisionBoxComponent& collisionBox) {
 			ImGui::InputFloat("Half Extent", &collisionBox.halfExtent);
+			});
 
-			ImGui::Separator();
-		}
-
-		if (selectedEntity.HasComponent<CollisionSphereComponent>())
-		{
-			AddColoredLabel("Collision Sphere");
-			auto& collisionBox = selectedEntity.getComponent<CollisionSphereComponent>();
-
+		displayComponent<CollisionSphereComponent>("Collision Sphere", [](CollisionSphereComponent& collisionBox) {
 			ImGui::InputFloat("Radius", &collisionBox.radius);
+			});
 
-			ImGui::Separator();
-		}
-
-		if (selectedEntity.HasComponent<MeshComponent>())
-		{
-			AddColoredLabel("Mesh");
-			auto& meshComponent = selectedEntity.getComponent<MeshComponent>();
-			;
+		displayComponent<MeshComponent>("Mesh", [](MeshComponent& meshComponent) {
 			ImGui::Text("Number of vertices: %d", (int)meshComponent.mesh.get()->getNumOfVertices());
+			});
 
-			ImGui::Separator();
-		}
-
-		if (selectedEntity.HasComponent<RenderableComponent>())
-		{
-			AddColoredLabel("Renderer");
-			auto& renderComponent = selectedEntity.getComponent<RenderableComponent>();
-
+		displayComponent<RenderableComponent>("Renderer", [](RenderableComponent& renderComponent) {
 			ImGui::Combo("##Technique", (int*)&renderComponent.renderTechnique, renderTechniqueStrList, IM_ARRAYSIZE(renderTechniqueStrList));
+			});
 
-			ImGui::Separator();
-		}
-
-		if (selectedEntity.HasComponent<CameraComponent>())
-		{
-			AddColoredLabel("Camera");
-			auto& cameraComponent = selectedEntity.getComponent<CameraComponent>();
-
+		displayComponent<CameraComponent>("Camera", [](CameraComponent& cameraComponent) {
 			// TBD
+			});
 
-			ImGui::Separator();
-		}
-
-		if (selectedEntity.HasComponent<NativeScriptComponent>())
-		{
-			AddColoredLabel("Script");
-			auto& nsc = selectedEntity.getComponent<NativeScriptComponent>();
-
+		displayComponent<NativeScriptComponent>("Script", [](NativeScriptComponent& nsc) {
 			// TBD
+			});
 
-			ImGui::Separator();
-		}
-
-		if (selectedEntity.HasComponent<MaterialComponent>()) 
-		{
-			AddColoredLabel("Materials");
-			auto& materials = selectedEntity.getComponent<MaterialComponent>();
-
+		displayComponent<MaterialComponent>("Materials", [](MaterialComponent& materials) {
 			int index = 0;
-			for (auto& mat : materials) 
+			for (auto& mat : materials)
 			{
 				// Start a new collapsible header for each material
-				if (ImGui::CollapsingHeader(("Material " + std::to_string(index)).c_str())) 
+				if (ImGui::CollapsingHeader(("Material " + std::to_string(index)).c_str()))
 				{
 					// Add texture edit widgets for the material
 					addTextureEditWidget(mat, "Albedo", Texture::Type::Albedo);
@@ -717,32 +688,17 @@ void RenderInspectorWindow(float width, float height)
 				}
 				++index;
 			}
+			});
 
-			ImGui::Separator();
-		}
-
-		if (selectedEntity.HasComponent<DirectionalLight>())
-		{
-			AddColoredLabel("Directional Light");
-			auto& dLight = selectedEntity.getComponent<DirectionalLight>();
-
-
+		displayComponent<DirectionalLight>("Directional Light", [](DirectionalLight& dLight) {
 			auto& color = dLight.getColor();
-			if(ImGui::InputFloat3("Color", (float*)&color))
+			if (ImGui::InputFloat3("Color", (float*)&color))
 			{
 				dLight.SetColor(color);
 			}
+			});
 
-			ImGui::Separator();
-		}
-
-		if (selectedEntity.HasComponent<PointLight>())
-		{
-
-			AddColoredLabel("Point Light");
-			auto& pLight = selectedEntity.getComponent<PointLight>();
-
-
+		displayComponent<PointLight>("Point Light", [](PointLight& pLight) {
 			auto& color = pLight.getColor();
 			if (ImGui::InputFloat3("Color", (float*)&color))
 			{
@@ -752,36 +708,20 @@ void RenderInspectorWindow(float width, float height)
 			Attenuation& attenuation = pLight.getAttenuation();
 			ImGui::LabelText("", "Attenuation");
 			if (ImGui::SliderFloat("constant", (float*)&attenuation.constant, 0.f, 1.f) ||
-				ImGui::SliderFloat("linear", (float*)&attenuation.linear, 0.f, 1.f) || 
+				ImGui::SliderFloat("linear", (float*)&attenuation.linear, 0.f, 1.f) ||
 				ImGui::SliderFloat("quadratic", (float*)&attenuation.quadratic, 0.f, 1.f))
 			{
 				pLight.SetAttenuation(attenuation);
 			}
+			});
 
-			ImGui::Separator();
-		}
+		displayComponent<InstanceBatch>("Instance Batch", [](InstanceBatch& instanceBatch) {
+			// Instance batch specific UI
+			});
 
-		if (selectedEntity.HasComponent<InstanceBatch>())
-		{
-
-			AddColoredLabel("Instance Batch");
-			auto& instanceBatch = selectedEntity.getComponent<InstanceBatch>();
-			//instanceBatch.
-
-			ImGui::Separator();
-		}
-
-		if (selectedEntity.HasComponent<SkyboxComponent>())
-		{
-
-			AddColoredLabel("Skybox");
-			auto& skybox = selectedEntity.getComponent<SkyboxComponent>();
-
+		displayComponent<SkyboxComponent>("Skybox", [](SkyboxComponent& skybox) {
 			addSkyboxTextureEditWidget(skybox);
-			//instanceBatch.
-
-			ImGui::Separator();
-		}
+			});
 
 		if (ImGui::Button("Add Component", ImVec2(windowWidth, 0)))
 		{
