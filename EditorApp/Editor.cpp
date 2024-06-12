@@ -857,6 +857,9 @@ void RenderAssetViewWindow(float width, float height) {
 class GUI_Helper : public GuiMenu {
 	// Inherited via GuiMenu
 	virtual void display() override {
+
+		RenderCommand::clear();
+
 		// Get the total screen size
 		int screenWidth = Engine::get()->getWindow()->getWidth();
 		int screenHeight = Engine::get()->getWindow()->getHeight();

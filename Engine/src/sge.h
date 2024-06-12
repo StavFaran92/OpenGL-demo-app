@@ -54,3 +54,4 @@
 #include "TimeManager.h"
 #include "ShaderBuilder.h"
 #include "CommonTextures.h"
+#include "RenderCommand.h"
