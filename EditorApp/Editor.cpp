@@ -29,32 +29,43 @@ static void displayComponent(const std::string& componentName, std::function<voi
 {
 	if (selectedEntity.HasComponent<T>())
 	{
+		ImVec2 startPos = ImGui::GetCursorScreenPos();
+		ImVec2 startPosCursor = ImGui::GetCursorPos(); // Capture the initial cursor position
+
 		AddColoredLabel(componentName.c_str());
 		auto& component = selectedEntity.getComponent<T>();
 
-		// Get the current cursor position and window dimensions
 		ImVec2 cursorPos = ImGui::GetCursorPos();
 		ImVec2 windowSize = ImGui::GetWindowSize();
 
-		// Adjust the cursor position to place the button at the top right
 		if (!std::is_same<T, Transformation>::value)
 		{
-			ImGui::SetCursorPos(ImVec2(windowSize.x - 25.0f, cursorPos.y - ImGui::GetTextLineHeightWithSpacing() - 8.0f));
+			ImGui::SetCursorPos(ImVec2(windowSize.x - 24.0f, cursorPos.y - ImGui::GetTextLineHeightWithSpacing() - 7.0f));
 			ImGui::PushID(componentName.c_str());
 			if (ImGui::Button("X")) {
-				// You cannot erase transformation
-
 				selectedEntity.RemoveComponent<T>();
-				ImGui::EndGroup(); // End the group early if the component is removed
+				ImGui::EndGroup();
 				updateScene();
 				return;
 			}
 			ImGui::PopID();
 		}
 
+		ImGui::Indent(5); // Indent by 10 pixels
 		func(component);
+		ImGui::Unindent(5); // Remove the indent
+
+		ImVec2 endPosCursor = ImGui::GetCursorPos(); // Capture the cursor position before adding the separator
+		ImVec2 endPos = ImVec2(startPos.x + ImGui::GetContentRegionAvail().x, startPos.y + (endPosCursor.y - startPosCursor.y));
+
+		ImGui::Dummy(ImVec2(0, 4));
 
 		ImGui::Separator();
+
+		ImGui::Dummy(ImVec2(0, 4));
+
+		// Adjust the rectangle to the correct end position
+		ImGui::GetWindowDrawList()->AddRect(startPos, endPos, ImGui::GetColorU32(ImGuiCol_Header), 0.f, 0, 2.f);
 	}
 }
 
@@ -206,7 +217,7 @@ void AddColoredLabel(const char* label)
 {
 	// Draw a blue background using ImGuiCol_Header color
 	ImVec2 startPos = ImGui::GetCursorScreenPos();
-	ImVec2 endPos = ImVec2(startPos.x + ImGui::GetContentRegionAvail().x, startPos.y + ImGui::GetTextLineHeightWithSpacing());
+	ImVec2 endPos = ImVec2(startPos.x + ImGui::GetContentRegionAvail().x, startPos.y + ImGui::GetTextLineHeightWithSpacing() + 2);
 	ImGui::GetWindowDrawList()->AddRectFilled(startPos, endPos, ImGui::GetColorU32(ImGuiCol_Header));
 
 	// Calculate the vertical offset to center the text within the rectangle
@@ -526,6 +537,11 @@ void RenderSceneHierarchyWindow(float width, float height)
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
 				if (ImGui::BeginPopup("SceneObjectContextPopup"))
 				{
+					//if (ImGui::MenuItem("Rename"))
+					//{
+					//	sceneObjects[i].name
+					//	updateScene();
+					//}
 					if (ImGui::MenuItem("Delete"))
 					{
 						sceneObjects[i].e.remove();
