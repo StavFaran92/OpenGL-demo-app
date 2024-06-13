@@ -3,7 +3,9 @@
 #include <memory>
 #include <string>
 #include <atomic>
+#include <unordered_map>
 #include "Core.h"
+#include "UUID.h"
 
 
 class Context;
@@ -33,6 +35,8 @@ class Texture;
 class Cubemap;
 class CommonShaders;
 class CommonTextures;
+template<typename T>class Resource;
+template<typename T>class Factory;
 template<typename T>class MemoryPool;
 
 struct InitParams
@@ -71,6 +75,8 @@ public:
     template<typename T>MemoryPool<T>* getMemoryPool() const {};
     template<>MemoryPool<Texture>* getMemoryPool() const { return m_memoryPoolTexture.get(); }
     template<>MemoryPool<Mesh>* getMemoryPool() const { return m_memoryPoolMesh.get(); }
+
+    
     
     void loadProject(const std::string& filePath);
     void saveProject();
@@ -89,6 +95,7 @@ public:
 protected:
     // -------------------- Methods -------------------- //
     friend void sgeEntry(int, char*[]);
+    template<typename T>friend class Factory;
 
 #ifdef TESTBED
     friend class TestEngine;
@@ -139,7 +146,6 @@ protected:
     std::atomic<bool> m_isStopped = false;
 
     std::string m_projectDirectory;
-
 };
 
 #define SGE_ROOT_DIR Engine::get()->getRootDir()

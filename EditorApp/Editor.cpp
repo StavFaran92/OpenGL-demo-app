@@ -794,7 +794,7 @@ void RenderInspectorWindow(float width, float height)
 
 			if (!selectedMeshUID.empty())
 			{
-				meshComponent.mesh = Resource<Mesh>(selectedMeshUID);
+				meshComponent.mesh = Engine::get()->getResourceManager()->getResource<Mesh>(selectedMeshUID);
 			}
 
 			ImGui::SameLine();

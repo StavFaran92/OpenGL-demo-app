@@ -18,8 +18,6 @@ public:
 
 	Resource(std::nullptr_t) : m_uid(EMPTY_UUID), refCount(std::make_shared<int>(0)) {};
 
-	Resource(UUID uid) : m_uid(uid), refCount(std::make_shared<int>(1)) {};
-
 	Resource(const Resource<T>& other) 
 	{
 		m_uid = other.m_uid;
@@ -32,6 +30,9 @@ public:
 
 	Resource<T>& operator=(const Resource<T>& other)
 	{
+		if (m_uid == other.m_uid) 
+			return *this;
+
 		clean();
 
 		m_uid = other.m_uid;
@@ -95,6 +96,9 @@ public:
 	}
 
 private:
+	template<typename T>friend class Factory;
+	Resource(UUID uid) : m_uid(uid), refCount(std::make_shared<int>(1)) {};
+
 	void clean()
 	{
 		(*refCount)--;

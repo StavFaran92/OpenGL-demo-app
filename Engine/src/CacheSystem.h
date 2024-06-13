@@ -9,6 +9,7 @@ template<class T>  class Resource;
 #include "ProjectAssetRegistry.h"
 #include "Context.h"
 #include "Engine.h"
+#include "ResourceManager.h"
 
 class Texture;
 class Mesh;
@@ -32,7 +33,7 @@ public:
 		if (it != m_associations.end())
 		{
 			UUID uid = it->second;
-			return Resource<T>(uid);
+			return Engine::get()->getResourceManager()->getResource<T>(uid);
 		}
 
 		Resource<T>& resource = creationCallback();

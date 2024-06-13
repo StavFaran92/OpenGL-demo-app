@@ -55,3 +55,4 @@
 #include "ShaderBuilder.h"
 #include "CommonTextures.h"
 #include "RenderCommand.h"
+#include "ResourceManager.h"
