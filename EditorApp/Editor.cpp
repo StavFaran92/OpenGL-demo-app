@@ -530,6 +530,8 @@ void RenderSceneHierarchyWindow(float width, float height)
 					{
 						sceneObjects[i].e.remove();
 						updateScene();
+						selectedEntity = Entity::EmptyEntity;
+						selected = -1;
 					}
 
 					ImGui::EndPopup();
