@@ -102,15 +102,16 @@ Resource<Texture> Cubemap::createCubemapFromEquirectangularFile(const std::strin
 
 		//Resource<Texture> cubemap = createCubemapFromBuffer(cubemapData);
 
-		cubemap.get()->bind();
+		equirectangularMap.get()->bind();
 
 		// Allocate memory for the pixels
-		void* pixels = malloc(1024 * 1024 * 3);
+		void* pixels = malloc(equirectangularMap.get()->getWidth() * equirectangularMap.get()->getHeight() * equirectangularMap.get()->getBitDepth());
 
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 
 		auto& projectDir = Engine::get()->getProjectDirectory();
-		stbi_write_png((projectDir + "/" + cubemap.getUID() + ".png").c_str(), 1024, 1024, 3, pixels, 1024 * 3);
+		stbi_write_png((projectDir + "/" + cubemap.getUID() + ".png").c_str(), equirectangularMap.get()->getWidth(), equirectangularMap.get()->getHeight(), equirectangularMap.get()->getBitDepth(), pixels,
+			equirectangularMap.get()->getWidth() * equirectangularMap.get()->getBitDepth());
 		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(cubemap.getUID());
 
 		free(pixels);

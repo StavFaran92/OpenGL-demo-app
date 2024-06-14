@@ -31,41 +31,36 @@ public:
 		//auto& renderable = guitar_forward.getComponent<RenderableComponent>();
 		//renderable.renderTechnique = RenderableComponent::Forward;
 
-		Skybox::CreateSkybox({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
-		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/left.jpg",
-		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/top.jpg",
-		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/bottom.jpg",
-		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/front.jpg",
-		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/back.jpg" });
+		Skybox::CreateSkybox( "C:/Users/Stav/Downloads/medieval_cafe_2k.hdr");
 
 		//auto tHandler = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/gear_store_8k.hdr", Texture::Type::None);
 		//Skybox::CreateSkybox(Skybox::TexType::EQUIRECTANGULAR, tHandler);
 
 
-		auto importer = getContext()->getModelImporter();
+		//auto importer = getContext()->getModelImporter();
 
 		//auto guitar = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", getContext()->getActiveScene().get());;
 
-		auto gun = importer->loadModelFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Cerberus_LP.FBX", getContext()->getActiveScene().get());
+		//auto gun = importer->loadModelFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Cerberus_LP.FBX", getContext()->getActiveScene().get());
 
-		auto& trans = gun.getComponent<Transformation>();
-		trans.scale({ .1f, .1f, .1f });
-		trans.rotate({ 1,0,0 }, -90);
-		trans.translate({0, 0,-5});
+		//auto& trans = gun.getComponent<Transformation>();
+		//trans.scale({ .1f, .1f, .1f });
+		//trans.rotate({ 1,0,0 }, -90);
+		//trans.translate({0, 0,-5});
 		//trans.rotate({ 0,1,0 }, 180);
 	
 		//auto box = ShapeFactory::createSphere(getContext()->getActiveScene().get());
-		auto& mat = gun.addComponent<Material>();
-		auto albedoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_A.tga", false);
-		mat.setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
-		auto roughnessMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_R.tga", false);
-		mat.setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
-		auto normalMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_N.tga", false);
-		mat.setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
-		auto metallicMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga", false);
-		mat.setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
-		auto aoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Raw/Cerberus_AO.tga", false);
-		mat.setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
+		//auto& mat = gun.addComponent<Material>();
+		//auto albedoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_A.tga", false);
+		//mat.setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
+		//auto roughnessMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_R.tga", false);
+		//mat.setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
+		//auto normalMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_N.tga", false);
+		//mat.setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
+		//auto metallicMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga", false);
+		//mat.setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
+		//auto aoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Raw/Cerberus_AO.tga", false);
+		//mat.setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
 		//box.getComponent<Transformation>().setLocalPosition({ i * 3,0,j * 3 });
 
 		/*for (int i = -1; i < 2; i++)

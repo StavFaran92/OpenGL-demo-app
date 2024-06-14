@@ -89,6 +89,10 @@ public:
 
 	void build(const TextureData& textureData);
 
+	int getWidth() const;
+	int getHeight() const;
+	int getBitDepth() const;
+
 	/**
 	 * Converts a texture type to a string.
 	 * 

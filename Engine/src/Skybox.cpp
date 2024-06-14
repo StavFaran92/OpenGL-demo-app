@@ -40,6 +40,11 @@ Entity Skybox::CreateSkybox(const SkyboxFaces& faces, Scene* scene)
 
 Entity Skybox::CreateSkybox(Resource<Texture> texture, Scene* scene)
 {
+    if (!scene)
+    {
+        scene = Engine::get()->getContext()->getActiveScene().get();
+    }
+
     auto entity = ShapeFactory::createBox(&scene->getRegistry());
 
     return CreateSkybox(texture, entity, scene);

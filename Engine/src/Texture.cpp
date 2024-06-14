@@ -166,6 +166,7 @@ void Texture::build(const TextureData& textureData)
 	m_target = textureData.target;
 	m_width = textureData.width;
 	m_height = textureData.height;
+	m_bitDepth = textureData.bpp;
 
 	// generate texture
 	glGenTextures(1, &m_id);
@@ -184,6 +185,21 @@ void Texture::build(const TextureData& textureData)
 	}
 
 	unbind();
+}
+
+int Texture::getWidth() const
+{
+	return m_width;
+}
+
+int Texture::getHeight() const
+{
+	return m_height;
+}
+
+int Texture::getBitDepth() const
+{
+	return m_bitDepth;
 }
 
 std::string Texture::textureTypeToString(Type type)
