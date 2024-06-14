@@ -89,6 +89,11 @@ void SceneSerializer::deserializeScene(const SerializedScene& serializedScene, S
 			Skybox::CreateSkybox(serializedEnt.skybox->skyboxImage, entityHandler, &scene);
 		}
 
+		if (serializedEnt.collisionSphere)
+		{
+			entityHandler.addComponent<CollisionSphereComponent>(serializedEnt.collisionSphere.value());
+		}
+
 		if (serializedEnt.nsc)
 		{
 			auto& nsc = entityHandler.addComponent<NativeScriptComponent>(serializedEnt.nsc.value());

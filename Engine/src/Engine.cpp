@@ -459,7 +459,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
             SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
             SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",
             SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
-            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" });
+            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" }, context->getActiveScene().get());
 
 
         {
