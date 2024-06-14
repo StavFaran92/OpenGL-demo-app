@@ -14,7 +14,7 @@ public:
 
 	void start() override
 	{
-		Skybox::CreateSkybox({ "C:/Users/Stav/Pictures/stars_bg_v2.png", 
+		Skybox::CreateSkyboxFromEquirectangularMap({ "C:/Users/Stav/Pictures/stars_bg_v2.png", 
 			"C:/Users/Stav/Pictures/stars_bg_v2.png" ,
 			"C:/Users/Stav/Pictures/stars_bg_v2.png" ,
 			"C:/Users/Stav/Pictures/stars_bg_v2.png" ,

@@ -86,7 +86,7 @@ void SceneSerializer::deserializeScene(const SerializedScene& serializedScene, S
 
 		if (serializedEnt.skybox)
 		{
-			Skybox::CreateSkybox(serializedEnt.skybox->skyboxImage, entityHandler, &scene);
+			Skybox::CreateSkyboxFromEquirectangularMap(serializedEnt.skybox->skyboxImage, entityHandler, &scene);
 		}
 
 		if (serializedEnt.collisionSphere)

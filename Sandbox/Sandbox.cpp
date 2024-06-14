@@ -31,7 +31,7 @@ public:
 		//auto& renderable = guitar_forward.getComponent<RenderableComponent>();
 		//renderable.renderTechnique = RenderableComponent::Forward;
 
-		Skybox::CreateSkybox( "C:/Users/Stav/Downloads/medieval_cafe_2k.hdr");
+		Skybox::CreateSkyboxFromEquirectangularMap( "C:/Users/Stav/Downloads/medieval_cafe_2k.hdr");
 
 		//auto tHandler = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/gear_store_8k.hdr", Texture::Type::None);
 		//Skybox::CreateSkybox(Skybox::TexType::EQUIRECTANGULAR, tHandler);

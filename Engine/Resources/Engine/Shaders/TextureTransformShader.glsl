@@ -8,10 +8,10 @@ out vec2 fragPos;
 void main()
 {
     vec3 pos = aPos;
-    pos.y = -pos.y;
-    fragPos = pos.xy;
-    gl_Position = vec4(pos, 1.0);
-}  
+    pos.y = -pos.y; // Flip the Y coordinate
+    fragPos = (pos.xy + 1.0) / 2.0; // Transform from [-1, 1] to [0, 1] range
+    gl_Position = vec4(aPos, 1.0); // Use original aPos for gl_Position
+}
 
 #frag
 
@@ -25,5 +25,5 @@ uniform sampler2D source;
 
 void main()
 {
-    color = vec4(texture(source, fragPos).rgb  , 1.0);
-}  
+    color = vec4(texture(source, fragPos).rgb, 1.0);
+}

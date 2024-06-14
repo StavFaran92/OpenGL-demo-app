@@ -23,41 +23,48 @@
 #include "TextureTransformer.h"
 #include "IBL.h"
 
-Entity Skybox::CreateSkybox(const std::string& equirectnagularMap, Scene* scene)
-{
-    auto textureHandler = Cubemap::createCubemapFromEquirectangularFile(equirectnagularMap);
-
-    return CreateSkybox(textureHandler, scene);
-}
-
-Entity Skybox::CreateSkybox(const SkyboxFaces& faces, Scene* scene)
-{
-    std::vector<std::string> facesVec{faces.right, faces.left, faces.top, faces.bottom, faces.front, faces.back};
-
-    auto textureHandler = Cubemap::createCubemapFromCubemapFiles(facesVec);
-    
-    return CreateSkybox(textureHandler, scene);
-}
-
-Entity Skybox::CreateSkybox(Resource<Texture> texture, Scene* scene)
+Entity Skybox::CreateSkyboxFromEquirectangularMap(const std::string& equirectnagularMap, Scene* scene)
 {
     if (!scene)
     {
         scene = Engine::get()->getContext()->getActiveScene().get();
     }
 
-    auto entity = ShapeFactory::createBox(&scene->getRegistry());
+    auto texture = Texture::create2DTextureFromFile(equirectnagularMap);
 
-    return CreateSkybox(texture, entity, scene);
-}
-
-Entity Skybox::CreateSkybox(Resource<Texture> texture, Entity& entity, Scene* scene)
-{
     texture = TextureTransformer::flipVertical(texture);
 
     texture = EquirectangularToCubemapConverter::fromEquirectangularToCubemap(texture);
 
+    auto entity = ShapeFactory::createBox(&scene->getRegistry());
+
     return createSkyboxHelper(texture, entity, scene);
+}
+
+Entity Skybox::CreateSkyboxFromEquirectangularMap(Resource<Texture> equirectnagularMap, Scene* scene)
+{
+    auto entity = ShapeFactory::createBox(&scene->getRegistry());
+
+    return createSkyboxHelper(equirectnagularMap, entity, scene);
+}
+
+Entity Skybox::CreateSkyboxFromEquirectangularMap(Resource<Texture> equirectnagularMap, Entity& entity, Scene* scene)
+{
+    return createSkyboxHelper(equirectnagularMap, entity, scene);
+}
+
+
+
+
+
+
+Entity Skybox::CreateSkyboxFromCubemap(const SkyboxFaces& faces, Scene* scene)
+{
+    std::vector<std::string> facesVec{faces.right, faces.left, faces.top, faces.bottom, faces.front, faces.back};
+
+    auto textureHandler = Cubemap::createCubemapFromCubemapFiles(facesVec);
+    
+    return CreateSkyboxFromEquirectangularMap(textureHandler, scene);
 }
 
 Entity Skybox::createSkyboxHelper(Resource<Texture> texture, Entity& entity, Scene* scene)

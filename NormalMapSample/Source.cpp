@@ -19,7 +19,7 @@ public:
 
 	void start() override
 	{
-		Skybox::CreateSkybox({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
+		Skybox::CreateSkyboxFromEquirectangularMap({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
 		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
 		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
 		SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",

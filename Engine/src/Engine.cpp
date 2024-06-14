@@ -454,7 +454,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
 
     if (initParams.templateScene)
     {
-        Skybox::CreateSkybox({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
+        Skybox::CreateSkyboxFromCubemap({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
             SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
             SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
             SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",

@@ -25,12 +25,12 @@ public:
         std::string back;
     };
 public:
-    static Entity CreateSkybox(const std::string& equirectnagularMap, Scene* scene = nullptr);
+    static Entity CreateSkyboxFromEquirectangularMap(const std::string& equirectnagularMap, Scene* scene = nullptr);
 
-    static Entity CreateSkybox(const SkyboxFaces& faces, Scene* scene = nullptr);
+    static Entity CreateSkyboxFromCubemap(const SkyboxFaces& faces, Scene* scene = nullptr);
 
-    static Entity CreateSkybox(Resource<Texture> texture, Scene* scene = nullptr);
-    static Entity CreateSkybox(Resource<Texture> texture, Entity& entity, Scene* scene = nullptr);
+    static Entity CreateSkyboxFromEquirectangularMap(Resource<Texture> equirectnagularMap, Scene* scene = nullptr);
+    static Entity CreateSkyboxFromEquirectangularMap(Resource<Texture> texture, Entity& entity, Scene* scene = nullptr);
 
 private:
     static Entity createSkyboxHelper(Resource<Texture> texture, Entity& entity, Scene* scene);
