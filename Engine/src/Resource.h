@@ -7,6 +7,7 @@ class Texture;
 class Mesh;
 #include "Engine.h"
 #include "MemoryPool.h"
+#include "ResourceManager.h"
 
 template<typename T>
 class Resource
@@ -14,17 +15,21 @@ class Resource
 public:
 	static Resource<T> empty;
 
-	Resource() : m_uid(EMPTY_UUID), refCount(std::make_shared<int>(0)) {};
+	Resource() : m_uid(EMPTY_UUID) {};
 
-	Resource(std::nullptr_t) : m_uid(EMPTY_UUID), refCount(std::make_shared<int>(0)) {};
+	Resource(std::nullptr_t) : m_uid(EMPTY_UUID) {};
+
+	Resource(UUID uid) : m_uid(uid) 
+	{
+		Engine::get()->getResourceManager()->incRef(uid);
+	};
 
 	Resource(const Resource<T>& other) 
 	{
 		m_uid = other.m_uid;
-		refCount = other.refCount;
 		if (other.m_uid != EMPTY_UUID)
 		{
-			(*this->refCount)++;
+			Engine::get()->getResourceManager()->incRef(other.m_uid);
 		}
 	};
 
@@ -36,10 +41,9 @@ public:
 		clean();
 
 		m_uid = other.m_uid;
-		refCount = other.refCount;
 		if (other.m_uid != EMPTY_UUID)
 		{
-			(*this->refCount)++;
+			Engine::get()->getResourceManager()->incRef(other.m_uid);
 		}
 
 		return *this;
@@ -48,19 +52,13 @@ public:
 	Resource(Resource<T>&& other)
 	{
 		m_uid = other.m_uid;
-		refCount = other.refCount;
-
 		other.m_uid = EMPTY_UUID;
-		other.refCount = nullptr;
 	};
 
 	Resource<T>& operator=(Resource<T>&& other)
 	{
 		m_uid = other.m_uid;
-		refCount = other.refCount;
-		
 		other.m_uid = EMPTY_UUID;
-		other.refCount = nullptr;
 
 		return *this;
 	};
@@ -87,7 +85,7 @@ public:
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(m_uid, refCount);
+		archive(m_uid);
 	}
 
 	~Resource<T>() // destructor
@@ -97,24 +95,22 @@ public:
 
 private:
 	template<typename T>friend class Factory;
-	Resource(UUID uid) : m_uid(uid), refCount(std::make_shared<int>(1)) {};
+	
 
 	void clean()
 	{
-		(*refCount)--;
-		if (*refCount == 0)
+		if (Engine::get()->getResourceManager()->decRef(m_uid) == 0)
 		{
 			if (m_uid != EMPTY_UUID)
 			{
 				Engine::get()->getMemoryPool<T>()->erase(m_uid);
 			}
-			//delete refCount;
+
 			m_uid = EMPTY_UUID;
 		}
 	}
 private:
 	UUID m_uid;
-	std::shared_ptr<int> refCount;
 };
 
 template<typename T>

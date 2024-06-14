@@ -72,6 +72,7 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
         Mesh* mesh = new Mesh();
         mesh->build(meshData);
         Engine::get()->getMemoryPool<Mesh>()->add(meshUID, mesh);
+        Engine::get()->getResourceManager()->incRef(meshUID);
     }
 
     // Create textures
@@ -85,6 +86,7 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
         Texture* texture = new Texture();
         texture->build(textureData);
         Engine::get()->getMemoryPool<Texture>()->add(textureUID, texture);
+        Engine::get()->getResourceManager()->incRef(textureUID);
     }
 
     context->deserialize();

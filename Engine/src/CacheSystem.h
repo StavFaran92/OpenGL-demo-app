@@ -33,7 +33,7 @@ public:
 		if (it != m_associations.end())
 		{
 			UUID uid = it->second;
-			return Engine::get()->getResourceManager()->getResource<T>(uid);
+			return Resource<T>(uid);
 		}
 
 		Resource<T>& resource = creationCallback();
