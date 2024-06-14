@@ -16,6 +16,8 @@
 #include "Component.h"
 #include "CacheSystem.h"
 
+static int createdBoxCount = 0;
+
 Entity ShapeFactory::createEntity(SGE_Regsitry* registry, const std::string& name)
 {
 	auto entity = registry->createEntity(name);
@@ -27,12 +29,19 @@ Entity ShapeFactory::createEntity(SGE_Regsitry* registry, const std::string& nam
 
 Entity ShapeFactory::createBox(SGE_Regsitry* registry)
 {
-	static int createdBoxCount = 0;
+	
 	auto entity = createEntity(registry, "Box_" + std::to_string(createdBoxCount++));
 	auto memoryManager = Engine::get()->getMemoryManagementSystem();
 	Resource<Mesh> mesh = memoryManager->createOrGetCached<Mesh>("SGE_BOX_MESH", []() {return Box::createMesh(); });
 	entity.getComponent<MeshComponent>().mesh = mesh;
 	return entity;
+}
+
+void ShapeFactory::createBox(Entity& e, SGE_Regsitry* registry)
+{
+	auto memoryManager = Engine::get()->getMemoryManagementSystem();
+	Resource<Mesh> mesh = memoryManager->createOrGetCached<Mesh>("SGE_BOX_MESH", []() {return Box::createMesh(); });
+	e.getComponent<MeshComponent>().mesh = mesh;
 }
 
 Entity ShapeFactory::createQuad(SGE_Regsitry* registry)

@@ -1,5 +1,8 @@
 #include "SceneSerializer.h"
 
+#include "Skybox.h"
+#include "EquirectangularToCubemapConverter.h"
+
 SerializedScene SceneSerializer::serializeScene(Scene& scene)
 {
 	// Serialize registry
@@ -83,7 +86,7 @@ void SceneSerializer::deserializeScene(const SerializedScene& serializedScene, S
 
 		if (serializedEnt.skybox)
 		{
-			auto& obj = entityHandler.addComponent<SkyboxComponent>(serializedEnt.skybox.value());
+			Skybox::CreateSkybox(serializedEnt.skybox->skyboxImage, entityHandler, &scene);
 		}
 
 		if (serializedEnt.nsc)
