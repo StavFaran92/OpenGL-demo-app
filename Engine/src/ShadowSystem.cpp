@@ -95,8 +95,8 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 
 	// Generate lookAt light matrix 
 	glm::mat4 dirLightView = glm::lookAt(
-		glm::vec3(0.0f, 10.0f, 0.0f),
-		glm::vec3(0.0f, 10.0f, 0.0f) + direction,
+		glm::vec3(0.0f, 100.0f, 0.0f),
+		glm::vec3(0.0f, 100.0f, 0.0f) + direction,
 		up);
 
 	m_lightSpaceMatrix = lightProjection * dirLightView;
