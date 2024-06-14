@@ -91,6 +91,7 @@ Resource<Texture> Texture::create2DTextureFromBuffer(int width, int height, int 
 	textureData.target = GL_TEXTURE_2D;
 	textureData.width = width;
 	textureData.height = height;
+	textureData.bpp = 3;
 	textureData.internalFormat = internalFormat;
 	textureData.format = format;
 	textureData.type = type;
