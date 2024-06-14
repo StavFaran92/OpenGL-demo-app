@@ -41,16 +41,27 @@ Entity Skybox::CreateSkyboxFromEquirectangularMap(const std::string& equirectnag
     return createSkyboxHelper(texture, entity, scene);
 }
 
+
+
+Entity Skybox::CreateSkyboxFromEquirectangularMap(Resource<Texture> equirectnagularMap, Entity& entity, Scene* scene)
+{
+    if (!scene)
+    {
+        scene = Engine::get()->getContext()->getActiveScene().get();
+    }
+
+    auto texture = TextureTransformer::flipVertical(equirectnagularMap);
+
+    texture = EquirectangularToCubemapConverter::fromEquirectangularToCubemap(texture);
+
+    return createSkyboxHelper(texture, entity, scene);
+}
+
 Entity Skybox::CreateSkyboxFromEquirectangularMap(Resource<Texture> equirectnagularMap, Scene* scene)
 {
     auto entity = ShapeFactory::createBox(&scene->getRegistry());
 
-    return createSkyboxHelper(equirectnagularMap, entity, scene);
-}
-
-Entity Skybox::CreateSkyboxFromEquirectangularMap(Resource<Texture> equirectnagularMap, Entity& entity, Scene* scene)
-{
-    return createSkyboxHelper(equirectnagularMap, entity, scene);
+    return CreateSkyboxFromEquirectangularMap(equirectnagularMap, entity, scene);
 }
 
 
