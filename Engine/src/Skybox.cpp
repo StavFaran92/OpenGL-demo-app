@@ -20,6 +20,7 @@
 #include "EditorCamera.h"
 #include "cube.h"
 #include "EquirectangularToCubemapConverter.h"
+#include "TextureTransformer.h"
 #include "IBL.h"
 
 Entity Skybox::CreateSkybox(const std::string& equirectnagularMap, Scene* scene)
@@ -52,6 +53,8 @@ Entity Skybox::CreateSkybox(Resource<Texture> texture, Scene* scene)
 
 Entity Skybox::CreateSkybox(Resource<Texture> texture, Entity& entity, Scene* scene)
 {
+    texture = TextureTransformer::flipVertical(texture);
+
     texture = EquirectangularToCubemapConverter::fromEquirectangularToCubemap(texture);
 
     return createSkyboxHelper(texture, entity, scene);
