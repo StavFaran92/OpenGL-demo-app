@@ -157,14 +157,12 @@ struct EngineAPI CameraComponent : public Component
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(position, center, up, isPrimary);
+		archive(position, center, up);
 	}
 
 	glm::vec3 position;
 	glm::vec3 center;
 	glm::vec3 up;
-
-	bool isPrimary = false;
 };
 
 struct EngineAPI MeshComponent : public Component

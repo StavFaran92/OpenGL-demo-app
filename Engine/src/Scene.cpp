@@ -95,14 +95,19 @@ glm::mat4 Scene::getProjection() const
 	return m_defaultPerspectiveProjection;
 }
 
-std::shared_ptr<ICamera> Scene::getActiveCamera() const
+CameraComponent* Scene::getActiveCamera() const
 {
-	return m_activeCamera;
+	return m_primaryEditorCamera;
 }
 
-void Scene::setActiveCamera(Entity e)
+void Scene::setPrimaryEditorCamera(Entity e)
 {
-	m_activeCamera = std::dynamic_pointer_cast<ICamera>(e.getComponent<NativeScriptComponent>().script);
+	m_primaryEditorCamera = &e.getComponent<CameraComponent>();
+}
+
+void Scene::setPrimarySceneCamera(Entity e)
+{
+	m_primarySceneCamera = &e.getComponent<CameraComponent>();
 }
 
 //void Scene::setPrimaryCamera(ICamera* camera)
@@ -311,14 +316,10 @@ void Scene::draw(float deltaTime)
 	glViewport(0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
 	m_deferredRenderer->clear();
 
-	CameraComponent* activeCamera = nullptr;
-	for (auto&& [entity, camera] : m_registry->get().view<CameraComponent>().each())
+	CameraComponent* primaryCamera = m_primaryEditorCamera;
+	if (m_isSimulationActive)
 	{
-		if (camera.isPrimary)
-		{
-			activeCamera = &camera;
-			break;
-		}
+		primaryCamera = m_primarySceneCamera;
 	}
 
 	IRenderer::DrawQueueRenderParams params;
@@ -326,9 +327,9 @@ void Scene::draw(float deltaTime)
 	params.context = m_context;
 	params.registry = &m_registry->get();
 	params.renderer = m_forwardRenderer.get();
-	params.view = &activeCamera->getView();
+	params.view = &primaryCamera->getView();
 	params.projection = &m_defaultPerspectiveProjection;
-	params.cameraPos = activeCamera->getPosition();
+	params.cameraPos = primaryCamera->getPosition();
 	params.irradianceMap = m_irradianceMap;
 	params.prefilterEnvMap = m_prefilterEnvMap;
 	params.brdfLUT = m_BRDFIntegrationLUT;
@@ -561,14 +562,7 @@ void Scene::removeEntity(const Entity& e)
 
 glm::mat4 Scene::getActiveCameraView() const
 {
-	CameraComponent* activeCamera = nullptr;
-	for (auto&& [entity, camera] : m_registry->get().view<CameraComponent>().each())
-	{
-		if (camera.isPrimary)
-		{
-			return camera.getView();
-		}
-	}
+	return m_primaryEditorCamera->getView();
 }
 
 

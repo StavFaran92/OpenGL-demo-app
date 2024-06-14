@@ -447,10 +447,18 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
     dLight.addComponent<DirectionalLight>();
     dLight.getComponent<Transformation>().setLocalRotation(glm::vec3(0, -1, 0));
 
-    auto editorCamera = startupScene->createEntity("Camera");
-    editorCamera.addComponent<CameraComponent>().isPrimary = true;
+    auto editorCamera = startupScene->createEntity("Editor Camera");
+    editorCamera.addComponent<CameraComponent>();
     editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
-    startupScene->setActiveCamera(editorCamera);
+    editorCamera.RemoveComponent<ObjectComponent>();
+    startupScene->setPrimaryEditorCamera(editorCamera);
+
+    auto mainCamera = startupScene->createEntity("Main Camera");
+    mainCamera.addComponent<CameraComponent>();
+    startupScene->setPrimarySceneCamera(mainCamera);
+    mainCamera.getComponent<CameraComponent>().position = {10,1,10};
+    mainCamera.getComponent<CameraComponent>().center = {0,0,0};
+    mainCamera.getComponent<CameraComponent>().up = {0,1,0};
 
     if (initParams.templateScene)
     {

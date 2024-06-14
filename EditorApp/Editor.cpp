@@ -542,6 +542,14 @@ void RenderSceneHierarchyWindow(float width, float height)
 					//	sceneObjects[i].name
 					//	updateScene();
 					//}
+					if (sceneObjects[i].e.HasComponent<CameraComponent>())
+					{
+						if (ImGui::MenuItem("Set as Primary Camera"))
+						{
+							auto scene = Engine::get()->getContext()->getActiveScene();
+							scene->setPrimarySceneCamera(sceneObjects[i].e);
+						}
+					}
 					if (ImGui::MenuItem("Delete"))
 					{
 						sceneObjects[i].e.remove();

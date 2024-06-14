@@ -46,6 +46,7 @@ class RenderBufferObject;
 class TextureHandler;
 class SGE_Regsitry;
 class Entity;
+struct CameraComponent;
 struct RigidBodyComponent;
 namespace physx {
 	class PxScene;
@@ -108,8 +109,9 @@ public:
 
 	glm::mat4 getProjection() const;
 
-	std::shared_ptr<ICamera> getActiveCamera() const;
-	void setActiveCamera(Entity e);
+	CameraComponent* getActiveCamera() const;
+	void setPrimaryEditorCamera(Entity e);
+	void setPrimarySceneCamera(Entity e);
 
 	void startSimulation();
 	void stopSimulation();
@@ -184,5 +186,6 @@ private:
 	Resource<Texture> m_BRDFIntegrationLUT;
 	std::shared_ptr<Shader> m_skyboxShader;
 
-	std::shared_ptr<ICamera> m_activeCamera;
+	CameraComponent* m_primaryEditorCamera = nullptr;
+	CameraComponent* m_primarySceneCamera = nullptr;
 };
