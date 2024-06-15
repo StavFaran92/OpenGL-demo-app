@@ -12,6 +12,7 @@
 
 #include "glm/glm.hpp"
 #include "IRenderer.h"
+#include "Entity.h"
 
 
 class Model;
@@ -46,7 +47,6 @@ class RenderBufferObject;
 class TextureHandler;
 class SGE_Regsitry;
 class Entity;
-struct CameraComponent;
 struct RigidBodyComponent;
 namespace physx {
 	class PxScene;
@@ -109,7 +109,7 @@ public:
 
 	glm::mat4 getProjection() const;
 
-	CameraComponent* getActiveCamera() const;
+	Entity getActiveCamera() const;
 	void setPrimaryEditorCamera(Entity e);
 	void setPrimarySceneCamera(Entity e);
 
@@ -186,6 +186,6 @@ private:
 	Resource<Texture> m_BRDFIntegrationLUT;
 	std::shared_ptr<Shader> m_skyboxShader;
 
-	CameraComponent* m_primaryEditorCamera = nullptr;
-	CameraComponent* m_primarySceneCamera = nullptr;
+	Entity m_primaryEditorCamera;
+	Entity m_primarySceneCamera;
 };

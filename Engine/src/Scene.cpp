@@ -95,19 +95,19 @@ glm::mat4 Scene::getProjection() const
 	return m_defaultPerspectiveProjection;
 }
 
-CameraComponent* Scene::getActiveCamera() const
+Entity Scene::getActiveCamera() const
 {
 	return m_primaryEditorCamera;
 }
 
 void Scene::setPrimaryEditorCamera(Entity e)
 {
-	m_primaryEditorCamera = &e.getComponent<CameraComponent>();
+	m_primaryEditorCamera = e;
 }
 
 void Scene::setPrimarySceneCamera(Entity e)
 {
-	m_primarySceneCamera = &e.getComponent<CameraComponent>();
+	m_primarySceneCamera = e;
 }
 
 //void Scene::setPrimaryCamera(ICamera* camera)
@@ -316,20 +316,22 @@ void Scene::draw(float deltaTime)
 	glViewport(0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
 	m_deferredRenderer->clear();
 
-	CameraComponent* primaryCamera = m_primaryEditorCamera;
+	Entity primaryCameraEntity = m_primaryEditorCamera;
 	if (m_isSimulationActive)
 	{
-		primaryCamera = m_primarySceneCamera;
+		primaryCameraEntity = m_primarySceneCamera;
 	}
+
+	auto& primaryCamera = primaryCameraEntity.getComponent<CameraComponent>();
 
 	IRenderer::DrawQueueRenderParams params;
 	params.scene = this;
 	params.context = m_context;
 	params.registry = &m_registry->get();
 	params.renderer = m_forwardRenderer.get();
-	params.view = &primaryCamera->getView();
+	params.view = &primaryCamera.getView();
 	params.projection = &m_defaultPerspectiveProjection;
-	params.cameraPos = primaryCamera->getPosition();
+	params.cameraPos = primaryCamera.getPosition();
 	params.irradianceMap = m_irradianceMap;
 	params.prefilterEnvMap = m_prefilterEnvMap;
 	params.brdfLUT = m_BRDFIntegrationLUT;
@@ -562,7 +564,7 @@ void Scene::removeEntity(const Entity& e)
 
 glm::mat4 Scene::getActiveCameraView() const
 {
-	return m_primaryEditorCamera->getView();
+	return m_primaryEditorCamera.getComponent<CameraComponent>().getView();
 }
 
 
