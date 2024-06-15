@@ -603,7 +603,9 @@ void RenderViewWindow(float width, float height)
 		{
 			// Handle right mouse button click event
 			// Trigger your event or perform the action here
-			int selectedID = Engine::get()->getObjectPicker()->pickObject(mousePos.x, mousePos.y);
+			int alteredX = (mousePos.x - startX) / windowWidth * Engine::get()->getWindow()->getWidth();
+			int alteredY = (mousePos.y - 65) / windowHeight * Engine::get()->getWindow()->getHeight();
+			int selectedID = Engine::get()->getObjectPicker()->pickObject(alteredX, alteredY);
 
 			for (auto& sceneObj : sceneObjects)
 			{
