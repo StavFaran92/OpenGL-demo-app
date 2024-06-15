@@ -1,11 +1,11 @@
 #pragma once
 
-class CameraComponent;
+class Entity;
 
 class ICameraController
 {
 public:
-	virtual void onCreate(CameraComponent* cameraComponent) = 0;
+	virtual void onCreate(Entity& e) = 0;
 	virtual void calculateOrientation() = 0;
 	virtual ~ICameraController() = default;
 };

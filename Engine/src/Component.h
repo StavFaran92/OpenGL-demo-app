@@ -145,22 +145,13 @@ struct EngineAPI CollisionMeshComponent : public Component
 struct EngineAPI CameraComponent : public Component
 {
 	CameraComponent() = default;
-	glm::mat4 getView() const
-	{
-		return glm::lookAt(position, center, up);
-	}
-
-	glm::vec3 getPosition()
-	{
-		return position;
-	}
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(position, center, up);
+		archive(center, up);
 	}
 
-	glm::vec3 position;
+	//glm::vec3 position;
 	glm::vec3 center;
 	glm::vec3 up;
 };

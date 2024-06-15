@@ -8,7 +8,7 @@
 class CameraControllerFreeLook : public ICameraController
 {
 public:
-	void onCreate(CameraComponent* cameraComponent) override;
+	void onCreate(Entity& e) override;
 
 	void calculateOrientation();
 private:
@@ -34,4 +34,5 @@ private:
 	ControllerState m_state = ControllerState::IDLE;
 
 	CameraComponent* m_cameraComponent = nullptr;
+	Transformation* m_cameraTransform = nullptr;
 };

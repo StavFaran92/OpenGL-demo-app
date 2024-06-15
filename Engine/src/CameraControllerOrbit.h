@@ -8,7 +8,7 @@
 class CameraControllerOrbit : public ICameraController
 {
 public:
-	void onCreate(CameraComponent* cameraComponent) override;
+	void onCreate(Entity& e) override;
 
 	void calculateOrientation();
 private:
@@ -31,4 +31,5 @@ private:
 	glm::vec3 m_right;
 
 	CameraComponent* m_cameraComponent = nullptr;
+	Transformation* m_cameraTransform = nullptr;
 };

@@ -3,6 +3,7 @@
 #include "Engine.h"
 #include "EventSystem.h"
 #include "ApplicationConstants.h"
+#include "Transformation.h"
 #include <algorithm>
 #include "glm/glm.hpp"
 
@@ -13,17 +14,16 @@ void CameraControllerFreeLook::calculateOrientation()
 	m_front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
 
 	m_front = glm::normalize(m_front);
-	m_cameraComponent->center = m_cameraComponent->getPosition() + m_front;
+	m_cameraComponent->center = m_cameraTransform->getLocalPosition() + m_front;
 
 	m_right = glm::normalize(glm::cross(m_front, m_up));
 	m_cameraComponent->up = glm::normalize(glm::cross(m_right, m_front));
 }
 
-void CameraControllerFreeLook::onCreate(CameraComponent* cameraComponent)
+void CameraControllerFreeLook::onCreate(Entity& e)
 {
-	m_cameraComponent = cameraComponent;
-
-	m_cameraComponent->position = { 0, 10, 0 };
+	m_cameraComponent = &e.getComponent<CameraComponent>();
+	m_cameraTransform = &e.getComponent<Transformation>();
 
 	auto eventSystem = Engine::get()->getEventSystem();
 
@@ -66,8 +66,8 @@ void CameraControllerFreeLook::onCreate(CameraComponent* cameraComponent)
 				float yVelocity = .1f * yChange;// *deltaTime
 
 
-				m_cameraComponent->position += m_right * xVelocity;
-				m_cameraComponent->position -= m_up * yVelocity;
+				m_cameraTransform->translate(m_right * xVelocity);
+				m_cameraTransform->translate(-m_up * yVelocity);
 
 				calculateOrientation();
 			}
@@ -96,7 +96,7 @@ void CameraControllerFreeLook::onCreate(CameraComponent* cameraComponent)
 		}
 	});
 	eventSystem->addEventListener(SDL_MOUSEWHEEL, [this](SDL_Event e){
-		m_cameraComponent->position += m_front * (float)e.wheel.y;
+		m_cameraTransform->translate(m_front * (float)e.wheel.y);
 
 		calculateOrientation();
 	});

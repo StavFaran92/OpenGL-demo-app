@@ -3,6 +3,7 @@
 #include "Engine.h"
 #include "EventSystem.h"
 #include "ApplicationConstants.h"
+#include "Transformation.h"
 #include <algorithm>
 #include "glm/glm.hpp"
 
@@ -13,16 +14,17 @@ void CameraControllerOrbit::calculateOrientation()
 	float x = t * cos(m_angleX * Constants::toRadians);
 	float z = t * sin(m_angleX * Constants::toRadians);
 
-	m_cameraComponent->position = glm::vec3(x, y, z) + m_cameraComponent->center;
+	m_cameraTransform->setLocalPosition(glm::vec3(x, y, z) + m_cameraComponent->center);
 
-	auto front = glm::normalize(-m_cameraComponent->position + m_cameraComponent->center);
+	auto front = glm::normalize(-m_cameraTransform->getLocalPosition() + m_cameraComponent->center);
 	m_right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
 	m_cameraComponent->up = glm::normalize(glm::cross(m_right, front));
 }
 
-void CameraControllerOrbit::onCreate(CameraComponent* cameraComponent)
+void CameraControllerOrbit::onCreate(Entity& e)
 {
-	m_cameraComponent = cameraComponent;
+	m_cameraComponent = &e.getComponent<CameraComponent>();
+	m_cameraTransform = &e.getComponent<Transformation>();
 
 	auto eventSystem = Engine::get()->getEventSystem();
 
