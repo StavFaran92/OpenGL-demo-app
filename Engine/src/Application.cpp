@@ -10,7 +10,6 @@
 #include "Keyboard.h"
 #include "Box.h"
 #include "Quad.h"
-#include "ObjectHandler.h"
 
 Context* Application::getContext() const
 {

@@ -7,7 +7,6 @@
 #include "Mesh.h"
 #include "Box.h"
 #include "Resource.h"
-#include "ObjectHandler.h"
 #include "Shader.h"
 #include "ShapeFactory.h"
 #include "Material.h"

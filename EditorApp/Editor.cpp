@@ -601,8 +601,7 @@ void RenderViewWindow(float width, float height)
 		if (mousePos.x >= windowPos.x && mousePos.x <= windowPos.x + windowSize.x &&
 			mousePos.y >= windowPos.y && mousePos.y <= windowPos.y + windowSize.y)
 		{
-			// Handle right mouse button click event
-			// Trigger your event or perform the action here
+			// We alter the mouse position from small window into full screen (the renderered object pick texture)
 			int alteredX = (mousePos.x - startX) / windowWidth * Engine::get()->getWindow()->getWidth();
 			int alteredY = (mousePos.y - 65) / windowHeight * Engine::get()->getWindow()->getHeight();
 			int selectedID = Engine::get()->getObjectPicker()->pickObject(alteredX, alteredY);

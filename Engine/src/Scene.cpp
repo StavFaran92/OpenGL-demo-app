@@ -1,12 +1,10 @@
 #include "Scene.h"
 
 #include "Skybox.h"
-#include "Object3D.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "Engine.h"
 #include "ICamera.h"
-#include "ObjectSelection.h"
 #include "SkyboxRenderer.h"
 #include "PostProcessProjector.h"
 #include "CoroutineSystem.h"
@@ -16,8 +14,6 @@
 #include "Context.h"
 #include "Window.h"
 #include "ObjectPicker.h"
-#include "ObjectManager.h"
-#include "ObjectHandler.h"
 #include "Configurations.h"
 #include "Shader.h"
 #include "Entity.h"
@@ -614,26 +610,6 @@ void Scene::setPostProcess(bool value)
 //
 //	return m_objectSelection->isObjectSelected(id);
 //}
-
-bool Scene::isObjectSelectionEnabled() const
-{
-	return m_objectSelection->isEnabled();
-}
-
-void Scene::enableObjectSelection(bool isEnabled)
-{
-	m_objectSelection->enableObjectSelection(isEnabled);
-}
-
-void Scene::selectObject(uint32_t id)
-{
-	m_objectSelection->selectObject(id);
-}
-
-void Scene::clearObjectSelection()
-{
-	m_objectSelection->clear();
-}
 
 bool Scene::setPostProcessShader(Shader* shader)
 {

@@ -5,7 +5,6 @@
 #include "ApplicationConstants.h"
 #include "Engine.h"
 #include "Context.h"
-#include "ObjectSelection.h"
 #include "Scene.h"
 #include "EventSystem.h"
 #include "Transformation.h"

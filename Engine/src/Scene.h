@@ -83,11 +83,6 @@ public:
 
 	uint32_t getID() const { return m_id; }
 
-	bool isObjectSelectionEnabled() const;
-	void enableObjectSelection(bool isEnabled);
-	void selectObject(uint32_t id);
-	void clearObjectSelection();
-
 	RenderCallback* addRenderCallback(RenderPhase renderPhase, RenderCallback renderCallback);
 	void removeRenderCallback(RenderCallback* callback);
 

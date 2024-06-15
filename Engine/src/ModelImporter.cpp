@@ -8,8 +8,6 @@
 #include <filesystem>
 #include "MeshBuilder.h"
 #include "Resource.h"
-#include "ObjectFactory.h"
-#include "ObjectHandler.h"
 #include "Material.h"
 #include "Entity.h"
 #include "Component.h"

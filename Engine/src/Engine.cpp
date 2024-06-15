@@ -5,7 +5,6 @@
 #include "SkyboxRenderer.h"
 #include "Window.h"
 #include "ImguiHandler.h"
-#include "ObjectSelection.h"
 #include "PostProcessProjector.h"
 #include "ICamera.h"
 #include "Scene.h"
@@ -15,8 +14,6 @@
 #include "ModelImporter.h"
 #include "Logger.h"
 #include "CacheSystem.h"
-#include "ObjectManager.h"
-#include "ObjectFactory.h"
 #include "TimeManager.h"
 #include "PhysicsSystem.h"
 #include "Random.h"
@@ -133,10 +130,6 @@ bool Engine::init(const InitParams& initParams)
     }
 
     m_defaultMaterial = std::make_shared<Material>();
-
-    m_objectManager = std::make_shared<ObjectManager>();
-
-    ObjectFactory::init(m_objectManager.get());
 
     m_window = std::make_shared<Window>(SCREEN_WIDTH, SCREEN_HEIGHT);
     if (!m_window->init())

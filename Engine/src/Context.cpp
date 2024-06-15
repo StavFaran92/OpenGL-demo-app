@@ -9,7 +9,6 @@
 #include "PickingShader.h"
 #include "Shader.h"
 
-#include "Object3D.h"
 #include "Scene.h"
 #include "Engine.h"
 

@@ -8,7 +8,6 @@
 #include "Window.h"
 #include "Logger.h"
 #include "Resource.h"
-#include "ObjectHandler.h"
 #include "Scene.h"
 #include "Entity.h"
 #include "Component.h"
