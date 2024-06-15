@@ -591,6 +591,33 @@ void RenderViewWindow(float width, float height)
 	ImVec2 imageSize(windowWidth, windowHeight);
 	ImGui::Image(reinterpret_cast<ImTextureID>(Engine::get()->getContext()->getActiveScene()->getRenderTarget()), imageSize, ImVec2(0, 1), ImVec2(1, 0));
 
+	if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+	{
+		ImVec2 mousePos = ImGui::GetMousePos();
+		ImVec2 windowPos = ImGui::GetWindowPos();
+		ImVec2 windowSize = ImGui::GetWindowSize();
+
+		// Check if the mouse is within the window bounds
+		if (mousePos.x >= windowPos.x && mousePos.x <= windowPos.x + windowSize.x &&
+			mousePos.y >= windowPos.y && mousePos.y <= windowPos.y + windowSize.y)
+		{
+			// Handle right mouse button click event
+			// Trigger your event or perform the action here
+			int selectedID = Engine::get()->getObjectPicker()->pickObject(mousePos.x, mousePos.y);
+
+			for (auto& sceneObj : sceneObjects)
+			{
+				if (sceneObj.e.handlerID() == selectedID)
+				{
+					selectedEntity = sceneObj.e;
+					break;
+				}
+			}
+
+			logDebug(std::to_string(selectedID));
+		}
+	}
+
 	if (selectedEntity != Entity::EmptyEntity)
 	{
 		// Define the size and position of the inner window

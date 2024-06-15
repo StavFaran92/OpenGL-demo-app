@@ -87,7 +87,6 @@ public:
 	void enableObjectSelection(bool isEnabled);
 	void selectObject(uint32_t id);
 	void clearObjectSelection();
-	bool isPickingPhaseActive() const;
 
 	RenderCallback* addRenderCallback(RenderPhase renderPhase, RenderCallback renderCallback);
 	void removeRenderCallback(RenderCallback* callback);

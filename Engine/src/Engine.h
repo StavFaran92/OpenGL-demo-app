@@ -35,6 +35,7 @@ class Texture;
 class Cubemap;
 class CommonShaders;
 class CommonTextures;
+class ObjectPicker;
 template<typename T>class Resource;
 template<typename T>class Factory;
 template<typename T>class MemoryPool;
@@ -72,6 +73,7 @@ public:
     ResourceManager* getResourceManager() const;
     CommonShaders* getCommonShaders() const;
     CommonTextures* getCommonTextures() const;
+    ObjectPicker* getObjectPicker() const;
     template<typename T>MemoryPool<T>* getMemoryPool() const {};
     template<>MemoryPool<Texture>* getMemoryPool() const { return m_memoryPoolTexture.get(); }
     template<>MemoryPool<Mesh>* getMemoryPool() const { return m_memoryPoolMesh.get(); }
@@ -139,6 +141,7 @@ protected:
     std::shared_ptr<ProjectManager> m_projectManager;
     std::shared_ptr<CommonShaders> m_commonShaders;
     std::shared_ptr<CommonTextures> m_commonTextures;
+    std::shared_ptr<ObjectPicker> m_objectPicker;
 
     std::shared_ptr<Material> m_defaultMaterial;
 

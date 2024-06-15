@@ -56,3 +56,4 @@
 #include "CommonTextures.h"
 #include "RenderCommand.h"
 #include "ResourceManager.h"
+#include "ObjectPicker.h"

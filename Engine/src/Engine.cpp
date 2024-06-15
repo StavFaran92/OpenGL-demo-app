@@ -32,6 +32,7 @@
 #include "EditorCamera.h"
 #include "CommonShaders.h"
 #include "CommonTextures.h"
+#include "ObjectPicker.h"
 
 #include "Application.h"
 #include "SDL2/SDL.h"
@@ -194,6 +195,13 @@ bool Engine::init(const InitParams& initParams)
         createStartupScene(m_context, initParams);
 
         saveProject();
+    }
+
+    m_objectPicker = std::make_shared<ObjectPicker>();
+    if (!m_objectPicker->init())
+    {
+        logError("Object picker failed to init!");
+        return false;
     }
 
     m_isInit = true;
@@ -382,6 +390,11 @@ CommonShaders* Engine::getCommonShaders() const
 CommonTextures* Engine::getCommonTextures() const
 {
     return m_commonTextures.get();
+}
+
+ObjectPicker* Engine::getObjectPicker() const
+{
+    return m_objectPicker.get();
 }
 
 void Engine::loadProject(const std::string& dirPath)

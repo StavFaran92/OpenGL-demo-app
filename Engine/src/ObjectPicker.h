@@ -1,16 +1,19 @@
 #pragma once
 #include <memory>
 
-#include "IProjector.h"
+#include "Core.h"
+
 #include "Resource.h"
+#include "FrameBufferObject.h"
+#include "RenderBufferObject.h"
 
 class FrameBufferObject;
 class RenderBufferObject;
 class TextureHandler;
 class Context;
-class Scene;
+class Shader;
 
-class ObjectPicker : public IProjector
+class EngineAPI ObjectPicker
 {
 public:
 	struct PixelInfo {
@@ -19,23 +22,13 @@ public:
 		unsigned int PrimID = 0;
 	};
 
-	ObjectPicker(Context* context, Scene* scene);
+	bool init();
 
 	int pickObject(int x, int y);
 
-	// Inherited via IProjector
-	virtual bool init(int windowWidth, int windowHeight) override;
-	virtual void enableWriting() override;
-	virtual void disableWriting() override;
-	bool isPickingPhaseActive() const;
-
 private:
-	std::shared_ptr<FrameBufferObject> m_frameBuffer = nullptr;
-	std::shared_ptr<RenderBufferObject> m_renderBuffer = nullptr;
-	Resource<Texture> m_textureHandler = nullptr;
-
-	int m_width = 0;
-	int m_height = 0;
-	bool m_isPickingPhaseActive = false;
+	FrameBufferObject m_frameBuffer;
+	Resource<Texture> m_targetTexture;
+	std::shared_ptr<Shader> m_pickingShader;
 };
 

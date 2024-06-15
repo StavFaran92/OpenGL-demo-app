@@ -157,12 +157,12 @@ void Scene::init(Context* context)
 
 	//m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
 	//m_gpuInstancingRenderer = std::make_shared<GpuInstancingRenderer>();
-	m_objectSelection = std::make_shared<ObjectSelection>(m_context, this);
-	m_objectPicker = std::make_shared<ObjectPicker>(m_context, this);
-	if (!m_objectPicker->init(width, height))
-	{
-		logError("Object picker failed to init!");
-	}
+	//m_objectSelection = std::make_shared<ObjectSelection>(m_context, this);
+	//m_objectPicker = std::make_shared<ObjectPicker>();
+	//if (!m_objectPicker->init())
+	//{
+	//	logError("Object picker failed to init!");
+	//}
 
 	m_postProcessProjector = std::make_shared<PostProcessProjector>(this);
 	if (!m_postProcessProjector->init(width, height))
@@ -654,11 +654,6 @@ void Scene::addCoroutine(const std::function<bool(float)>& coroutine)
 //{
 //	m_coroutineManager->removeCoroutine(coroutine);
 //}
-
-bool Scene::isPickingPhaseActive() const
-{
-	return m_objectPicker->isPickingPhaseActive();
-}
 
 void Scene::startSimulation()
 {
