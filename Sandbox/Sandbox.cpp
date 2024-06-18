@@ -35,7 +35,7 @@ public:
 
 		auto box1 = ShapeFactory::createBox(&Engine::get()->getContext()->getActiveScene()->getRegistry());
 
-		auto tex = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Metal046B_1K-PNG_Roughness.png");
+		auto tex = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/rock1-ue/rock1-albedo.png");
 		auto& img = box1.addComponent<ImageComponent>(tex);
 		img.size = glm::vec2(100, 100);
 		img.position = glm::vec2(200, 200);
