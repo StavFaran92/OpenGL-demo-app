@@ -33,6 +33,11 @@ public:
 
 		Skybox::CreateSkyboxFromEquirectangularMap( "C:/Users/Stav/Downloads/medieval_cafe_2k.hdr");
 
+		auto box1 = ShapeFactory::createBox(&Engine::get()->getContext()->getActiveScene()->getRegistry());
+
+		auto tex = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Metal046B_1K-PNG_Roughness.png");
+		box1.addComponent<ImageComponent>(tex);
+
 		//auto tHandler = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/gear_store_8k.hdr", Texture::Type::None);
 		//Skybox::CreateSkybox(Skybox::TexType::EQUIRECTANGULAR, tHandler);
 

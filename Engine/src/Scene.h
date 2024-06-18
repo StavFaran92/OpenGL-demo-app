@@ -168,6 +168,7 @@ private:
 	//CameraComponent* m_activeCamera = nullptr;
 
 	glm::mat4 m_defaultPerspectiveProjection;
+	glm::mat4 m_defaultUIProjection;
 
 	std::shared_ptr<UniformBufferObject> m_uboTime;
 
@@ -179,7 +180,10 @@ private:
 	Resource<Texture> m_prefilterEnvMap;
 	Resource<Texture> m_BRDFIntegrationLUT;
 	std::shared_ptr<Shader> m_skyboxShader;
+	std::shared_ptr<Shader> m_UIShader;
 
 	Entity m_primaryEditorCamera;
 	Entity m_primarySceneCamera;
+
+	Entity m_quadUI;
 };

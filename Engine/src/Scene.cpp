@@ -198,8 +198,14 @@ void Scene::init(Context* context)
 	}
 
 	m_defaultPerspectiveProjection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 1000.0f);
-	
 
+	m_defaultUIProjection = glm::ortho(0.0f, (float)Engine::get()->getWindow()->getWidth(), (float)Engine::get()->getWindow()->getHeight(), 0.0f, -1.0f, 1.0f);
+	
+	m_quadUI = ShapeFactory::createQuad(&getRegistry());
+	m_quadUI.RemoveComponent<RenderableComponent>();
+	m_quadUI.RemoveComponent<ObjectComponent>();
+
+	m_UIShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/UIShader.glsl");
 
 	
 	//dLight.getComponent<Transformation>().setLocalPosition({ 0 , 2, 0 });;
@@ -460,6 +466,21 @@ void Scene::draw(float deltaTime)
 	}
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);
+
+	// Render UI
+	m_UIShader->use();
+	m_UIShader->setProjectionMatrix(m_defaultUIProjection);
+	auto vao = m_quadUI.getComponent<MeshComponent>().mesh.get()->getVAO();
+
+	for (auto&& [entity, image] : m_registry->get().view<ImageComponent>().each())
+	{
+		Entity entityhandler{ entity, m_registry.get() };
+		params.entity = &entityhandler;
+		image.image.get()->bind();
+		image.image.get()->setSlot(0);
+
+		RenderCommand::draw(vao);
+	}
 
 
 #if 1

@@ -284,3 +284,16 @@ private:
 	unsigned int m_id = 0;
 };
 
+struct EngineAPI ImageComponent : public Component
+{
+	ImageComponent() = default;
+
+	ImageComponent(Resource<Texture> image) : image(image) {}
+
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(image);
+	}
+
+	Resource<Texture> image;
+};
