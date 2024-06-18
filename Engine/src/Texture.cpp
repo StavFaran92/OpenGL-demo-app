@@ -202,6 +202,13 @@ int Texture::getBitDepth() const
 	return m_bitDepth;
 }
 
+void Texture::setData(int xoffset, int yoffset, int width, int height, const void* data)
+{
+	bind();
+
+	glTexSubImage2D(GL_TEXTURE_2D, 0, xoffset, yoffset, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+}
+
 std::string Texture::textureTypeToString(Type type)
 {
 	switch (type)

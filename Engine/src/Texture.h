@@ -93,6 +93,8 @@ public:
 	int getHeight() const;
 	int getBitDepth() const;
 
+	void setData(int xoffset, int yoffset, int width, int height, const void* data);
+
 	/**
 	 * Converts a texture type to a string.
 	 * 
