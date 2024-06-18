@@ -31,7 +31,7 @@ Entity Skybox::CreateSkyboxFromEquirectangularMap(const std::string& equirectnag
 
     auto texture = Texture::create2DTextureFromFile(equirectnagularMap);
 
-    texture = TextureTransformer::flipVertical(texture);
+    //texture = TextureTransformer::flipVertical(texture);
 
     texture = EquirectangularToCubemapConverter::fromEquirectangularToCubemap(texture);
 

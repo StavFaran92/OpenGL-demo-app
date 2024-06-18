@@ -60,9 +60,8 @@ Resource<Texture> Texture::create2DTextureFromFile(const std::string& fileLocati
 	return memoryManagementSystem->createOrGetCached<Texture>(path.filename().string(), [&]() {
 		
 		// todo use RAII
-		TextureData textureData = extractTextureDataFromFile(fileLocation);
-
 		stbi_set_flip_vertically_on_load(flip);
+		TextureData textureData = extractTextureDataFromFile(fileLocation);
 
 		Resource<Texture> texture = create2DTextureFromBuffer(textureData);
 
