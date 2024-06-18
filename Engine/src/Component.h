@@ -295,5 +295,9 @@ struct EngineAPI ImageComponent : public Component
 		archive(image);
 	}
 
+	glm::vec2 size;
+	glm::vec2 position;
+	float rotate = 0;
+
 	Resource<Texture> image;
 };
