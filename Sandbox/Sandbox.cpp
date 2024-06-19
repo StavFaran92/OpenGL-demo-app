@@ -41,8 +41,8 @@ public:
 		img.size = glm::vec2(100, 100);
 		img.position = glm::vec2(200, 200);
 
-		int pixels[10000] = { 0 };
-		tex.get()->setData(0, 0, 100, 100, pixels);
+		int* pixels = new int[640000];
+		tex.get()->setData(500, 500, 800, 800, pixels);
 
 		//auto tHandler = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/gear_store_8k.hdr", Texture::Type::None);
 		//Skybox::CreateSkybox(Skybox::TexType::EQUIRECTANGULAR, tHandler);
