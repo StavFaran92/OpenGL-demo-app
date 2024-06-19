@@ -13,4 +13,5 @@ add_subdirectory(Sandbox)
 add_subdirectory(ShadowSample)
 add_subdirectory(OceanSample)
 add_subdirectory(InstancingSample)
+add_subdirectory(ShaderToy)
 
