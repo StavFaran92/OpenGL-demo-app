@@ -206,7 +206,7 @@ void Texture::setData(int xoffset, int yoffset, int width, int height, const voi
 {
 	bind();
 
-	glTexSubImage2D(GL_TEXTURE_2D, 0, xoffset, yoffset, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, xoffset, yoffset, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 }
 
 std::string Texture::textureTypeToString(Type type)

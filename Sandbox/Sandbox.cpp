@@ -1,13 +1,16 @@
 #include "EntryPoint.h"
 #include "sge.h"
 
-class CustomBoxBehaviour : public ScriptableEntity
+static Color getPixel(int i, int j)
 {
-	virtual void onCreate() override
-	{
-		std::cout << "Box was created modafaka.\n";
-	}
-};
+	int width = Engine::get()->getWindow()->getWidth();
+	int height = Engine::get()->getWindow()->getHeight();
+
+	unsigned char r = static_cast<unsigned char>(((float)j / width) * 255);
+	unsigned char g = static_cast<unsigned char>(((float)i / height) * 255);
+
+	return { r, g, 0};
+}
 
 class Sandbox : public Application
 {
@@ -35,14 +38,36 @@ public:
 
 		auto box1 = ShapeFactory::createBox(&Engine::get()->getContext()->getActiveScene()->getRegistry());
 
-		auto tex = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/rock1-ue/rock1-albedo.png", false);
 		
-		auto& img = box1.addComponent<ImageComponent>(tex);
-		img.size = glm::vec2(100, 100);
-		img.position = glm::vec2(200, 200);
+		
+		int width = Engine::get()->getWindow()->getWidth();
+		int height = Engine::get()->getWindow()->getHeight();
 
-		int* pixels = new int[640000];
-		tex.get()->setData(500, 500, 800, 800, pixels);
+		auto tex = Texture::createEmptyTexture(width, height);
+
+		auto& img = box1.addComponent<ImageComponent>(tex);
+		img.size = glm::vec2(width, height);
+		img.position = glm::vec2(0, 0);
+
+		int* pixels = new int[width * height];
+		for (int i = 0; i < height; i++)
+		{
+			for (int j = 0; j < width; j++)
+			{
+				//unsigned char r = static_cast<unsigned char>(((float)j / width) * 255);
+				//unsigned char g = 0xFF; // Full green
+				//unsigned char b = 0xFF; // Full blue
+				//unsigned char a = 0xFF; // Full alpha
+
+				auto pixel = getPixel(i, j);
+				 
+				// Combine into a single integer
+				pixels[i * width + j] = 0xFF << 24 | (pixel.b << 16) | (pixel.g << 8) | pixel.r;
+			}
+		}
+
+		
+		tex.get()->setData(0, 0, width, height, pixels);
 
 		//auto tHandler = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/gear_store_8k.hdr", Texture::Type::None);
 		//Skybox::CreateSkybox(Skybox::TexType::EQUIRECTANGULAR, tHandler);

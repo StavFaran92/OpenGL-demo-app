@@ -13,7 +13,7 @@ void main()
 {
     vec3 pos = aPos;
     fragPos = (pos.xy + 1.0) / 2.0; // Transform from [-1, 1] to [0, 1] range
-    gl_Position = projection * model * vec4(aPos, 1.0);                                       
+    gl_Position = projection * model * vec4(fragPos.xy, 1.0, 1.0);                                       
 }
 
 #frag

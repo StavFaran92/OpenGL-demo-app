@@ -70,3 +70,10 @@ enum class RigidbodyType : int
 	Dynamic,
 	Kinematic
 };
+
+struct Color
+{
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+};
