@@ -49,6 +49,8 @@ void FlyCamera::keyControl(double deltaTime)
 	{
 		m_camera.getComponent<Transformation>().translate(m_right * velocity);
 	}
+
+	calculateOrientation();
 }
 
 void FlyCamera::OnMouseMotion(float xChange, float yChange)
@@ -90,6 +92,11 @@ void FlyCamera::calculateOrientation()
 
 	m_right = glm::normalize(glm::cross(m_front, m_worldUp));
 	m_up = glm::normalize(glm::cross(m_right, m_front));
+
+	auto& camComponent = m_camera.getComponent<CameraComponent>();
+	auto& camTransform = m_camera.getComponent<Transformation>();
+	camComponent.up = m_up;
+	camComponent.center = camTransform.getWorldPosition() + m_front;
 }
 
 void FlyCamera::onUpdate(float deltaTime)

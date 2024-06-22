@@ -7,7 +7,7 @@ class CameraScript : public ScriptableEntity
 {
 	virtual void onCreate() override
 	{
-		m_flyCamera = std::make_shared<FlyCamera>(entity, 0, 0, 3, 3);
+		m_flyCamera = std::make_shared<FlyCamera>(entity, 0, 0, 3, 1);
 	}
 
 	virtual void onUpdate(float deltaTime) {
