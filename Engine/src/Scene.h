@@ -104,8 +104,7 @@ public:
 	glm::mat4 getProjection() const;
 
 	Entity getActiveCamera() const;
-	void setPrimaryEditorCamera(Entity e);
-	void setPrimarySceneCamera(Entity e);
+	void setPrimaryCamera(Entity e);
 
 	void startSimulation();
 	void stopSimulation();
@@ -182,8 +181,7 @@ private:
 	std::shared_ptr<Shader> m_skyboxShader;
 	std::shared_ptr<Shader> m_UIShader;
 
-	Entity m_primaryEditorCamera;
-	Entity m_primarySceneCamera;
+	Entity m_primaryCamera;
 
 	Entity m_quadUI;
 };

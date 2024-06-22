@@ -71,6 +71,8 @@ void SceneSerializer::deserializeScene(const SerializedScene& serializedScene, S
 		if (serializedEnt.camera)
 		{
 			entityHandler.addComponent<CameraComponent>(serializedEnt.camera.value());
+
+			scene.setPrimaryCamera(entityHandler);
 		}
 
 		if (serializedEnt.mat)

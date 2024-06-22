@@ -93,17 +93,17 @@ glm::mat4 Scene::getProjection() const
 
 Entity Scene::getActiveCamera() const
 {
-	return m_primaryEditorCamera;
+	return m_primaryCamera;
 }
 
-void Scene::setPrimaryEditorCamera(Entity e)
-{
-	m_primaryEditorCamera = e;
-}
+//void Scene::setPrimaryEditorCamera(Entity e)
+//{
+//	m_primaryEditorCamera = e;
+//}
 
-void Scene::setPrimarySceneCamera(Entity e)
+void Scene::setPrimaryCamera(Entity e)
 {
-	m_primarySceneCamera = e;
+	m_primaryCamera = e;
 }
 
 //void Scene::setPrimaryCamera(ICamera* camera)
@@ -318,14 +318,8 @@ void Scene::draw(float deltaTime)
 	glViewport(0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
 	m_deferredRenderer->clear();
 
-	Entity primaryCameraEntity = m_primaryEditorCamera;
-	if (m_isSimulationActive)
-	{
-		primaryCameraEntity = m_primarySceneCamera;
-	}
-
-	auto& primaryCamera = primaryCameraEntity.getComponent<CameraComponent>();
-	auto& primaryCameraTransform = primaryCameraEntity.getComponent<Transformation>();
+	auto& primaryCamera = m_primaryCamera.getComponent<CameraComponent>();
+	auto& primaryCameraTransform = m_primaryCamera.getComponent<Transformation>();
 
 
 	IRenderer::DrawQueueRenderParams params;
@@ -594,14 +588,8 @@ void Scene::removeEntity(const Entity& e)
 
 glm::mat4 Scene::getActiveCameraView() const
 {
-	Entity primaryCameraEntity = m_primaryEditorCamera;
-	if (m_isSimulationActive)
-	{
-		primaryCameraEntity = m_primarySceneCamera;
-	}
-
-	auto& primaryCamera = primaryCameraEntity.getComponent<CameraComponent>();
-	auto& primaryCameraTransform = primaryCameraEntity.getComponent<Transformation>();
+	auto& primaryCamera = m_primaryCamera.getComponent<CameraComponent>();
+	auto& primaryCameraTransform = m_primaryCamera.getComponent<Transformation>();
 
 	return glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCamera.center, primaryCamera.up);
 }

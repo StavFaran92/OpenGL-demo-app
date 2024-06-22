@@ -1,17 +1,6 @@
 #include "EntryPoint.h"
 #include "sge.h"
 
-static Color getPixel(int i, int j)
-{
-	int width = Engine::get()->getWindow()->getWidth();
-	int height = Engine::get()->getWindow()->getHeight();
-
-	unsigned char r = static_cast<unsigned char>(((float)j / width) * 255);
-	unsigned char g = static_cast<unsigned char>(((float)i / height) * 255);
-
-	return { r, g, 0};
-}
-
 class Sandbox : public Application
 {
 public:
@@ -33,41 +22,6 @@ public:
 		//guitar_forward.getComponent<Transformation>().setLocalPosition({ 0,0,3 });
 		//auto& renderable = guitar_forward.getComponent<RenderableComponent>();
 		//renderable.renderTechnique = RenderableComponent::Forward;
-
-		Skybox::CreateSkyboxFromEquirectangularMap( "C:/Users/Stav/Downloads/medieval_cafe_2k.hdr");
-
-		auto box1 = ShapeFactory::createBox(&Engine::get()->getContext()->getActiveScene()->getRegistry());
-
-		
-		
-		int width = Engine::get()->getWindow()->getWidth();
-		int height = Engine::get()->getWindow()->getHeight();
-
-		auto tex = Texture::createEmptyTexture(width, height);
-
-		auto& img = box1.addComponent<ImageComponent>(tex);
-		img.size = glm::vec2(width, height);
-		img.position = glm::vec2(0, 0);
-
-		int* pixels = new int[width * height];
-		for (int i = 0; i < height; i++)
-		{
-			for (int j = 0; j < width; j++)
-			{
-				//unsigned char r = static_cast<unsigned char>(((float)j / width) * 255);
-				//unsigned char g = 0xFF; // Full green
-				//unsigned char b = 0xFF; // Full blue
-				//unsigned char a = 0xFF; // Full alpha
-
-				auto pixel = getPixel(i, j);
-				 
-				// Combine into a single integer
-				pixels[i * width + j] = 0xFF << 24 | (pixel.b << 16) | (pixel.g << 8) | pixel.r;
-			}
-		}
-
-		
-		tex.get()->setData(0, 0, width, height, pixels);
 
 		//auto tHandler = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/gear_store_8k.hdr", Texture::Type::None);
 		//Skybox::CreateSkybox(Skybox::TexType::EQUIRECTANGULAR, tHandler);
@@ -98,29 +52,6 @@ public:
 		//auto aoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Raw/Cerberus_AO.tga", false);
 		//mat.setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
 		//box.getComponent<Transformation>().setLocalPosition({ i * 3,0,j * 3 });
-
-		/*for (int i = -1; i < 2; i++)
-		{
-			for (int j = -1; j < 2; j++)
-			{
-				auto box = ShapeFactory::createSphere(getContext()->getActiveScene().get());
-				auto& mat = box.getComponent<Material>();
-				auto albedoMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_albedo.png", Texture::Type::Albedo);
-				mat.setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
-				auto roughnessMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_roughness.png", Texture::Type::Roughness);
-				mat.setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
-				auto normalMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_normal-ogl.png", Texture::Type::Normal);
-				mat.setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
-				auto metallicMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_metallic.png", Texture::Type::Metallic);
-				mat.setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
-				auto aoMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_ao.png", Texture::Type::AmbientOcclusion);
-				mat.setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
-				box.getComponent<Transformation>().setLocalPosition({ i * 3,0,j*3 });
-			}
-		}*/
-	
-
-
 
 		//auto& transform = guitar->getComponent<Transformation>();
 		//transform.translate({ 10, 0,0 });

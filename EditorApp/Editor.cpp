@@ -19,6 +19,9 @@ static bool showModelInspectorWindow = false;
 static bool showPrimitiveCreatorWindow = false;
 static bool showMeshSelector = false;
 
+Entity g_primaryCamera;
+Entity g_editorCamera;
+
 static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype);
 void AddColoredLabel(const char* label);
 static void displayTransformation(Transformation& transform, bool& isChanged);
@@ -90,6 +93,8 @@ void RenderSimulationControlView(float width, float height)
 			// Handle stop button click
 			startButtonPressed = false; // Toggle the state
 			Engine::get()->getContext()->getActiveScene()->stopSimulation();
+
+			Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(g_editorCamera);
 		}
 	}
 	else {
@@ -97,6 +102,8 @@ void RenderSimulationControlView(float width, float height)
 			// Handle start button click
 			startButtonPressed = true; // Toggle the state
 			Engine::get()->getContext()->getActiveScene()->startSimulation();
+
+			Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(g_primaryCamera);
 		}
 	}
 
@@ -547,7 +554,7 @@ void RenderSceneHierarchyWindow(float width, float height)
 						if (ImGui::MenuItem("Set as Primary Camera"))
 						{
 							auto scene = Engine::get()->getContext()->getActiveScene();
-							scene->setPrimarySceneCamera(sceneObjects[i].e);
+							scene->setPrimaryCamera(sceneObjects[i].e);
 						}
 					}
 					if (ImGui::MenuItem("Delete"))
@@ -1127,6 +1134,22 @@ public:
 	{
 		
 		ImGui::SetCurrentContext((ImGuiContext * )Engine::get()->getImguiHandler()->getCurrentContext());
+
+		auto scene = Engine::get()->getContext()->getActiveScene();
+
+		// store Default scene camera
+		g_primaryCamera = scene->getActiveCamera();
+
+		// set Editor camera as active camera
+		auto editorCamera = scene->createEntity("Editor Camera");
+		editorCamera.addComponent<CameraComponent>();
+		editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
+		editorCamera.RemoveComponent<ObjectComponent>();
+		scene->setPrimaryCamera(editorCamera);
+
+		g_editorCamera = editorCamera;
+
+		
 
 		updateScene();
 
