@@ -4,11 +4,12 @@
 #include "Core.h"
 
 #include "Keyboard.h"
+#include <glm/glm.hpp>
 
-class EngineAPI FlyCamera : public ScriptableEntity
+class FlyCamera : public ScriptableEntity
 {
 public:
-	FlyCamera(glm::vec3 startPosition, float startYaw, float startPitch, float startMoveSpeed, float startTurnSpeed);
+	FlyCamera(Entity camera, float yaw, float pitch, float moveSpeed, float turnSpeed);
 
 	void keyControl(double deltaTime);
 	void OnMouseMotion(float xChange, float yChange);
@@ -18,7 +19,7 @@ public:
 	//inline glm::mat4 getView() override { return glm::lookAt(m_position, m_position + m_front, m_up); }
 	//inline glm::vec3 getPosition() override { return m_position; }
 
-	//void update(float deltaTime) override;
+	void onUpdate(float deltaTime) override;
 
 	~FlyCamera();
 private:
@@ -35,4 +36,6 @@ private:
 
 	float m_movementSpeed;
 	float m_turnSpeed;
+
+	Entity m_camera;
 };

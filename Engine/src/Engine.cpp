@@ -197,6 +197,11 @@ bool Engine::init(const InitParams& initParams)
         return false;
     }
 
+    if (initParams.startSimulationOnStartup)
+    {
+        m_context->getActiveScene()->startSimulation();
+    }
+
     m_isInit = true;
 
     logInfo("SGE Initialized Successfully!");

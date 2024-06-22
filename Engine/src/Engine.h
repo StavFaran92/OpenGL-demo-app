@@ -46,6 +46,7 @@ struct InitParams
     bool loadExistingProject = false;
     bool overwriteExisting = false;
     bool templateScene = false;
+    bool startSimulationOnStartup = false;
 };
 
 class EngineAPI Engine

@@ -1,12 +1,30 @@
 #include "EntryPoint.h"
 #include "sge.h"
 
+#include "FlyCamera.h"
+
+class CameraScript : public ScriptableEntity
+{
+	virtual void onCreate() override
+	{
+		m_flyCamera = std::make_shared<FlyCamera>(entity, 0, 0, 3, 3);
+	}
+
+	virtual void onUpdate(float deltaTime) {
+		m_flyCamera->onUpdate(deltaTime);
+	};
+
+	std::shared_ptr<FlyCamera> m_flyCamera;
+};
+
 class Sandbox : public Application
 {
 public:
 
 	void start() override
 	{
+
+		Engine::get()->getContext()->getActiveScene()->getActiveCamera().addComponent<NativeScriptComponent>().bind<CameraScript>();
 		//auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
 
 		//auto box1 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());

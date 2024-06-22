@@ -97,6 +97,16 @@ void SceneSerializer::deserializeScene(const SerializedScene& serializedScene, S
 			entityHandler.addComponent<CollisionSphereComponent>(serializedEnt.collisionSphere.value());
 		}
 
+		if (serializedEnt.collisionBox)
+		{
+			entityHandler.addComponent<CollisionBoxComponent>(serializedEnt.collisionBox.value());
+		}
+
+		if (serializedEnt.rigidBody)
+		{
+			entityHandler.addComponent<RigidBodyComponent>(serializedEnt.rigidBody.value());
+		}
+
 		if (serializedEnt.nsc)
 		{
 			auto& nsc = entityHandler.addComponent<NativeScriptComponent>(serializedEnt.nsc.value());

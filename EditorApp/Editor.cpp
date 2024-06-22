@@ -786,7 +786,7 @@ static void addSkyboxTextureEditWidget(SkyboxComponent& skybox)
 	
 
 	ImVec2 imageSize(50, 50);
-	ImGui::Image(reinterpret_cast<ImTextureID>(skybox.skyboxImage.get()->getID()), imageSize, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+	ImGui::Image(reinterpret_cast<ImTextureID>(skybox.originalImage.get()->getID()), imageSize, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
 
 	//if (ImGui::IsItemClicked()) {
 

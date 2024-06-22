@@ -32,6 +32,11 @@ InitParams parseArgs(int argc, char* argv[])
         {
             params.templateScene = true;
         }
+
+        else if (strcmp(argv[i], "-ss") == 0)
+        {
+            params.startSimulationOnStartup = true;
+        }
     }
 
     return params;
