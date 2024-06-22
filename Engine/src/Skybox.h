@@ -33,7 +33,7 @@ public:
     static Entity CreateSkyboxFromEquirectangularMap(Resource<Texture> texture, Entity& entity, Scene* scene = nullptr);
 
 private:
-    static Entity createSkyboxHelper(Resource<Texture> texture, Entity& entity, Scene* scene);
+    static Entity createSkyboxHelper(Resource<Texture> cubemap, Resource<Texture> equirectangularMap, Entity& entity, Scene* scene);
 
     
 private:

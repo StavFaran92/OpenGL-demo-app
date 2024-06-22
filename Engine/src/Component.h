@@ -31,10 +31,11 @@ struct EngineAPI SkyboxComponent : public Component
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(skyboxImage);
+		archive(originalImage);
 	}
 
 	Resource<Texture> skyboxImage;
+	Resource<Texture> originalImage;
 };
 
 struct EngineAPI RenderableComponent : public Component
