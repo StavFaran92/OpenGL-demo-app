@@ -464,13 +464,28 @@ void displaySceneObjects(int& selected)
 				selectedEntity = sceneObject.e;
 			}
 		}
-		if(selected == i)
+		else if(selected == i)
 		{
 			if (ImGui::InputText("##edit", buffer, IM_ARRAYSIZE(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
 			{
-				objectComponent.name = buffer;
-				updateScene(); // Assuming this updates any necessary scene state
-				selectedEntityRename = false;
+				bool isValid = true;
+				for (int j = 0; j < sceneObjects.size(); j++)
+				{
+					if (j == i) continue;
+
+					if (sceneObjects[j].name == buffer)
+					{
+						logError("Cannot rename to already existing name.");
+						isValid = false;
+					}
+				}
+
+				if (isValid)
+				{
+					objectComponent.name = buffer;
+					updateScene(); // Assuming this updates any necessary scene state
+					selectedEntityRename = false;
+				}
 			}
 		}
 
