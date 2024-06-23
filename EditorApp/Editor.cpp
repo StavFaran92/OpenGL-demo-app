@@ -1,3 +1,4 @@
+#include "Menu.h"
 #include "EntryPoint.h"
 #include "sge.h"
 
@@ -18,6 +19,7 @@ static bool showModelCreatorWindow = false;
 static bool showModelInspectorWindow = false;
 static bool showPrimitiveCreatorWindow = false;
 static bool showMeshSelector = false;
+static bool selectedEntityRename = false;
 
 Entity g_primaryCamera;
 Entity g_editorCamera;
@@ -217,7 +219,6 @@ Entity  selectedEntity = Entity::EmptyEntity;
 
 auto style = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoCollapse;
 
-static const char* g_supportedFormats = "All formats (*.obj *.blend *.fbx *.dae)\0*.obj;*.blend;*.fbx;*.dae\0obj files (*.obj)\0*.obj\0Blender 3D (*.blend)\0*.blend\0Autodesk 3D (*.fbx)\0*.fbx\0Collada (*dae)\0*.dae\0";
 static const char* g_supportedTextureFormats = "All formats (*.png *.jpg)\0";
 
 void AddColoredLabel(const char* label) 
@@ -438,7 +439,85 @@ void ShowModelCreatorWindow()
 	}
 }
 
-void RenderSceneHierarchyWindow(float width, float height) 
+void displaySceneObjects(int& selected)
+{
+	for (int i = 0; i < sceneObjects.size(); ++i)
+	{
+		auto& sceneObject = sceneObjects[i];
+		auto& objectComponent = sceneObject.e.getComponent<ObjectComponent>();
+
+		// Editable text field
+		char buffer[256];
+		strncpy(buffer, objectComponent.name.c_str(), sizeof(buffer));
+		buffer[sizeof(buffer) - 1] = '\0'; // Ensure null termination
+
+		ImGui::PushID(i); // Push a unique ID to avoid ImGui ID conflicts
+
+		
+		
+
+		if (!selectedEntityRename)
+		{
+			if (ImGui::Selectable(buffer, selected == i))
+			{
+				selected = i;
+				selectedEntity = sceneObject.e;
+			}
+		}
+		if(selected == i)
+		{
+			if (ImGui::InputText("##edit", buffer, IM_ARRAYSIZE(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
+			{
+				objectComponent.name = buffer;
+				updateScene(); // Assuming this updates any necessary scene state
+				selectedEntityRename = false;
+			}
+		}
+
+
+		
+
+		if (selected == i)
+		{
+			if (ImGui::BeginPopupContextItem("SceneObjectContextPopup"))
+			{
+				if (ImGui::MenuItem("Rename"))
+				{
+					// Focus the input text when renaming
+					selectedEntityRename = true;
+				}
+
+				if (sceneObject.e.HasComponent<CameraComponent>())
+				{
+					if (ImGui::MenuItem("Set as Primary Camera"))
+					{
+						auto scene = Engine::get()->getContext()->getActiveScene();
+						scene->setPrimaryCamera(sceneObject.e);
+					}
+				}
+
+				if (ImGui::MenuItem("Delete"))
+				{
+					sceneObject.e.remove();
+					updateScene();
+					selectedEntity = Entity::EmptyEntity;
+					selected = -1;
+				}
+
+				ImGui::EndPopup();
+
+			}
+
+
+
+
+		}
+
+		ImGui::PopID();
+	}
+}
+
+void RenderSceneHierarchyWindow(float width, float height)
 {
 	float windowWidth = width * 0.2f;
 	ImVec2 windowPos(5, 25); // Adjust vertical position to make space for the menu bar
@@ -517,68 +596,7 @@ void RenderSceneHierarchyWindow(float width, float height)
 	{
 		// Iterate through each scene object and render it as a selectable item in the list
 		static int selected = -1;
-		for (int i=0; i<sceneObjects.size(); i++) 
-		{
-			bool isSelected = (selected == i);
-			if (isSelected)
-			{
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.2f, 0.2f, 1.0f)); // Change background color
-			}
-			if (!isSelected)
-			{
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Default color
-			}
-
-			if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
-			{
-				// I have no idea why i-1 is used here, it's just works..
-				selectedEntity = sceneObjects[i-1].e;
-
-				selected = i - 1;
-
-				ImGui::OpenPopup("SceneObjectContextPopup");
-			}
-
-			if (selected == i)
-			{
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
-				if (ImGui::BeginPopup("SceneObjectContextPopup"))
-				{
-					//if (ImGui::MenuItem("Rename"))
-					//{
-					//	sceneObjects[i].name
-					//	updateScene();
-					//}
-					if (sceneObjects[i].e.HasComponent<CameraComponent>())
-					{
-						if (ImGui::MenuItem("Set as Primary Camera"))
-						{
-							auto scene = Engine::get()->getContext()->getActiveScene();
-							scene->setPrimaryCamera(sceneObjects[i].e);
-						}
-					}
-					if (ImGui::MenuItem("Delete"))
-					{
-						sceneObjects[i].e.remove();
-						updateScene();
-						selectedEntity = Entity::EmptyEntity;
-						selected = -1;
-					}
-
-					ImGui::EndPopup();
-				}
-				ImGui::PopStyleColor();
-			}
-
-			if (ImGui::Selectable(sceneObjects[i].name.c_str()))
-			{
-				selectedEntity = sceneObjects[i].e;
-
-				selected = i;
-			}
-
-			ImGui::PopStyleColor();
-		}
+		displaySceneObjects(selected);
 		ImGui::EndListBox();
 	}
 

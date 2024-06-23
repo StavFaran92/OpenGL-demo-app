@@ -20,7 +20,7 @@ struct EngineAPI Component
 
 struct EngineAPI TagComponent : public Component
 {
-	[[maybe_unused]] bool empty = false;
+	std::string tag;
 };
 
 struct EngineAPI SkyboxComponent : public Component
