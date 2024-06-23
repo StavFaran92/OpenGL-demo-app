@@ -152,6 +152,8 @@ struct EngineAPI CameraComponent : public Component
 		archive(center, up);
 	}
 
+	glm::vec3 front{1,0,0};
+	glm::vec3 right;
 	glm::vec3 center;
 	glm::vec3 up;
 };

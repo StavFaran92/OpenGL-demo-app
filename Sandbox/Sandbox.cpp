@@ -2,6 +2,7 @@
 #include "sge.h"
 
 #include "FlyCamera.h"
+#include "PlayerController.h"
 
 class CameraScript : public ScriptableEntity
 {
@@ -23,9 +24,19 @@ public:
 
 	void start() override
 	{
-
-		Engine::get()->getContext()->getActiveScene()->getActiveCamera().addComponent<NativeScriptComponent>().bind<CameraScript>();
+		auto& camera = Engine::get()->getContext()->getActiveScene()->getActiveCamera();
+		camera.addComponent<NativeScriptComponent>().bind<CameraScript>();
+		auto& camTransform = camera.getComponent<Transformation>();
 		//auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
+
+		Entity player = Engine::get()->getContext()->getActiveScene()->getEntityByName("Player");
+		player.addComponent<NativeScriptComponent>().bind<PlayerController>(camera, 3);
+		auto& playerTransform = player.getComponent<Transformation>();
+
+		camTransform.setLocalPosition(playerTransform.getLocalPosition());
+		camTransform.translate({0,2,0});
+
+		camera.setParent(player);
 
 		//auto box1 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 		//auto& nsc = box1.addComponent<NativeScriptComponent>();

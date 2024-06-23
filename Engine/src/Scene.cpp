@@ -327,7 +327,7 @@ void Scene::draw(float deltaTime)
 	params.context = m_context;
 	params.registry = &m_registry->get();
 	params.renderer = m_forwardRenderer.get();
-	params.view = &glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCamera.center, primaryCamera.up);
+	params.view = &glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCameraTransform.getWorldPosition() + primaryCamera.front, primaryCamera.up);
 	params.projection = &m_defaultPerspectiveProjection;
 	params.cameraPos = primaryCameraTransform.getWorldPosition();
 	params.irradianceMap = m_irradianceMap;
@@ -591,7 +591,7 @@ glm::mat4 Scene::getActiveCameraView() const
 	auto& primaryCamera = m_primaryCamera.getComponent<CameraComponent>();
 	auto& primaryCameraTransform = m_primaryCamera.getComponent<Transformation>();
 
-	return glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCamera.center, primaryCamera.up);
+	return glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCameraTransform.getWorldPosition() + primaryCamera.front, primaryCamera.up);
 }
 
 
@@ -650,6 +650,20 @@ void Scene::addCoroutine(const std::function<bool(float)>& coroutine)
 //{
 //	m_coroutineManager->removeCoroutine(coroutine);
 //}
+
+Entity Scene::getEntityByName(const std::string& name) const
+{
+	// TODO optimize this using hashmap
+	for (auto& [e, obj] : m_registry->getRegistry().view<ObjectComponent>().each())
+	{
+		if (name == obj.name)
+		{
+			return Entity(e, m_registry.get());
+		}
+	}
+
+	return Entity::EmptyEntity;
+}
 
 void Scene::startSimulation()
 {

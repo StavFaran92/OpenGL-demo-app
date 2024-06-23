@@ -28,29 +28,29 @@ FlyCamera::FlyCamera(Entity camera, float yaw, float pitch, float moveSpeed, flo
 
 void FlyCamera::keyControl(double deltaTime)
 {
-	float velocity = m_movementSpeed * deltaTime;
+	//float velocity = m_movementSpeed * deltaTime;
 
-	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_W))
-	{
-		m_camera.getComponent<Transformation>().translate(m_front * velocity);
-	}
+	//if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_W))
+	//{
+	//	m_camera.getComponent<Transformation>().translate(m_front * velocity);
+	//}
 
-	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_S))
-	{
-		m_camera.getComponent<Transformation>().translate(-m_front * velocity);
-	}
+	//if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_S))
+	//{
+	//	m_camera.getComponent<Transformation>().translate(-m_front * velocity);
+	//}
 
-	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_A))
-	{
-		m_camera.getComponent<Transformation>().translate(-m_right * velocity);
-	}
+	//if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_A))
+	//{
+	//	m_camera.getComponent<Transformation>().translate(-m_right * velocity);
+	//}
 
-	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_D))
-	{
-		m_camera.getComponent<Transformation>().translate(m_right * velocity);
-	}
+	//if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_D))
+	//{
+	//	m_camera.getComponent<Transformation>().translate(m_right * velocity);
+	//}
 
-	calculateOrientation();
+	//calculateOrientation();
 }
 
 void FlyCamera::OnMouseMotion(float xChange, float yChange)
@@ -97,6 +97,8 @@ void FlyCamera::calculateOrientation()
 	auto& camTransform = m_camera.getComponent<Transformation>();
 	camComponent.up = m_up;
 	camComponent.center = camTransform.getWorldPosition() + m_front;
+	camComponent.front = m_front;
+	camComponent.right = m_right;
 }
 
 void FlyCamera::onUpdate(float deltaTime)

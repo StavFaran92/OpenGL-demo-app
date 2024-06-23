@@ -52,7 +52,7 @@ void Transformation::setParent(Entity parent)
 
 void Transformation::removeParent()
 {
-	if (m_parent == Entity::EmptyEntity)
+	if (m_parent.handlerID() == Entity::EmptyEntity.handlerID())
 		return;
 
 	//m_parent.removeChildren(m_entity);

@@ -17,6 +17,8 @@ void CameraControllerFreeLook::calculateOrientation()
 	m_cameraComponent->center = m_cameraTransform->getLocalPosition() + m_front;
 
 	m_right = glm::normalize(glm::cross(m_front, m_up));
+	m_cameraComponent->front = m_front;
+	m_cameraComponent->right = m_right;
 	m_cameraComponent->up = glm::normalize(glm::cross(m_right, m_front));
 }
 

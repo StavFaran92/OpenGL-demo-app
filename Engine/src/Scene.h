@@ -110,6 +110,8 @@ public:
 	void stopSimulation();
 	bool isSimulationActive() const;
 
+	Entity getEntityByName(const std::string& name) const;
+
 	//void setPrimaryCamera(ICamera* camera);
 
 private:
