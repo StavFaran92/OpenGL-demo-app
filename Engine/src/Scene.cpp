@@ -279,23 +279,7 @@ void Scene::update(float deltaTime)
 		m_PhysicsScene->simulate(1 / 120.f);
 		m_PhysicsScene->fetchResults(true);
 
-		//physx::PxU32 nbActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
-		//if (nbActors)
-		//{
-		//	std::vector<physx::PxRigidActor*> actors(nbActors);
-		//	m_PhysicsScene->getActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC, reinterpret_cast<physx::PxActor**>(&actors[0]), nbActors);
-
-		//	for (physx::PxRigidActor* actor : actors)
-		//	{
-		//		entity_id id = *(entity_id*)actor->userData;
-		//		Entity e{ entt::entity(id), m_registry.get() };
-		//		auto& transform = e.getComponent<Transformation>();
-
-		//		physx::PxTransform pxTransform = actor->getGlobalPose();
-		//		PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
-		//	}
-		//}
-
+		// Update kinematics
 		physx::PxU32 nbDynamicActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC);
 		if (nbDynamicActors)
 		{
@@ -310,29 +294,12 @@ void Scene::update(float deltaTime)
 				{
 					entity_id id = *(entity_id*)actor->userData;
 					Entity e{ entt::entity(id), m_registry.get() };
-					auto& transform = e.getComponent<Transformation>();
 					auto& rb = e.getComponent<RigidBodyComponent>();
-				
-					auto& worldPos = transform.getWorldPosition();
-					auto& worldRot = transform.getWorldRotation();
-
 
 					physx::PxTransform targetPose = actor->getGlobalPose();
 					targetPose.p += physx::PxVec3(rb.m_targetPisition.x, rb.m_targetPisition.y, rb.m_targetPisition.z);
 					targetPose.q = physx::PxQuat(physx::PxIdentity);
 
-
-					physx::PxVec3 pxTranslation(rb.m_targetPisition.x, rb.m_targetPisition.y, rb.m_targetPisition.z);
-					//physx::PxVec3 pxTranslation(worldPos.x, worldPos.y, worldPos.z);
-					physx::PxQuat pxRotation{ worldRot.x, worldRot.y, worldRot.z, worldRot.w};
-
-					physx::PxTransform newPose(pxTranslation, physx::PxQuat(physx::PxIdentity));
-
-
-
-					//trans.p = { rb.m_targetPisition.x, rb.m_targetPisition.y, rb.m_targetPisition.z };
-					//trans.p = { 0, 0, 0 };
-					//physx::PxTransform newPose = PhysXUtils::toPhysXTransform(transform);
 					if (rb.isChanged)
 					{
 						dynamicBody->setKinematicTarget(targetPose);
@@ -342,6 +309,7 @@ void Scene::update(float deltaTime)
 			}
 		}
 
+		// Retrieve Graphics transform from Physics transform
 		physx::PxU32 nbActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
 		if (nbActors)
 		{
@@ -358,21 +326,6 @@ void Scene::update(float deltaTime)
 				PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
 			}
 		}
-
-		//for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
-		//{
-		//	Entity e{ entity, this };
-		//	auto& transform = e.getComponent<Transformation>();
-		//	physx::PxRigidActor* actor = (physx::PxRigidActor*)rb.simulatedBody;
-		//	
-		//	physx::PxTransform pxTransform = actor->getGlobalPose();
-		//	PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
-		//}
-
-		//for (auto&& [entity, transformation] : m_registry.view<Transformation>().each())
-		//{
-		//	transformation.update(deltaTime);
-		//}
 	}
 }
 
