@@ -47,26 +47,27 @@ public:
 
 		if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_W))
 		{
-			//entity.getComponent<Transformation>().translate(camComponent.front *velocity);
 			movement = glm::vec3(camComponent.front.x, 0, camComponent.front.z) * velocity;
 		}
 
-		if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_S))
+		else if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_S))
 		{
-			//entity.getComponent<Transformation>().translate(-camComponent.front * velocity);
 			movement = -glm::vec3(camComponent.front.x, 0, camComponent.front.z) * velocity;
 		}
 
-		if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_A))
+		else if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_A))
 		{
-			//entity.getComponent<Transformation>().translate(-camComponent.right * velocity);
 			movement = -glm::vec3(camComponent.right.x, 0, camComponent.right.z) * velocity;
 		}
 
-		if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_D))
+		else if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_D))
 		{
-			//entity.getComponent<Transformation>().translate(camComponent.right * velocity);
 			movement = glm::vec3(camComponent.right.x, 0, camComponent.right.z) * velocity;
+		}
+
+		else
+		{
+			movement = glm::vec3(0);
 		}
 
 		handleGroundCheck();
