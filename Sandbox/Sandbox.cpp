@@ -34,10 +34,15 @@ public:
 		auto& playerTransform = player.getComponent<Transformation>();
 		playerTransform.setWorldPosition({ 0, 10, 0 });
 
-		camTransform.setLocalPosition(playerTransform.getLocalPosition());
+		//camTransform.setLocalPosition(playerTransform.getLocalPosition());
+		//camTransform.translate({0,2,0});
+
+		//camera.setParent(player);
+
+		//camTransform.setLocalPosition(playerTransform.getLocalPosition());
 		camTransform.translate({0,2,0});
 
-		camera.setParent(player);
+		//camera.setParent(player);
 
 		//auto box1 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 		//auto& nsc = box1.addComponent<NativeScriptComponent>();

@@ -319,7 +319,7 @@ void Scene::update(float deltaTime)
 					//physx::PxVec3 pxTranslation(worldPos.x, worldPos.y, worldPos.z);
 					physx::PxQuat pxRotation{ worldRot.x, worldRot.y, worldRot.z, worldRot.w};
 
-					physx::PxTransform newPose(pxTranslation, pxRotation);
+					physx::PxTransform newPose(pxTranslation, physx::PxQuat(physx::PxIdentity));
 
 
 
@@ -329,6 +329,7 @@ void Scene::update(float deltaTime)
 					if (rb.isChanged)
 					{
 						dynamicBody->setKinematicTarget(newPose);
+						rb.isChanged = false;
 					}
 				}
 			}
