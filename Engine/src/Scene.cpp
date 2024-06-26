@@ -315,6 +315,13 @@ void Scene::update(float deltaTime)
 				
 					auto& worldPos = transform.getWorldPosition();
 					auto& worldRot = transform.getWorldRotation();
+
+
+					physx::PxTransform targetPose = actor->getGlobalPose();
+					targetPose.p += physx::PxVec3(rb.m_targetPisition.x, rb.m_targetPisition.y, rb.m_targetPisition.z);
+					targetPose.q = physx::PxQuat(physx::PxIdentity);
+
+
 					physx::PxVec3 pxTranslation(rb.m_targetPisition.x, rb.m_targetPisition.y, rb.m_targetPisition.z);
 					//physx::PxVec3 pxTranslation(worldPos.x, worldPos.y, worldPos.z);
 					physx::PxQuat pxRotation{ worldRot.x, worldRot.y, worldRot.z, worldRot.w};
@@ -328,7 +335,7 @@ void Scene::update(float deltaTime)
 					//physx::PxTransform newPose = PhysXUtils::toPhysXTransform(transform);
 					if (rb.isChanged)
 					{
-						dynamicBody->setKinematicTarget(newPose);
+						dynamicBody->setKinematicTarget(targetPose);
 						rb.isChanged = false;
 					}
 				}

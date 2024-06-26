@@ -7,5 +7,5 @@
 class EngineAPI Physics
 {
 public:
-	static bool raycast(glm::vec3 origin, glm::vec3 dir, int maxDistance);
+	static bool raycast(glm::vec3 origin, glm::vec3 dir, float distance);
 };
