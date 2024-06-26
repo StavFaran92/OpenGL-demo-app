@@ -94,6 +94,8 @@ struct EngineAPI RigidBodyComponent : public Component
 	RigidBodyComponent() = default;
 	RigidBodyComponent(RigidbodyType type, float mass) : type(type), mass(mass) {};
 
+	void move(glm::vec3 position);
+
 	template <class Archive>
 	void serialize(Archive& archive) {
 		archive(type, mass);
@@ -101,6 +103,8 @@ struct EngineAPI RigidBodyComponent : public Component
 
 	RigidbodyType type = RigidbodyType::Static;
 	float mass = 0;
+	bool isChanged = false;
+	glm::vec3 m_targetPisition{0};
 	void* simulatedBody = nullptr;
 };
 
@@ -302,4 +306,11 @@ struct EngineAPI ImageComponent : public Component
 	float rotate = 0;
 
 	Resource<Texture> image;
+};
+
+struct CharacterController : public Component
+{
+	CharacterController() = default;
+
+
 };

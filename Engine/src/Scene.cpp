@@ -279,6 +279,61 @@ void Scene::update(float deltaTime)
 		m_PhysicsScene->simulate(1 / 120.f);
 		m_PhysicsScene->fetchResults(true);
 
+		//physx::PxU32 nbActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
+		//if (nbActors)
+		//{
+		//	std::vector<physx::PxRigidActor*> actors(nbActors);
+		//	m_PhysicsScene->getActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC, reinterpret_cast<physx::PxActor**>(&actors[0]), nbActors);
+
+		//	for (physx::PxRigidActor* actor : actors)
+		//	{
+		//		entity_id id = *(entity_id*)actor->userData;
+		//		Entity e{ entt::entity(id), m_registry.get() };
+		//		auto& transform = e.getComponent<Transformation>();
+
+		//		physx::PxTransform pxTransform = actor->getGlobalPose();
+		//		PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
+		//	}
+		//}
+
+		physx::PxU32 nbDynamicActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC);
+		if (nbDynamicActors)
+		{
+			std::vector<physx::PxRigidActor*> actors(nbDynamicActors);
+			m_PhysicsScene->getActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC, reinterpret_cast<physx::PxActor**>(&actors[0]), nbDynamicActors);
+
+			for (physx::PxRigidActor* actor : actors)
+			{
+				auto dynamicBody = static_cast<physx::PxRigidDynamic*>(actor);
+				auto& flags = dynamicBody->getRigidBodyFlags();
+				if (flags.isSet(physx::PxRigidBodyFlag::eKINEMATIC))
+				{
+					entity_id id = *(entity_id*)actor->userData;
+					Entity e{ entt::entity(id), m_registry.get() };
+					auto& transform = e.getComponent<Transformation>();
+					auto& rb = e.getComponent<RigidBodyComponent>();
+				
+					auto& worldPos = transform.getWorldPosition();
+					auto& worldRot = transform.getWorldRotation();
+					physx::PxVec3 pxTranslation(rb.m_targetPisition.x, rb.m_targetPisition.y, rb.m_targetPisition.z);
+					//physx::PxVec3 pxTranslation(worldPos.x, worldPos.y, worldPos.z);
+					physx::PxQuat pxRotation{ worldRot.x, worldRot.y, worldRot.z, worldRot.w};
+
+					physx::PxTransform newPose(pxTranslation, pxRotation);
+
+
+
+					//trans.p = { rb.m_targetPisition.x, rb.m_targetPisition.y, rb.m_targetPisition.z };
+					//trans.p = { 0, 0, 0 };
+					//physx::PxTransform newPose = PhysXUtils::toPhysXTransform(transform);
+					if (rb.isChanged)
+					{
+						dynamicBody->setKinematicTarget(newPose);
+					}
+				}
+			}
+		}
+
 		physx::PxU32 nbActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
 		if (nbActors)
 		{
@@ -782,6 +837,11 @@ void Scene::stopSimulation()
 
 
 	m_isSimulationActive = false;
+}
+
+physx::PxScene* Scene::getPhysicsScene() const
+{
+	return m_PhysicsScene;
 }
 
 bool Scene::isSimulationActive() const

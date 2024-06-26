@@ -284,6 +284,8 @@ void Engine::run(Application* app)
         LAST = NOW;
         NOW = SDL_GetPerformanceCounter();
 
+        if (NOW == LAST) continue;
+
         deltaTime = (double)SDL_GetPerformanceFrequency() / ((NOW - LAST) * 1000);
 
         //Handle events on queue

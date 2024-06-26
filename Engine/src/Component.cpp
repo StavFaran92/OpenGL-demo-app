@@ -84,3 +84,9 @@ void InstanceBatch::build()
 	glVertexAttribDivisor(8, 1);
 	glVertexAttribDivisor(9, 1);
 }
+
+void RigidBodyComponent::move(glm::vec3 position)
+{
+	m_targetPisition = position;
+	isChanged = true;
+}

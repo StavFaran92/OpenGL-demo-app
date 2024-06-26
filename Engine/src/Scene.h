@@ -112,6 +112,8 @@ public:
 
 	Entity getEntityByName(const std::string& name) const;
 
+	physx::PxScene* getPhysicsScene() const;
+
 	//void setPrimaryCamera(ICamera* camera);
 
 private:

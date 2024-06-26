@@ -30,8 +30,9 @@ public:
 		//auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
 
 		Entity player = Engine::get()->getContext()->getActiveScene()->getEntityByName("Player");
-		player.addComponent<NativeScriptComponent>().bind<PlayerController>(camera, 3);
+		player.addComponent<NativeScriptComponent>().bind<PlayerController>(camera, 30);
 		auto& playerTransform = player.getComponent<Transformation>();
+		playerTransform.setWorldPosition({ 0, 10, 0 });
 
 		camTransform.setLocalPosition(playerTransform.getLocalPosition());
 		camTransform.translate({0,2,0});
