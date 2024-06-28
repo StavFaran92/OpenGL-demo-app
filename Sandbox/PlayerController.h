@@ -36,7 +36,7 @@ public:
 		// Apply the computed velocity to move the character
 		auto& transform = entity.getComponent<Transformation>();
 		auto& rb = entity.getComponent<RigidBodyComponent>();
-		glm::vec3 newPosition = movement + glm::vec3(0, m_velocity.y / 1000.f, 0);
+		glm::vec3 newPosition = m_movementH + m_movementV + glm::vec3(0, m_velocity.y / 1000.f, 0);
 		rb.move(newPosition);
 	}
 
@@ -48,27 +48,28 @@ public:
 
 		if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_W))
 		{
-			movement = glm::vec3(camComponent.front.x, 0, camComponent.front.z) * velocity;
+			m_movementH = glm::vec3(camComponent.front.x, 0, camComponent.front.z) * velocity;
 		}
-
 		else if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_S))
 		{
-			movement = -glm::vec3(camComponent.front.x, 0, camComponent.front.z) * velocity;
+			m_movementH = -glm::vec3(camComponent.front.x, 0, camComponent.front.z) * velocity;
 		}
-
-		else if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_A))
-		{
-			movement = -glm::vec3(camComponent.right.x, 0, camComponent.right.z) * velocity;
-		}
-
-		else if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_D))
-		{
-			movement = glm::vec3(camComponent.right.x, 0, camComponent.right.z) * velocity;
-		}
-
 		else
 		{
-			movement = glm::vec3(0);
+			m_movementH = glm::vec3(0);
+		}
+
+		if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_A))
+		{
+			m_movementV = -glm::vec3(camComponent.right.x, 0, camComponent.right.z) * velocity;
+		}
+		else if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_D))
+		{
+			m_movementV = glm::vec3(camComponent.right.x, 0, camComponent.right.z) * velocity;
+		}
+		else
+		{
+			m_movementV = glm::vec3(0);
 		}
 
 		handleGroundCheck();
@@ -89,5 +90,6 @@ private:
 	float m_jumpForce = 200.f;
 
 	glm::vec3 m_velocity{};
-	glm::vec3 movement{};
+	glm::vec3 m_movementH{};
+	glm::vec3 m_movementV{};
 };
