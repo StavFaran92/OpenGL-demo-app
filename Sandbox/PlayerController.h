@@ -40,7 +40,7 @@ public:
 		rb.move(newPosition);
 	}
 
-	void onUpdate(float deltaTime) override
+	void handleMoveInput(float deltaTime)
 	{
 		float velocity = m_movementSpeed * deltaTime;
 
@@ -72,9 +72,28 @@ public:
 			m_movementV = glm::vec3(0);
 		}
 
+
+	}
+
+	void shoot()
+	{
+		auto& camComponent = m_camera.getComponent<CameraComponent>();
+		auto& transform = entity.getComponent<Transformation>();
+		if (Physics::raycast(transform.getWorldPosition() + camComponent.front, camComponent.front, 100.f))
+		{
+			logError("Hit!");
+		}
+	}
+
+	void onUpdate(float deltaTime) override
+	{
+		
+		handleMoveInput(deltaTime);
 		handleGroundCheck();
 		applyGravity(deltaTime);
 		applyMovement(deltaTime);
+
+		Engine::get()->getInput()->getMouse()->onMousePressed(Mouse::MouseButton::LeftMousebutton, [&](SDL_Event e) { shoot(); });
 
 		// Handle jumping
 		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_SCANCODE_SPACE, [&](SDL_Event e) { if(m_isGrounded)m_velocity.y = m_jumpForce; });

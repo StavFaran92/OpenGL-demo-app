@@ -3,6 +3,7 @@
 
 #include "FlyCamera.h"
 #include "PlayerController.h"
+#include "EnemyController.h"
 
 class CameraScript : public ScriptableEntity
 {
@@ -38,6 +39,9 @@ public:
 		camTransform.translate({0,2,0});
 
 		camera.setParent(player);
+
+		Entity enemy_1 = Engine::get()->getContext()->getActiveScene()->getEntityByName("Enemy_1");
+		enemy_1.addComponent<NativeScriptComponent>().bind<EnemyController>(3);
 
 		//camTransform.setLocalPosition(playerTransform.getLocalPosition());
 		//camTransform.translate({0,2,0});
