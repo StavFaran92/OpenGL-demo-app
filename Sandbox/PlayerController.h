@@ -20,11 +20,12 @@ public:
 
 	void applyGravity(float deltaTime)
 	{
-		if (m_isGrounded)
+		if (m_isGrounded && m_velocity.y < 0)
 		{
 			m_velocity.y = 0.f; // Reset vertical velocity when grounded
 		}
-		else
+		
+		if (!m_isGrounded)
 		{
 			m_velocity.y +=  -9.81f; // Apply gravity
 		}
@@ -73,6 +74,10 @@ public:
 		handleGroundCheck();
 		applyGravity(deltaTime);
 		applyMovement(deltaTime);
+
+		// Handle jumping
+		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_SCANCODE_SPACE, [&](SDL_Event e) { if(m_isGrounded)m_velocity.y = m_jumpForce; });
+		
 	}
 
 private:
@@ -80,6 +85,8 @@ private:
 	Entity m_camera;
 
 	bool m_isGrounded = false;
+	bool m_isJumping = false;
+	float m_jumpForce = 200.f;
 
 	glm::vec3 m_velocity{};
 	glm::vec3 movement{};
