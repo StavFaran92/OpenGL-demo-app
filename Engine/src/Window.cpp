@@ -8,7 +8,10 @@
 
 Window::Window(int width, int height) :
 	m_width(width), m_height(height)
-{}
+{
+	m_halfWidth = m_width / 2.f;
+	m_halfHeight = m_height / 2.f;
+}
 
 int Window::init()
 {

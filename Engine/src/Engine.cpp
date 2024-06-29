@@ -291,6 +291,8 @@ void Engine::run(Application* app)
         //Handle events on queue
         handleEvents(e, quit);
 
+        m_window->update();
+
         if (quit)
             return;
 

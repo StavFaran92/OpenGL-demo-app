@@ -9,6 +9,8 @@ class CameraScript : public ScriptableEntity
 {
 	virtual void onCreate() override
 	{
+		Engine::get()->getWindow()->lockMouse();
+
 		m_flyCamera = std::make_shared<FlyCamera>(entity, 0, 0, 3, 1);
 	}
 
@@ -25,6 +27,10 @@ public:
 
 	void start() override
 	{
+		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_SCANCODE_ESCAPE, [](SDL_Event e) {Engine::get()->stop(); });
+
+		SDL_ShowCursor(SDL_DISABLE);
+
 		auto& camera = Engine::get()->getContext()->getActiveScene()->getActiveCamera();
 		camera.addComponent<NativeScriptComponent>().bind<CameraScript>();
 		auto& camTransform = camera.getComponent<Transformation>();

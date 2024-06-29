@@ -53,6 +53,8 @@ void ImguiHandler::proccessEvents(SDL_Event& e)
 
 void ImguiHandler::render()
 {
+	if (m_guiList.size() == 0) return;
+
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();

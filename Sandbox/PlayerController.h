@@ -78,8 +78,8 @@ public:
 	void shoot()
 	{
 		auto& camComponent = m_camera.getComponent<CameraComponent>();
-		auto& transform = entity.getComponent<Transformation>();
-		if (Physics::raycast(transform.getWorldPosition() + camComponent.front, camComponent.front, 100.f))
+		auto& transform = m_camera.getComponent<Transformation>();
+		if (Physics::raycast(transform.getWorldPosition(), camComponent.front, 100.f))
 		{
 			logError("Hit!");
 		}
