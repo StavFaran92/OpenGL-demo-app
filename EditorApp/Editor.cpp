@@ -780,6 +780,12 @@ static const char* renderTechniqueStrList[]{
 	"Defererred"
 };
 
+static void addTextureEditWidget(Resource<Texture > texture)
+{
+	ImVec2 imageSize(50, 50);
+	ImGui::Image(reinterpret_cast<ImTextureID>(texture.get()->getID()), imageSize, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+}
+
 static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype)
 {
 	unsigned int tid = 0;
@@ -973,7 +979,11 @@ void RenderInspectorWindow(float width, float height)
 			});
 
 		displayComponent<SkyboxComponent>("Skybox", [](SkyboxComponent& skybox) {
-			addSkyboxTextureEditWidget(skybox);
+			addTextureEditWidget(skybox.originalImage);
+			});
+
+		displayComponent<ImageComponent>("Image", [](ImageComponent& image) {
+			addTextureEditWidget(image.image);
 			});
 
 		if (ImGui::Button("Add Component", ImVec2(windowWidth, 0)))
@@ -1035,6 +1045,11 @@ void RenderInspectorWindow(float width, float height)
 				{
 					selectedEntity.addComponent<InstanceBatch>(std::vector<std::shared_ptr<Transformation>>{}, meshComponent->mesh);
 				}
+			}
+
+			if (ImGui::MenuItem("Image"))
+			{
+				selectedEntity.addComponent<ImageComponent>(Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1));
 			}
 
 			ImGui::EndPopup();
