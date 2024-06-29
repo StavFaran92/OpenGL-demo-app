@@ -47,7 +47,6 @@ public:
 	ImguiHandler* getImguiHandler() const;
 	Input* getInput() const;
 	EventSystem* getEventSystem() const;
-	ModelImporter* getModelImporter() const;
 	//std::shared_ptr<Material> getDefaultMaterial() const;
 
 	std::shared_ptr<Scene> getActiveScene() const;

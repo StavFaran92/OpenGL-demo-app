@@ -29,6 +29,8 @@ public:
 	{
 		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_SCANCODE_ESCAPE, [](SDL_Event e) {Engine::get()->stop(); });
 
+		Engine::get()->getSubSystem<Assets>().importTexture("");
+
 		SDL_ShowCursor(SDL_DISABLE);
 
 		auto& camera = Engine::get()->getContext()->getActiveScene()->getActiveCamera();

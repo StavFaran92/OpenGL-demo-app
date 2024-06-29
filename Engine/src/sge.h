@@ -54,3 +54,4 @@
 #include "ResourceManager.h"
 #include "ObjectPicker.h"
 #include "Physics.h"
+#include "Assets.h"

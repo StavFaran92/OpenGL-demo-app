@@ -158,7 +158,7 @@ bool Engine::init(const InitParams& initParams)
         return false;
     }
 
-    m_modelImporter = std::make_shared<ModelImporter>();
+    auto modelImporter = new ModelImporter();
 
     m_timeManager = std::make_shared<TimeManager>();
     m_physicsSystem = std::make_shared<PhysicsSystem>();
@@ -190,8 +190,8 @@ bool Engine::init(const InitParams& initParams)
         saveProject();
     }
 
-    m_objectPicker = std::make_shared<ObjectPicker>();
-    if (!m_objectPicker->init())
+    auto objectPicker = new ObjectPicker();
+    if (!objectPicker->init())
     {
         logError("Object picker failed to init!");
         return false;
@@ -344,11 +344,6 @@ EventSystem* Engine::getEventSystem() const
     return m_eventSystem.get();
 }
 
-ModelImporter* Engine::getModelImporter() const
-{
-    return m_modelImporter.get();
-}
-
 CacheSystem* Engine::getMemoryManagementSystem() const
 {
     return m_memoryManagementSystem.get();
@@ -392,11 +387,6 @@ CommonShaders* Engine::getCommonShaders() const
 CommonTextures* Engine::getCommonTextures() const
 {
     return m_commonTextures.get();
-}
-
-ObjectPicker* Engine::getObjectPicker() const
-{
-    return m_objectPicker.get();
 }
 
 void Engine::loadProject(const std::string& dirPath)

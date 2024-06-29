@@ -26,8 +26,8 @@ public:
 		camera->setPosition(-450, 40, 0);
 		
 		{
-			auto importer = getContext()->getModelImporter();
-			auto rock = importer->loadModelFromFile("C:/Users/Stav/Downloads/rock1-ue/rock2.obj", getContext()->getActiveScene().get());
+			auto importer = Engine::get()->getSubSystem<ModelImporter>();
+			auto rock = importer.loadModelFromFile("C:/Users/Stav/Downloads/rock1-ue/rock2.obj", getContext()->getActiveScene().get());
 
 			auto rockMat = std::make_shared<Material>();
 

@@ -3,6 +3,9 @@
 #include <memory>
 #include <string>
 #include <atomic>
+#include <map>
+#include <typeinfo>
+#include <typeindex>
 #include <unordered_map>
 #include "Core.h"
 #include "UUID.h"
@@ -64,7 +67,6 @@ public:
     ImguiHandler* getImguiHandler() const;
     Input* getInput() const;
     EventSystem* getEventSystem() const;
-    ModelImporter* getModelImporter() const;
     CacheSystem* getMemoryManagementSystem() const;
     ObjectManager* getObjectManager() const;
     TimeManager* getTimeManager() const;
@@ -74,7 +76,6 @@ public:
     ResourceManager* getResourceManager() const;
     CommonShaders* getCommonShaders() const;
     CommonTextures* getCommonTextures() const;
-    ObjectPicker* getObjectPicker() const;
     template<typename T>MemoryPool<T>* getMemoryPool() const {};
     template<>MemoryPool<Texture>* getMemoryPool() const { return m_memoryPoolTexture.get(); }
     template<>MemoryPool<Mesh>* getMemoryPool() const { return m_memoryPoolMesh.get(); }
@@ -90,6 +91,26 @@ public:
     void pause();
     void resume();
     void stop();
+
+    // Template function to register a subsystem
+    template<typename T> void registerSubSystem(const T* subSystem)
+    {
+        m_subSystems[typeid(T*)] = (void*)subSystem;
+    }
+
+    // Template function to get a registered subsystem
+    template<typename T> T* getSubSystem() const
+    {
+        auto it = m_subSystems.find(typeid(T*));
+        if (it != m_subSystems.end())
+        {
+            return reinterpret_cast<T*>(it->second);
+        }
+        else
+        {
+            throw std::exception("Subsystem not found");
+        }
+    }
 
 
     Engine(const Engine&) = delete;
@@ -129,7 +150,6 @@ protected:
     std::shared_ptr<ImguiHandler> m_imguiHandler;
     std::shared_ptr<Input> m_input;
     std::shared_ptr<EventSystem> m_eventSystem;
-    std::shared_ptr<ModelImporter> m_modelImporter;
     std::shared_ptr<CacheSystem> m_memoryManagementSystem;
     std::shared_ptr<ObjectManager> m_objectManager;
     std::shared_ptr<TimeManager> m_timeManager;
@@ -142,7 +162,8 @@ protected:
     std::shared_ptr<ProjectManager> m_projectManager;
     std::shared_ptr<CommonShaders> m_commonShaders;
     std::shared_ptr<CommonTextures> m_commonTextures;
-    std::shared_ptr<ObjectPicker> m_objectPicker;
+
+    std::map<std::type_index, void*> m_subSystems;
 
     std::shared_ptr<Material> m_defaultMaterial;
 

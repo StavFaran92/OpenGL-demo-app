@@ -18,6 +18,8 @@
 
 ModelImporter::ModelImporter()
 {
+	Engine::get()->registerSubSystem<ModelImporter>(this);
+
 	init();
 }
 

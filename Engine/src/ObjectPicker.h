@@ -22,6 +22,8 @@ public:
 		unsigned int PrimID = 0;
 	};
 
+	ObjectPicker();
+
 	bool init();
 
 	int pickObject(int x, int y);

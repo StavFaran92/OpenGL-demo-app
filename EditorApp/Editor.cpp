@@ -419,7 +419,7 @@ void ShowModelCreatorWindow()
 
 			//todo validate input
 
-			auto entity = Engine::get()->getModelImporter()->loadModelFromFile(modelPathBuffer.c_str(), Engine::get()->getContext()->getActiveScene().get());
+			auto entity = Engine::get()->getSubSystem<ModelImporter>()->loadModelFromFile(modelPathBuffer.c_str(), Engine::get()->getContext()->getActiveScene().get());
 
 			entity.getComponent<MaterialComponent>().addMaterial(mat);
 			mat = nullptr;
@@ -644,7 +644,7 @@ void RenderViewWindow(float width, float height)
 			// We alter the mouse position from small window into full screen (the renderered object pick texture)
 			int alteredX = (mousePos.x - startX) / windowWidth * Engine::get()->getWindow()->getWidth();
 			int alteredY = (mousePos.y - 65) / windowHeight * Engine::get()->getWindow()->getHeight();
-			int selectedID = Engine::get()->getObjectPicker()->pickObject(alteredX, alteredY);
+			int selectedID = Engine::get()->getSubSystem<ObjectPicker>()->pickObject(alteredX, alteredY);
 
 			for (auto& sceneObj : sceneObjects)
 			{
