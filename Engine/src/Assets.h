@@ -3,11 +3,15 @@
 #include "Engine.h"
 #include "Resource.h"
 #include "Texture.h"
+#include "Core.h"
 
-class Assets
+class EngineAPI Assets
 {
 public:
 	Assets();
 
-	Resource<Texture> importTexture(const std::string& path);
+	Resource<Texture> importTexture2D(const std::string& path, bool flip = false);
+
+	static Texture::TextureData extractTextureDataFromFile(const std::string& fileLocation);
+private:
 };

@@ -810,7 +810,7 @@ static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::strin
 
 		if (texturetoUsePath) {
 			// Load the new texture and set it to the material
-			auto& tex = Texture::create2DTextureFromFile(texturetoUsePath, false);
+			auto& tex = Engine::get()->getSubSystem<Assets>()->importTexture2D(texturetoUsePath, false);
 
 			mat->setTexture(ttype, tex);
 		}
@@ -840,7 +840,7 @@ static void addSkyboxTextureEditWidget(SkyboxComponent& skybox)
 
 	//	if (texturetoUsePath) {
 	//		// Load the new texture and set it to the material
-	//		auto& tex = Texture::create2DTextureFromFile(texturetoUsePath, false);
+	//		auto& tex = Engine::get()->getSubSystem<Assets>()->importTexture2D(texturetoUsePath, false);
 
 	//		mat->setTexture(ttype, tex);
 	//	}

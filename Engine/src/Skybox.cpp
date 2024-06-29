@@ -12,6 +12,7 @@
 #include "Material.h"
 #include "Component.h"
 #include "Context.h"
+#include "Assets.h"
 #include "Engine.h"
 #include "Scene.h"
 #include "Cubemap.h"
@@ -29,7 +30,7 @@ Entity Skybox::CreateSkyboxFromEquirectangularMap(const std::string& equirectnag
         scene = Engine::get()->getContext()->getActiveScene().get();
     }
 
-    auto equirectnagularMap = Texture::create2DTextureFromFile(equirectnagularMapPath);
+    auto equirectnagularMap = Engine::get()->getSubSystem<Assets>()->importTexture2D(equirectnagularMapPath);
 
     //texture = TextureTransformer::flipVertical(texture);
 

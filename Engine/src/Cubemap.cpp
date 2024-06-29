@@ -14,6 +14,7 @@
 #include "CacheSystem.h"
 #include "Engine.h"
 #include "Resource.h"
+#include "Assets.h"
 #include "Factory.h"
 #include "Context.h"
 #include "ProjectAssetRegistry.h"
@@ -58,7 +59,7 @@ Cubemap::CubemapData Cubemap::extractCubemapDataFromEquirectangularFile(const st
 {
 
 
-	auto equirectangularMap = Texture::create2DTextureFromFile(fileLocation);
+	auto equirectangularMap = Engine::get()->getSubSystem<Assets>()->importTexture2D(fileLocation);
 	
 
 	CubemapData cubemapData;
@@ -94,7 +95,7 @@ Resource<Texture> Cubemap::createCubemapFromEquirectangularFile(const std::strin
 
 		//open equirect file
 		//create equirect texture
-		auto equirectangularMap = Texture::create2DTextureFromFile(fileLocation);
+		auto equirectangularMap = Engine::get()->getSubSystem<Assets>()->importTexture2D(fileLocation);
 		//convert equirect to cubemap
 		auto cubemap = EquirectangularToCubemapConverter::fromEquirectangularToCubemap(equirectangularMap);
 

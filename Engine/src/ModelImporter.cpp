@@ -15,6 +15,7 @@
 #include "Engine.h"
 #include "CacheSystem.h"
 #include "Scene.h"
+#include "Assets.h"
 
 ModelImporter::ModelImporter()
 {
@@ -226,7 +227,7 @@ std::vector<Resource<Texture>> ModelImporter::loadMaterialTextures(aiMaterial* m
 		auto textureName = str.C_Str();
 
 		// Texture not found in cache -> load it and add to cache
-		auto textureHandler = Texture::create2DTextureFromFile(session.fileDir + "/" + textureName);
+		auto textureHandler = Engine::get()->getSubSystem<Assets>()->importTexture2D(session.fileDir + "/" + textureName);
 		textureHandlers.push_back(textureHandler);
 	}
 	return textureHandlers;

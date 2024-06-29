@@ -31,15 +31,15 @@ public:
 
 			auto rockMat = std::make_shared<Material>();
 
-			auto albedoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/rock1-ue/rock1-albedo.png", false);
+			auto albedoMap = Engine::get()->getSubSystem<Assets>()->::importTexture2D("C:/Users/Stav/Downloads/rock1-ue/rock1-albedo.png", false);
 			rockMat->setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
-			auto roughnessMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/rock1-ue/rock1-roughness.png", false);
+			auto roughnessMap = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/rock1-ue/rock1-roughness.png", false);
 			rockMat->setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
-			auto normalMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/rock1-ue/rock1-normal_dx.png", false);
+			auto normalMap = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/rock1-ue/rock1-normal_dx.png", false);
 			rockMat->setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
-			auto metallicMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/rock1-ue/rock1-metallic.png", false);
+			auto metallicMap = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/rock1-ue/rock1-metallic.png", false);
 			rockMat->setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
-			auto aoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/rock1-ue/rock1-ao.png", false);
+			auto aoMap = Assets::importTexture2D("C:/Users/Stav/Downloads/rock1-ue/rock1-ao.png", false);
 			rockMat->setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
 
 			rock.getComponent<MaterialComponent>().addMaterial(rockMat);
@@ -78,13 +78,13 @@ public:
 
 			auto sphereMat = std::make_shared<Material>();
 
-			auto albedoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Ground048_2K-JPG/Ground048_2K-JPG_Color.jpg", false);
+			auto albedoMap = Assets::importTexture2D("C:/Users/Stav/Downloads/Ground048_2K-JPG/Ground048_2K-JPG_Color.jpg", false);
 			sphereMat->setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
-			auto roughnessMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Ground048_2K-JPG/Ground048_2K-JPG_Roughness.jpg", false);
+			auto roughnessMap = Engine::get()->getSubystem<Assets>()->::importTexture2D("C:/Users/Stav/Downloads/Ground048_2K-JPG/Ground048_2K-JPG_Roughness.jpg", false);
 			sphereMat->setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
-			auto normalMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Ground048_2K-JPG/Ground048_2K-JPG_NormalDX.jpg", false);
+			auto normalMap = Engine::get()->getSubSystem<Assets>()->::importTexture2D("C:/Users/Stav/Downloads/Ground048_2K-JPG/Ground048_2K-JPG_NormalDX.jpg", false);
 			sphereMat->setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
-			auto aoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Ground048_2K-JPG/Ground048_2K-JPG_AmbientOcclusion.jpg", false);
+			auto aoMap = Engine::get()->getSubSystem<Assets>()->::importTexture2D("C:/Users/Stav/Downloads/Ground048_2K-JPG/Ground048_2K-JPG_AmbientOcclusion.jpg", false);
 			sphereMat->setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
 
 			sphere.getComponent<MaterialComponent>().addMaterial(sphereMat);

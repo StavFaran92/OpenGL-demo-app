@@ -85,7 +85,7 @@ public:
 
 	static Resource<Texture> createDummyTexture(unsigned char color[3]);
 
-	static Texture::TextureData extractTextureDataFromFile(const std::string& fileLocation);
+	//static Texture::TextureData extractTextureDataFromFile(const std::string& fileLocation);
 
 	void build(const TextureData& textureData);
 

@@ -9,6 +9,7 @@
 #include "ProjectAssetRegistry.h"
 #include "MeshSerializer.h"
 #include "Texture.h"
+#include "Assets.h"
 //#include "TextureSerializer.h"
 #include <nlohmann/json.hpp>
 
@@ -80,7 +81,7 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     {
         // Open bin file
         fs::path imageFilePath = (projectDir / textureUID).string() + ".png";
-        Texture::TextureData textureData = Texture::extractTextureDataFromFile(imageFilePath.string());
+        Texture::TextureData textureData = Assets::extractTextureDataFromFile(imageFilePath.string());
 
         // Create texture
         Texture* texture = new Texture();

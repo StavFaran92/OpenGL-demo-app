@@ -29,7 +29,7 @@ public:
 	{
 		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_SCANCODE_ESCAPE, [](SDL_Event e) {Engine::get()->stop(); });
 
-		Engine::get()->getSubSystem<Assets>().importTexture("");
+		Engine::get()->getSubSystem<Assets>()->importTexture("");
 
 		SDL_ShowCursor(SDL_DISABLE);
 
@@ -88,15 +88,15 @@ public:
 	
 		//auto box = ShapeFactory::createSphere(getContext()->getActiveScene().get());
 		//auto& mat = gun.addComponent<Material>();
-		//auto albedoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_A.tga", false);
+		//auto albedoMap = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_A.tga", false);
 		//mat.setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
-		//auto roughnessMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_R.tga", false);
+		//auto roughnessMap = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_R.tga", false);
 		//mat.setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
-		//auto normalMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_N.tga", false);
+		//auto normalMap = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_N.tga", false);
 		//mat.setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
-		//auto metallicMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga", false);
+		//auto metallicMap = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga", false);
 		//mat.setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
-		//auto aoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Raw/Cerberus_AO.tga", false);
+		//auto aoMap = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Raw/Cerberus_AO.tga", false);
 		//mat.setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
 		//box.getComponent<Transformation>().setLocalPosition({ i * 3,0,j * 3 });
 
