@@ -37,6 +37,11 @@ namespace glm
 	}
 
 	template<class Archive>
+	void serialize(Archive& archive, glm::vec2& v) {
+		archive(v.x, v.y);
+	}
+
+	template<class Archive>
 	void serialize(Archive& archive, glm::quat& q) {
 		archive(q.x, q.y, q.z, q.w);
 	}
@@ -69,11 +74,12 @@ struct SerializableEntity
 	std::optional<PointLight> pLight;
 	std::optional<ObjectComponent> obj;
 	std::optional<SkyboxComponent> skybox;
+	std::optional<ImageComponent> image;
 
 	template <class Archive>
 	void serialize(Archive& archive) {
 		archive(entity, transform, rigidBody, collisionBox, collisionSphere, mesh, renderableComponent, camera,
-			nsc, mat, dLight, pLight, obj, skybox);
+			nsc, mat, dLight, pLight, obj, skybox, image);
 	}
 };
 

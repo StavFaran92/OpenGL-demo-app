@@ -1085,6 +1085,10 @@ void RenderInspectorWindow(float width, float height)
 			addTextureEditWidget(image.image, { 50, 50 }, [&](std::string uuid) {
 				image.image = Resource<Texture>(uuid);
 				});
+			ImGui::DragFloat("posX", &image.position.x);
+			ImGui::DragFloat("posY", &image.position.y);
+			ImGui::DragFloat("sizeX", &image.size.x);
+			ImGui::DragFloat("sizeY", &image.size.y);
 			});
 
 		if (ImGui::Button("Add Component", ImVec2(windowWidth, 0)))
@@ -1150,7 +1154,8 @@ void RenderInspectorWindow(float width, float height)
 
 			if (ImGui::MenuItem("Image"))
 			{
-				selectedEntity.addComponent<ImageComponent>(Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1));
+				auto& img = selectedEntity.addComponent<ImageComponent>(Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1));
+				img.size = { 50, 50 };
 			}
 
 			ImGui::EndPopup();

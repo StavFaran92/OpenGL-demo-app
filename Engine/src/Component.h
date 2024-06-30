@@ -298,7 +298,7 @@ struct EngineAPI ImageComponent : public Component
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(image);
+		archive(image, size, position, rotate);
 	}
 
 	glm::vec2 size;

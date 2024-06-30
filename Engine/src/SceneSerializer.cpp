@@ -25,6 +25,7 @@ SerializedScene SceneSerializer::serializeScene(Scene& scene)
 			getComponentIfExists<PointLight>(e),
 			getComponentIfExists<ObjectComponent>(e),
 			getComponentIfExists<SkyboxComponent>(e),
+			getComponentIfExists<ImageComponent>(e),
 		};
 		serializedScene.serializedEntities.push_back(se);
 	});
@@ -105,6 +106,11 @@ void SceneSerializer::deserializeScene(const SerializedScene& serializedScene, S
 		if (serializedEnt.rigidBody)
 		{
 			entityHandler.addComponent<RigidBodyComponent>(serializedEnt.rigidBody.value());
+		}
+
+		if (serializedEnt.image)
+		{
+			entityHandler.addComponent<ImageComponent>(serializedEnt.image.value());
 		}
 
 		if (serializedEnt.nsc)
