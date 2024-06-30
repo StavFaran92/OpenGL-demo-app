@@ -73,8 +73,36 @@ Resource<Texture> Assets::importTexture2D(const std::string& fileLocation, bool 
 		stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), textureData.width, textureData.height, textureData.bpp, textureData.data, textureData.width * textureData.bpp);
 		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
 
+		m_textures[texture.getUID()] = texture;
+
 		stbi_image_free(textureData.data);
 
 		return texture;
 		});
+}
+
+Resource<Texture> Assets::loadTexture2D(UUID uid, const std::string& path)
+{
+	Texture::TextureData textureData = extractTextureDataFromFile(path);
+
+	// Create texture
+	Texture* texture = new Texture();
+	texture->build(textureData);
+	Engine::get()->getMemoryPool<Texture>()->add(uid, texture);
+
+	auto& res = Resource<Texture>(uid);
+
+	m_textures[uid] = res;
+
+	return res;
+}
+
+std::vector<std::string> Assets::getAllTextures() const
+{
+	std::vector<std::string> result;
+	for (auto [uuid, _] : m_textures)
+	{
+		result.push_back(uuid);
+	}
+	return result;
 }

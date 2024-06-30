@@ -16,6 +16,8 @@ namespace fs = std::filesystem;
 
 static bool ShowLightCreatorWindow = false;
 static bool showModelCreatorWindow = false;
+static bool showTextureImportWindow = false;
+static bool showAssetTextureSelectWindow = false;
 static bool showModelInspectorWindow = false;
 static bool showPrimitiveCreatorWindow = false;
 static bool showMeshSelector = false;
@@ -23,6 +25,9 @@ static bool selectedEntityRename = false;
 
 Entity g_primaryCamera;
 Entity g_editorCamera;
+
+std::function<void(std::string uuid)> assetTextureSelectCB;
+Resource<Texture> selectedAssetTexture;
 
 static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype);
 void AddColoredLabel(const char* label);
@@ -140,6 +145,59 @@ static void displayTransformation(Transformation& transform, bool& isChanged)
 	}
 }
 
+static void displayAssetTextureSelectWindow()
+{
+	if (showAssetTextureSelectWindow)
+	{
+		ImGui::Begin("Select Texture", &showAssetTextureSelectWindow, ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::Text("Available Textures:");
+		ImGui::Separator();
+
+		static int selectedTextureIndex = -1;
+
+		auto& textureList = Engine::get()->getSubSystem<Assets>()->getAllTextures();
+
+		for (int i = 0; i < textureList.size(); i++)
+		{
+			bool isSelected = (selectedTextureIndex == i);
+			if (isSelected)
+			{
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.2f, 0.2f, 1.0f)); // Change background color
+			}
+			if (!isSelected)
+			{
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Default color
+			}
+
+			if (ImGui::Selectable(textureList[i].c_str()))
+			{
+				selectedTextureIndex = i;
+			}
+
+			ImGui::PopStyleColor();
+		}
+
+		ImGui::Separator();
+
+		if (ImGui::Button("OK")) {
+			if (selectedTextureIndex >= 0 && selectedTextureIndex < textureList.size())
+			{
+				assetTextureSelectCB(textureList[selectedTextureIndex]);
+
+			}
+			showAssetTextureSelectWindow = false;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel")) {
+			showAssetTextureSelectWindow = false;
+		}
+
+		ImGui::End();
+	}
+}
+
 static void displaySelectMeshWindow(std::string& uuid)
 {
 	if (showMeshSelector) 
@@ -150,7 +208,7 @@ static void displaySelectMeshWindow(std::string& uuid)
 
 		static int selectedMeshIndex = -1;
 
-		auto& meshList = Engine::get()->getMemoryPool<Mesh>()->getAll();
+		auto& meshList = Engine::get()->getMemoryPool<Mesh>()->getAll(); // todo fix
 
 		for (int i = 0; i < meshList.size(); i++) 
 		{
@@ -218,8 +276,6 @@ void updateScene()
 Entity  selectedEntity = Entity::EmptyEntity;
 
 auto style = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoCollapse;
-
-static const char* g_supportedTextureFormats = "All formats (*.png *.jpg)\0";
 
 void AddColoredLabel(const char* label) 
 {
@@ -361,20 +417,70 @@ void LightCreatorWindow()
 
 }
 
-static void addAssetLoadWidget(const std::string& name, ImGuiTextBuffer& textBuffer, const char* assetSupportedFormats)
+static void addAssetLoadWidget(const std::string& name, ImGuiTextBuffer& textBuffer, const char** assetSupportedFormats)
 {
 	ImGui::LabelText("", name.c_str());
 	if (ImGui::Button(std::string("Browse##" + name).c_str()))
 	{
-		auto albedoFilePath = OpenFile(assetSupportedFormats);
-		if (!albedoFilePath.empty())
+		const char* filepath = tinyfd_openFileDialog(
+			"Select A texture to load",
+			"",
+			4,
+			assetSupportedFormats,
+			"",
+			0);
+
+		if (filepath)
 		{
 			textBuffer.clear();
-			textBuffer.append(albedoFilePath.c_str());
+			textBuffer.append(filepath);
 		}
 	}
 	ImGui::SameLine();
 	ImGui::TextUnformatted(textBuffer.begin(), textBuffer.end());
+}
+
+void ShowTextureImportWindow()
+{
+	if (showTextureImportWindow)
+	{
+		ImGui::SetNextWindowSize({ 200, 300 }, ImGuiCond_Appearing);
+		ImGui::Begin("Import Texture", false);
+
+		static ImGuiTextBuffer texturePathBuffer;
+
+		addAssetLoadWidget("Texture", texturePathBuffer, Constants::g_textureSupportedFormats);
+
+		static bool flip = false;
+		ImGui::Checkbox("Flip", &flip);
+
+		ImGui::Separator();
+
+		if (ImGui::Button("Ok"))
+		{
+			if (texturePathBuffer.empty())
+			{
+				logError("Texture Path not specified.");
+				showTextureImportWindow = false;
+				return;
+			}
+
+			//todo validate input
+
+			Engine::get()->getSubSystem<Assets>()->importTexture2D(texturePathBuffer.c_str(), flip);
+
+			texturePathBuffer.clear();
+
+			showTextureImportWindow = false;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel"))
+		{
+			showTextureImportWindow = false;
+		}
+
+		ImGui::End();
+	}
 }
 
 void ShowModelCreatorWindow()
@@ -780,44 +886,34 @@ static const char* renderTechniqueStrList[]{
 	"Defererred"
 };
 
-static void addTextureEditWidget(Resource<Texture > texture)
+static void addTextureEditWidget(Resource<Texture> texture, ImVec2 size, std::function<void(std::string uuid)> callback)
 {
-	ImVec2 imageSize(50, 50);
-	ImGui::Image(reinterpret_cast<ImTextureID>(texture.get()->getID()), imageSize, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+	int texID = 0;
+	if (!texture.isEmpty())
+	{
+		texID = texture.get()->getID();
+	}
+
+	ImGui::Image(reinterpret_cast<ImTextureID>(texID), size, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+
+	if (ImGui::IsItemClicked())
+	{
+		showAssetTextureSelectWindow = true;
+		assetTextureSelectCB = callback;
+	}
 }
 
 static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype)
 {
-	unsigned int tid = 0;
+	Resource<Texture> tex = Resource<Texture>::empty;
 	if (mat->hasTexture(ttype))
 	{
-		tid = mat->getTexture(ttype).get()->getID();
+		tex = mat->getTexture(ttype);
 	}
 
-	ImVec2 imageSize(20, 20);
-	ImGui::Image(reinterpret_cast<ImTextureID>(tid), imageSize, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
-
-	if (ImGui::IsItemClicked()) {
-
-		const char* supportedImageFormats[4] = { "*.png", "*.jpg", "*.bmp", "*.tga" };
-		const char* texturetoUsePath = tinyfd_openFileDialog(
-			"Select A texture to load",
-			"",
-			4,
-			supportedImageFormats,
-			"image files",
-			0);
-
-		if (texturetoUsePath) {
-			// Load the new texture and set it to the material
-			auto& tex = Engine::get()->getSubSystem<Assets>()->importTexture2D(texturetoUsePath, false);
-
-			mat->setTexture(ttype, tex);
-		}
-	}
-
-	ImGui::SameLine();
-	ImGui::Text(name.c_str());
+	addTextureEditWidget(tex, { 20, 20 }, [=](std::string uuid) {
+		mat->setTexture(ttype, Resource<Texture>(uuid));
+	});
 }
 
 static void addSkyboxTextureEditWidget(SkyboxComponent& skybox)
@@ -979,11 +1075,16 @@ void RenderInspectorWindow(float width, float height)
 			});
 
 		displayComponent<SkyboxComponent>("Skybox", [](SkyboxComponent& skybox) {
-			addTextureEditWidget(skybox.originalImage);
+			addTextureEditWidget(skybox.originalImage, { 50, 50 }, [](std::string uuid) {
+					
+					
+				});
 			});
 
 		displayComponent<ImageComponent>("Image", [](ImageComponent& image) {
-			addTextureEditWidget(image.image);
+			addTextureEditWidget(image.image, { 50, 50 }, [&](std::string uuid) {
+				image.image = Resource<Texture>(uuid);
+				});
 			});
 
 		if (ImGui::Button("Add Component", ImVec2(windowWidth, 0)))
@@ -1135,8 +1236,12 @@ class GUI_Helper : public GuiMenu {
 						Engine::get()->saveProject();
 						
 					}
-					if (ImGui::MenuItem("Import")) {
+					if (ImGui::MenuItem("Import Model")) {
 						showModelCreatorWindow = true;
+					}
+
+					if (ImGui::MenuItem("Import Texture")) {
+						showTextureImportWindow = true;
 					}
 					ImGui::Separator(); // Optional: Add a separator
 					if (ImGui::MenuItem("Quit", "Alt+F4")) {
@@ -1165,7 +1270,9 @@ class GUI_Helper : public GuiMenu {
 		RenderInspectorWindow(screenWidth, screenHeight);
 		RenderAssetViewWindow(screenWidth, screenHeight); // Add the Asset View window
 
+		ShowTextureImportWindow();
 		ShowModelCreatorWindow();
+		displayAssetTextureSelectWindow();
 		
 	}
 };

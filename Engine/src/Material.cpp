@@ -71,3 +71,13 @@ void Material::setTexture(Texture::Type textureType, Resource<Texture> textureHa
 {
 	m_textures[textureType] = textureHandler;
 }
+
+std::vector<Resource<Texture>> Material::getAllTextures() const
+{
+	auto& res = std::vector<Resource<Texture>>();
+	for (auto& [_, tex] : m_textures)
+	{
+		res.push_back(tex);
+	}
+	return res;
+}

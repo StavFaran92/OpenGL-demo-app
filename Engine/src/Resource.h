@@ -84,8 +84,16 @@ public:
 	}
 
 	template <class Archive>
-	void serialize(Archive& archive) {
+	void save(Archive& archive) const {
 		archive(m_uid);
+	}
+
+	template <class Archive>
+	void load(Archive& archive) {
+		archive(m_uid);
+		int a = Engine::get()->getResourceManager()->incRef(m_uid);
+		logDebug("Loaded Resource: m_uid: " + m_uid + ", ref count: " + std::to_string(a));
+		
 	}
 
 	~Resource<T>() // destructor

@@ -39,6 +39,7 @@ class Cubemap;
 class CommonShaders;
 class CommonTextures;
 class ObjectPicker;
+class Assets;
 template<typename T>class Resource;
 template<typename T>class Factory;
 template<typename T>class MemoryPool;
@@ -162,6 +163,7 @@ protected:
     std::shared_ptr<ProjectManager> m_projectManager;
     std::shared_ptr<CommonShaders> m_commonShaders;
     std::shared_ptr<CommonTextures> m_commonTextures;
+    std::shared_ptr<Assets> m_assets;
 
     std::map<std::type_index, void*> m_subSystems;
 

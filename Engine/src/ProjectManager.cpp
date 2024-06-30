@@ -81,13 +81,7 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     {
         // Open bin file
         fs::path imageFilePath = (projectDir / textureUID).string() + ".png";
-        Texture::TextureData textureData = Assets::extractTextureDataFromFile(imageFilePath.string());
-
-        // Create texture
-        Texture* texture = new Texture();
-        texture->build(textureData);
-        Engine::get()->getMemoryPool<Texture>()->add(textureUID, texture);
-        Engine::get()->getResourceManager()->incRef(textureUID);
+        Engine::get()->getSubSystem<Assets>()->loadTexture2D(textureUID, imageFilePath.string());
     }
 
     context->deserialize();

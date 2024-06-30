@@ -18,7 +18,21 @@ namespace Constants {
 	static const glm::vec3 VEC3_ONE = glm::vec3(1.0f, 1.0f, 1.0f);
 	static const glm::vec3 VEC3_ZERO = glm::vec3(0.0f, 0.0f, 0.0f);
 
-	static const char* g_supportedFormats = "All formats (*.obj *.blend *.fbx *.dae)\0*.obj;*.blend;*.fbx;*.dae\0obj files (*.obj)\0*.obj\0Blender 3D (*.blend)\0*.blend\0Autodesk 3D (*.fbx)\0*.fbx\0Collada (*dae)\0*.dae\0";
+	static const char* g_supportedFormats[] = {
+		"All formats (*.obj *.blend *.fbx *.dae)\0*.obj;*.blend;*.fbx;*.dae\0",
+		"OBJ files (*.obj)\0*.obj\0",
+		"Blender 3D (*.blend)\0*.blend\0",
+		"Autodesk 3D (*.fbx)\0*.fbx\0",
+		"Collada (*.dae)\0*.dae\0"
+	};
+
+	//const char* supportedImageFormats[4] = { "*.png", "*.jpg", "*.bmp", "*.tga" };
+
+	static const char* g_textureSupportedFormats[] = {
+		"*.png", "*.jpg", "*.bmp", "*.tga",
+	};
+
+
 
 	static const std::string N_A = "N/A";
 }

@@ -160,6 +160,7 @@ bool Engine::init(const InitParams& initParams)
     }
 
     auto modelImporter = new ModelImporter();
+    m_assets = std::make_shared<Assets>();
 
     m_timeManager = std::make_shared<TimeManager>();
     m_physicsSystem = std::make_shared<PhysicsSystem>();
