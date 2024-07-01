@@ -24,7 +24,7 @@ Texture::TextureData Assets::extractTextureDataFromFile(const std::string& fileL
 	Texture::TextureData textureData;
 	textureData.target = GL_TEXTURE_2D;
 
-	textureData.data = stbi_load(fileLocation.c_str(), &textureData.width, &textureData.height, &textureData.bpp, 0);
+	textureData.data = stbi_load(fileLocation.c_str(), &textureData.width, &textureData.height, &textureData.bpp, 4);
 
 	// load validation
 	if (!textureData.data)

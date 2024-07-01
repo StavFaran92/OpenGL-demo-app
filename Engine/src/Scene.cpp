@@ -477,6 +477,9 @@ void Scene::draw(float deltaTime)
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	// Render UI
 	m_UIShader->use();
 	m_UIShader->setProjectionMatrix(m_defaultUIProjection);
@@ -502,6 +505,8 @@ void Scene::draw(float deltaTime)
 
 		RenderCommand::draw(vao);
 	}
+
+	glDisable(GL_BLEND);
 
 
 #if 1

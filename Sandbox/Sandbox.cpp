@@ -51,6 +51,11 @@ public:
 		Entity enemy_1 = Engine::get()->getContext()->getActiveScene()->getEntityByName("Enemy_1");
 		enemy_1.addComponent<NativeScriptComponent>().bind<EnemyController>(3);
 
+		Entity cursor = Engine::get()->getContext()->getActiveScene()->getEntityByName("Cursor");
+		auto& cursorImage = cursor.getComponent<ImageComponent>();
+		cursorImage.position.x = (Engine::get()->getWindow()->getWidth() - cursorImage.size.x ) / 2.f;
+		cursorImage.position.y = (Engine::get()->getWindow()->getHeight() - cursorImage.size.y ) / 2.f;
+
 		//camTransform.setLocalPosition(playerTransform.getLocalPosition());
 		//camTransform.translate({0,2,0});
 

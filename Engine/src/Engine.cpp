@@ -90,6 +90,9 @@ bool Engine::init(const InitParams& initParams)
 
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
+    //glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     m_eventSystem = std::make_shared<EventSystem>();
 
     m_memoryPoolTexture = std::make_shared<MemoryPool<Texture>>();

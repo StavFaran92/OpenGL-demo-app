@@ -28,5 +28,5 @@ out vec4 color;
 
 void main()
 {
-   color = vec4(texture(image, fragPos).rgb, 1.0);
+   color = vec4(texture(image, fragPos).rgba);
 }
