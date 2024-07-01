@@ -233,7 +233,7 @@ void Cubemap::saveEquirectangularMap(Resource<Texture> equirectangularMap)
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 
 	auto& projectDir = Engine::get()->getProjectDirectory();
-	stbi_write_png((projectDir + "/" + equirectangularMap.getUID() + ".png").c_str(), equirectangularMap.get()->getWidth(), equirectangularMap.get()->getHeight(), equirectangularMap.get()->getBitDepth(), pixels,
-		equirectangularMap.get()->getWidth() * equirectangularMap.get()->getBitDepth());
+	stbi_write_png((projectDir + "/" + equirectangularMap.getUID() + ".png").c_str(), equirectangularMap.get()->getWidth(), equirectangularMap.get()->getHeight(), 3, pixels,
+		equirectangularMap.get()->getWidth() * 3);
 	Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(equirectangularMap.getUID());
 }
