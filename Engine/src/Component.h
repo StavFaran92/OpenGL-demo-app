@@ -95,6 +95,8 @@ struct EngineAPI RigidBodyComponent : public Component
 	RigidBodyComponent() = default;
 	RigidBodyComponent(RigidbodyType type, float mass) : type(type), mass(mass) {};
 
+	void addForce(glm::vec3 force);
+
 	void move(glm::vec3 position);
 
 	template <class Archive>
@@ -106,6 +108,7 @@ struct EngineAPI RigidBodyComponent : public Component
 	float mass = 0;
 	bool isChanged = false;
 	glm::vec3 m_targetPisition{0};
+	glm::vec3 m_force{ 0 };
 	void* simulatedBody = nullptr;
 };
 

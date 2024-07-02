@@ -85,6 +85,12 @@ void InstanceBatch::build()
 	glVertexAttribDivisor(9, 1);
 }
 
+void RigidBodyComponent::addForce(glm::vec3 force)
+{
+	m_force += force;
+	isChanged = true;
+}
+
 void RigidBodyComponent::move(glm::vec3 position)
 {
 	m_targetPisition = position;

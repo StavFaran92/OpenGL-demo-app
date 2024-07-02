@@ -44,7 +44,7 @@ bool PhysicsSystem::init()
         return false;
     }
 
-    m_defaultMaterial = m_physics->createMaterial(0.5f, 0.5f, 0.f);
+    m_defaultMaterial = m_physics->createMaterial(0.5f, 0.5f, 0.1f);
 
     m_isInit = true;
 

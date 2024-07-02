@@ -15,8 +15,8 @@ public:
 	void handleGroundCheck()
 	{
 		// Check if the player is grounded
-		auto& transform = entity.getComponent<Transformation>();
-		m_isGrounded = Physics::raycast(transform.getWorldPosition() + glm::vec3(0, -1.1, 0), glm::vec3(0, -1, 0), 1.f);
+		//auto& transform = entity.getComponent<Transformation>();
+		//m_isGrounded = Physics::raycast(transform.getWorldPosition() + glm::vec3(0, -1.1, 0), glm::vec3(0, -1, 0), 1.f);
 	}
 
 	void applyGravity(float deltaTime)
@@ -42,19 +42,19 @@ public:
 
 	void onUpdate(float deltaTime) override
 	{
-		float velocity = m_movementSpeed * deltaTime;
+		//float velocity = m_movementSpeed * deltaTime;
 
-		// follow the player
-		auto& transform = entity.getComponent<Transformation>();
-		auto& playerTransform = m_player.getComponent<Transformation>();
-		auto& dir = glm::normalize(playerTransform.getWorldPosition() - transform.getWorldPosition());
+		//// follow the player
+		//auto& transform = entity.getComponent<Transformation>();
+		//auto& playerTransform = m_player.getComponent<Transformation>();
+		//auto& dir = glm::normalize(playerTransform.getWorldPosition() - transform.getWorldPosition());
 
-		m_movement = glm::vec3(dir.x, 0.f, dir.z) * .01f;
+		//m_movement = glm::vec3(dir.x, 0.f, dir.z) * .01f;
 
 
-		handleGroundCheck();
-		applyGravity(deltaTime);
-		applyMovement(deltaTime);
+		//handleGroundCheck();
+		//applyGravity(deltaTime);
+		//applyMovement(deltaTime);
 		
 	}
 

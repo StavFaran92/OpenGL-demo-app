@@ -307,6 +307,21 @@ void Scene::update(float deltaTime)
 						rb.isChanged = false;
 					}
 				}
+				else // Dynamic
+				{
+					entity_id id = *(entity_id*)actor->userData;
+					Entity e{ entt::entity(id), m_registry.get() };
+					auto& rb = e.getComponent<RigidBodyComponent>();
+
+					if (rb.isChanged)
+					{
+						
+						physx::PxVec3 force(rb.m_force.x, rb.m_force.y, rb.m_force.z);
+						dynamicBody->addForce(force);
+						rb.isChanged = false;
+						rb.m_force = glm::vec3(0);
+					}
+				}
 			}
 		}
 
