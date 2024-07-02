@@ -153,9 +153,22 @@ static void displayAssetTextureSelectWindow()
 		ImGui::Text("Available Textures:");
 		ImGui::Separator();
 
+		
+
 		static int selectedTextureIndex = -1;
 
+		
+
 		auto& textureList = Engine::get()->getSubSystem<Assets>()->getAllTextures();
+
+		if (selectedTextureIndex != -1)
+		{
+			Resource<Texture> displayTexture(textureList.at(selectedTextureIndex));
+			ImVec2 imageSize(150, 150);
+			ImGui::Image(reinterpret_cast<ImTextureID>(displayTexture.get()->getID()), imageSize, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+		}
+
+		ImGui::Separator();
 
 		for (int i = 0; i < textureList.size(); i++)
 		{
@@ -933,6 +946,10 @@ static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::strin
 	addTextureEditWidget(tex, { 20, 20 }, [=](std::string uuid) {
 		mat->setTexture(ttype, Resource<Texture>(uuid));
 	});
+
+	ImGui::SameLine();
+
+	ImGui::Text(name.c_str());
 }
 
 static void addSkyboxTextureEditWidget(SkyboxComponent& skybox)

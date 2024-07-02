@@ -26,33 +26,6 @@ FlyCamera::FlyCamera(Entity camera, float yaw, float pitch, float moveSpeed, flo
 	});
 }
 
-void FlyCamera::keyControl(double deltaTime)
-{
-	//float velocity = m_movementSpeed * deltaTime;
-
-	//if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_W))
-	//{
-	//	m_camera.getComponent<Transformation>().translate(m_front * velocity);
-	//}
-
-	//if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_S))
-	//{
-	//	m_camera.getComponent<Transformation>().translate(-m_front * velocity);
-	//}
-
-	//if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_A))
-	//{
-	//	m_camera.getComponent<Transformation>().translate(-m_right * velocity);
-	//}
-
-	//if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_D))
-	//{
-	//	m_camera.getComponent<Transformation>().translate(m_right * velocity);
-	//}
-
-	//calculateOrientation();
-}
-
 void FlyCamera::OnMouseMotion(float xChange, float yChange)
 {
 	xChange *= m_turnSpeed;
@@ -95,6 +68,18 @@ void FlyCamera::calculateOrientation()
 
 	auto& camComponent = m_camera.getComponent<CameraComponent>();
 	auto& camTransform = m_camera.getComponent<Transformation>();
+
+
+
+	// Create quaternions for pitch and yaw
+	glm::quat pitchQuat = glm::angleAxis(Constants::PI - m_pitch * Constants::toRadians, glm::vec3(1, 0, 0));
+	glm::quat yawQuat = glm::angleAxis(Constants::PI - m_yaw * Constants::toRadians, glm::vec3(0, 1, 0));
+
+	// Combine the quaternions
+	glm::quat combinedQuat = yawQuat * pitchQuat;
+
+	camTransform.setLocalRotation(combinedQuat);
+
 	camComponent.up = m_up;
 	camComponent.center = camTransform.getWorldPosition() + m_front;
 	camComponent.front = m_front;
@@ -103,7 +88,6 @@ void FlyCamera::calculateOrientation()
 
 void FlyCamera::onUpdate(float deltaTime)
 {
-	keyControl(deltaTime);
 }
 
 FlyCamera::~FlyCamera()

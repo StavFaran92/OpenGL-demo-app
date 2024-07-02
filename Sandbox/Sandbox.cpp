@@ -56,6 +56,9 @@ public:
 		cursorImage.position.x = (Engine::get()->getWindow()->getWidth() - cursorImage.size.x ) / 2.f;
 		cursorImage.position.y = (Engine::get()->getWindow()->getHeight() - cursorImage.size.y ) / 2.f;
 
+		Entity gun = Engine::get()->getContext()->getActiveScene()->getEntityByName("Gun");
+		gun.setParent(camera);
+
 		//camTransform.setLocalPosition(playerTransform.getLocalPosition());
 		//camTransform.translate({0,2,0});
 
