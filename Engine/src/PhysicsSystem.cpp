@@ -4,6 +4,7 @@
 
 #include "PhysXUtils.h"
 #include "Component.h"
+#include "Physics.h"
 
 #define PX_RELEASE(x)	if(x)	{ x->release(); x = nullptr; }
 

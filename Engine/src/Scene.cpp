@@ -43,6 +43,7 @@
 #include "RenderCommand.h"
 #include "IBL.h"
 #include "Registry.h"
+#include "Physics.h"
 
 
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
@@ -825,17 +826,38 @@ void Scene::createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body,
 	{
 		auto& collider = e.getComponent<CollisionBoxComponent>();
 		shape = physicsSystem->createBoxShape(collider.halfExtent * scale.x, collider.halfExtent * scale.y, collider.halfExtent * scale.z);
+
+		Physics::LayerMask mask = collider.layerMask;
+
+		physx::PxFilterData filterData;
+		filterData.word0 = mask;
+
+		shape->setQueryFilterData(filterData);
 	}
 	else if (e.HasComponent<CollisionSphereComponent>())
 	{
 		auto& collider = e.getComponent<CollisionSphereComponent>();
 		shape = physicsSystem->createSphereShape(collider.radius * std::max(std::max(scale.x, scale.y), scale.z));
+
+		Physics::LayerMask mask = collider.layerMask;
+
+		physx::PxFilterData filterData;
+		filterData.word0 = mask;
+
+		shape->setQueryFilterData(filterData);
 	}
 	else if (e.HasComponent<CollisionMeshComponent>())
 	{
 		auto collisionMeshComponent = e.getComponent<CollisionMeshComponent>();
 		const std::vector<glm::vec3>& apos = collisionMeshComponent.mesh.get()->getPositions();
 		shape = physicsSystem->createConvexMeshShape(apos);
+
+		Physics::LayerMask mask = collisionMeshComponent.layerMask;
+
+		physx::PxFilterData filterData;
+		filterData.word0 = mask;
+
+		shape->setQueryFilterData(filterData);
 	}
 
 	if (shape)

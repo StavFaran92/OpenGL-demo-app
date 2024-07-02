@@ -886,6 +886,25 @@ static const char* renderTechniqueStrList[]{
 	"Defererred"
 };
 
+static const char* layerMaskList[]{
+	"Layer Mask 0",
+	"Layer Mask 1",
+	"Layer Mask 2",
+	"Layer Mask 3",
+	"Layer Mask 4",
+	"Layer Mask 5",
+	"Layer Mask 6",
+	"Layer Mask 7",
+	"Layer Mask 8",
+	"Layer Mask 9",
+	"Layer Mask 10",
+	"Layer Mask 11",
+	"Layer Mask 12",
+	"Layer Mask 13",
+	"Layer Mask 14",
+	"Layer Mask 15",
+};
+
 static void addTextureEditWidget(Resource<Texture> texture, ImVec2 size, std::function<void(std::string uuid)> callback)
 {
 	int texID = 0;
@@ -965,13 +984,16 @@ void RenderInspectorWindow(float width, float height)
 
 		displayComponent<CollisionBoxComponent>("Collision Box", [](CollisionBoxComponent& collisionBox) {
 			ImGui::InputFloat("Half Extent", &collisionBox.halfExtent);
-			});
+			ImGui::Combo("##LayerMask", (int*)&collisionBox.layerMask, layerMaskList, IM_ARRAYSIZE(layerMaskList));
+		});
 
-		displayComponent<CollisionSphereComponent>("Collision Sphere", [](CollisionSphereComponent& collisionBox) {
-			ImGui::InputFloat("Radius", &collisionBox.radius);
+		displayComponent<CollisionSphereComponent>("Collision Sphere", [](CollisionSphereComponent& collisionSphere) {
+			ImGui::InputFloat("Radius", &collisionSphere.radius);
+			ImGui::Combo("##LayerMask", (int*)&collisionSphere.layerMask, layerMaskList, IM_ARRAYSIZE(layerMaskList));
 			});
 
 		displayComponent<CollisionMeshComponent>("Collision Mesh", [](CollisionMeshComponent& collisionMesh) {
+			ImGui::Combo("##LayerMask", (int*)&collisionMesh.layerMask, layerMaskList, IM_ARRAYSIZE(layerMaskList));
 			});
 
 		displayComponent<MeshComponent>("Mesh", [](MeshComponent& meshComponent) {

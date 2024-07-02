@@ -79,7 +79,7 @@ public:
 	{
 		auto& camComponent = m_camera.getComponent<CameraComponent>();
 		auto& transform = m_camera.getComponent<Transformation>();
-		if (Physics::raycast(transform.getWorldPosition(), camComponent.front, 100.f))
+		if (Physics::raycast(transform.getWorldPosition(), camComponent.front, 100.f, Physics::LayerMask::LAYER_1))
 		{
 			logError("Hit!");
 		}

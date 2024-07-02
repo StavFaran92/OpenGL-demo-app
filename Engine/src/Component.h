@@ -8,6 +8,7 @@
 #include "Configurations.h"
 #include "Mesh.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "Physics.h"
 
 class Scene;
 class Mesh;
@@ -115,10 +116,11 @@ struct EngineAPI CollisionBoxComponent : public Component
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(halfExtent);
+		archive(halfExtent, layerMask);
 	}
 
 	float halfExtent = 0;
+	Physics::LayerMask layerMask = Physics::LayerMask::LAYER_0;
 };
 
 struct EngineAPI CollisionSphereComponent : public Component
@@ -128,10 +130,11 @@ struct EngineAPI CollisionSphereComponent : public Component
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(radius);
+		archive(radius, layerMask);
 	}
 
 	float radius = 0;
+	Physics::LayerMask layerMask = Physics::LayerMask::LAYER_0;
 };
 
 struct EngineAPI CollisionMeshComponent : public Component
@@ -140,11 +143,12 @@ struct EngineAPI CollisionMeshComponent : public Component
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(isConvex);
+		archive(isConvex, layerMask);
 	}
 
 	bool isConvex = false;
 	Resource<Mesh> mesh = Resource<Mesh>::empty;
+	Physics::LayerMask layerMask = Physics::LayerMask::LAYER_0;
 };
 
 struct EngineAPI CameraComponent : public Component
