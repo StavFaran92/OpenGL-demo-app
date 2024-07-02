@@ -84,7 +84,7 @@ public:
 		Physics::HitResult hitResult;
 		if (Physics::raycast(transform.getWorldPosition(), camComponent.front, 100.f, hitResult, Physics::LayerMask::LAYER_1))
 		{
-			hitResult.e.getComponent<RigidBodyComponent>().addForce(-hitResult.normal * 3.f);
+			hitResult.e.getComponent<RigidBodyComponent>().setForce(-hitResult.normal * 800.f);
 		}
 	}
 

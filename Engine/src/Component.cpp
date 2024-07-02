@@ -91,6 +91,12 @@ void RigidBodyComponent::addForce(glm::vec3 force)
 	isChanged = true;
 }
 
+void RigidBodyComponent::setForce(glm::vec3 force)
+{
+	m_force = glm::vec3(0);
+	addForce(force);
+}
+
 void RigidBodyComponent::move(glm::vec3 position)
 {
 	m_targetPisition = position;

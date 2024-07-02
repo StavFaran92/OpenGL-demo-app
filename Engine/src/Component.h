@@ -96,6 +96,7 @@ struct EngineAPI RigidBodyComponent : public Component
 	RigidBodyComponent(RigidbodyType type, float mass) : type(type), mass(mass) {};
 
 	void addForce(glm::vec3 force);
+	void setForce(glm::vec3 force);
 
 	void move(glm::vec3 position);
 
