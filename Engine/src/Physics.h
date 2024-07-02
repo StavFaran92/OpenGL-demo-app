@@ -9,6 +9,14 @@
 class EngineAPI Physics
 {
 public:
+    struct HitResult
+    {
+        glm::vec3 position;
+        glm::vec3 normal;
+        float distance = 0;
+        Entity e = Entity::EmptyEntity;
+    };
+
     enum LayerMask
     {
         LAYER_0 = 0,
@@ -31,5 +39,5 @@ public:
         LAYER_17 = (1 << 16),
     };
 public:
-	static bool raycast(glm::vec3 origin, glm::vec3 dir, float distance, LayerMask mask = LayerMask::LAYER_0);
+	static bool raycast(glm::vec3 origin, glm::vec3 dir, float distance, HitResult& hitResult, LayerMask mask = LayerMask::LAYER_0);
 };

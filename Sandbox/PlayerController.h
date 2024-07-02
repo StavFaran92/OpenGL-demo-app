@@ -15,7 +15,8 @@ public:
 	{
 		// Check if the player is grounded
 		auto& transform = entity.getComponent<Transformation>();
-		m_isGrounded = Physics::raycast(transform.getWorldPosition() + glm::vec3(0, -1.1, 0), glm::vec3(0, -1, 0), 1.f);
+		Physics::HitResult hitResult;
+		m_isGrounded = Physics::raycast(transform.getWorldPosition() + glm::vec3(0, -1.1, 0), glm::vec3(0, -1, 0), 1.f, hitResult);
 	}
 
 	void applyGravity(float deltaTime)
@@ -79,7 +80,9 @@ public:
 	{
 		auto& camComponent = m_camera.getComponent<CameraComponent>();
 		auto& transform = m_camera.getComponent<Transformation>();
-		if (Physics::raycast(transform.getWorldPosition(), camComponent.front, 100.f, Physics::LayerMask::LAYER_1))
+
+		Physics::HitResult hitResult;
+		if (Physics::raycast(transform.getWorldPosition(), camComponent.front, 100.f, hitResult, Physics::LayerMask::LAYER_1))
 		{
 			logError("Hit!");
 		}
