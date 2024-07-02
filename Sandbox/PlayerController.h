@@ -84,7 +84,7 @@ public:
 		Physics::HitResult hitResult;
 		if (Physics::raycast(transform.getWorldPosition(), camComponent.front, 100.f, hitResult, Physics::LayerMask::LAYER_1))
 		{
-			hitResult.e.getComponent<RigidBodyComponent>().setForce(-hitResult.normal * 800.f);
+			hitResult.e.getComponent<RigidBodyComponent>().setForce(-hitResult.normal * m_bulletForce);
 		}
 	}
 
@@ -110,6 +110,7 @@ private:
 	bool m_isGrounded = false;
 	bool m_isJumping = false;
 	float m_jumpForce = 200.f;
+	float m_bulletForce = 800.f;
 
 	glm::vec3 m_velocity{};
 	glm::vec3 m_movementH{};
