@@ -673,11 +673,76 @@ void displayEntity(Entity& e)
 
 		}
 
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+		{
+			ImGui::SetDragDropPayload("DND_ITEM", &e, sizeof(Entity));
+			ImGui::Text("Dragging %s", obj.name.c_str());
+			ImGui::EndDragDropSource();
+		}
+	}
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_ITEM"))
+		{
+			Entity sourceEntity = *(const Entity*)payload->Data;
+			if (sourceEntity != e)
+			{
+				sourceEntity.getComponent<Transformation>().setParent(e);
+			}
+		}
+		ImGui::EndDragDropTarget();
 	}
 }
 
 void displaySceneObjects(int& selected)
 {
+	static std::vector<std::string> items = { "Item 1", "Item 2", "Item 3", "Item 4" };
+	static int draggedIndex = -1;
+
+	ImGui::Begin("Draggable List");
+
+	for (int i = 0; i < items.size(); ++i)
+	{
+		// Set the unique ID for the item
+		ImGui::PushID(i);
+
+		// Start a draggable item
+		if (ImGui::Selectable(items[i].c_str(), false, ImGuiSelectableFlags_AllowDoubleClick))
+		{
+			if (ImGui::IsMouseDoubleClicked(0))
+			{
+				// Handle double-click if needed
+			}
+		}
+
+		// Handle the dragging logic
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+		{
+			ImGui::SetDragDropPayload("DND_ITEM", &i, sizeof(int));
+			ImGui::Text("Dragging %s", items[i].c_str());
+			ImGui::EndDragDropSource();
+			draggedIndex = i;
+		}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_ITEM"))
+			{
+				int payloadIndex = *(const int*)payload->Data;
+				if (payloadIndex != i)
+				{
+					std::swap(items[i], items[payloadIndex]);
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+
+		ImGui::PopID();
+	}
+
+	ImGui::End();
+
 	for (int i = 0; i < sceneObjects.size(); ++i)
 	{
 		auto& sceneObject = sceneObjects[i];
