@@ -558,39 +558,71 @@ void ShowModelCreatorWindow()
 	}
 }
 
-void displaySceneObjects(int& selected)
+void displayentityName(const Entity& e)
 {
-	for (int i = 0; i < sceneObjects.size(); ++i)
+	auto& obj = e.getComponent<ObjectComponent>();
+
+	if (ImGui::Selectable(obj.name.c_str(), (selectedEntity == e)))
 	{
-		auto& sceneObject = sceneObjects[i];
-		auto& objectComponent = sceneObject.e.getComponent<ObjectComponent>();
+		selectedEntity = e;
+		// Handle selection logic
+	}
+}
 
-		// Editable text field
-		char buffer[256];
-		strncpy(buffer, objectComponent.name.c_str(), sizeof(buffer));
-		buffer[sizeof(buffer) - 1] = '\0'; // Ensure null termination
+void displayEntity(Entity& e)
+{
+	auto& transform = e.getComponent<Transformation>();
+	auto& obj = e.getComponent<ObjectComponent>();
+	bool hasChildren = transform.getChildren().size() > 0;
 
-		ImGui::PushID(i); // Push a unique ID to avoid ImGui ID conflicts
-
-		
-		
-
-		if (!selectedEntityRename)
+	if (hasChildren)
+	{
+		if (ImGui::TreeNode("##arrow"))
 		{
-			if (ImGui::Selectable(buffer, selected == i))
+			ImGui::SameLine();
+
+			displayentityName(e);
+
+			ImGui::TreePush("##tree");
+			auto childrens = transform.getChildren();
+			auto childIter = childrens.begin();
+			while (childIter != childrens.end())
 			{
-				selected = i;
-				selectedEntity = sceneObject.e;
+				displayEntity(childIter->second);
+				childIter++;
 			}
+			ImGui::TreePop();
+			ImGui::TreePop();
 		}
-		else if(selected == i)
+		else
 		{
+			ImGui::SameLine();
+
+			// Create selectable text
+			displayentityName(e);
+		}
+	}
+	else
+	{
+		// Create selectable text
+		displayentityName(e);
+	}
+
+	if (selectedEntity == e)
+	{
+		if (selectedEntityRename)
+		{
+			// Editable text field
+			char buffer[256];
+			strncpy(buffer, obj.name.c_str(), sizeof(buffer));
+			buffer[sizeof(buffer) - 1] = '\0'; // Ensure null termination
+
 			if (ImGui::InputText("##edit", buffer, IM_ARRAYSIZE(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
 			{
 				bool isValid = true;
 				for (int j = 0; j < sceneObjects.size(); j++)
 				{
-					if (j == i) continue;
+					if (sceneObjects[j].e == e) continue;
 
 					if (sceneObjects[j].name == buffer)
 					{
@@ -601,51 +633,64 @@ void displaySceneObjects(int& selected)
 
 				if (isValid)
 				{
-					objectComponent.name = buffer;
+					obj.name = buffer;
 					updateScene(); // Assuming this updates any necessary scene state
 					selectedEntityRename = false;
 				}
 			}
 		}
 
-
-		
-
-		if (selected == i)
+		if (ImGui::BeginPopupContextItem("SceneObjectContextPopup"))
 		{
-			if (ImGui::BeginPopupContextItem("SceneObjectContextPopup"))
+			if (ImGui::MenuItem("Rename"))
 			{
-				if (ImGui::MenuItem("Rename"))
-				{
-					// Focus the input text when renaming
-					selectedEntityRename = true;
-				}
-
-				if (sceneObject.e.HasComponent<CameraComponent>())
-				{
-					if (ImGui::MenuItem("Set as Primary Camera"))
-					{
-						auto scene = Engine::get()->getContext()->getActiveScene();
-						scene->setPrimaryCamera(sceneObject.e);
-					}
-				}
-
-				if (ImGui::MenuItem("Delete"))
-				{
-					sceneObject.e.remove();
-					updateScene();
-					selectedEntity = Entity::EmptyEntity;
-					selected = -1;
-				}
-
-				ImGui::EndPopup();
-
+				// Focus the input text when renaming
+				selectedEntityRename = true;
 			}
 
+			if (e.HasComponent<CameraComponent>())
+			{
+				if (ImGui::MenuItem("Set as Primary Camera"))
+				{
+					auto scene = Engine::get()->getContext()->getActiveScene();
+					scene->setPrimaryCamera(e);
+				}
+			}
 
+			if (ImGui::MenuItem("Set above as parent")) // todo fix this nonsense
+			{
+				e.getComponent<Transformation>().setParent(sceneObjects[0].e);
+			}
 
+			if (ImGui::MenuItem("Delete"))
+			{
+				e.remove();
+				updateScene();
+				selectedEntity = Entity::EmptyEntity;
+			}
+
+			ImGui::EndPopup();
 
 		}
+
+	}
+}
+
+void displaySceneObjects(int& selected)
+{
+	for (int i = 0; i < sceneObjects.size(); ++i)
+	{
+		auto& sceneObject = sceneObjects[i];
+		auto& objectComponent = sceneObject.e.getComponent<ObjectComponent>();
+		auto& transform = sceneObject.e.getComponent<Transformation>();
+
+		// if has parent it will be rendered in the recursive call (can be optimized if needed)
+		if (transform.getParent().valid()) continue;
+
+		ImGui::PushID(i); // Push a unique ID to avoid ImGui ID conflicts
+
+		
+		displayEntity(sceneObject.e);
 
 		ImGui::PopID();
 	}
@@ -653,6 +698,52 @@ void displaySceneObjects(int& selected)
 
 void RenderSceneHierarchyWindow(float width, float height)
 {
+	//if (ImGui::Begin("Example"))
+	//{
+	//	// Custom function to create a tree node with selectable text
+	//	static bool selected = false;
+	//	static bool open = false;
+
+	//	// Adjust the width for the small arrow button
+	//	float arrowWidth = ImGui::GetFontSize();
+	//	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Adjust spacing for the arrow
+
+	//	// Create a small arrow button
+	//	if (!open)
+	//	{
+	//		if (ImGui::ArrowButton("##arrow", ImGuiDir_Right))
+	//		{
+	//			open = true;
+	//		}
+	//	}
+	//	else{
+	//		if (ImGui::ArrowButton("##arrow", ImGuiDir_Down))
+	//		{
+	//			open = false;
+	//		}
+	//	}
+	//	ImGui::SameLine();
+
+	//	// Create selectable text
+	//	if (ImGui::Selectable("Selectable Node", &selected))
+	//	{
+	//		// Handle selection logic
+	//	}
+
+	//	// Pop style adjustment
+	//	ImGui::PopStyleVar();
+
+	//	// Handle tree node opening
+	//	if (open)
+	//	{
+	//		ImGui::TreePush("##tree");
+	//		ImGui::Text("Child Node 1");
+	//		ImGui::Text("Child Node 2");
+	//		ImGui::TreePop();
+	//	}
+	//}
+	//ImGui::End();
+
 	float windowWidth = width * 0.2f;
 	ImVec2 windowPos(5, 25); // Adjust vertical position to make space for the menu bar
 	ImVec2 windowSize(windowWidth, height * 0.8f);
