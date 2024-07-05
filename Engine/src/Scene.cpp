@@ -717,6 +717,19 @@ void Scene::startSimulation()
 		createActor(entity, rb);
 	}
 
+	// Run all User Scriptable Entities scripts
+	for (auto&& [entity, nsc] : m_registry->get().view<NativeScriptComponent>().each())
+	{
+		if (!nsc.script)
+		{
+			logWarning("Native Script cannot be Null, did you forget to call Bind()?");
+			continue;
+		}
+
+		nsc.script->entity = Entity(entity, &getRegistry());
+		nsc.script->onCreate();
+	}
+
 	//for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
 	//{
 	//	Entity e{ entity, this };

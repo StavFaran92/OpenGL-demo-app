@@ -11,6 +11,10 @@ class SceneSerializer;
 class EngineAPI ScriptableEntity
 {
 public:
+	ScriptableEntity() 
+	{
+		name = typeid(*this).name();
+	}
 	virtual ~ScriptableEntity() = default;
 
 	Entity entity;
@@ -19,6 +23,8 @@ public:
 	void serialize(Archive& archive) {
 		archive(entity);
 	}
+
+	std::string name;
 
 protected:
 	virtual void onCreate() {};

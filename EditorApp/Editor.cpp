@@ -12,6 +12,8 @@
 
 #include "tinyfiledialogs.h"
 
+#include "NativeScriptsLoader.h"
+
 namespace fs = std::filesystem;
 
 static bool ShowLightCreatorWindow = false;
@@ -22,6 +24,7 @@ static bool showModelInspectorWindow = false;
 static bool showPrimitiveCreatorWindow = false;
 static bool showMeshSelector = false;
 static bool selectedEntityRename = false;
+static bool showScriptSelector = false;
 
 Entity g_primaryCamera;
 Entity g_editorCamera;
@@ -258,6 +261,52 @@ static void displaySelectMeshWindow(std::string& uuid)
 
 		if (ImGui::Button("Cancel")) {
 			showMeshSelector = false;
+		}
+
+		ImGui::End();
+	}
+}
+
+static void displaySelectScriptWindow(std::string& scriptName)
+{
+	if (showScriptSelector)
+	{
+		ImGui::Begin("Select Script", &showScriptSelector, ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::Text("Available Scripts:");
+		ImGui::Separator();
+
+		static int selectedScriptIndex = -1;
+
+		std::vector<std::string> scriptNamesList;
+		NativeScriptsLoader::instance->getAllScripts(scriptNamesList);
+
+		for (int i = 0; i < scriptNamesList.size(); i++)
+		{
+			bool isSelected = (selectedScriptIndex == i);
+
+			if (ImGui::Selectable(scriptNamesList[i].c_str(), &isSelected))
+			{
+				selectedScriptIndex = i;
+			}
+		}
+
+		ImGui::Separator();
+
+		if (ImGui::Button("OK")) 
+		{
+			if (selectedScriptIndex >= 0 && selectedScriptIndex < scriptNamesList.size())
+			{
+				scriptName = scriptNamesList[selectedScriptIndex];
+
+			}
+			showScriptSelector = false;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel")) 
+		{
+			showScriptSelector = false;
 		}
 
 		ImGui::End();
@@ -562,10 +611,11 @@ void displayentityName(const Entity& e)
 {
 	auto& obj = e.getComponent<ObjectComponent>();
 
-	if (ImGui::Selectable(obj.name.c_str(), (selectedEntity == e)))
+	ImGui::Selectable(obj.name.c_str(), (selectedEntity == e));
+
+	if (ImGui::IsItemClicked())
 	{
 		selectedEntity = e;
-		// Handle selection logic
 	}
 }
 
@@ -598,13 +648,11 @@ void displayEntity(Entity& e)
 		{
 			ImGui::SameLine();
 
-			// Create selectable text
 			displayentityName(e);
 		}
 	}
 	else
 	{
-		// Create selectable text
 		displayentityName(e);
 	}
 
@@ -1157,7 +1205,28 @@ void RenderInspectorWindow(float width, float height)
 			});
 
 		displayComponent<NativeScriptComponent>("Script", [](NativeScriptComponent& nsc) {
-			// TBD
+			// Button to trigger some action
+			if (ImGui::Button("Select Script"))
+			{
+				showScriptSelector = true;
+			}
+
+			std::string selectedScript;
+			displaySelectScriptWindow(selectedScript);
+
+			if (!selectedScript.empty())
+			{
+				nsc.script = std::shared_ptr<ScriptableEntity>(NativeScriptsLoader::instance->getScript(selectedScript));
+			}
+
+			
+
+			// Text display field
+			if (nsc.script)
+			{
+				ImGui::SameLine();
+				ImGui::Text(nsc.script->name.c_str());
+			}
 			});
 
 		displayComponent<MaterialComponent>("Materials", [](MaterialComponent& materials) {
@@ -1443,6 +1512,8 @@ public:
 	{
 		
 		ImGui::SetCurrentContext((ImGuiContext * )Engine::get()->getImguiHandler()->getCurrentContext());
+
+		NativeScriptsLoader::instance->init();
 
 		auto scene = Engine::get()->getContext()->getActiveScene();
 
