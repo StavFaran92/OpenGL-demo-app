@@ -26,6 +26,8 @@ static bool showMeshSelector = false;
 static bool selectedEntityRename = false;
 static bool showScriptSelector = false;
 
+static bool startButtonPressed = false;
+
 Entity g_primaryCamera;
 Entity g_editorCamera;
 
@@ -36,6 +38,22 @@ static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::strin
 void AddColoredLabel(const char* label);
 static void displayTransformation(Transformation& transform, bool& isChanged);
 static void displaySelectMeshWindow();
+
+static void stopSimulation()
+{
+	startButtonPressed = false; // Toggle the state
+	Engine::get()->getContext()->getActiveScene()->stopSimulation();
+
+	Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(g_editorCamera);
+}
+
+static void startsimulation()
+{
+	startButtonPressed = true; // Toggle the state
+	Engine::get()->getContext()->getActiveScene()->startSimulation();
+
+	Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(g_primaryCamera);
+}
 
 template<typename T> 
 static void displayComponent(const std::string& componentName, std::function<void(T&)> func)
@@ -95,25 +113,19 @@ void RenderSimulationControlView(float width, float height)
 	// Center align the buttons
 	ImGui::SetCursorPosX((windowWidth - 100) * 0.5f);
 
-	static bool startButtonPressed = false;
+	
 
 	// Draw the button based on the current state
 	if (startButtonPressed) {
 		if (ImGui::Button("STOP", ImVec2(70, 0))) {
 			// Handle stop button click
-			startButtonPressed = false; // Toggle the state
-			Engine::get()->getContext()->getActiveScene()->stopSimulation();
-
-			Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(g_editorCamera);
+			stopSimulation();
 		}
 	}
 	else {
 		if (ImGui::Button("START", ImVec2(70, 0))) {
 			// Handle start button click
-			startButtonPressed = true; // Toggle the state
-			Engine::get()->getContext()->getActiveScene()->startSimulation();
-
-			Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(g_primaryCamera);
+			startsimulation();
 		}
 	}
 
@@ -1225,7 +1237,7 @@ void RenderInspectorWindow(float width, float height)
 			if (nsc.script)
 			{
 				ImGui::SameLine();
-				ImGui::Text(nsc.script->name.c_str());
+				ImGui::Text(nsc.script->name().c_str());
 			}
 			});
 
@@ -1512,6 +1524,8 @@ public:
 	{
 		
 		ImGui::SetCurrentContext((ImGuiContext * )Engine::get()->getImguiHandler()->getCurrentContext());
+
+		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_SCANCODE_ESCAPE, [](SDL_Event e) { stopSimulation(); });
 
 		NativeScriptsLoader::instance->init();
 

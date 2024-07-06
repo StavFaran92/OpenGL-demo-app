@@ -821,13 +821,17 @@ void Scene::stopSimulation()
 {
 	if (!m_isSimulationActive)
 	{
-		logWarning("Simulation already stopped.");
 		return;
 	}
 
 	for (auto&& [entity, rb] : m_registry->get().view<RigidBodyComponent>().each())
 	{
 		removeActor(entity, rb);
+	}
+
+	for (auto&& [entity, nsc] : m_registry->get().view<NativeScriptComponent>().each())
+	{
+		nsc.script->onDestroy();
 	}
 
 

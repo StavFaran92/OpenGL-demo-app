@@ -2,12 +2,10 @@
 
 #include "sge.h"
 
-#include "NativeScriptsLoader.h"
-
 class EnemyController : public ScriptableEntity
 {
 public:
-	EnemyController(float moveSpeed) : m_movementSpeed(moveSpeed) {};
+	EnemyController() = default;
 
 	void onCreate() override
 	{
@@ -31,7 +29,7 @@ public:
 	}
 
 private:
-	float m_movementSpeed;
+	float m_movementSpeed = 5.0f;
 
 	Entity m_player;
 
