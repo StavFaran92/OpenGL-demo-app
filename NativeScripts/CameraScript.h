@@ -2,6 +2,9 @@
 
 #include "sge.h"
 
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/cereal.hpp>
+
 class CameraScript : public ScriptableEntity
 {
 	virtual void onCreate() override
@@ -96,3 +99,6 @@ class CameraScript : public ScriptableEntity
 
 	Entity m_camera;
 };
+
+CEREAL_REGISTER_TYPE(CameraScript);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(ScriptableEntity, CameraScript)

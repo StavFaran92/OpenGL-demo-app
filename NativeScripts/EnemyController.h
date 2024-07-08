@@ -2,6 +2,9 @@
 
 #include "sge.h"
 
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/cereal.hpp>
+
 class EnemyController : public ScriptableEntity
 {
 public:
@@ -42,3 +45,6 @@ private:
 	glm::vec3 m_velocity{};
 	glm::vec3 m_movement{};
 };
+
+CEREAL_REGISTER_TYPE(EnemyController);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(ScriptableEntity, EnemyController)

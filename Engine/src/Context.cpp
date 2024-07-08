@@ -18,8 +18,6 @@
 #include "Material.h"
 #include "ProjectAssetRegistry.h"
 
-#include "SceneSerializer.h"
-
 Context::Context(const std::shared_ptr<ProjectAssetRegistry>& par)
 {
 	m_projectAssetRegistry = par;
@@ -130,54 +128,12 @@ uint32_t Context::getActiveSceneID() const
 	return m_activeScene;
 }
 
-void Context::serialize() const
+void Context::save() const
 {
-	SerializedContext serializedContext;
-
-	for (auto& [id, scene] : m_scenes)
-	{
-		SerializedScene serializedScene = SceneSerializer::serializeScene(*scene.get());
-		serializedContext.serializedScenes[id] = serializedScene;
-	}
-
-	serializedContext.activeScene = getActiveSceneID();
-
-	auto projectDir = Engine::get()->getProjectDirectory();
-
-	std::ofstream os(projectDir + "/entities.json");
-	cereal::JSONOutputArchive archive(os);
-	archive(serializedContext);
-
 	m_projectAssetRegistry->save();
 
 	logInfo("Successfully serialized Context.");
 }
-
-void Context::deserialize()
-{
-	SerializedContext serializedContext;
-
-	auto& projectDir = Engine::get()->getProjectDirectory();
-
-	std::ifstream is(projectDir + "/entities.json");
-	cereal::JSONInputArchive inputArchive(is);
-	inputArchive(serializedContext);
-
-	m_scenes.clear();
-
-	for (auto& [id, serializedScene] : serializedContext.serializedScenes)
-	{
-		std::shared_ptr<Scene> scene = std::make_shared<Scene>(this);
-		SceneSerializer::deserializeScene(serializedScene, *scene.get());
-		m_scenes[id] = scene;
-	}
-
-	m_activeScene = serializedContext.activeScene;
-
-	logInfo("Successfully deserialized Context.");
-}
-
-
 
 void Context::update(float deltaTime)
 {

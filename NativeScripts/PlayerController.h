@@ -2,6 +2,9 @@
 
 #include "sge.h"
 
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/cereal.hpp>
+
 class PlayerController : public ScriptableEntity
 {
 public:
@@ -118,3 +121,6 @@ private:
 	glm::vec3 m_movementH{};
 	glm::vec3 m_movementV{};
 };
+
+CEREAL_REGISTER_TYPE(PlayerController);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(ScriptableEntity, PlayerController)

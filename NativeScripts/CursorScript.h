@@ -2,6 +2,9 @@
 
 #include "sge.h"
 
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/cereal.hpp>
+
 class CursorScript : public ScriptableEntity
 {
 public:
@@ -19,3 +22,6 @@ public:
 	{
 	}
 };
+
+CEREAL_REGISTER_TYPE(CursorScript);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(ScriptableEntity, CursorScript)

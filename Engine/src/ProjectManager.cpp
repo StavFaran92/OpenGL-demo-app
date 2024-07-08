@@ -83,11 +83,9 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
         fs::path imageFilePath = (projectDir / textureUID).string() + ".png";
         Engine::get()->getSubSystem<Assets>()->loadTexture2D(textureUID, imageFilePath.string());
     }
-
-    context->deserialize();
 }
 
 void ProjectManager::saveProject()
 {
-    Engine::get()->getContext()->serialize();
+    Engine::get()->getContext()->save();
 }

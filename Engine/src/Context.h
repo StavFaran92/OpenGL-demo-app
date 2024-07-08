@@ -25,7 +25,7 @@ class TextureHandler;
 class Material;
 class ProjectAssetRegistry;
 class SGE_Regsitry;
-
+class Archiver;
 
 
 class EngineAPI Context
@@ -65,13 +65,13 @@ public:
 	const std::map<uint32_t, std::shared_ptr<Scene>>& getAllScenes() const;
 	uint32_t getActiveSceneID() const;
 
-	void serialize() const;
-	void deserialize();
+	void save() const;
 
 	void close();
 
 private:
 	friend class Engine;
+	friend class Archiver;
 	void update(float deltaTime);
 	void draw(float deltaTime);
 	void init();

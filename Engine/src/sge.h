@@ -55,3 +55,4 @@
 #include "ObjectPicker.h"
 #include "Physics.h"
 #include "Assets.h"
+#include "Archiver.h"
