@@ -1463,14 +1463,12 @@ class GUI_Helper : public GuiMenu {
 						if (lTheSelectFolderName)
 						{
 							Engine::get()->loadProject(lTheSelectFolderName);
-							Archiver::load();
 							selectedEntity = Entity::EmptyEntity;
 							updateScene();
 						}
 					}
 					if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
-						Archiver::save();
-						
+						Engine::get()->saveProject();
 					}
 					if (ImGui::MenuItem("Import Model")) {
 						showModelCreatorWindow = true;

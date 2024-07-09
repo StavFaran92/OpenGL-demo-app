@@ -18,6 +18,7 @@
 #include "Scene.h"
 #include "Skybox.h"
 #include "Context.h"
+#include "Core.h"
 
 namespace glm
 {
@@ -107,39 +108,43 @@ struct SerializedContext
 	}
 };
 
-class Archiver
+class EngineAPI Archiver
 {
 public:
-	inline static void save()
+	static void save()
 	{
-		SerializedContext serializedContext = Archiver::serializeContext(Engine::get()->getContext());
+		//SerializedContext serializedContext = Archiver::serializeContext(Engine::get()->getContext());
 
-		auto projectDir = Engine::get()->getProjectDirectory();
-		std::ofstream os(projectDir + "/entities.json");
-		cereal::JSONOutputArchive oarchive(os);
+		//auto projectDir = Engine::get()->getProjectDirectory();
+		//std::ofstream os(projectDir + "/entities.json");
+		//cereal::JSONOutputArchive oarchive(os);
+		//oarchive(serializedContext);
 
-		oarchive(serializedContext);
+		//Engine::get()->getContext()->save();
 
-		Engine::get()->getContext()->save();
+		instance->m_serializeCallback();
 
 		logInfo("Successfully Saved Project.");
 	}
 
-	inline static void load()
+	static void load()
 	{
-		auto projectDir = Engine::get()->getProjectDirectory();
-		std::ifstream is(projectDir + "/entities.json");
-		cereal::JSONInputArchive iarchive(is);
-
-		SerializedContext ptrs;
-		iarchive(ptrs);
-
-		Archiver::deserializeContext(ptrs, Engine::get()->getContext());
+		instance->m_deserializeCallback();
 
 		logInfo("Successfully Loaded Project.");
 	}
 
-	inline static SerializedEntity serializeEntity(Entity e)
+	static void registerSerializeFunction(std::function<void()> cb)
+	{
+		instance->m_serializeCallback = cb;
+	}
+
+	static void registerDeserializeFunction(std::function<void()> cb)
+	{
+		instance->m_deserializeCallback = cb;
+	}
+
+	static SerializedEntity serializeEntity(Entity e)
 	{
 		SerializedEntity serializedEntity;
 		serializedEntity.entity = e.handler();
@@ -161,7 +166,7 @@ public:
 		return serializedEntity;
 	}
 
-	inline static void deserializeEntity(SerializedEntity serializedEnt, Scene& scene)
+	static void deserializeEntity(SerializedEntity serializedEnt, Scene& scene)
 	{
 		auto e = scene.getRegistry().getRegistry().create(serializedEnt.entity);
 		auto entityHandler = Entity(e, &scene.getRegistry());
@@ -244,7 +249,7 @@ public:
 		}
 	}
 
-	inline static SerializedScene serializeScene(Scene* scene)
+	static SerializedScene serializeScene(Scene* scene)
 	{
 		SerializedScene serializedScene;
 
@@ -259,7 +264,7 @@ public:
 		return serializedScene;
 	}
 
-	inline static void deserializeScene(SerializedScene serializedScene, Scene& scene)
+	static void deserializeScene(SerializedScene serializedScene, Scene& scene)
 	{
 		for (auto& serializedEnt : serializedScene.serializedEntities)
 		{
@@ -267,7 +272,7 @@ public:
 		}
 	}
 
-	inline static SerializedContext serializeContext(const Context* ctx)
+	static SerializedContext serializeContext(const Context* ctx)
 	{
 		SerializedContext serializedContext;
 
@@ -281,7 +286,7 @@ public:
 		return serializedContext;
 	}
 
-	inline static void deserializeContext(SerializedContext serializedContext, Context* ctx)
+	static void deserializeContext(SerializedContext serializedContext, Context* ctx)
 	{
 		ctx->m_scenes.clear();
 
@@ -295,5 +300,8 @@ public:
 		ctx->m_activeScene = serializedContext.activeScene;
 	}
 
+	std::function<void()> m_serializeCallback;
+	std::function<void()> m_deserializeCallback;
 
+	static Archiver* instance;
 };

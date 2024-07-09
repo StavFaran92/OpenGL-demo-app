@@ -10,6 +10,7 @@
 #include "MeshSerializer.h"
 #include "Texture.h"
 #include "Assets.h"
+#include "Archiver.h"
 //#include "TextureSerializer.h"
 #include <nlohmann/json.hpp>
 
@@ -83,9 +84,12 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
         fs::path imageFilePath = (projectDir / textureUID).string() + ".png";
         Engine::get()->getSubSystem<Assets>()->loadTexture2D(textureUID, imageFilePath.string());
     }
+
+    Archiver::load();
 }
 
 void ProjectManager::saveProject()
 {
     Engine::get()->getContext()->save();
+    Archiver::save();
 }

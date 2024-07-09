@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine.h"
 #include "Application.h"
+#include "ArchiveInitializer.h"
 
 Application* CreateApplication();
 
@@ -45,6 +46,8 @@ InitParams parseArgs(int argc, char* argv[])
 void sgeEntry(int argc, char* argv[])
 {
 	InitParams initParams = parseArgs(argc, argv);
+
+    ArchiveInitializer::init();
 
 	auto engine = Engine::get();
     if (!engine->init(initParams)) return;
