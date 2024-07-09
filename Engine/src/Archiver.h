@@ -176,6 +176,12 @@ public:
 			transform.m_entity.setRegistry(&scene.getRegistry());
 			transform.m_root.setRegistry(&scene.getRegistry());
 			transform.m_parent.setRegistry(&scene.getRegistry());
+
+			for (auto [_, entity] : serializedEnt.transform.value().getChildren())
+			{
+				Entity eChild(entity.handler(), &scene.getRegistry());
+				transform.addChild(eChild);
+			}
 		}
 		if (serializedEnt.dLight)
 		{
