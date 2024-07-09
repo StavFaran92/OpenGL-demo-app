@@ -8,6 +8,11 @@
 #include <iostream>
 #include <fstream>
 
+#include "Core.h"
+#include "Logger.h"
+#include <glm/glm.hpp>
+#include "entt/entt.hpp"
+
 #include "Component.h"
 #include "Transformation.h"
 #include "EditorCamera.h"
@@ -15,10 +20,12 @@
 #include "Material.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
-#include "Scene.h"
 #include "Skybox.h"
 #include "Context.h"
-#include "Core.h"
+
+class Scene;
+class Entity;
+class Context;
 
 namespace glm
 {
@@ -111,200 +118,43 @@ struct SerializedContext
 class EngineAPI Archiver
 {
 public:
-	static void save()
+	inline static void save()
 	{
-		//SerializedContext serializedContext = Archiver::serializeContext(Engine::get()->getContext());
-
-		//auto projectDir = Engine::get()->getProjectDirectory();
-		//std::ofstream os(projectDir + "/entities.json");
-		//cereal::JSONOutputArchive oarchive(os);
-		//oarchive(serializedContext);
-
-		//Engine::get()->getContext()->save();
-
 		instance->m_serializeCallback();
 
 		logInfo("Successfully Saved Project.");
 	}
 
-	static void load()
+	inline static void load()
 	{
 		instance->m_deserializeCallback();
 
 		logInfo("Successfully Loaded Project.");
 	}
 
-	static void registerSerializeFunction(std::function<void()> cb)
+	inline static void registerSerializeFunction(std::function<void()> cb)
 	{
 		instance->m_serializeCallback = cb;
 	}
 
-	static void registerDeserializeFunction(std::function<void()> cb)
+	inline static void registerDeserializeFunction(std::function<void()> cb)
 	{
 		instance->m_deserializeCallback = cb;
 	}
 
-	static SerializedEntity serializeEntity(Entity e)
-	{
-		SerializedEntity serializedEntity;
-		serializedEntity.entity = e.handler();
-		serializedEntity.camera = getComponentIfExists<CameraComponent>(e);
-		serializedEntity.collisionBox = getComponentIfExists<CollisionBoxComponent>(e);
-		serializedEntity.collisionSphere = getComponentIfExists<CollisionSphereComponent>(e);
-		serializedEntity.dLight = getComponentIfExists<DirectionalLight>(e);
-		serializedEntity.image = getComponentIfExists<ImageComponent>(e);
-		serializedEntity.mat = getComponentIfExists<MaterialComponent>(e);
-		serializedEntity.mesh = getComponentIfExists<MeshComponent>(e);
-		serializedEntity.nsc = getComponentIfExists<NativeScriptComponent>(e);
-		serializedEntity.obj = getComponentIfExists<ObjectComponent>(e);
-		serializedEntity.pLight = getComponentIfExists<PointLight>(e);
-		serializedEntity.renderableComponent = getComponentIfExists<RenderableComponent>(e);
-		serializedEntity.rigidBody = getComponentIfExists<RigidBodyComponent>(e);
-		serializedEntity.skybox = getComponentIfExists<SkyboxComponent>(e);
-		serializedEntity.transform = getComponentIfExists<Transformation>(e);
+	static SerializedEntity serializeEntity(Entity e);
 
-		return serializedEntity;
-	}
+	static void deserializeEntity(SerializedEntity serializedEnt, Scene& scene);
 
-	static void deserializeEntity(SerializedEntity serializedEnt, Scene& scene)
-	{
-		auto e = scene.getRegistry().getRegistry().create(serializedEnt.entity);
-		auto entityHandler = Entity(e, &scene.getRegistry());
-		if (serializedEnt.transform)
-		{
-			auto& transform = entityHandler.addComponent<Transformation>(serializedEnt.transform.value());
-			transform.m_entity.setRegistry(&scene.getRegistry());
-			transform.m_root.setRegistry(&scene.getRegistry());
-			transform.m_parent.setRegistry(&scene.getRegistry());
+	static SerializedScene serializeScene(Scene* scene);
 
-			for (auto [_, entity] : serializedEnt.transform.value().getChildren())
-			{
-				Entity eChild(entity.handler(), &scene.getRegistry());
-				transform.addChild(eChild);
-			}
-		}
-		if (serializedEnt.dLight)
-		{
-			entityHandler.addComponent<DirectionalLight>(serializedEnt.dLight.value());
-		}
+	static void deserializeScene(SerializedScene serializedScene, Scene& scene);
 
-		if (serializedEnt.pLight)
-		{
-			entityHandler.addComponent<PointLight>(serializedEnt.pLight.value());
-		}
+	static SerializedContext serializeContext(const Context* ctx);
 
-		if (serializedEnt.mesh)
-		{
-			entityHandler.addComponent<MeshComponent>(serializedEnt.mesh.value());
-		}
+	static void deserializeContext(SerializedContext serializedContext, Context* ctx);
 
-		if (serializedEnt.renderableComponent)
-		{
-			entityHandler.addComponent<RenderableComponent>(serializedEnt.renderableComponent.value());
-		}
-
-		if (serializedEnt.camera)
-		{
-			entityHandler.addComponent<CameraComponent>(serializedEnt.camera.value());
-
-			scene.setPrimaryCamera(entityHandler);
-		}
-
-		if (serializedEnt.mat)
-		{
-			entityHandler.addComponent<MaterialComponent>(serializedEnt.mat.value());
-		}
-
-		if (serializedEnt.obj)
-		{
-			auto& obj = entityHandler.addComponent<ObjectComponent>(serializedEnt.obj.value());
-			obj.e.setRegistry(&scene.getRegistry());
-		}
-
-		if (serializedEnt.skybox)
-		{
-			auto skybox = Skybox::CreateSkyboxFromEquirectangularMap(serializedEnt.skybox->originalImage, entityHandler, &scene);
-			skybox.getComponent<SkyboxComponent>().originalImage = serializedEnt.skybox->originalImage;
-		}
-
-		if (serializedEnt.collisionSphere)
-		{
-			entityHandler.addComponent<CollisionSphereComponent>(serializedEnt.collisionSphere.value());
-		}
-
-		if (serializedEnt.collisionBox)
-		{
-			entityHandler.addComponent<CollisionBoxComponent>(serializedEnt.collisionBox.value());
-		}
-
-		if (serializedEnt.rigidBody)
-		{
-			entityHandler.addComponent<RigidBodyComponent>(serializedEnt.rigidBody.value());
-		}
-
-		if (serializedEnt.image)
-		{
-			entityHandler.addComponent<ImageComponent>(serializedEnt.image.value());
-		}
-
-		if (serializedEnt.nsc)
-		{
-			auto& nsc = entityHandler.addComponent<NativeScriptComponent>(serializedEnt.nsc.value());
-			nsc.entity.setRegistry(&scene.getRegistry());
-			nsc.script->entity.setRegistry(&scene.getRegistry());
-		}
-	}
-
-	static SerializedScene serializeScene(Scene* scene)
-	{
-		SerializedScene serializedScene;
-
-		scene->getRegistry().get().each([&](auto entity) {
-			Entity e(entity, &scene->getRegistry());
-
-			SerializedEntity serializedEntity = serializeEntity(e);
-
-			serializedScene.serializedEntities.push_back(serializedEntity);
-			});
-
-		return serializedScene;
-	}
-
-	static void deserializeScene(SerializedScene serializedScene, Scene& scene)
-	{
-		for (auto& serializedEnt : serializedScene.serializedEntities)
-		{
-			deserializeEntity(serializedEnt, scene);
-		}
-	}
-
-	static SerializedContext serializeContext(const Context* ctx)
-	{
-		SerializedContext serializedContext;
-
-		for (auto& [sceneID, scene] : ctx->getAllScenes())
-		{
-			serializedContext.serializedScenes[sceneID] = serializeScene(scene.get());
-		}
-
-		serializedContext.activeScene = ctx->getActiveSceneID();
-
-		return serializedContext;
-	}
-
-	static void deserializeContext(SerializedContext serializedContext, Context* ctx)
-	{
-		ctx->m_scenes.clear();
-
-		for (auto& [sceneID, serializedScene] : serializedContext.serializedScenes)
-		{
-			std::shared_ptr<Scene> scene = std::make_shared<Scene>(ctx);
-			deserializeScene(serializedScene, *scene.get());
-			ctx->m_scenes[sceneID] = scene;
-		}
-
-		ctx->m_activeScene = serializedContext.activeScene;
-	}
+private:
 
 	std::function<void()> m_serializeCallback;
 	std::function<void()> m_deserializeCallback;

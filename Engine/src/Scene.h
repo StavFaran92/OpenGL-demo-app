@@ -13,6 +13,7 @@
 #include "glm/glm.hpp"
 #include "IRenderer.h"
 #include "Entity.h"
+#include "Archiver.h"
 
 
 class Model;
@@ -188,4 +189,6 @@ private:
 	Entity m_primaryCamera;
 
 	Entity m_quadUI;
+
+	SerializedScene m_serializedScene;
 };

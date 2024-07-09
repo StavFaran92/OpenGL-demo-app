@@ -44,6 +44,7 @@
 #include "IBL.h"
 #include "Registry.h"
 #include "Physics.h"
+#include "Archiver.h"
 
 
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
@@ -241,12 +242,12 @@ void Scene::init(Context* context)
 
 	m_skyboxShader = Shader::createShared<Shader>(SGE_ROOT_DIR +"Resources/Engine/Shaders/SkyboxShader.glsl");
 
-	m_registry->get().on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
-	m_registry->get().on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
-	m_registry->get().on_construct<CollisionSphereComponent>().connect<&Scene::onCollisionConstruct>(this);
-	m_registry->get().on_construct<CollisionMeshComponent>().connect<&Scene::onCollisionConstruct>(this);
-	
-	m_registry->get().on_destroy<RigidBodyComponent>().connect<&Scene::onRigidBodyDestroy>(this);
+	//m_registry->get().on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
+	//m_registry->get().on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
+	//m_registry->get().on_construct<CollisionSphereComponent>().connect<&Scene::onCollisionConstruct>(this);
+	//m_registry->get().on_construct<CollisionMeshComponent>().connect<&Scene::onCollisionConstruct>(this);
+	//
+	//m_registry->get().on_destroy<RigidBodyComponent>().connect<&Scene::onRigidBodyDestroy>(this);
 }
 
 void Scene::update(float deltaTime)
@@ -710,6 +711,8 @@ void Scene::startSimulation()
 		return;
 	}
 
+	m_serializedScene = Archiver::serializeScene(this);
+
 	auto physicsSystem = Engine::get()->getPhysicsSystem();
 
 	for (auto&& [entity, rb] : m_registry->get().view<RigidBodyComponent>().each())
@@ -833,6 +836,8 @@ void Scene::stopSimulation()
 	{
 		nsc.script->onDestroy();
 	}
+
+	Archiver::deserializeScene(m_serializedScene, *this);
 
 
 	m_isSimulationActive = false;
