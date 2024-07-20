@@ -122,9 +122,13 @@ SerializedScene Archiver::serializeScene(Scene* scene)
 	scene->getRegistry().get().each([&](auto entity) {
 		Entity e(entity, &scene->getRegistry());
 
-		SerializedEntity serializedEntity = serializeEntity(e);
+		// We only serialize entities that have object component
+		if (e.HasComponent<ObjectComponent>())
+		{
+			SerializedEntity serializedEntity = serializeEntity(e);
 
-		serializedScene.serializedEntities.push_back(serializedEntity);
+			serializedScene.serializedEntities.push_back(serializedEntity);
+		}
 		});
 
 	return serializedScene;
@@ -132,7 +136,7 @@ SerializedScene Archiver::serializeScene(Scene* scene)
 
 void Archiver::deserializeScene(SerializedScene serializedScene, Scene& scene)
 {
-	scene.getRegistry().getRegistry().clear();
+	//scene.getRegistry().getRegistry().clear();
 
 	for (auto& serializedEnt : serializedScene.serializedEntities)
 	{

@@ -120,7 +120,7 @@ public:
 private:
 	// -------------------- Methods -------------------- //
 	friend class Context;
-	friend class SceneSerializer;
+	friend class Archiver;
 	void update(float deltaTime);
 	inline void SetID(uint32_t id) { m_id = id; }
 	void draw(float deltaTime);
@@ -186,7 +186,7 @@ private:
 	std::shared_ptr<Shader> m_skyboxShader;
 	std::shared_ptr<Shader> m_UIShader;
 
-	Entity m_primaryCamera;
+	Entity m_primaryCamera = Entity::EmptyEntity;
 
 	Entity m_quadUI;
 

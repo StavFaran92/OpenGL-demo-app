@@ -837,6 +837,8 @@ void Scene::stopSimulation()
 		nsc.script->onDestroy();
 	}
 
+	getRegistry().getRegistry().clear();
+
 	Archiver::deserializeScene(m_serializedScene, *this);
 
 
