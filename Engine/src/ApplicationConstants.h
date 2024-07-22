@@ -6,6 +6,7 @@
 namespace Constants {
 	static const float PI = 3.14159265358979323846f;
 	static const float toRadians = PI / 180;
+	static const float toDegrees = 180 / PI;
 
 	static const std::string g_textureDiffuse = "texture_diffuse";
 	static const std::string g_textureSpecular = "texture_specular";
