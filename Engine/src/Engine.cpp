@@ -50,6 +50,8 @@ bool Engine::init(const InitParams& initParams)
         return false;
     }
 
+    m_initParams = initParams;
+
     m_projectDirectory = initParams.projectDir;
 
     if (!std::filesystem::exists(m_projectDirectory) || !std::filesystem::is_directory(m_projectDirectory)) 
@@ -392,6 +394,11 @@ CommonShaders* Engine::getCommonShaders() const
 CommonTextures* Engine::getCommonTextures() const
 {
     return m_commonTextures.get();
+}
+
+const InitParams& Engine::getInitParams() const
+{
+    return m_initParams;
 }
 
 void Engine::loadProject(const std::string& dirPath)

@@ -77,6 +77,7 @@ public:
     ResourceManager* getResourceManager() const;
     CommonShaders* getCommonShaders() const;
     CommonTextures* getCommonTextures() const;
+    const InitParams& getInitParams() const;
     template<typename T>MemoryPool<T>* getMemoryPool() const {};
     template<>MemoryPool<Texture>* getMemoryPool() const { return m_memoryPoolTexture.get(); }
     template<>MemoryPool<Mesh>* getMemoryPool() const { return m_memoryPoolMesh.get(); }
@@ -164,6 +165,8 @@ protected:
     std::shared_ptr<CommonShaders> m_commonShaders;
     std::shared_ptr<CommonTextures> m_commonTextures;
     std::shared_ptr<Assets> m_assets;
+
+    InitParams m_initParams;
 
     std::map<std::type_index, void*> m_subSystems;
 

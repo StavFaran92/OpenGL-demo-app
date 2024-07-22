@@ -123,7 +123,7 @@ SerializedScene Archiver::serializeScene(Scene* scene)
 		Entity e(entity, &scene->getRegistry());
 
 		// We only serialize entities that have object component
-		if (e.HasComponent<ObjectComponent>())
+		//if (e.HasComponent<ObjectComponent>())
 		{
 			SerializedEntity serializedEntity = serializeEntity(e);
 

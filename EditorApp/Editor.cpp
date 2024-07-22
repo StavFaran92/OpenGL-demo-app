@@ -1521,6 +1521,8 @@ public:
 
 	void start() override
 	{
+
+		m_editorRegistry = std::make_shared<SGE_Regsitry>();
 		
 		ImGui::SetCurrentContext((ImGuiContext * )Engine::get()->getImguiHandler()->getCurrentContext());
 
@@ -1534,10 +1536,9 @@ public:
 		g_primaryCamera = scene->getActiveCamera();
 
 		// set Editor camera as active camera
-		auto editorCamera = scene->createEntity("Editor Camera");
+		auto editorCamera = m_editorRegistry->createEntity("Editor Camera");
 		editorCamera.addComponent<CameraComponent>();
 		editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
-		editorCamera.RemoveComponent<ObjectComponent>();
 		scene->setPrimaryCamera(editorCamera);
 
 		g_editorCamera = editorCamera;
@@ -1549,6 +1550,8 @@ public:
 		auto gui = new GUI_Helper();
 		Engine::get()->getImguiHandler()->addGUI(gui);
 	}
+
+	std::shared_ptr<SGE_Regsitry> m_editorRegistry;
 };
 
 Application* CreateApplication()
