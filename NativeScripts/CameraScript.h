@@ -70,8 +70,8 @@ class CameraScript : public ScriptableEntity
 
 
 		// Create quaternions for pitch and yaw
-		glm::quat pitchQuat = glm::angleAxis(Constants::PI - m_pitch * Constants::toRadians, glm::vec3(1, 0, 0));
-		glm::quat yawQuat = glm::angleAxis(Constants::PI - m_yaw * Constants::toRadians, glm::vec3(0, 1, 0));
+		glm::quat pitchQuat = glm::angleAxis(Constants::PI + m_pitch * Constants::toRadians + Constants::PI / 2, glm::vec3(1, 0, 0));
+		glm::quat yawQuat = glm::angleAxis(Constants::PI - m_yaw * Constants::toRadians + Constants::PI / 2, glm::vec3(0, 1, 0));
 
 		// Combine the quaternions
 		glm::quat combinedQuat = yawQuat * pitchQuat;

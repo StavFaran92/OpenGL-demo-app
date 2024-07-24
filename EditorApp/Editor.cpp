@@ -149,6 +149,7 @@ static void displayTransformation(Transformation& transform, bool& isChanged)
 	glm::vec3 originalRotation = currentRotation;
 	if (ImGui::DragFloat3("Rotation", glm::value_ptr(currentRotation)))
 	{
+		// We use delta rotation to perform all calculations in quaternion space
 		glm::vec3 deltaRotation = currentRotation - originalRotation;
 		transform.rotate(deltaRotation * Constants::toRadians);
 		isChanged = true;
