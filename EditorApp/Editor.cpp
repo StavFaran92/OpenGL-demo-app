@@ -135,7 +135,7 @@ void RenderSimulationControlView(float width, float height)
 static void displayTransformation(Transformation& transform, bool& isChanged)
 {
 	glm::vec3& pos = transform.getLocalPosition();
-	glm::vec3& rotation = transform.getLocalRotationVec3() * Constants::toDegrees;
+	glm::vec3& currentRotation = transform.getLocalRotationVec3() * Constants::toDegrees;
 	glm::vec3& scale = transform.getLocalScale();
 
 	// Position slider
@@ -146,9 +146,11 @@ static void displayTransformation(Transformation& transform, bool& isChanged)
 	}
 
 	// Rotation slider (Euler angles)
-	if (ImGui::DragFloat3("Rotation", glm::value_ptr(rotation)))
+	glm::vec3 originalRotation = currentRotation;
+	if (ImGui::DragFloat3("Rotation", glm::value_ptr(currentRotation)))
 	{
-		transform.setLocalRotation(rotation * Constants::toRadians);
+		glm::vec3 deltaRotation = currentRotation - originalRotation;
+		transform.rotate(deltaRotation * Constants::toRadians);
 		isChanged = true;
 	}
 
