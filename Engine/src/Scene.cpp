@@ -802,7 +802,7 @@ void Scene::createActor(entt::entity entity, RigidBodyComponent& rb)
 	Entity e{ entity, m_registry.get() };
 
 	auto& transform = e.getComponent<Transformation>();
-	auto body = Engine::get()->getPhysicsSystem()->createRigidBody(transform, rb.type, rb.mass);
+	auto body = Engine::get()->getPhysicsSystem()->createRigidBody(transform, rb);
 
 	createShape(Engine::get()->getPhysicsSystem(), body, e, true);
 

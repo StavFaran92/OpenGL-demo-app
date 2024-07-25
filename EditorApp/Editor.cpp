@@ -1175,6 +1175,32 @@ void RenderInspectorWindow(float width, float height)
 		displayComponent<RigidBodyComponent>("RigidBody", [](RigidBodyComponent& rBody) {
 			ImGui::Combo("##Type", (int*)&rBody.type, rigidyBodyTypesStrList, IM_ARRAYSIZE(rigidyBodyTypesStrList));
 			ImGui::InputFloat("Mass", &rBody.mass);
+
+			ImGui::LabelText("", "Linear Lock");
+			ImGui::PushID("LinearX");
+			ImGui::Checkbox("X", &rBody.isLockedLinearX);
+			ImGui::PopID();
+			ImGui::SameLine();
+			ImGui::PushID("LinearY");
+			ImGui::Checkbox("Y", &rBody.isLockedLinearY);
+			ImGui::PopID();
+			ImGui::SameLine();
+			ImGui::PushID("LinearZ");
+			ImGui::Checkbox("Z", &rBody.isLockedLinearZ);
+			ImGui::PopID();
+
+			ImGui::LabelText("", "Angular Lock");
+			ImGui::PushID("AngularX");
+			ImGui::Checkbox("X", &rBody.isLockedAngularX);
+			ImGui::PopID();
+			ImGui::SameLine();
+			ImGui::PushID("AngularY");
+			ImGui::Checkbox("Y", &rBody.isLockedAngularY);
+			ImGui::PopID();
+			ImGui::SameLine();
+			ImGui::PushID("AngularZ");
+			ImGui::Checkbox("Z", &rBody.isLockedAngularZ);
+			ImGui::PopID();
 		});
 
 		displayComponent<CollisionBoxComponent>("Collision Box", [](CollisionBoxComponent& collisionBox) {

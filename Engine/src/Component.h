@@ -92,6 +92,7 @@ struct EngineAPI NativeScriptComponent : public Component
 
 struct EngineAPI RigidBodyComponent : public Component
 {
+
 	RigidBodyComponent() = default;
 	RigidBodyComponent(RigidbodyType type, float mass) : type(type), mass(mass) {};
 
@@ -105,6 +106,12 @@ struct EngineAPI RigidBodyComponent : public Component
 		archive(type, mass);
 	}
 
+	bool isLockedLinearX = false;
+	bool isLockedLinearY = false;
+	bool isLockedLinearZ = false;
+	bool isLockedAngularX = false;
+	bool isLockedAngularY = false;
+	bool isLockedAngularZ = false;
 	RigidbodyType type = RigidbodyType::Static;
 	float mass = 0;
 	bool isChanged = false;
