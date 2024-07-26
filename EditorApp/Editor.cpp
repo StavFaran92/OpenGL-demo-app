@@ -926,7 +926,7 @@ void RenderViewWindow(float width, float height)
 	if (!Engine::get()->getContext()->getActiveScene()->isSimulationActive())
 	{
 
-		if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+		if (!ImGuizmo::IsUsing() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
 		{
 			ImVec2 mousePos = ImGui::GetMousePos();
 			ImVec2 windowPos = ImGui::GetWindowPos();
