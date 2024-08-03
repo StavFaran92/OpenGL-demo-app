@@ -14,7 +14,7 @@ void Animator::update(float dt)
 	}
 }
 
-const std::vector<glm::mat4>& Animator::getFinalBoneMatrices() const
+const std::unordered_map<std::string, glm::mat4>& Animator::getFinalBoneMatrices() const
 {
 	return m_finalBoneMatrices;
 }

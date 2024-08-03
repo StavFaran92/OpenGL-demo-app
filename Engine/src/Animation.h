@@ -8,12 +8,6 @@
 
 class Bone;
 
-struct BoneInfo
-{
-	int id = -1;
-	glm::mat4 offset;
-};
-
 struct MeshNodeData
 {
 	glm::mat4 transformation;
@@ -25,14 +19,16 @@ struct MeshNodeData
 class Animation
 {
 public:
-	void calculateFinalBoneMatrices(float currentTime, std::vector<glm::mat4>& outFinalBoneMatrices);
-	
+	Animation(const std::string& name, float duration, float ticksPerSecond, MeshNodeData& rootNode, std::unordered_map<std::string, std::shared_ptr<Bone>>& bones);
+	void calculateFinalBoneMatrices(float currentTime, std::unordered_map<std::string, glm::mat4>& outFinalBoneMatrices);
 	float getDuration() const;
 	float getTicksPerSecond() const;
 private:
-	void calculateFinalBoneMatricesHelper(const MeshNodeData& nodeData, glm::mat4 parentTransform, float currentTime, std::vector<glm::mat4>& finalBoneMatrices);
+	void calculateFinalBoneMatricesHelper(const MeshNodeData& nodeData, glm::mat4 parentTransform, float currentTime, std::unordered_map<std::string, glm::mat4>& finalBoneMatrices);
 private:
+	std::string m_name;
 	MeshNodeData m_rootNode;
 	std::unordered_map<std::string, std::shared_ptr<Bone>> m_bones;
-	std::unordered_map<std::string, BoneInfo> m_bonesInfo;
+	float m_duration = 0;
+	float m_ticksPerSecond = 0;
 };

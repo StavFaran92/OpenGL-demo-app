@@ -2,21 +2,26 @@
 
 #include "Bone.h"
 
-void Animation::calculateFinalBoneMatricesHelper(const MeshNodeData& nodeData, glm::mat4 parentTransform, float currentTime, std::vector<glm::mat4>& finalBoneMatrices)
+Animation::Animation(const std::string& name, float duration, float ticksPerSecond, MeshNodeData& rootNode, std::unordered_map<std::string, std::shared_ptr<Bone>>& bones)
+	: m_name(name), m_duration(duration), m_ticksPerSecond(ticksPerSecond), m_rootNode(rootNode), m_bones(bones)
+{
+}
+
+void Animation::calculateFinalBoneMatricesHelper(const MeshNodeData& nodeData, glm::mat4 parentTransform, float currentTime, std::unordered_map<std::string, glm::mat4>& finalBoneMatrices)
 {
 	std::string nodeName = nodeData.name;
 	glm::mat4 nodeTransform = nodeData.transformation;
 
-	auto iter = m_bones.find(nodeName);
-	if (iter != m_bones.end())
-	{
-		auto& bone = (*iter).second;
-		if (bone)
-		{
-			bone->update(currentTime);
-			nodeTransform = bone->getLocalTransform(); // todo verify this behaviour
-		}
-	}
+	//auto iter = m_bones.find(nodeName);
+	//if (iter != m_bones.end())
+	//{
+	//	auto& bone = (*iter).second;
+	//	if (bone)
+	//	{
+	//		bone->update(currentTime);
+	//		nodeTransform = bone->getLocalTransform(); // todo verify this behaviour
+	//	}
+	//}
 
 	/* 
 	We essentialy wish to go from Bone "Bind" space to Pose space,
@@ -33,12 +38,13 @@ void Animation::calculateFinalBoneMatricesHelper(const MeshNodeData& nodeData, g
 
 	glm::mat4 globalTransformation = parentTransform * nodeTransform; // transform from local space to model space
 
-	auto boneInfoIter = m_bonesInfo.find(nodeName);
-	if (boneInfoIter != m_bonesInfo.end())
+	if (m_bones.find(nodeName) != m_bones.end())
 	{
-		auto id = (*boneInfoIter).second.id;
-		auto& offset = (*boneInfoIter).second.offset;
-		finalBoneMatrices[id] = globalTransformation * offset; // tranform by inverse offset matrix
+		auto bone = m_bones[nodeName];
+		bone->update(currentTime);
+		nodeTransform = bone->getLocalTransform(); // todo verify this behaviour
+		globalTransformation = parentTransform * nodeTransform;
+		finalBoneMatrices[nodeName] = globalTransformation;
 	}
 
 	for (int i = 0; i < nodeData.childrenCount; i++)
@@ -49,17 +55,17 @@ void Animation::calculateFinalBoneMatricesHelper(const MeshNodeData& nodeData, g
 
 }
 
-void Animation::calculateFinalBoneMatrices(float currentTime, std::vector<glm::mat4>& outFinalBoneMatrices)
+void Animation::calculateFinalBoneMatrices(float currentTime, std::unordered_map<std::string, glm::mat4>& outFinalBoneMatrices)
 {
 	return calculateFinalBoneMatricesHelper(m_rootNode, glm::mat4(1.0f), currentTime, outFinalBoneMatrices);
 }
 
 float Animation::getDuration() const
 {
-	return 0.0f;
+	return m_duration;
 }
 
 float Animation::getTicksPerSecond() const
 {
-	return 0.0f;
+	return m_ticksPerSecond;
 }

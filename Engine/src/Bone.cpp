@@ -7,6 +7,11 @@ int getDescreteIndex(const std::vector<T>& list, float animationTime)
     return std::distance(list.begin(), it) - 1;
 }
 
+Bone::Bone(const std::vector<KeyPosition>& positions, const std::vector<KeyRotation>& rotations, const std::vector<KeyScale>& scalings)
+    : m_positions(positions), m_rotations(rotations), m_scalings(scalings)
+{
+}
+
 float Bone::getProgress(float t1, float t2, float v) const
 {
     return (v - t1) / (t2 - t1);

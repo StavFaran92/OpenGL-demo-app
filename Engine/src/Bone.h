@@ -43,6 +43,7 @@ struct KeyScale
 class Bone
 {
 public:
+    Bone(const std::vector<KeyPosition>& positions, const std::vector<KeyRotation>& rotations, const std::vector<KeyScale>& scalings);
 	void update(float animationTime);
 	const glm::mat4& getLocalTransform() const;
 	glm::mat4 interpolatePosition(float animationTime) const;
