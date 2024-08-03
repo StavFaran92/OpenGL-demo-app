@@ -77,7 +77,7 @@ std::shared_ptr<Animation> AnimationLoader::loadAnimation(const std::string& pat
     std::unordered_map<std::string, std::shared_ptr<Bone>> bones;
     readAnimationBones(aiAnimation, bones);
 
-    std::shared_ptr<Animation> animation = std::make_shared<Animation>(aiAnimation->mName, aiAnimation->mDuration, aiAnimation->mTicksPerSecond, rootNode, bones);
+    std::shared_ptr<Animation> animation = std::make_shared<Animation>(aiAnimation->mName.C_Str(), (float)aiAnimation->mDuration, (float)aiAnimation->mTicksPerSecond, rootNode, bones);
 
-
+    return animation;
 }

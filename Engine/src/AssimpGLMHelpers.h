@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
+#include<glm/gtx/quaternion.hpp>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

@@ -16,6 +16,11 @@ struct KeyPosition
     {
         return this->timeStamp < other.timeStamp;
     }
+
+    bool operator<(float other) const
+    {
+        return this->timeStamp < other;
+    }
 };
 
 struct KeyRotation
@@ -27,6 +32,11 @@ struct KeyRotation
     {
         return this->timeStamp < other.timeStamp;
     }
+
+    bool operator<(float other) const
+    {
+        return this->timeStamp < other;
+    }
 };
 
 struct KeyScale
@@ -37,6 +47,11 @@ struct KeyScale
     bool operator<(const KeyPosition& other) const
     {
         return this->timeStamp < other.timeStamp;
+    }
+
+    bool operator<(float other) const
+    {
+        return this->timeStamp < other;
     }
 };
 
