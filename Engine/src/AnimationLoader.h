@@ -3,7 +3,9 @@
 #include <memory>
 #include "Animation.h"
 
-class AnimationLoader
+#include "Core.h"
+
+class EngineAPI AnimationLoader
 {
 public:
 	static std::shared_ptr<Animation> loadAnimation(const std::string& path);

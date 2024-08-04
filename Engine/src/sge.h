@@ -56,3 +56,5 @@
 #include "Physics.h"
 #include "Assets.h"
 #include "Archiver.h"
+#include "AnimationLoader.h"
+#include "Animator.h"

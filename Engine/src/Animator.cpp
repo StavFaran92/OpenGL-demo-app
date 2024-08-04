@@ -2,6 +2,12 @@
 
 #include "Animation.h"
 
+Animator::Animator(std::shared_ptr<Animation> animation)
+	: m_currentAnimation(animation)
+{
+
+}
+
 void Animator::update(float dt)
 {
 	

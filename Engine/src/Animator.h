@@ -4,12 +4,15 @@
 #include <string>
 #include <unordered_map>
 #include "glm/glm.hpp"
+#include "Component.h"
 
 class Animation;
 
-class Animator
+class EngineAPI Animator : public Component
 {
 public:
+	Animator() = default;
+	Animator(std::shared_ptr<Animation> animation);
 	void update(float dt);
 	const std::unordered_map<std::string, glm::mat4>& getFinalBoneMatrices() const;
 	void playAnimation(std::shared_ptr<Animation> animation);

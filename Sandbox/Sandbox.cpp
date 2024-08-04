@@ -27,37 +27,22 @@ public:
 
 	void start() override
 	{
-		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_SCANCODE_ESCAPE, [](SDL_Event e) {Engine::get()->stop(); });
+		// set Editor camera as active camera
+		auto editorCamera = Engine::get()->getContext()->getActiveScene()->createEntity("Editor Camera");
+		editorCamera.addComponent<CameraComponent>();
+		editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
+		Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(editorCamera);
 
-		//Engine::get()->getSubSystem<Assets>()->importTexture("");
+		auto zombieGirl = Engine::get()->getSubSystem<ModelImporter>()->loadModelFromFile("C:/Users/Stav/Downloads/FPS Zombie/Scary Zombie Pack/zombiegirl.fbx", Engine::get()->getContext()->getActiveScene().get());
 
-		SDL_ShowCursor(SDL_DISABLE);
+		//zombieGirl.getComponent<Transformation>().translate({ 0, 0, 10 });
+		zombieGirl.getComponent<Transformation>().scale({ 0.05, 0.05, 0.05 });
 
-		auto& camera = Engine::get()->getContext()->getActiveScene()->getActiveCamera();
-		camera.addComponent<NativeScriptComponent>().bind<CameraScript>();
-		auto& camTransform = camera.getComponent<Transformation>();
-		//auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
+		auto animation = AnimationLoader::loadAnimation("C:/Users/Stav/Downloads/FPS Zombie/Scary Zombie Pack/Zombie Walk.fbx");
 
-		Entity player = Engine::get()->getContext()->getActiveScene()->getEntityByName("Player");
-		player.addComponent<NativeScriptComponent>().bind<PlayerController>(camera, 3);
-		auto& playerTransform = player.getComponent<Transformation>();
-		playerTransform.setWorldPosition({ 0, 10, 0 });
+		zombieGirl.addComponent<Animator>(animation);
 
-		camTransform.setLocalPosition(playerTransform.getLocalPosition());
-		camTransform.translate({0,2,0});
-
-		camera.setParent(player);
-
-		Entity enemy_1 = Engine::get()->getContext()->getActiveScene()->getEntityByName("Enemy_1");
-		enemy_1.addComponent<NativeScriptComponent>().bind<EnemyController>(3);
-
-		Entity cursor = Engine::get()->getContext()->getActiveScene()->getEntityByName("Cursor");
-		auto& cursorImage = cursor.getComponent<ImageComponent>();
-		cursorImage.position.x = (Engine::get()->getWindow()->getWidth() - cursorImage.size.x ) / 2.f;
-		cursorImage.position.y = (Engine::get()->getWindow()->getHeight() - cursorImage.size.y ) / 2.f;
-
-		Entity gun = Engine::get()->getContext()->getActiveScene()->getEntityByName("Gun");
-		gun.setParent(camera);
+		Engine::get()->getContext()->getActiveScene()->startSimulation();
 
 		//camTransform.setLocalPosition(playerTransform.getLocalPosition());
 		//camTransform.translate({0,2,0});
