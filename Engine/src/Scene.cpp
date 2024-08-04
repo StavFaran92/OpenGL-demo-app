@@ -45,6 +45,7 @@
 #include "Registry.h"
 #include "Physics.h"
 #include "Archiver.h"
+#include "Animator.h"
 
 
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
@@ -342,6 +343,12 @@ void Scene::update(float deltaTime)
 				physx::PxTransform pxTransform = actor->getGlobalPose();
 				PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
 			}
+		}
+
+		for (auto&& [entity, animator, mesh] : m_registry->get().view<Animator, MeshComponent>().each())
+		{
+			animator.update(deltaTime);
+			auto& finalBoneMatrices = animator.getFinalBoneMatrices();
 		}
 	}
 }
