@@ -27,7 +27,7 @@ enum class LayoutAttribute// : int
 
 const std::map<LayoutAttribute, size_t> g_attributeToSizeMap =
 {
-	{ LayoutAttribute::Positions, 3},
+	{ LayoutAttribute::Positions, 3	},
 	{ LayoutAttribute::Normals, 3 },
 	{ LayoutAttribute::Texcoords, 2 },
 	{ LayoutAttribute::Colors, 3 },

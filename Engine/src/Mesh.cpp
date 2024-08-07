@@ -52,7 +52,7 @@ bool Mesh::build(MeshData& mData)
 	int stride = 0;
 	for (auto entry : m_layout.attribs)
 	{
-		stride += getAttributeSize(entry);
+		stride += getAttributeSize(entry) * 4;
 	}
 
 	// Update layout info
@@ -60,8 +60,14 @@ bool Mesh::build(MeshData& mData)
 	m_layout.stride = stride;
 
 	// Create verticies array
+	// array size = size of each attribute * size of elements in attribute * vertices count
 	int offset = 0;
-	std::vector<float> vertices(stride * mData.m_positions.size(), 0); //TODO optimize
+	unsigned int bufferSize = stride * m_layout.numOfVertices;
+	unsigned char* vertices = new unsigned char[bufferSize];
+	for (int i = 0; i < bufferSize; i++)
+	{
+		vertices[i] = 255;
+	}
 
 	for (auto entry : m_layout.attribs)
 	{
@@ -71,9 +77,10 @@ bool Mesh::build(MeshData& mData)
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
 				auto pos = mData.m_positions.at(i);
-				vertices[stride * i + offset + 0] = pos.x;
-				vertices[stride * i + offset + 1] = pos.y;
-				vertices[stride * i + offset + 2] = pos.z;
+				auto vOffset = stride * i + offset + sizeof(float) * 0;
+				memcpy(vertices + vOffset, &pos.x, sizeof(float));
+				memcpy(vertices + stride * i + offset + sizeof(float) * 1, &pos.y, sizeof(float));
+				memcpy(vertices + stride * i + offset + sizeof(float) * 2, &pos.z, sizeof(float));
 			}
 		}
 
@@ -83,9 +90,12 @@ bool Mesh::build(MeshData& mData)
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
 				auto normal = mData.m_normals.at(i);
-				vertices[stride * i + offset + 0] = normal.x;
-				vertices[stride * i + offset + 1] = normal.y;
-				vertices[stride * i + offset + 2] = normal.z;
+				memcpy(vertices + stride * i + offset + sizeof(float) * 0, &normal.x, sizeof(float));
+				memcpy(vertices + stride * i + offset + sizeof(float) * 1, &normal.y, sizeof(float));
+				memcpy(vertices + stride * i + offset + sizeof(float) * 2, &normal.z, sizeof(float));
+				//vertices[stride * i + offset + 0] = normal.x;
+				//vertices[stride * i + offset + 1] = normal.y;
+				//vertices[stride * i + offset + 2] = normal.z;
 			}
 		}
 
@@ -95,8 +105,10 @@ bool Mesh::build(MeshData& mData)
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
 				auto texCoord = mData.m_texCoords.at(i);
-				vertices[stride * i + offset + 0] = texCoord.x;
-				vertices[stride * i + offset + 1] = texCoord.y;
+				memcpy(vertices + stride * i + offset + sizeof(float) * 0, &texCoord.x, sizeof(float));
+				memcpy(vertices + stride * i + offset + sizeof(float) * 1, &texCoord.y, sizeof(float));
+				//vertices[stride * i + offset + 0] = texCoord.x;
+				//vertices[stride * i + offset + 1] = texCoord.y;
 			}
 		}
 
@@ -106,9 +118,12 @@ bool Mesh::build(MeshData& mData)
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
 				auto color = mData.m_colors.at(i);
-				vertices[stride * i + offset + 0] = color.x;
-				vertices[stride * i + offset + 1] = color.y;
-				vertices[stride * i + offset + 2] = color.z;
+				memcpy(vertices + stride * i + offset + sizeof(float) * 0, &color.x, sizeof(float));
+				memcpy(vertices + stride * i + offset + sizeof(float) * 1, &color.y, sizeof(float));
+				memcpy(vertices + stride * i + offset + sizeof(float) * 2, &color.z, sizeof(float));
+				//vertices[stride * i + offset + 0] = color.x;
+				//vertices[stride * i + offset + 1] = color.y;
+				//vertices[stride * i + offset + 2] = color.z;
 			}
 		}
 
@@ -118,12 +133,14 @@ bool Mesh::build(MeshData& mData)
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
 				auto tangent = mData.m_tangents.at(i);
-				vertices[stride * i + offset + 0] = tangent.x;
-				vertices[stride * i + offset + 1] = tangent.y;
+				memcpy(vertices + stride * i + offset + sizeof(float) * 0, &tangent.x, sizeof(float));
+				memcpy(vertices + stride * i + offset + sizeof(float) * 1, &tangent.y, sizeof(float));
+				//vertices[stride * i + offset + 0] = tangent.x;
+				//vertices[stride * i + offset + 1] = tangent.y;
 			}
 		}
 
-		offset += getAttributeSize(entry);
+		offset += getAttributeSize(entry) * 4;
 	}
 
 	// Create buffers
@@ -131,10 +148,10 @@ bool Mesh::build(MeshData& mData)
 
 	if (mData.m_indices.size() > 0)
 	{
-		m_ibo = std::make_shared<ElementBufferObject>((unsigned int*) & (mData.m_indices[0]), mData.m_indices.size());
+		m_ibo = std::make_shared<ElementBufferObject>((unsigned int*)&(mData.m_indices[0]), mData.m_indices.size());
 	}
 
-	m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), (unsigned int)mData.m_positions.size(), sizeof(float) * stride);
+	m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), m_layout.numOfVertices, bufferSize);
 
 	m_vao->AttachBuffer(*m_vbo, m_ibo.get(), m_layout);
 

@@ -24,6 +24,8 @@ struct MeshData
 	std::vector<glm::vec2> m_texCoords;
 	std::vector<glm::vec3> m_colors;
 	std::vector<unsigned int> m_indices;
+	std::vector<glm::ivec3> bonesIDs;
+	std::vector<glm::vec3> bonesWeights;
 	VertexLayout m_layout;
 };
 

@@ -7,7 +7,7 @@
 class VertexBufferObject
 {
 public:
-	VertexBufferObject(const void* data, unsigned int size, unsigned int sizeOfType);
+	VertexBufferObject(const void* data, unsigned int length, unsigned int size);
 	~VertexBufferObject();
 
 	void Bind() const;
