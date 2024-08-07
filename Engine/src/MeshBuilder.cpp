@@ -184,7 +184,7 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 	int stride = 0;
 	for (auto entry : layout.attribs)
 	{
-		stride += getAttributeSize(entry);
+		stride += getAttributeCompCount(entry);
 	}
 
 	int offset = 0;
@@ -201,11 +201,11 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 		// Parse positions
 		if (LayoutAttribute::Positions == entry)
 		{
-			positions.reserve(layout.numOfVertices * getAttributeSize(entry));
+			positions.reserve(layout.numOfVertices * getAttributeCompCount(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
 				glm::vec3 pos;
-				for (int j = 0; j < getAttributeSize(entry); j++)
+				for (int j = 0; j < getAttributeCompCount(entry); j++)
 				{
 					pos[j] = vertices[stride * i + j + offset];
 				}
@@ -217,11 +217,11 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 		// Parse normals
 		else if (LayoutAttribute::Normals == entry)
 		{
-			normals.reserve(layout.numOfVertices * getAttributeSize(entry));
+			normals.reserve(layout.numOfVertices * getAttributeCompCount(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
 				glm::vec3 normal;
-				for (int j = 0; j < getAttributeSize(entry); j++)
+				for (int j = 0; j < getAttributeCompCount(entry); j++)
 				{
 					normal[j] = vertices[stride * i + j + offset];
 				}
@@ -233,11 +233,11 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 		// Parse texcoords
 		else if (LayoutAttribute::Texcoords == entry)
 		{
-			texcoords.reserve(layout.numOfVertices * getAttributeSize(entry));
+			texcoords.reserve(layout.numOfVertices * getAttributeCompCount(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
 				glm::vec2 vec;
-				for (int j = 0; j < getAttributeSize(entry); j++)
+				for (int j = 0; j < getAttributeCompCount(entry); j++)
 				{
 					vec[j] = vertices[stride * i + j + offset];
 				}
@@ -249,11 +249,11 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 		// Parse colors
 		else if (LayoutAttribute::Colors == entry)
 		{
-			colors.reserve(layout.numOfVertices * getAttributeSize(entry));
+			colors.reserve(layout.numOfVertices * getAttributeCompCount(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
 				glm::vec3 color;
-				for (int j = 0; j < getAttributeSize(entry); j++)
+				for (int j = 0; j < getAttributeCompCount(entry); j++)
 				{
 					color[j] = vertices[stride * i + j + offset];
 				}
@@ -265,11 +265,11 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 		// Parse Tangents
 		else if (LayoutAttribute::Tangents == entry)
 		{
-			tangents.reserve(layout.numOfVertices * getAttributeSize(entry));
+			tangents.reserve(layout.numOfVertices * getAttributeCompCount(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
 				glm::vec3 tangent;
-				for (int j = 0; j < getAttributeSize(entry); j++)
+				for (int j = 0; j < getAttributeCompCount(entry); j++)
 				{
 					tangent[j] = vertices[stride * i + j + offset];
 				}
@@ -278,7 +278,7 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 			addTangents(tangents);
 		}
 
-		offset += getAttributeSize(entry);
+		offset += getAttributeCompCount(entry);
 	}
 
 	return *this;
