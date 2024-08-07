@@ -43,7 +43,14 @@ void VertexArrayObject::fillVertexAttributes(const VertexLayout& layout)
 	{
 		auto& attribData = getAttributeData(entry);
 		glEnableVertexAttribArray(attribData.location);
-		glVertexAttribPointer(attribData.location, attribData.length, GL_FLOAT, GL_FALSE, layout.stride, (void*)offset);
+		if (attribData.typeName == typeid(float).name())
+		{
+			glVertexAttribPointer(attribData.location, attribData.length, GL_FLOAT, GL_FALSE, layout.stride, (void*)offset);
+		}
+		else if (attribData.typeName == typeid(int).name())
+		{
+			glVertexAttribIPointer(attribData.location, attribData.length, GL_INT, layout.stride, (void*)offset);
+		}
 
 		offset += attribData.size * attribData.length;
 	}

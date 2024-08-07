@@ -68,16 +68,18 @@ bool Mesh::build(MeshData& mData)
 
 	for (auto entry : m_layout.attribs)
 	{
+		auto& attribData = getAttributeData(entry);
+
 		// Parse positions
 		if (LayoutAttribute::Positions == entry)
 		{
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
 				auto pos = mData.m_positions.at(i);
-				auto vOffset = stride * i + offset + sizeof(float) * 0;
-				memcpy(vertices + vOffset, &pos.x, sizeof(float));
-				memcpy(vertices + stride * i + offset + sizeof(float) * 1, &pos.y, sizeof(float));
-				memcpy(vertices + stride * i + offset + sizeof(float) * 2, &pos.z, sizeof(float));
+				auto vOffset = stride * i + offset;
+				memcpy(vertices + vOffset + attribData.size * 0, &pos.x, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 1, &pos.y, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 2, &pos.z, attribData.size);
 			}
 		}
 
@@ -87,9 +89,10 @@ bool Mesh::build(MeshData& mData)
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
 				auto normal = mData.m_normals.at(i);
-				memcpy(vertices + stride * i + offset + sizeof(float) * 0, &normal.x, sizeof(float));
-				memcpy(vertices + stride * i + offset + sizeof(float) * 1, &normal.y, sizeof(float));
-				memcpy(vertices + stride * i + offset + sizeof(float) * 2, &normal.z, sizeof(float));
+				auto vOffset = stride * i + offset;
+				memcpy(vertices + vOffset + attribData.size * 0, &normal.x, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 1, &normal.y, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 2, &normal.z, attribData.size);
 			}
 		}
 
@@ -99,8 +102,9 @@ bool Mesh::build(MeshData& mData)
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
 				auto texCoord = mData.m_texCoords.at(i);
-				memcpy(vertices + stride * i + offset + sizeof(float) * 0, &texCoord.x, sizeof(float));
-				memcpy(vertices + stride * i + offset + sizeof(float) * 1, &texCoord.y, sizeof(float));
+				auto vOffset = stride * i + offset;
+				memcpy(vertices + vOffset + attribData.size * 0, &texCoord.x, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 1, &texCoord.y, attribData.size);
 			}
 		}
 
@@ -110,9 +114,10 @@ bool Mesh::build(MeshData& mData)
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
 				auto color = mData.m_colors.at(i);
-				memcpy(vertices + stride * i + offset + sizeof(float) * 0, &color.x, sizeof(float));
-				memcpy(vertices + stride * i + offset + sizeof(float) * 1, &color.y, sizeof(float));
-				memcpy(vertices + stride * i + offset + sizeof(float) * 2, &color.z, sizeof(float));
+				auto vOffset = stride * i + offset;
+				memcpy(vertices + vOffset + attribData.size * 0, &color.x, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 1, &color.y, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 2, &color.z, attribData.size);
 			}
 		}
 
@@ -122,12 +127,13 @@ bool Mesh::build(MeshData& mData)
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
 				auto tangent = mData.m_tangents.at(i);
-				memcpy(vertices + stride * i + offset + sizeof(float) * 0, &tangent.x, sizeof(float));
-				memcpy(vertices + stride * i + offset + sizeof(float) * 1, &tangent.y, sizeof(float));
+				auto vOffset = stride * i + offset;
+				memcpy(vertices + vOffset + attribData.size * 0, &tangent.x, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 1, &tangent.y, attribData.size);
 			}
 		}
 
-		auto& attribData = getAttributeData(entry);
+		
 		offset += attribData.length * attribData.size;
 	}
 
