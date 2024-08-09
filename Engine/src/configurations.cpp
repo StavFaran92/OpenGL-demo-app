@@ -15,34 +15,19 @@ AttributeData getAttributeData(LayoutAttribute attribute)
 
 size_t getAttributeSize(LayoutAttribute attribute)
 {
-	if (g_attributeToSizeMap.find(attribute) == g_attributeToSizeMap.end())
-	{
-		logError("Unsupported attribute specified.");
-		return 0;
-	}
-
-	return g_attributeToSizeMap.at(attribute);
+	AttributeData attribData = getAttributeData(attribute);
+	return attribData.size;
 }
 
 size_t getAttributeCompCount(LayoutAttribute attribute)
 {
-	if (g_attributeToCompCountMap.find(attribute) == g_attributeToCompCountMap.end())
-	{
-		logError("Unsupported attribute specified.");
-		return 0;
-	}
-
-	return g_attributeToCompCountMap.at(attribute);
+	AttributeData attribData = getAttributeData(attribute);
+	return attribData.length;
 }
 
 size_t getAttributeLocationInShader(LayoutAttribute attribute)
 {
-	if (g_attributeToLocationMap.find(attribute) == g_attributeToLocationMap.end())
-	{
-		logError("Unsupported attribute specified.");
-		return 0;
-	}
-
-	return g_attributeToLocationMap.at(attribute);
+	AttributeData attribData = getAttributeData(attribute);
+	return attribData.location;
 }
 

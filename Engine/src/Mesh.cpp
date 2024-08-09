@@ -121,7 +121,7 @@ bool Mesh::build(MeshData& mData)
 			}
 		}
 
-		// Parse colors
+		// Parse tangents
 		else if (LayoutAttribute::Tangents == entry)
 		{
 			for (int i = 0; i < m_layout.numOfVertices; i++)
@@ -130,6 +130,32 @@ bool Mesh::build(MeshData& mData)
 				auto vOffset = stride * i + offset;
 				memcpy(vertices + vOffset + attribData.size * 0, &tangent.x, attribData.size);
 				memcpy(vertices + vOffset + attribData.size * 1, &tangent.y, attribData.size);
+			}
+		}
+
+		// Parse tangents
+		else if (LayoutAttribute::BoneIDs == entry)
+		{
+			for (int i = 0; i < m_layout.numOfVertices; i++)
+			{
+				auto boneIDs = mData.bonesIDs.at(i);
+				auto vOffset = stride * i + offset;
+				memcpy(vertices + vOffset + attribData.size * 0, &boneIDs.x, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 1, &boneIDs.y, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 2, &boneIDs.z, attribData.size);
+			}
+		}
+
+		// Parse tangents
+		else if (LayoutAttribute::BoneWeights == entry)
+		{
+			for (int i = 0; i < m_layout.numOfVertices; i++)
+			{
+				auto boneWeights = mData.bonesWeights.at(i);
+				auto vOffset = stride * i + offset;
+				memcpy(vertices + vOffset + attribData.size * 0, &boneWeights.x, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 1, &boneWeights.y, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 2, &boneWeights.z, attribData.size);
 			}
 		}
 
@@ -215,6 +241,16 @@ VertexLayout Mesh::getVertexLayout()
 VertexArrayObject* Mesh::getVAO() const
 {
 	return m_vao.get();
+}
+
+std::vector<glm::mat4> Mesh::getBoneOffsets() const
+{
+	return std::vector<glm::mat4>();
+}
+
+unsigned int Mesh::getBoneID(const std::string& boneName) const
+{
+	return 0;
 }
 
 Mesh::~Mesh()

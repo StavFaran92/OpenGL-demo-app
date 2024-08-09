@@ -3,6 +3,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <algorithm>
 
 #include "Logger.h"
 #include <filesystem>
@@ -16,6 +17,7 @@
 #include "CacheSystem.h"
 #include "Scene.h"
 #include "Assets.h"
+#include "AssimpGLMHelpers.h"
 
 ModelImporter::ModelImporter()
 {
@@ -150,6 +152,19 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	}
 }
 
+struct VertexWeight
+{
+	unsigned int vertexID = -1;
+	float weight = 0.f;
+};
+
+struct BoneInfo
+{
+	unsigned int id = -1;
+	glm::mat4 offset;
+	std::vector<VertexWeight> vertexWeights;
+};
+
 void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporter::ModelImportSession& session)
 {
 	std::vector<glm::vec3> positions;
@@ -204,15 +219,76 @@ void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporte
 			indices.push_back(face.mIndices[j]);
 	}
 
+	
+	
+	if (mesh->HasBones())
+	{
+		std::vector<glm::ivec3> bonesIDs;
+		std::vector<glm::vec3> bonesWeights;
+
+		std::map<int, std::map<float, VertexWeight>> vertexToBoneMap;
+
+		// Extract Bone Info map 
+		std::unordered_map<std::string, BoneInfo> boneInfoMap;
+		unsigned int boneCount = 0;
+		for (int i = 0; i < mesh->mNumBones; i++)
+		{
+			auto bone = mesh->mBones[i];
+			auto boneName = bone->mName.C_Str();
+
+			if (boneInfoMap.find(boneName) == boneInfoMap.end())
+			{
+				boneInfoMap[boneName] = BoneInfo{ boneCount++, AssimpGLMHelpers::convertMat4ToGLMFormat(bone->mOffsetMatrix) };
+			}
+
+			int numOfWeights = bone->mNumWeights;
+			auto weights = bone->mWeights;
+
+			for (int j = 0; j < numOfWeights; j++)
+			{
+				unsigned int vertexID = weights[j].mVertexId;
+				float weight = weights[j].mWeight;
+				boneInfoMap[boneName].vertexWeights.push_back(VertexWeight{ vertexID , weight });
+
+				vertexToBoneMap[vertexID][-weight] = VertexWeight{ boneInfoMap[boneName].id , weight };
+			}
+		}
+
+		
+		bonesIDs.resize(vertexToBoneMap.size());
+		
+		bonesWeights.resize(vertexToBoneMap.size());
+
+		// post process influence data in bone info map
+		for (auto& [vID, boneInfluenceMap] : vertexToBoneMap)
+		{
+			// TODO resize and normalize
+			//if (boneInfluenceMap.size() > 3)
+			//{
+			//	boneInfluenceMap.resize(3);
+			//}
+			auto boneIter = boneInfluenceMap.begin();
+			int index = 0;
+			while (boneIter != boneInfluenceMap.end() && index < 3)
+			{
+				bonesIDs[vID][index] = (int)(*boneIter).second.vertexID;
+				bonesWeights[vID][index] = (*boneIter).second.weight;
+				boneIter++;
+				index++;
+			}
+		}
+
+		(*session.builder)
+			.addBoneIDs(bonesIDs)
+			.addBoneWeights(bonesWeights);
+	}
+
 	(*session.builder)
 		.addPositions(positions)
 		.addNormals(normals)
 		.addTexcoords(texcoords)
 		.addIndices(indices)
 		.addTangents(tangents);
-
-
-		
 }
 
 std::vector<Resource<Texture>> ModelImporter::loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImporter::ModelImportSession& session)

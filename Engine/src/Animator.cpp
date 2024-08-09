@@ -16,13 +16,22 @@ void Animator::update(float dt)
 		// Increment Animation time
 		m_currentTime += m_currentAnimation->getTicksPerSecond() * dt;
 		m_currentTime = fmod(m_currentTime, m_currentAnimation->getDuration());
-		m_currentAnimation->calculateFinalBoneMatrices(m_currentTime, m_finalBoneMatrices);
 	}
 }
 
-const std::unordered_map<std::string, glm::mat4>& Animator::getFinalBoneMatrices() const
+void Animator::getFinalBoneMatrices(const Mesh* mesh, std::vector<glm::mat4>& outFinalBoneMatrices) const
 {
-	return m_finalBoneMatrices;
+	std::unordered_map<std::string, glm::mat4> m_intermediateBoneMatrices;
+	m_currentAnimation->calculateFinalBoneMatrices(m_currentTime, m_intermediateBoneMatrices);
+	
+	outFinalBoneMatrices = mesh->getBoneOffsets();
+
+	for (auto& [boneName, boneTransform] : m_intermediateBoneMatrices)
+	{
+		// Get static bone offset
+		auto boneID = mesh->getBoneID(boneName);
+		outFinalBoneMatrices[boneID] = outFinalBoneMatrices[boneID] * boneTransform; //todo check 
+	}
 }
 
 void Animator::playAnimation(std::shared_ptr<Animation> animation)

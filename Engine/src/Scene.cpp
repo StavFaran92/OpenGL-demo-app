@@ -348,7 +348,6 @@ void Scene::update(float deltaTime)
 		for (auto&& [entity, animator, mesh] : m_registry->get().view<Animator, MeshComponent>().each())
 		{
 			animator.update(deltaTime);
-			auto& finalBoneMatrices = animator.getFinalBoneMatrices();
 		}
 	}
 }

@@ -145,6 +145,34 @@ MeshBuilder& MeshBuilder::addIndices(const unsigned int* indices, size_t size)
 	return *this;
 }
 
+MeshBuilder& MeshBuilder::addBoneIDs(const glm::ivec3& boneIDs)
+{
+	m_data.bonesIDs.push_back(boneIDs);
+
+	return *this;
+}
+
+MeshBuilder& MeshBuilder::addBoneIDs(const std::vector<glm::ivec3>& bonesIDs)
+{
+	m_data.bonesIDs.insert(m_data.bonesIDs.end(), bonesIDs.begin(), bonesIDs.end());
+
+	return *this;
+}
+
+MeshBuilder& MeshBuilder::addBoneWeights(const glm::vec3& boneWeight)
+{
+	m_data.bonesWeights.push_back(boneWeight);
+
+	return *this;
+}
+
+MeshBuilder& MeshBuilder::addBoneWeights(const std::vector<glm::vec3>& boneWeights)
+{
+	m_data.bonesWeights.insert(m_data.bonesWeights.end(), boneWeights.begin(), boneWeights.end());
+
+	return *this;
+}
+
 MeshBuilder& MeshBuilder::addIndices(const std::vector<unsigned int>& indices)
 {
 	addIndices(&indices.data()[0], indices.size());
@@ -307,6 +335,14 @@ Resource<Mesh> MeshBuilder::build()
 	if (m_data.m_tangents.size() > 0)
 	{
 		enableAttribute(LayoutAttribute::Tangents);
+	}
+	if (m_data.bonesIDs.size() > 0)
+	{
+		enableAttribute(LayoutAttribute::BoneIDs);
+	}
+	if (m_data.bonesWeights.size() > 0)
+	{
+		enableAttribute(LayoutAttribute::BoneWeights);
 	}
 
 	std::sort(m_data.m_layout.attribs.begin(), m_data.m_layout.attribs.end(),

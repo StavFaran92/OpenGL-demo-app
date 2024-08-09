@@ -14,7 +14,7 @@ public:
 	Animator() = default;
 	Animator(std::shared_ptr<Animation> animation);
 	void update(float dt);
-	const std::unordered_map<std::string, glm::mat4>& getFinalBoneMatrices() const;
+	void getFinalBoneMatrices(const Mesh* mesh, std::vector<glm::mat4>& outFinalBoneMatrices) const;
 	void playAnimation(std::shared_ptr<Animation> animation);
 
 private:

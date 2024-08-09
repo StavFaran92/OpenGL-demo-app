@@ -88,6 +88,10 @@ public:
 
 	VertexArrayObject* getVAO() const;
 
+	std::vector<glm::mat4> getBoneOffsets() const;
+
+	unsigned int getBoneID(const std::string& boneName) const;
+
 	/**
 	 * Build the mesh using the specified vertices data.
 	 * This call will initialize all the OpenGL related Buffer data

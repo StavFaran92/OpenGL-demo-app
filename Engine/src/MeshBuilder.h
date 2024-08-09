@@ -39,6 +39,12 @@ public:
 	MeshBuilder& addIndices(const std::vector<unsigned int>& indices);
 	MeshBuilder& addIndices(const unsigned int* indices, size_t size);
 
+	MeshBuilder& addBoneIDs(const glm::ivec3& boneIDs);
+	MeshBuilder& addBoneIDs(const std::vector<glm::ivec3>& boneIDs);
+
+	MeshBuilder& addBoneWeights(const glm::vec3& boneWeight);
+	MeshBuilder& addBoneWeights(const std::vector<glm::vec3>& boneWeights);
+
 	MeshBuilder& addRawVertices(const float* vertices, VertexLayout layout);
 
 	MeshBuilder& merge(const MeshBuilder& other);
