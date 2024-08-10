@@ -254,7 +254,7 @@ void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporte
 			}
 		}
 		
-		bonesIDs.resize(vertexToBoneMap.size());
+		bonesIDs.resize(vertexToBoneMap.size(), glm::ivec3(- 1));
 		bonesWeights.resize(vertexToBoneMap.size());
 
 		// post process influence data in bone info map, we discard the least influential bone weights
