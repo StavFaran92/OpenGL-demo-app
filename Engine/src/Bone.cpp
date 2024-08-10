@@ -36,7 +36,7 @@ glm::mat4 Bone::interpolateRotation(float animationTime) const
     if (m_rotations.size() == 1)
     {
         auto rotation = glm::normalize(m_rotations[0].orientation);
-        glm::toMat4(rotation);
+        return glm::toMat4(rotation);
     }
 
     int p0Index = getDescreteIndex(m_rotations, animationTime);
