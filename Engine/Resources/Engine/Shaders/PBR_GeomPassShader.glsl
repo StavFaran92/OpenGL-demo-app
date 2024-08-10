@@ -57,6 +57,7 @@ void main()
 	}
 
 	vec4 totalPosition = vec4(0.0f);
+	bool useBones = false;
     for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
     {
         if(boneIDs[i] == -1) 
@@ -66,10 +67,18 @@ void main()
             totalPosition = vec4(pos,1.0f);
             break;
         }
+
+		useBones = true;
+
         vec4 localPosition = finalBonesMatrices[boneIDs[i]] * vec4(pos,1.0f);
         totalPosition += localPosition * boneWeights[i];
         // vec3 localNormal = mat3(finalBonesMatrices[boneIDs[i]]) * norm; // todo fix
     }
+
+	if(!useBones)
+	{
+		totalPosition = vec4(pos, 1.0f);
+	}
 
 	vec3 aNorm = mat3(transpose(inverse(aModel))) * norm;
 #ifdef CUSTOM_SHADER
