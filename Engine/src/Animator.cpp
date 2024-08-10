@@ -30,7 +30,8 @@ void Animator::getFinalBoneMatrices(const Mesh* mesh, std::vector<glm::mat4>& ou
 	{
 		// Get static bone offset
 		auto boneID = mesh->getBoneID(boneName);
-		outFinalBoneMatrices[boneID] = outFinalBoneMatrices[boneID] * boneTransform; //todo check 
+		if (boneID == -1) continue;
+		outFinalBoneMatrices[boneID] = boneTransform * outFinalBoneMatrices[boneID]; //todo check 
 	}
 }
 
