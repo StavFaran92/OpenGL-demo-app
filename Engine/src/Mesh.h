@@ -26,6 +26,8 @@ struct MeshData
 	std::vector<unsigned int> m_indices;
 	std::vector<glm::ivec3> bonesIDs;
 	std::vector<glm::vec3> bonesWeights;
+	std::vector<glm::mat4> bonesOffsets;
+	std::unordered_map<std::string, unsigned int> bonesNameToIDMap;
 	VertexLayout m_layout;
 };
 
@@ -90,7 +92,7 @@ public:
 
 	std::vector<glm::mat4> getBoneOffsets() const;
 
-	unsigned int getBoneID(const std::string& boneName) const;
+	int getBoneID(const std::string& boneName) const;
 
 	/**
 	 * Build the mesh using the specified vertices data.
@@ -123,4 +125,7 @@ private:
 	size_t m_indexCount = 0;
 	VertexLayout m_layout;
 	bool m_useColors = false;
+
+	std::vector<glm::mat4> m_bonesOffsets;
+	std::unordered_map<std::string, unsigned int> m_bonesNameToIDMap;
 };

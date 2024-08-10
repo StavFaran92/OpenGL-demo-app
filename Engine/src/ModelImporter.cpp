@@ -152,17 +152,10 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	}
 }
 
-struct VertexWeight
+struct BoneWeight
 {
-	unsigned int vertexID = -1;
+	unsigned int boneID = -1;
 	float weight = 0.f;
-};
-
-struct BoneInfo
-{
-	unsigned int id = -1;
-	glm::mat4 offset;
-	std::vector<VertexWeight> vertexWeights;
 };
 
 void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporter::ModelImportSession& session)
@@ -226,40 +219,45 @@ void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporte
 		std::vector<glm::ivec3> bonesIDs;
 		std::vector<glm::vec3> bonesWeights;
 
-		std::map<int, std::map<float, VertexWeight>> vertexToBoneMap;
+		// Will be used by mesh as base array for bone transformations uniform
+		std::vector<glm::mat4> bonesOffsets;
 
-		// Extract Bone Info map 
-		std::unordered_map<std::string, BoneInfo> boneInfoMap;
+		// an intermediate helper map used to facilitate in extracting bone weight for each vertex
+		std::map<int, std::map<float, BoneWeight>> vertexToBoneMap;
+
+		// Extract Bone to ID map 
+		std::unordered_map<std::string, unsigned int> boneNameToIDMap;
+
 		unsigned int boneCount = 0;
+
+		// Iterate all bones in Assimp model
 		for (int i = 0; i < mesh->mNumBones; i++)
 		{
 			auto bone = mesh->mBones[i];
 			auto boneName = bone->mName.C_Str();
 
-			if (boneInfoMap.find(boneName) == boneInfoMap.end())
+			// a new bone is found, increment bone ID and add bone offset to offsets array
+			if (boneNameToIDMap.find(boneName) == boneNameToIDMap.end())
 			{
-				boneInfoMap[boneName] = BoneInfo{ boneCount++, AssimpGLMHelpers::convertMat4ToGLMFormat(bone->mOffsetMatrix) };
+				boneNameToIDMap[boneName] = boneCount++;
+				bonesOffsets.push_back(AssimpGLMHelpers::convertMat4ToGLMFormat(bone->mOffsetMatrix));
 			}
 
+			// Extract weights for each vertex, we use a map container and a (-weight) key so the entries will be sorted in descending order when we iterate it
 			int numOfWeights = bone->mNumWeights;
 			auto weights = bone->mWeights;
-
 			for (int j = 0; j < numOfWeights; j++)
 			{
 				unsigned int vertexID = weights[j].mVertexId;
 				float weight = weights[j].mWeight;
-				boneInfoMap[boneName].vertexWeights.push_back(VertexWeight{ vertexID , weight });
-
-				vertexToBoneMap[vertexID][-weight] = VertexWeight{ boneInfoMap[boneName].id , weight };
+				vertexToBoneMap[vertexID][-weight] = BoneWeight{ boneNameToIDMap[boneName] , weight };
 			}
 		}
-
 		
 		bonesIDs.resize(vertexToBoneMap.size());
-		
 		bonesWeights.resize(vertexToBoneMap.size());
 
-		// post process influence data in bone info map
+		// post process influence data in bone info map, we discard the least influential bone weights
 		for (auto& [vID, boneInfluenceMap] : vertexToBoneMap)
 		{
 			// TODO resize and normalize
@@ -271,7 +269,7 @@ void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporte
 			int index = 0;
 			while (boneIter != boneInfluenceMap.end() && index < 3)
 			{
-				bonesIDs[vID][index] = (int)(*boneIter).second.vertexID;
+				bonesIDs[vID][index] = (int)(*boneIter).second.boneID;
 				bonesWeights[vID][index] = (*boneIter).second.weight;
 				boneIter++;
 				index++;
@@ -280,7 +278,8 @@ void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporte
 
 		(*session.builder)
 			.addBoneIDs(bonesIDs)
-			.addBoneWeights(bonesWeights);
+			.addBoneWeights(bonesWeights)
+			.setBonesInfo(bonesOffsets, boneNameToIDMap);
 	}
 
 	(*session.builder)

@@ -177,6 +177,9 @@ bool Mesh::build(MeshData& mData)
 
 	m_vao->AttachBuffer(*m_vbo, m_ibo.get(), m_layout);
 
+	m_bonesOffsets = mData.bonesOffsets;
+	m_bonesNameToIDMap = mData.bonesNameToIDMap;
+
 	m_positions = mData.m_positions;
 	//m_normals = std::move(mData.m_normals);
 
@@ -245,12 +248,17 @@ VertexArrayObject* Mesh::getVAO() const
 
 std::vector<glm::mat4> Mesh::getBoneOffsets() const
 {
-	return std::vector<glm::mat4>();
+	return m_bonesOffsets;
 }
 
-unsigned int Mesh::getBoneID(const std::string& boneName) const
+int Mesh::getBoneID(const std::string& boneName) const
 {
-	return 0;
+	if (m_bonesNameToIDMap.find(boneName) == m_bonesNameToIDMap.end())
+	{
+		return -1;
+	}
+
+	return m_bonesNameToIDMap.at(boneName);
 }
 
 Mesh::~Mesh()
