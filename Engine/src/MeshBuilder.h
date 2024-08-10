@@ -47,7 +47,7 @@ public:
 
 	MeshBuilder& addRawVertices(const float* vertices, VertexLayout layout);
 
-	MeshBuilder& setBonesInfo(const std::vector<glm::mat4>& bonesOffsets, const std::unordered_map<std::string, unsigned int>& bonesNameToIDMap);
+	MeshBuilder& addBonesInfo(const std::vector<glm::mat4>& bonesOffsets, const std::unordered_map<std::string, unsigned int>& bonesNameToIDMap);
 
 	MeshBuilder& merge(const MeshBuilder& other);
 

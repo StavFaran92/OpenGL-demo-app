@@ -312,10 +312,16 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::setBonesInfo(const std::vector<glm::mat4>& bonesOffsets, const std::unordered_map<std::string, unsigned int>& bonesNameToIDMap)
+MeshBuilder& MeshBuilder::addBonesInfo(const std::vector<glm::mat4>& bonesOffsets, const std::unordered_map<std::string, unsigned int>& bonesNameToIDMap)
 {
-	m_data.bonesOffsets = bonesOffsets;
-	m_data.bonesNameToIDMap = bonesNameToIDMap;
+	for (auto offset : bonesOffsets)
+	{
+		m_data.bonesOffsets.push_back(offset);
+	}
+	for (auto nameToID : bonesNameToIDMap)
+	{
+		m_data.bonesNameToIDMap.emplace(nameToID);
+	}
 
 	return *this;
 }

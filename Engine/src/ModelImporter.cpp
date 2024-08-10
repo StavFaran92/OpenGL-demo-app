@@ -279,7 +279,7 @@ void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporte
 		(*session.builder)
 			.addBoneIDs(bonesIDs)
 			.addBoneWeights(bonesWeights)
-			.setBonesInfo(bonesOffsets, boneNameToIDMap);
+			.addBonesInfo(bonesOffsets, boneNameToIDMap);
 	}
 
 	(*session.builder)
