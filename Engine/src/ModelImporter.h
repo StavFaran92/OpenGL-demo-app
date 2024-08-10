@@ -39,6 +39,8 @@ public:
 		int childIndex = 0;
 		Entity root;
 		MeshBuilder* builder = nullptr;
+		std::unordered_map<std::string, unsigned int> boneNameToIDMap;
+		unsigned int boneCount = 0;
 	};
 
 	/** Constructor */

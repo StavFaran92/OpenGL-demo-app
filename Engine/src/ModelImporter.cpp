@@ -226,9 +226,8 @@ void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporte
 		std::map<int, std::map<float, BoneWeight>> vertexToBoneMap;
 
 		// Extract Bone to ID map 
-		std::unordered_map<std::string, unsigned int> boneNameToIDMap;
-
-		unsigned int boneCount = 0;
+		auto& boneNameToIDMap = session.boneNameToIDMap;
+		auto& boneCount = session.boneCount;
 
 		// Iterate all bones in Assimp model
 		for (int i = 0; i < mesh->mNumBones; i++)
