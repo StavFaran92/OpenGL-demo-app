@@ -15,6 +15,7 @@
 #include "ScreenBufferDisplay.h"
 #include "Context.h"
 #include "Texture.h"
+#include "Animator.h"
 
 const unsigned int SHADOW_WIDTH = 1024;
 const unsigned int SHADOW_HEIGHT = 1024;
@@ -116,6 +117,26 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 		drawQueueRenderParams.entity = &entityhandler;
 		drawQueueRenderParams.mesh = mesh.mesh.get();
 		drawQueueRenderParams.shader->setUniformValue("model", transform.getWorldTransformation());
+
+		auto animator = entityhandler.tryGetComponent<Animator>();
+		if (animator)
+		{
+			std::vector<glm::mat4> finalBoneMatrices;
+			animator->getFinalBoneMatrices(mesh.mesh.get(), finalBoneMatrices);
+			for (int i = 0; i < finalBoneMatrices.size(); ++i)
+			{
+				drawQueueRenderParams.shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
+			}
+
+			drawQueueRenderParams.shader->setUniformValue("isAnimated", true);
+		}
+		else
+		{
+			drawQueueRenderParams.shader->setUniformValue("isAnimated", false);
+		}
+
+
+
 		//auto tempModel = transform.getWorldTransformation();
 		drawQueueRenderParams.model = nullptr;
 		drawQueueRenderParams.view = nullptr;
