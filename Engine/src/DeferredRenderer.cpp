@@ -356,12 +356,6 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 		renderParams.shader = shader ? shader->m_vertexShader : m_gBufferShader.get();
 		renderParams.shader->use();
 
-		// todo fix
-		for (int i = 0; i < 100; ++i)
-		{
-			renderParams.shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", glm::mat4(1.f));
-		}
-
 		auto animator = entityHandler.tryGetComponent<Animator>();
 		if (animator)
 		{
@@ -371,6 +365,12 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 			{
 				renderParams.shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
 			}
+
+			renderParams.shader->setUniformValue("isAnimated", true);
+		}
+		else
+		{
+			renderParams.shader->setUniformValue("isAnimated", false);
 		}
 		
 
