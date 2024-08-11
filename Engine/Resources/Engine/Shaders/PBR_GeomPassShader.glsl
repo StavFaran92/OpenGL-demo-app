@@ -56,11 +56,14 @@ void main()
 		aModel = model * instanceModel;
 	}
 
-	vec4 totalPosition = vec4(0.0f);
-	vec3 totalNormal = vec3(0.0f);
-
+	vec4 totalPosition = vec4(pos, 1.0f);
+	vec3 totalNormal = norm;
+	
 	if(isAnimated)
 	{
+		totalPosition = vec4(0.0f);
+		totalNormal = vec3(0.0f);
+
 		for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
 		{
 			if(boneIDs[i] == -1) 
@@ -77,11 +80,6 @@ void main()
 			vec3 localNormal = mat3(finalBonesMatrices[boneIDs[i]]) * norm;
 			totalNormal += localNormal * boneWeights[i];
 		}
-	}
-	else
-	{
-		totalPosition = vec4(pos, 1.0f);
-		totalNormal = norm;
 	}
 
 	vec3 aNorm = mat3(transpose(inverse(aModel))) * totalNormal;
