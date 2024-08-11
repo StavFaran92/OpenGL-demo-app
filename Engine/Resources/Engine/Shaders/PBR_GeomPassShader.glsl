@@ -58,7 +58,6 @@ void main()
 
 	vec4 totalPosition = vec4(0.0f);
 	vec3 totalNormal = vec3(0.0f);
-	bool useBones = false;
 
 	if(isAnimated)
 	{
@@ -73,16 +72,13 @@ void main()
 				break;
 			}
 
-			useBones = true;
-
 			vec4 localPosition = finalBonesMatrices[boneIDs[i]] * vec4(pos,1.0f);
 			totalPosition += localPosition * boneWeights[i];
 			vec3 localNormal = mat3(finalBonesMatrices[boneIDs[i]]) * norm;
 			totalNormal += localNormal * boneWeights[i];
 		}
 	}
-
-	if(!useBones)
+	else
 	{
 		totalPosition = vec4(pos, 1.0f);
 		totalNormal = norm;
