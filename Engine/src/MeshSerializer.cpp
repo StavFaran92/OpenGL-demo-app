@@ -14,6 +14,8 @@ struct BinaryLayoutInfo
     int numOfTexcoords;
     int numOfIndices;
     int numOfAttributes;
+    int numOfBoneIDs;
+    int numOfBoneWeights;
 };
 
 
@@ -32,6 +34,8 @@ void MeshSerializer::writeDataToBinaryFile(const MeshData& meshData, const std::
         layoutInfo.numOfColors = meshData.m_colors.size();
         layoutInfo.numOfTexcoords = meshData.m_texCoords.size();
         layoutInfo.numOfIndices = meshData.m_indices.size();
+        layoutInfo.numOfBoneIDs = meshData.bonesIDs.size();
+        layoutInfo.numOfBoneWeights = meshData.bonesWeights.size();
         layoutInfo.numOfAttributes = meshData.m_layout.attribs.size();
 
         // Write layout info
@@ -43,6 +47,8 @@ void MeshSerializer::writeDataToBinaryFile(const MeshData& meshData, const std::
         file.write(reinterpret_cast<const char*>(meshData.m_tangents.data()), meshData.m_tangents.size() * sizeof(glm::vec3));
         file.write(reinterpret_cast<const char*>(meshData.m_colors.data()), meshData.m_colors.size() * sizeof(glm::vec3));
         file.write(reinterpret_cast<const char*>(meshData.m_texCoords.data()), meshData.m_texCoords.size() * sizeof(glm::vec2));
+        file.write(reinterpret_cast<const char*>(meshData.bonesIDs.data()), meshData.bonesIDs.size() * sizeof(glm::ivec3));
+        file.write(reinterpret_cast<const char*>(meshData.bonesWeights.data()), meshData.bonesWeights.size() * sizeof(glm::vec3));
 
         // Write indices
         file.write(reinterpret_cast<const char*>(meshData.m_indices.data()), meshData.m_indices.size() * sizeof(unsigned int));
@@ -77,6 +83,8 @@ void MeshSerializer::readDataFromBinaryFile(const std::string& filename, MeshDat
         meshData.m_colors.resize(layoutInfo.numOfColors);
         meshData.m_texCoords.resize(layoutInfo.numOfTexcoords);
         meshData.m_indices.resize(layoutInfo.numOfIndices);
+        meshData.bonesIDs.resize(layoutInfo.numOfBoneIDs);
+        meshData.bonesWeights.resize(layoutInfo.numOfBoneWeights);
         meshData.m_layout.attribs.resize(layoutInfo.numOfAttributes);
 
         // Read vertices
@@ -85,6 +93,8 @@ void MeshSerializer::readDataFromBinaryFile(const std::string& filename, MeshDat
         file.read(reinterpret_cast<char*>(meshData.m_tangents.data()), meshData.m_tangents.size() * sizeof(glm::vec3));
         file.read(reinterpret_cast<char*>(meshData.m_colors.data()), meshData.m_colors.size() * sizeof(glm::vec3));
         file.read(reinterpret_cast<char*>(meshData.m_texCoords.data()), meshData.m_texCoords.size() * sizeof(glm::vec2));
+        file.read(reinterpret_cast<char*>(meshData.bonesIDs.data()), meshData.bonesIDs.size() * sizeof(glm::ivec3));
+        file.read(reinterpret_cast<char*>(meshData.bonesWeights.data()), meshData.bonesWeights.size() * sizeof(glm::vec3));
 
         // Read indices
         file.read(reinterpret_cast<char*>(meshData.m_indices.data()), meshData.m_indices.size() * sizeof(unsigned int));

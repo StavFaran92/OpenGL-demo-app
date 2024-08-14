@@ -19,6 +19,7 @@ namespace fs = std::filesystem;
 static bool ShowLightCreatorWindow = false;
 static bool showModelCreatorWindow = false;
 static bool showTextureImportWindow = false;
+static bool showAnimationImportWindow = false;
 static bool showAssetTextureSelectWindow = false;
 static bool showModelInspectorWindow = false;
 static bool showPrimitiveCreatorWindow = false;
@@ -554,6 +555,46 @@ void ShowTextureImportWindow()
 		if (ImGui::Button("Cancel"))
 		{
 			showTextureImportWindow = false;
+		}
+
+		ImGui::End();
+	}
+}
+
+void ShowAnimationImportWindow()
+{
+	if (showAnimationImportWindow)
+	{
+		ImGui::SetNextWindowSize({ 200, 300 }, ImGuiCond_Appearing);
+		ImGui::Begin("Import Animation", false);
+
+		static ImGuiTextBuffer animationPathBuffer;
+
+		addAssetLoadWidget("Animation", animationPathBuffer, Constants::g_animationSupportedFormats);
+
+		ImGui::Separator();
+
+		if (ImGui::Button("Ok"))
+		{
+			if (animationPathBuffer.empty())
+			{
+				logError("Animation Path not specified.");
+				showAnimationImportWindow = false;
+				return;
+			}
+
+			//todo validate input
+
+			Engine::get()->getSubSystem<Assets>()->importAnimation(animationPathBuffer.c_str());
+
+			animationPathBuffer.clear();
+
+			showAnimationImportWindow = false;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel"))
+		{
+			showAnimationImportWindow = false;
 		}
 
 		ImGui::End();
@@ -1504,12 +1545,18 @@ class GUI_Helper : public GuiMenu {
 					if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
 						Engine::get()->saveProject();
 					}
-					if (ImGui::MenuItem("Import Model")) {
-						showModelCreatorWindow = true;
-					}
-
-					if (ImGui::MenuItem("Import Texture")) {
-						showTextureImportWindow = true;
+					if (ImGui::BeginMenu("Import")) {
+						if (ImGui::MenuItem("Model")) {
+							showModelCreatorWindow = true;
+						}
+						if (ImGui::MenuItem("Texture")) {
+							showTextureImportWindow = true;
+						}
+						if (ImGui::MenuItem("Animation")) {
+							// Action for importing animation
+							showAnimationImportWindow = true;
+						}
+						ImGui::EndMenu();
 					}
 					ImGui::Separator(); // Optional: Add a separator
 					if (ImGui::MenuItem("Quit", "Alt+F4")) {
@@ -1539,6 +1586,7 @@ class GUI_Helper : public GuiMenu {
 		RenderAssetViewWindow(screenWidth, screenHeight); // Add the Asset View window
 
 		ShowTextureImportWindow();
+		ShowAnimationImportWindow();
 		ShowModelCreatorWindow();
 		displayAssetTextureSelectWindow();
 		

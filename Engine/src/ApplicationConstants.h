@@ -33,6 +33,12 @@ namespace Constants {
 		"*.png", "*.jpg", "*.bmp", "*.tga",
 	};
 
+	static const char* g_animationSupportedFormats[] = {
+		"*.fbx",
+	};
+
+	
+
 
 
 	static const std::string N_A = "N/A";
