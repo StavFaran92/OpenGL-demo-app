@@ -328,7 +328,7 @@ MeshBuilder& MeshBuilder::addBonesInfo(const std::vector<glm::mat4>& bonesOffset
 
 
 
-Resource<Mesh> MeshBuilder::build()
+Resource<Mesh> MeshBuilder::build(const Resource<Mesh>& mesh)
 {
 	if (m_data.m_positions.size() > 0)
 	{
@@ -365,12 +365,10 @@ Resource<Mesh> MeshBuilder::build()
 		return getAttributeLocationInShader(l1) < getAttributeLocationInShader(l2);
 	});
 
-	Resource<Mesh> mesh = Factory<Mesh>::create();
+	//auto& projectDir = Engine::get()->getProjectDirectory();
 
-	auto& projectDir = Engine::get()->getProjectDirectory();
-
-	MeshSerializer::writeDataToBinaryFile(m_data, projectDir + "/" + mesh.getUID() + ".bin");
-	Engine::get()->getContext()->getProjectAssetRegistry()->addMesh(mesh.getUID());
+	//MeshSerializer::writeDataToBinaryFile(m_data, projectDir + "/" + mesh.getUID() + ".bin");
+	//Engine::get()->getContext()->getProjectAssetRegistry()->addMesh(mesh.getUID());
 
 	//MeshData newMeshData;
 	//MeshSerializer::readDataFromBinaryFile(mesh.getUID() + ".bin", newMeshData);

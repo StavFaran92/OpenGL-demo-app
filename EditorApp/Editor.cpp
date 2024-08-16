@@ -697,9 +697,13 @@ void ShowModelCreatorWindow()
 
 			//todo validate input
 
-			auto entity = Engine::get()->getSubSystem<ModelImporter>()->loadModelFromFile(modelPathBuffer.c_str(), Engine::get()->getContext()->getActiveScene().get());
+			auto entity = Engine::get()->getContext()->getActiveScene()->createEntity(modelPathBuffer.c_str());
+			entity.addComponent<RenderableComponent>();
 
-			entity.getComponent<MaterialComponent>().addMaterial(mat);
+			auto mesh = Engine::get()->getSubSystem<ModelImporter>()->import(modelPathBuffer.c_str());
+			entity.addComponent<MeshComponent>().mesh = mesh;
+
+			entity.addComponent<MaterialComponent>().addMaterial(mat);
 			mat = nullptr;
 			modelPathBuffer.clear();
 

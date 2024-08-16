@@ -51,7 +51,7 @@ public:
 
 	MeshBuilder& merge(const MeshBuilder& other);
 
-	Resource<Mesh> build();
+	Resource<Mesh> build(const Resource<Mesh>& mesh);
 
 	static MeshBuilder& builder();
 	

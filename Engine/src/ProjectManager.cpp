@@ -11,6 +11,7 @@
 #include "Texture.h"
 #include "Assets.h"
 #include "Archiver.h"
+#include "ModelImporter.h"
 //#include "TextureSerializer.h"
 #include <nlohmann/json.hpp>
 
@@ -59,21 +60,25 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     // Create meshes
     for (const auto& meshUID : meshNameList) 
     {
-        // Open bin file
-        fs::path binFilePath = (projectDir / meshUID).string() + ".bin";
-        std::ifstream binFile(binFilePath, std::ios::binary);
-        if (!binFile.is_open()) 
-        {
-            logError("Failed to open bin file for mesh: " + meshUID + ".bin");
-            continue; // Skip this mesh
-        }
-        MeshData meshData;
-        MeshSerializer::readDataFromBinaryFile(binFilePath.string(), meshData);
+        std::string binFilePath = (projectDir / meshUID).string() + ".gltf";
+        Resource<Mesh> mesh(meshUID);
+        Engine::get()->getSubSystem<ModelImporter>()->load(binFilePath, mesh);
 
-        // Create mesh
-        Mesh* mesh = new Mesh();
-        mesh->build(meshData);
-        Engine::get()->getMemoryPool<Mesh>()->add(meshUID, mesh);
+        //// Open bin file
+        //fs::path binFilePath = (projectDir / meshUID).string() + ".bin";
+        //std::ifstream binFile(binFilePath, std::ios::binary);
+        //if (!binFile.is_open()) 
+        //{
+        //    logError("Failed to open bin file for mesh: " + meshUID + ".bin");
+        //    continue; // Skip this mesh
+        //}
+        //MeshData meshData;
+        //MeshSerializer::readDataFromBinaryFile(binFilePath.string(), meshData);
+
+        //// Create mesh
+        //Mesh* mesh = new Mesh();
+        //mesh->build(meshData);
+        Engine::get()->getMemoryPool<Mesh>()->add(meshUID, mesh.get());
         Engine::get()->getResourceManager()->incRef(meshUID);
     }
 

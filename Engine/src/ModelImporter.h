@@ -53,12 +53,21 @@ public:
 	 * \param flipTexture	should flip loaded texture
 	 * \return A poitner to the newly created model
 	 */
-	Entity loadModelFromFile(const std::string& path, Scene* pScene);
+	Resource<Mesh> import(const std::string& path);
+
+	/**
+	 * Import a model from a file.
+	 *
+	 * \param path			path to the given file
+	 * \param flipTexture	should flip loaded texture
+	 * \return A poitner to the newly created model
+	 */
+	Resource<Mesh> load(const std::string& path, Resource<Mesh> mesh);
 private:
 	friend class Engine;
 	/** Init the model loader module */
 	void init();
-	void processNode(aiNode* node, const aiScene* scene, ModelImportSession& session, Entity entity, Scene* pScene);
+	void processNode(aiNode* node, const aiScene* scene, ModelImportSession& session);
 	void processMesh(aiMesh* mesh, const aiScene* scene, ModelImportSession& session);
 	std::vector<Resource<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImportSession& session);
 	static Texture::Type getTextureType(aiTextureType type);

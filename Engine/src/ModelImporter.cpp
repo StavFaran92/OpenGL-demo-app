@@ -1,6 +1,7 @@
 #include "ModelImporter.h"
 
 #include <assimp/Importer.hpp>
+#include <assimp/Exporter.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <algorithm>
@@ -18,6 +19,7 @@
 #include "Scene.h"
 #include "Assets.h"
 #include "AssimpGLMHelpers.h"
+#include "Factory.h"
 
 ModelImporter::ModelImporter()
 {
@@ -33,19 +35,35 @@ void ModelImporter::init()
 	logInfo("Model importer init successfully.");
 }
 
-Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
+Resource<Mesh> ModelImporter::import(const std::string& path)
+{
+	Resource<Mesh> mesh = Factory<Mesh>::create();
+
+	load(path, mesh);
+
+	const aiScene* scene = m_importer->GetScene();
+
+	auto& projectDir = Engine::get()->getProjectDirectory();
+	Assimp::Exporter exporter;
+	exporter.Export(scene, "gltf2", projectDir + "/" + mesh.getUID() + ".gltf");
+	Engine::get()->getContext()->getProjectAssetRegistry()->addMesh(mesh.getUID());
+
+	return mesh;
+}
+
+Resource<Mesh> ModelImporter::load(const std::string & path, Resource<Mesh> mesh)
 {
 	// validate init
 	if (m_importer == nullptr)
 	{
 		logError("Importer not initialized.");
-		return Entity::EmptyEntity;
+		return Resource<Mesh>::empty;
 	}
 
 	if (!std::filesystem::exists(path))
 	{
 		logError("File doesn't exists: " + path);
-		return Entity::EmptyEntity;
+		return Resource<Mesh>::empty;
 	}
 
 	const aiScene* scene = nullptr;
@@ -65,7 +83,7 @@ Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
 			logError("ERROR::ASSIMP::{}", m_importer->GetErrorString());
-			return Entity::EmptyEntity;
+			return Resource<Mesh>::empty;
 		}
 	}
 
@@ -74,32 +92,21 @@ Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 	std::string modelName = path.substr(path.find_last_of('\\') + 1);
 	modelName = modelName.substr(0, modelName.find_first_of('.'));
 
-	//create new model
-	auto entity = pScene->createEntity(modelName);
-	entity.addComponent<RenderableComponent>();
-	entity.addComponent<MeshComponent>();
-	entity.addComponent<MaterialComponent>();
-
 	// create new model session
 	ModelImportSession session;
 	session.filepath = path;
 	session.fileDir = path.substr(0, path.find_last_of('\\'));
-	session.root = entity;
 	session.name = modelName;
 	session.builder = &MeshBuilder::builder();
 
-	// place session in session map
-	m_sessions[entity.handlerID()] = session;
+	processNode(scene->mRootNode, scene, session);
 
-	processNode(scene->mRootNode, scene, session, entity, pScene);
+	session.builder->build(mesh);
 
-	Resource<Mesh> mesh = session.builder->build();
-	entity.getComponent<MeshComponent>().mesh = mesh;
-
-	return entity;
+	return mesh;
 }
 
-void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporter::ModelImportSession& session, Entity entity, Scene* pScene)
+void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporter::ModelImportSession& session)
 {
 	// process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -148,7 +155,7 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
 		session.childIndex = i;
-		processNode(node->mChildren[i], scene, session, entity, pScene);
+		processNode(node->mChildren[i], scene, session);
 	}
 }
 
