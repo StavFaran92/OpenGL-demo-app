@@ -357,7 +357,11 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 		renderParams.shader->use();
 
 		auto animator = entityHandler.tryGetComponent<Animator>();
-		if (animator)
+		if (!animator || animator->m_currentAnimation.isEmpty())
+		{
+			renderParams.shader->setUniformValue("isAnimated", false);
+		}
+		else
 		{
 			std::vector<glm::mat4> finalBoneMatrices;
 			animator->getFinalBoneMatrices(renderParams.mesh, finalBoneMatrices);
@@ -367,10 +371,6 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 			}
 
 			renderParams.shader->setUniformValue("isAnimated", true);
-		}
-		else
-		{
-			renderParams.shader->setUniformValue("isAnimated", false);
 		}
 		
 

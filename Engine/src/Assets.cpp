@@ -106,3 +106,45 @@ std::vector<std::string> Assets::getAllTextures() const
 	}
 	return result;
 }
+
+Resource<Animation> Assets::importAnimation(const std::string& fileLocation)
+{
+
+	return nullptr;
+	//// Check if texture is already cached to optimize the load process
+	//auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
+	//std::filesystem::path path(fileLocation);
+	//return memoryManagementSystem->createOrGetCached<Animation>(path.filename().string(), [&]() {
+
+	//	// extract data from file
+
+	//	// create asset from buffer
+
+	//	// save to local resource
+
+	//	// todo use RAII
+	//	Texture::TextureData textureData = extractTextureDataFromFile(fileLocation);
+
+	//	Resource<Texture> texture = Texture::create2DTextureFromBuffer(textureData);
+
+	//	auto& projectDir = Engine::get()->getProjectDirectory();
+	//	stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), textureData.width, textureData.height, textureData.bpp, textureData.data, textureData.width * textureData.bpp);
+	//	Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
+
+	//	m_textures[texture.getUID()] = texture;
+
+	//	stbi_image_free(textureData.data);
+
+	//	return texture;
+	//	});
+}
+
+std::vector<std::string> Assets::getAllAnimations() const
+{
+	std::vector<std::string> result;
+	for (auto [uuid, _] : m_animations)
+	{
+		result.push_back(uuid);
+	}
+	return result;
+}

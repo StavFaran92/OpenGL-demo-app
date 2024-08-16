@@ -2,7 +2,7 @@
 
 #include "Animation.h"
 
-Animator::Animator(std::shared_ptr<Animation> animation)
+Animator::Animator(Resource<Animation> animation)
 	: m_currentAnimation(animation)
 {
 
@@ -11,18 +11,21 @@ Animator::Animator(std::shared_ptr<Animation> animation)
 void Animator::update(float dt)
 {
 	
-	if (m_currentAnimation)
+	if (!m_currentAnimation.isEmpty())
 	{
 		// Increment Animation time
-		m_currentTime += m_currentAnimation->getTicksPerSecond() * dt;
-		m_currentTime = fmod(m_currentTime, m_currentAnimation->getDuration());
+		m_currentTime += m_currentAnimation.get()->getTicksPerSecond() * dt;
+		m_currentTime = fmod(m_currentTime, m_currentAnimation.get()->getDuration());
 	}
 }
 
 void Animator::getFinalBoneMatrices(const Mesh* mesh, std::vector<glm::mat4>& outFinalBoneMatrices) const
 {
+	if (m_currentAnimation.isEmpty()) 
+		return;
+
 	std::unordered_map<std::string, glm::mat4> m_intermediateBoneMatrices;
-	m_currentAnimation->calculateFinalBoneMatrices(m_currentTime, m_intermediateBoneMatrices);
+	m_currentAnimation.get()->calculateFinalBoneMatrices(m_currentTime, m_intermediateBoneMatrices);
 	
 	outFinalBoneMatrices = mesh->getBoneOffsets();
 
@@ -38,7 +41,7 @@ void Animator::getFinalBoneMatrices(const Mesh* mesh, std::vector<glm::mat4>& ou
 	}
 }
 
-void Animator::playAnimation(std::shared_ptr<Animation> animation)
+void Animator::playAnimation(Resource<Animation> animation)
 {
 	m_currentAnimation = animation;
 	m_currentTime = 0.f;

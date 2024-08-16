@@ -24,6 +24,7 @@ static bool showAssetTextureSelectWindow = false;
 static bool showModelInspectorWindow = false;
 static bool showPrimitiveCreatorWindow = false;
 static bool showMeshSelector = false;
+static bool showAnimationSelector = false;
 static bool selectedEntityRename = false;
 static bool showScriptSelector = false;
 
@@ -283,6 +284,59 @@ static void displaySelectMeshWindow(std::string& uuid)
 	}
 }
 
+static void displaySelectAnimationWindow(std::string& uuid)
+{
+	if (showAnimationSelector)
+	{
+		ImGui::Begin("Select Animation", &showAnimationSelector, ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::Text("Available Animations:");
+		ImGui::Separator();
+
+		static int selectedAnimationIndex = -1;
+
+		auto& animationList = Engine::get()->getSubSystem<Assets>()->getAllAnimations();
+
+		for (int i = 0; i < animationList.size(); i++)
+		{
+			bool isSelected = (selectedAnimationIndex == i);
+			if (isSelected)
+			{
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.2f, 0.2f, 1.0f)); // Change background color
+			}
+			if (!isSelected)
+			{
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Default color
+			}
+
+			if (ImGui::Selectable(animationList[i].c_str()))
+			{
+				selectedAnimationIndex = i;
+			}
+
+			ImGui::PopStyleColor();
+		}
+
+		ImGui::Separator();
+
+		if (ImGui::Button("OK")) {
+			if (selectedAnimationIndex >= 0 && selectedAnimationIndex < animationList.size())
+			{
+				uuid = animationList[selectedAnimationIndex];
+
+			}
+			showAnimationSelector = false;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel")) {
+			showAnimationSelector = false;
+		}
+
+		ImGui::End();
+	}
+}
+
 static void displaySelectScriptWindow(std::string& scriptName)
 {
 	if (showScriptSelector)
@@ -495,15 +549,15 @@ void LightCreatorWindow()
 
 }
 
-static void addAssetLoadWidget(const std::string& name, ImGuiTextBuffer& textBuffer, const char** assetSupportedFormats)
+static void addAssetLoadWidget(const std::string& name, ImGuiTextBuffer& textBuffer, const char** assetSupportedFormats, int filterCount)
 {
 	ImGui::LabelText("", name.c_str());
 	if (ImGui::Button(std::string("Browse##" + name).c_str()))
 	{
 		const char* filepath = tinyfd_openFileDialog(
-			"Select A texture to load",
+			"Select an asset to load",
 			"",
-			4,
+			filterCount,
 			assetSupportedFormats,
 			"",
 			0);
@@ -527,7 +581,7 @@ void ShowTextureImportWindow()
 
 		static ImGuiTextBuffer texturePathBuffer;
 
-		addAssetLoadWidget("Texture", texturePathBuffer, Constants::g_textureSupportedFormats);
+		addAssetLoadWidget("Texture", texturePathBuffer, Constants::g_textureSupportedFormats, 4);
 
 		static bool flip = false;
 		ImGui::Checkbox("Flip", &flip);
@@ -565,12 +619,12 @@ void ShowAnimationImportWindow()
 {
 	if (showAnimationImportWindow)
 	{
-		ImGui::SetNextWindowSize({ 200, 300 }, ImGuiCond_Appearing);
+		ImGui::SetNextWindowSize({ 400, 150 }, ImGuiCond_Appearing);
 		ImGui::Begin("Import Animation", false);
 
 		static ImGuiTextBuffer animationPathBuffer;
 
-		addAssetLoadWidget("Animation", animationPathBuffer, Constants::g_animationSupportedFormats);
+		addAssetLoadWidget("Animation", animationPathBuffer, Constants::g_animationSupportedFormats, 1);
 
 		ImGui::Separator();
 
@@ -615,7 +669,7 @@ void ShowModelCreatorWindow()
 		static glm::vec3 scale(1.f, 1.f, 1.f);
 
 		// Model
-		addAssetLoadWidget("Model", modelPathBuffer, g_supportedFormats);
+		addAssetLoadWidget("Model", modelPathBuffer, g_supportedFormats, 4);
 
 		ImGui::Separator();
 		ImGui::LabelText("", "Texture");
@@ -1396,6 +1450,29 @@ void RenderInspectorWindow(float width, float height)
 			ImGui::DragFloat("sizeY", &image.size.y);
 			});
 
+		displayComponent<Animator>("Animator", [](Animator& animator) {
+
+
+			// Button to trigger some action
+			if (ImGui::Button("Select Animation"))
+			{
+				showAnimationSelector = true;
+			}
+
+			std::string selectedAnimationUID;
+			displaySelectAnimationWindow(selectedAnimationUID);
+
+			if (!selectedAnimationUID.empty())
+			{
+				animator.m_currentAnimation = Resource<Animation>(selectedAnimationUID);
+			}
+
+			ImGui::SameLine();
+
+			// Text display field
+			ImGui::Text(animator.m_currentAnimation.getUID().c_str());
+			});
+
 		if (ImGui::Button("Add Component", ImVec2(windowWidth, 0)))
 		{
 			ImGui::OpenPopup("AddComponentPopup");
@@ -1461,6 +1538,11 @@ void RenderInspectorWindow(float width, float height)
 			{
 				auto& img = selectedEntity.addComponent<ImageComponent>(Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1));
 				img.size = { 50, 50 };
+			}
+
+			if (ImGui::MenuItem("Animator"))
+			{
+				auto& animator = selectedEntity.addComponent<Animator>();
 			}
 
 			ImGui::EndPopup();

@@ -40,6 +40,7 @@ class CommonShaders;
 class CommonTextures;
 class ObjectPicker;
 class Assets;
+class Animation;
 template<typename T>class Resource;
 template<typename T>class Factory;
 template<typename T>class MemoryPool;
@@ -81,6 +82,7 @@ public:
     template<typename T>MemoryPool<T>* getMemoryPool() const {};
     template<>MemoryPool<Texture>* getMemoryPool() const { return m_memoryPoolTexture.get(); }
     template<>MemoryPool<Mesh>* getMemoryPool() const { return m_memoryPoolMesh.get(); }
+    template<>MemoryPool<Animation>* getMemoryPool() const { return m_memoryPoolAnimation.get(); }
 
     
     
@@ -161,6 +163,7 @@ protected:
     std::shared_ptr<ResourceManager> m_resourceManager;
     std::shared_ptr<MemoryPool<Texture>> m_memoryPoolTexture;
     std::shared_ptr<MemoryPool<Mesh>> m_memoryPoolMesh;
+    std::shared_ptr<MemoryPool<Animation>> m_memoryPoolAnimation;
     std::shared_ptr<ProjectManager> m_projectManager;
     std::shared_ptr<CommonShaders> m_commonShaders;
     std::shared_ptr<CommonTextures> m_commonTextures;
