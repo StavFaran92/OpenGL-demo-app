@@ -3,6 +3,8 @@
 #include "Mesh.h"
 #include "MeshBuilder.h"
 #include "VertexLayout.h"
+#include "Engine.h"
+#include "ModelImporter.h"
 
 static const float vertices[] = {
 -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
@@ -71,13 +73,14 @@ static const unsigned int indices[] = {
 
 Resource<Mesh> Box::createMesh()
 {
-    VertexLayout layout;
-    layout.numOfVertices = 36;
-    layout.attribs.emplace_back(LayoutAttribute::Positions);
-    layout.attribs.emplace_back(LayoutAttribute::Normals);
-    layout.attribs.emplace_back(LayoutAttribute::Texcoords);
+    return Engine::get()->getSubSystem<ModelImporter>()->import(SGE_ROOT_DIR + "Resources/Engine/Meshes/cube.gltf");
+    //VertexLayout layout;
+    //layout.numOfVertices = 36;
+    //layout.attribs.emplace_back(LayoutAttribute::Positions);
+    //layout.attribs.emplace_back(LayoutAttribute::Normals);
+    //layout.attribs.emplace_back(LayoutAttribute::Texcoords);
 
-    return MeshBuilder::builder()
-        .addRawVertices((float*)vertices, layout)
-        .build();
+    //return MeshBuilder::builder()
+    //    .addRawVertices((float*)vertices, layout)
+    //    .build();
 }
