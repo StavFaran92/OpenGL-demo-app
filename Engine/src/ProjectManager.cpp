@@ -61,7 +61,10 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     for (const auto& meshUID : meshNameList) 
     {
         std::string binFilePath = (projectDir / meshUID).string() + ".gltf";
+        Mesh* meshPtr = new Mesh();
         Resource<Mesh> mesh(meshUID);
+        Engine::get()->getMemoryPool<Mesh>()->add(meshUID, meshPtr);
+        Engine::get()->getResourceManager()->incRef(meshUID);
         Engine::get()->getSubSystem<ModelImporter>()->load(binFilePath, mesh);
 
         //// Open bin file
@@ -78,8 +81,7 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
         //// Create mesh
         //Mesh* mesh = new Mesh();
         //mesh->build(meshData);
-        Engine::get()->getMemoryPool<Mesh>()->add(meshUID, mesh.get());
-        Engine::get()->getResourceManager()->incRef(meshUID);
+        
     }
 
     // Create textures
