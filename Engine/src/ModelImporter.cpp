@@ -39,14 +39,41 @@ Resource<Mesh> ModelImporter::import(const std::string& path)
 {
 	Resource<Mesh> mesh = Factory<Mesh>::create();
 
-	load(path, mesh);
+	// validate init
+	if (m_importer == nullptr)
+	{
+		logError("Importer not initialized.");
+		return Resource<Mesh>::empty;
+	}
 
-	const aiScene* scene = m_importer->GetScene();
+	if (!std::filesystem::exists(path))
+	{
+		logError("File doesn't exists: " + path);
+		return Resource<Mesh>::empty;
+	}
+
+	const aiScene* scene = nullptr;
+
+	// read scene from file
+	scene = m_importer->ReadFile(path, 
+		aiProcess_Triangulate | 
+		aiProcess_GenSmoothNormals | 
+		aiProcess_FlipUVs | 
+		aiProcess_CalcTangentSpace);
+
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	{
+		logError("ERROR::ASSIMP::{}", m_importer->GetErrorString());
+		return Resource<Mesh>::empty;
+	}
 
 	auto& projectDir = Engine::get()->getProjectDirectory();
 	Assimp::Exporter exporter;
-	exporter.Export(scene, "gltf2", projectDir + "/" + mesh.getUID() + ".gltf");
+	const std::string savedFilePath = projectDir + "/" + mesh.getUID() + ".gltf";
+	exporter.Export(scene, "gltf2", savedFilePath);
 	Engine::get()->getContext()->getProjectAssetRegistry()->addMesh(mesh.getUID());
+
+	load(savedFilePath, mesh);
 
 	return mesh;
 }
@@ -77,8 +104,7 @@ Resource<Mesh> ModelImporter::load(const std::string & path, Resource<Mesh> mesh
 	{
 
 		// read scene from file
-		scene = m_importer->ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals
-			| aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+		scene = m_importer->ReadFile(path, 0);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
