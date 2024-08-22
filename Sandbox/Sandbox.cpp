@@ -33,12 +33,15 @@ public:
 		editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
 		Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(editorCamera);
 
-		auto zombieGirl = Engine::get()->getSubSystem<ModelImporter>()->loadModelFromFile("C:/Users/Stav/Downloads/FPS Zombie/Scary Zombie Pack/zombiegirl.fbx", Engine::get()->getContext()->getActiveScene().get());
+		Entity zombieGirl = Engine::get()->getContext()->getActiveScene()->createEntity("Zombie girl");
+		auto mesh = Engine::get()->getSubSystem<ModelImporter>()->import("C:/Users/Stav/Downloads/FPS Zombie/Scary Zombie Pack/zombiegirl.fbx");
+		zombieGirl.addComponent<RenderableComponent>();
+		zombieGirl.addComponent<MeshComponent>().mesh = mesh;
 
 		//zombieGirl.getComponent<Transformation>().translate({ 0, 0, 10 });
 		zombieGirl.getComponent<Transformation>().scale({ 0.05, 0.05, 0.05 });
 
-		auto animation = AnimationLoader::loadAnimation("C:/Users/Stav/Downloads/FPS Zombie/Scary Zombie Pack/Zombie Walk.fbx");
+		auto animation = AnimationLoader::import("C:/Users/Stav/Downloads/FPS Zombie/Scary Zombie Pack/Zombie Walk.fbx");
 
 		zombieGirl.addComponent<Animator>(animation);
 

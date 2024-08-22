@@ -2,8 +2,7 @@
 
 #include "Bone.h"
 
-Animation::Animation(const std::string& name, float duration, float ticksPerSecond, MeshNodeData& rootNode, std::unordered_map<std::string, std::shared_ptr<Bone>>& bones)
-	: m_name(name), m_duration(duration), m_ticksPerSecond(ticksPerSecond), m_rootNode(rootNode), m_bones(bones)
+Animation::Animation()
 {
 }
 
@@ -68,4 +67,13 @@ float Animation::getDuration() const
 float Animation::getTicksPerSecond() const
 {
 	return m_ticksPerSecond;
+}
+
+void Animation::build(const std::string& name, float duration, float ticksPerSecond, MeshNodeData& rootNode, std::unordered_map<std::string, std::shared_ptr<Bone>>& bones)
+{
+	m_name = name;
+	m_duration = duration;
+	m_ticksPerSecond = ticksPerSecond;
+	m_rootNode = rootNode;
+	m_bones = bones;
 }

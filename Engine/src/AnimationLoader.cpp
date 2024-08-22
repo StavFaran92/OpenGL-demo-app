@@ -1,11 +1,11 @@
 #include "AnimationLoader.h"
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 #include "AssimpGLMHelpers.h"
+#include "Factory.h"
+#include "Context.h"
+#include "ProjectAssetRegistry.h"
 #include "Bone.h"
+#include <filesystem>
 
 void readSceneNodeData(MeshNodeData& nodeData, const aiNode* scene)
 {
@@ -64,11 +64,25 @@ void readAnimationBones(const aiAnimation* animation, std::unordered_map<std::st
     }
 }
 
-std::shared_ptr<Animation> AnimationLoader::loadAnimation(const std::string& path)
+Resource<Animation> AnimationLoader::load(const std::string & path, Resource<Animation>& animation)
 {
-    Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+    if (!std::filesystem::exists(path))
+    {
+        logError("File doesn't exists: " + path);
+        return Resource<Animation>::empty;
+    }
+
+    const aiScene* scene = m_importer.ReadFile(path, aiProcess_Triangulate);
+
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+    {
+        logError("ERROR::ASSIMP::{}", m_importer.GetErrorString());
+        return Resource<Animation>::empty;
+    }
+
     assert(scene && scene->mRootNode && scene->HasAnimations());
+
+
     auto aiAnimation = scene->mAnimations[0];
 
     MeshNodeData rootNode; //todo fix
@@ -77,7 +91,39 @@ std::shared_ptr<Animation> AnimationLoader::loadAnimation(const std::string& pat
     std::unordered_map<std::string, std::shared_ptr<Bone>> bones;
     readAnimationBones(aiAnimation, bones);
 
-    std::shared_ptr<Animation> animation = std::make_shared<Animation>(aiAnimation->mName.C_Str(), (float)aiAnimation->mDuration, (float)aiAnimation->mTicksPerSecond, rootNode, bones);
+    animation.get()->build(aiAnimation->mName.C_Str(), (float)aiAnimation->mDuration, (float)aiAnimation->mTicksPerSecond, rootNode, bones);
+
+    return animation;
+}
+
+Resource<Animation> AnimationLoader::import(const std::string& path)
+{
+    if (!std::filesystem::exists(path))
+    {
+        logError("File doesn't exists: " + path);
+        return Resource<Animation>::empty;
+    }
+
+    auto animation = Factory<Animation>::create();
+
+    const aiScene* scene = m_importer.ReadFile(path, aiProcess_Triangulate);
+
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+    {
+        logError("ERROR::ASSIMP::{}", m_importer.GetErrorString());
+        return Resource<Animation>::empty;
+    }
+
+    assert(scene && scene->mRootNode && scene->HasAnimations());
+
+
+    auto& projectDir = Engine::get()->getProjectDirectory();
+    Assimp::Exporter exporter;
+    const std::string savedFilePath = projectDir + "/" + animation.getUID() + ".gltf";
+    exporter.Export(scene, "gltf2", savedFilePath);
+    Engine::get()->getContext()->getProjectAssetRegistry()->addAnimation(animation.getUID());
+
+    load(savedFilePath, animation);
 
     return animation;
 }
