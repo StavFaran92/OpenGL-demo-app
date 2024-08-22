@@ -67,23 +67,7 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
         Resource<Mesh> mesh(meshUID);
         Engine::get()->getMemoryPool<Mesh>()->add(meshUID, meshPtr);
         Engine::get()->getResourceManager()->incRef(meshUID);
-        Engine::get()->getSubSystem<ModelImporter>()->load(binFilePath, mesh);
-
-        //// Open bin file
-        //fs::path binFilePath = (projectDir / meshUID).string() + ".bin";
-        //std::ifstream binFile(binFilePath, std::ios::binary);
-        //if (!binFile.is_open()) 
-        //{
-        //    logError("Failed to open bin file for mesh: " + meshUID + ".bin");
-        //    continue; // Skip this mesh
-        //}
-        //MeshData meshData;
-        //MeshSerializer::readDataFromBinaryFile(binFilePath.string(), meshData);
-
-        //// Create mesh
-        //Mesh* mesh = new Mesh();
-        //mesh->build(meshData);
-        
+        Engine::get()->getSubSystem<ModelImporter>()->load(binFilePath, mesh);        
     }
 
     // Create textures
@@ -103,22 +87,6 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
         Engine::get()->getMemoryPool<Animation>()->add(animUID, animPtr);
         Engine::get()->getResourceManager()->incRef(animUID);
         Engine::get()->getSubSystem<AnimationLoader>()->load(binFilePath, anim);
-
-        //// Open bin file
-        //fs::path binFilePath = (projectDir / meshUID).string() + ".bin";
-        //std::ifstream binFile(binFilePath, std::ios::binary);
-        //if (!binFile.is_open()) 
-        //{
-        //    logError("Failed to open bin file for mesh: " + meshUID + ".bin");
-        //    continue; // Skip this mesh
-        //}
-        //MeshData meshData;
-        //MeshSerializer::readDataFromBinaryFile(binFilePath.string(), meshData);
-
-        //// Create mesh
-        //Mesh* mesh = new Mesh();
-        //mesh->build(meshData);
-
     }
 
     Archiver::load();
