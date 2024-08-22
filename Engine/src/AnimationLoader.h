@@ -14,6 +14,8 @@
 class EngineAPI AnimationLoader
 {
 public:
+	AnimationLoader();
+
 	Resource<Animation> import(const std::string& path);
 
 	Resource<Animation> load(const std::string& path, Resource<Animation>& animation);

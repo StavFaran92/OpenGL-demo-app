@@ -41,6 +41,7 @@ class CommonTextures;
 class ObjectPicker;
 class Assets;
 class Animation;
+class AnimationLoader;
 template<typename T>class Resource;
 template<typename T>class Factory;
 template<typename T>class MemoryPool;

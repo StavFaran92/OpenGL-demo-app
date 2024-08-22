@@ -4,7 +4,7 @@ template<typename T>
 int getDescreteIndex(const std::vector<T>& list, float animationTime)
 {
     auto it = std::lower_bound(list.begin(), list.end(), animationTime);
-    return std::distance(list.begin(), it) - 1;
+    return std::max(0, (int)std::distance(list.begin(), it) - 1);
 }
 
 Bone::Bone(const std::vector<KeyPosition>& positions, const std::vector<KeyRotation>& rotations, const std::vector<KeyScale>& scalings)

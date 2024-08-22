@@ -30,6 +30,7 @@
 #include "CommonShaders.h"
 #include "CommonTextures.h"
 #include "ObjectPicker.h"
+#include "AnimationLoader.h"
 #include "Assets.h"
 
 #include "Application.h"
@@ -99,6 +100,7 @@ bool Engine::init(const InitParams& initParams)
 
     m_memoryPoolTexture = std::make_shared<MemoryPool<Texture>>();
     m_memoryPoolMesh = std::make_shared<MemoryPool<Mesh>>();
+    m_memoryPoolAnimation = std::make_shared<MemoryPool<Animation>>();
 
     m_resourceManager = std::make_shared<ResourceManager>();
 
@@ -165,6 +167,7 @@ bool Engine::init(const InitParams& initParams)
     }
 
     auto modelImporter = new ModelImporter();
+    auto animationLoader = new AnimationLoader();
     m_assets = std::make_shared<Assets>();
 
     m_timeManager = std::make_shared<TimeManager>();

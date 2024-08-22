@@ -7,6 +7,11 @@
 #include "Bone.h"
 #include <filesystem>
 
+AnimationLoader::AnimationLoader()
+{
+    Engine::get()->registerSubSystem<AnimationLoader>(this);
+}
+
 void readSceneNodeData(MeshNodeData& nodeData, const aiNode* scene)
 {
     assert(src);

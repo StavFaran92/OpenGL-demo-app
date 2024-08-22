@@ -4,6 +4,8 @@
 
 
 #include "Texture.h"
+#include "Animation.h"
+#include "AnimationLoader.h"
 #include "CacheSystem.h"
 
 //#define STB_IMAGE_IMPLEMENTATION
@@ -109,34 +111,23 @@ std::vector<std::string> Assets::getAllTextures() const
 
 Resource<Animation> Assets::importAnimation(const std::string& fileLocation)
 {
+	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
+	std::filesystem::path path(fileLocation);
+	return memoryManagementSystem->createOrGetCached<Animation>(path.filename().string(), [&]() {
 
-	return nullptr;
-	//// Check if texture is already cached to optimize the load process
-	//auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
-	//std::filesystem::path path(fileLocation);
-	//return memoryManagementSystem->createOrGetCached<Animation>(path.filename().string(), [&]() {
+		auto animation = Engine::get()->getSubSystem<AnimationLoader>()->import(fileLocation);
 
-	//	// extract data from file
+		Engine::get()->getContext()->getProjectAssetRegistry()->addAnimation(animation.getUID());
 
-	//	// create asset from buffer
+		m_animations[animation.getUID()] = animation;
 
-	//	// save to local resource
+		return animation;
+		});
+}
 
-	//	// todo use RAII
-	//	Texture::TextureData textureData = extractTextureDataFromFile(fileLocation);
-
-	//	Resource<Texture> texture = Texture::create2DTextureFromBuffer(textureData);
-
-	//	auto& projectDir = Engine::get()->getProjectDirectory();
-	//	stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), textureData.width, textureData.height, textureData.bpp, textureData.data, textureData.width * textureData.bpp);
-	//	Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
-
-	//	m_textures[texture.getUID()] = texture;
-
-	//	stbi_image_free(textureData.data);
-
-	//	return texture;
-	//	});
+Resource<Animation> Assets::loadAnimation(UUID uid, const std::string& path)
+{
+	return Resource<Animation>();
 }
 
 std::vector<std::string> Assets::getAllAnimations() const
