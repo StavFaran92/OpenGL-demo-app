@@ -12,6 +12,7 @@
 #include "Assets.h"
 #include "Archiver.h"
 #include "ModelImporter.h"
+#include "AnimationLoader.h"
 //#include "TextureSerializer.h"
 #include <nlohmann/json.hpp>
 
@@ -56,6 +57,7 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
 
     std::vector<std::string> meshNameList = par->getMeshList();
     std::vector<std::string> textureNameList = par->getTextureList();
+    std::vector<std::string> animationNameList = par->getAnimationList();
 
     // Create meshes
     for (const auto& meshUID : meshNameList) 
@@ -90,6 +92,33 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
         // Open bin file
         fs::path imageFilePath = (projectDir / textureUID).string() + ".png";
         Engine::get()->getSubSystem<Assets>()->loadTexture2D(textureUID, imageFilePath.string());
+    }
+
+    // Create animations
+    for (const auto& animUID : animationNameList)
+    {
+        std::string binFilePath = (projectDir / animUID).string() + ".gltf";
+        Animation* animPtr = new Animation();
+        Resource<Animation> anim(animUID);
+        Engine::get()->getMemoryPool<Animation>()->add(animUID, animPtr);
+        Engine::get()->getResourceManager()->incRef(animUID);
+        Engine::get()->getSubSystem<AnimationLoader>()->load(binFilePath, anim);
+
+        //// Open bin file
+        //fs::path binFilePath = (projectDir / meshUID).string() + ".bin";
+        //std::ifstream binFile(binFilePath, std::ios::binary);
+        //if (!binFile.is_open()) 
+        //{
+        //    logError("Failed to open bin file for mesh: " + meshUID + ".bin");
+        //    continue; // Skip this mesh
+        //}
+        //MeshData meshData;
+        //MeshSerializer::readDataFromBinaryFile(binFilePath.string(), meshData);
+
+        //// Create mesh
+        //Mesh* mesh = new Mesh();
+        //mesh->build(meshData);
+
     }
 
     Archiver::load();
