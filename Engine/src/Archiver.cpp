@@ -22,6 +22,7 @@ SerializedEntity Archiver::serializeEntity(Entity e)
 	serializedEntity.rigidBody = getComponentIfExists<RigidBodyComponent>(e);
 	serializedEntity.skybox = getComponentIfExists<SkyboxComponent>(e);
 	serializedEntity.transform = getComponentIfExists<Transformation>(e);
+	serializedEntity.animator = getComponentIfExists<Animator>(e);
 
 	return serializedEntity;
 }
@@ -112,6 +113,11 @@ void Archiver::deserializeEntity(SerializedEntity serializedEnt, Scene& scene)
 		auto& nsc = entityHandler.addComponent<NativeScriptComponent>(serializedEnt.nsc.value());
 		nsc.entity.setRegistry(&scene.getRegistry());
 		nsc.script->entity.setRegistry(&scene.getRegistry());
+	}
+
+	if (serializedEnt.animator)
+	{
+		entityHandler.addComponent<Animator>(serializedEnt.animator.value());
 	}
 }
 

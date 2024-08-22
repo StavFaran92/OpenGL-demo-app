@@ -17,6 +17,11 @@ public:
 	void getFinalBoneMatrices(const Mesh* mesh, std::vector<glm::mat4>& outFinalBoneMatrices) const;
 	void playAnimation(Resource<Animation> animation);
 
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(m_currentAnimation);
+	}
+
 	Resource<Animation> m_currentAnimation;
 	float m_currentTime = 0.f;
 	std::unordered_map<std::string, glm::mat4> m_finalBoneMatrices;

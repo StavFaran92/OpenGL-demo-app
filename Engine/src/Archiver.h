@@ -22,6 +22,7 @@
 #include "PointLight.h"
 #include "Skybox.h"
 #include "Context.h"
+#include "Animator.h"
 
 class Scene;
 class Entity;
@@ -73,6 +74,7 @@ struct SerializedEntity
 	std::optional<ObjectComponent> obj;
 	std::optional<SkyboxComponent> skybox;
 	std::optional<ImageComponent> image;
+	std::optional<Animator> animator;
 
 	template <class Archive>
 	void serialize(Archive& archive) {
@@ -90,7 +92,8 @@ struct SerializedEntity
 			pLight,
 			obj,
 			skybox,
-			image);
+			image,
+			animator);
 	}
 };
 
