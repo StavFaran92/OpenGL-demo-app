@@ -124,8 +124,8 @@ Resource<Animation> AnimationLoader::import(const std::string& path)
 
     auto& projectDir = Engine::get()->getProjectDirectory();
     Assimp::Exporter exporter;
-    const std::string savedFilePath = projectDir + "/" + animation.getUID() + ".gltf";
-    exporter.Export(scene, "gltf2", savedFilePath);
+    const std::string savedFilePath = projectDir + "/" + animation.getUID() + ".dae";
+    exporter.Export(scene, "collada", savedFilePath);
     Engine::get()->getContext()->getProjectAssetRegistry()->addAnimation(animation.getUID());
 
     load(savedFilePath, animation);

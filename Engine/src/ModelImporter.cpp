@@ -59,7 +59,8 @@ Resource<Mesh> ModelImporter::import(const std::string& path)
 		aiProcess_Triangulate | 
 		aiProcess_GenSmoothNormals | 
 		aiProcess_FlipUVs | 
-		aiProcess_CalcTangentSpace);
+		aiProcess_CalcTangentSpace |
+		aiProcess_ValidateDataStructure);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
@@ -69,8 +70,8 @@ Resource<Mesh> ModelImporter::import(const std::string& path)
 
 	auto& projectDir = Engine::get()->getProjectDirectory();
 	Assimp::Exporter exporter;
-	const std::string savedFilePath = projectDir + "/" + mesh.getUID() + ".gltf";
-	exporter.Export(scene, "gltf2", savedFilePath);
+	const std::string savedFilePath = projectDir + "/" + mesh.getUID() + ".dae";
+	exporter.Export(scene, "collada", savedFilePath);
 	Engine::get()->getContext()->getProjectAssetRegistry()->addMesh(mesh.getUID());
 
 	load(savedFilePath, mesh);
@@ -104,7 +105,7 @@ Resource<Mesh> ModelImporter::load(const std::string & path, Resource<Mesh> mesh
 	{
 
 		// read scene from file
-		scene = m_importer->ReadFile(path, 0);
+		scene = m_importer->ReadFile(path, aiProcess_ValidateDataStructure);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
