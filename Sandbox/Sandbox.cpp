@@ -36,12 +36,13 @@ public:
 		Entity zombieGirl = Engine::get()->getContext()->getActiveScene()->createEntity("Zombie girl");
 		auto mesh = Engine::get()->getSubSystem<ModelImporter>()->import("C:/Users/Stav/Downloads/FPS Zombie/Scary Zombie Pack/zombiegirl.fbx");
 		zombieGirl.addComponent<RenderableComponent>();
+		zombieGirl.addComponent<MaterialComponent>();
 		zombieGirl.addComponent<MeshComponent>().mesh = mesh;
 
 		//zombieGirl.getComponent<Transformation>().translate({ 0, 0, 10 });
 		zombieGirl.getComponent<Transformation>().scale({ 0.05, 0.05, 0.05 });
 
-		auto animation = AnimationLoader::import("C:/Users/Stav/Downloads/FPS Zombie/Scary Zombie Pack/Zombie Walk.fbx");
+		auto animation = Engine::get()->getSubSystem<AnimationLoader>()->import("C:/Users/Stav/Downloads/FPS Zombie/Scary Zombie Pack/Zombie Walk.fbx");
 
 		zombieGirl.addComponent<Animator>(animation);
 

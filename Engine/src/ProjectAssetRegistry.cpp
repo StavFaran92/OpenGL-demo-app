@@ -111,16 +111,28 @@ void ProjectAssetRegistry::addAssociation(std::string name, UUID uuid)
 
 std::vector<UUID> ProjectAssetRegistry::getMeshList() const
 {
+    if (!m_assetRegistry.contains("meshes"))
+    {
+        return {};
+    }
     return m_assetRegistry["meshes"].get<const std::vector<UUID>>();
 }
 
 std::vector<UUID> ProjectAssetRegistry::getTextureList() const
 {
+    if (!m_assetRegistry.contains("textures"))
+    {
+        return {};
+    }
 	return m_assetRegistry["textures"].get<std::vector<std::string>>();
 }
 
 std::vector<UUID> ProjectAssetRegistry::getAnimationList() const
 {
+    if (!m_assetRegistry.contains("animations"))
+    {
+        return {};
+    }
     return m_assetRegistry["animations"].get<std::vector<std::string>>();
 }
 
