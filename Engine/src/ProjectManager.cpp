@@ -62,7 +62,7 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     // Create meshes
     for (const auto& meshUID : meshNameList) 
     {
-        std::string binFilePath = (projectDir / meshUID).string() + ".gltf";
+        std::string binFilePath = (projectDir / meshUID).string() + ".dae";
         Mesh* meshPtr = new Mesh();
         Resource<Mesh> mesh(meshUID);
         Engine::get()->getMemoryPool<Mesh>()->add(meshUID, meshPtr);
@@ -81,7 +81,7 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     // Create animations
     for (const auto& animUID : animationNameList)
     {
-        std::string binFilePath = (projectDir / animUID).string() + ".gltf";
+        std::string binFilePath = (projectDir / animUID).string() + ".dae";
         Animation* animPtr = new Animation();
         Resource<Animation> anim(animUID);
         Engine::get()->getMemoryPool<Animation>()->add(animUID, animPtr);

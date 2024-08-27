@@ -1475,6 +1475,8 @@ void RenderInspectorWindow(float width, float height)
 
 			// Text display field
 			ImGui::Text(animator.m_currentAnimation.getUID().c_str());
+
+			ImGui::DragFloat("playback speed", &animator.m_playbackSpeed);
 			});
 
 		if (ImGui::Button("Add Component", ImVec2(windowWidth, 0)))
