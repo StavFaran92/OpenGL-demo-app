@@ -12,7 +12,7 @@ public:
     template<typename... Args>
     static Resource<T> create(Args&&... args)
     {
-        T* texture = new T();
+        T* texture = new T(args...);
         auto uid = uuid::generate_uuid_v4();
         Resource<T> res(uid);
         Engine::get()->getMemoryPool<T>()->add(uid, texture);

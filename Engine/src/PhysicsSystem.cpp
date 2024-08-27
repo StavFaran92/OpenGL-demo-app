@@ -4,6 +4,7 @@
 
 #include "PhysXUtils.h"
 #include "Component.h"
+#include "Physics.h"
 
 #define PX_RELEASE(x)	if(x)	{ x->release(); x = nullptr; }
 
@@ -43,7 +44,7 @@ bool PhysicsSystem::init()
         return false;
     }
 
-    m_defaultMaterial = m_physics->createMaterial(0.5f, 0.5f, 0.f);
+    m_defaultMaterial = m_physics->createMaterial(0.5f, 0.5f, 0.1f);
 
     m_isInit = true;
 
@@ -71,25 +72,31 @@ physx::PxMaterial* PhysicsSystem::getDefaultMaterial() const
     return m_defaultMaterial;
 }
 
-physx::PxRigidActor* PhysicsSystem::createRigidBody(Transformation& transform, RigidbodyType bodyType, float mass)
+physx::PxRigidActor* PhysicsSystem::createRigidBody(Transformation& transform, RigidBodyComponent& rb)
 {
     auto scale = transform.getLocalScale();
     physx::PxTransform pxTransform = PhysXUtils::toPhysXTransform(transform);
     physx::PxRigidActor* body = nullptr;
 
-    if (bodyType == RigidbodyType::Dynamic || bodyType == RigidbodyType::Kinematic)
+    if (rb.type == RigidbodyType::Dynamic || rb.type == RigidbodyType::Kinematic)
     {
         body = m_physics->createRigidDynamic(pxTransform);
         auto dynamicBody = static_cast<physx::PxRigidDynamic*>(body);
+        dynamicBody->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::Enum::eLOCK_LINEAR_X, rb.isLockedLinearX);
+        dynamicBody->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::Enum::eLOCK_LINEAR_Y, rb.isLockedLinearY);
+        dynamicBody->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::Enum::eLOCK_LINEAR_Z, rb.isLockedLinearZ);
+        dynamicBody->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::Enum::eLOCK_ANGULAR_X, rb.isLockedAngularX);
+        dynamicBody->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::Enum::eLOCK_ANGULAR_Y, rb.isLockedAngularY);
+        dynamicBody->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::Enum::eLOCK_ANGULAR_Z, rb.isLockedAngularZ);
         dynamicBody->setAngularDamping(0.5f);
-        physx::PxRigidBodyExt::updateMassAndInertia(*dynamicBody, mass);
+        physx::PxRigidBodyExt::updateMassAndInertia(*dynamicBody, rb.mass);
 
-        if (bodyType == RigidbodyType::Kinematic)
+        if (rb.type == RigidbodyType::Kinematic)
         {
             dynamicBody->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, true);
         }
     }
-    else if (bodyType == RigidbodyType::Static)
+    else if (rb.type == RigidbodyType::Static)
     {
         body = m_physics->createRigidStatic(pxTransform);
     }

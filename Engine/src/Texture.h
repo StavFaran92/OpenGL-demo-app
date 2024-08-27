@@ -85,13 +85,15 @@ public:
 
 	static Resource<Texture> createDummyTexture(unsigned char color[3]);
 
-	static Texture::TextureData extractTextureDataFromFile(const std::string& fileLocation);
+	//static Texture::TextureData extractTextureDataFromFile(const std::string& fileLocation);
 
 	void build(const TextureData& textureData);
 
 	int getWidth() const;
 	int getHeight() const;
 	int getBitDepth() const;
+
+	void setData(int xoffset, int yoffset, int width, int height, const void* data);
 
 	/**
 	 * Converts a texture type to a string.

@@ -38,6 +38,7 @@ public:
 
 	static Cubemap::CubemapData extractCubemapDataFromEquirectangularFile(const std::string& fileLocation);
 	static Cubemap::CubemapData extractCubemapDataFromCubemapFiles(const std::vector<std::string>& files);
+	static void saveEquirectangularMap(Resource<Texture> equirectangularMap);
 
 	static Resource<Texture> build(const CubemapData& textureData);
 };

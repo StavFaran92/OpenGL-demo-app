@@ -1,0 +1,53 @@
+#include "Animator.h"
+
+#include "Animation.h"
+
+Animator::Animator(Resource<Animation> animation)
+	: m_currentAnimation(animation)
+{
+
+}
+
+void Animator::update(float dt)
+{
+	
+	if (!m_currentAnimation.isEmpty())
+	{
+		// Increment Animation time
+		m_currentTime += m_currentAnimation.get()->getTicksPerSecond() * m_playbackSpeed * dt;
+		m_currentTime = fmod(m_currentTime, m_currentAnimation.get()->getDuration());
+	}
+}
+
+void Animator::getFinalBoneMatrices(const Mesh* mesh, std::vector<glm::mat4>& outFinalBoneMatrices) const
+{
+	if (m_currentAnimation.isEmpty()) 
+		return;
+
+	std::unordered_map<std::string, glm::mat4> m_intermediateBoneMatrices;
+	m_currentAnimation.get()->calculateFinalBoneMatrices(m_currentTime, m_intermediateBoneMatrices);
+	
+	outFinalBoneMatrices = mesh->getBoneOffsets();
+
+	for (auto& [boneName, boneTransform] : m_intermediateBoneMatrices)
+	{
+		// Get static bone offset
+		auto boneID = mesh->getBoneID(boneName);
+		if (boneID == -1)
+		{
+			continue;
+		}
+		outFinalBoneMatrices[boneID] = boneTransform * outFinalBoneMatrices[boneID]; //todo check 
+	}
+}
+
+void Animator::playAnimation(Resource<Animation> animation)
+{
+	m_currentAnimation = animation;
+	m_currentTime = 0.f;
+}
+
+void Animator::setPlaybackSpeed(float playbackSpeed)
+{
+	m_playbackSpeed = playbackSpeed;
+}

@@ -14,6 +14,7 @@
 #include "Random.h"
 #include "RenderCommand.h"
 #include "Context.h"
+#include "Animator.h"
 
 static float lerp(float a, float b, float t)
 {
@@ -354,6 +355,24 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 		auto shader = entityHandler.tryGetComponent<ShaderComponent>();
 		renderParams.shader = shader ? shader->m_vertexShader : m_gBufferShader.get();
 		renderParams.shader->use();
+
+		auto animator = entityHandler.tryGetComponent<Animator>();
+		if (!animator || animator->m_currentAnimation.isEmpty())
+		{
+			renderParams.shader->setUniformValue("isAnimated", false);
+		}
+		else
+		{
+			std::vector<glm::mat4> finalBoneMatrices;
+			animator->getFinalBoneMatrices(renderParams.mesh, finalBoneMatrices);
+			for (int i = 0; i < finalBoneMatrices.size(); ++i)
+			{
+				renderParams.shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
+			}
+
+			renderParams.shader->setUniformValue("isAnimated", true);
+		}
+		
 
 		MaterialComponent& mat = renderParams.entity->getRoot().getComponent<MaterialComponent>();
 

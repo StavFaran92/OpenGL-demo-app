@@ -52,7 +52,8 @@ bool Mesh::build(MeshData& mData)
 	int stride = 0;
 	for (auto entry : m_layout.attribs)
 	{
-		stride += getAttributeSize(entry);
+		auto& attribData = getAttributeData(entry);
+		stride += attribData.length * attribData.size;
 	}
 
 	// Update layout info
@@ -60,20 +61,25 @@ bool Mesh::build(MeshData& mData)
 	m_layout.stride = stride;
 
 	// Create verticies array
+	// array size = size of each attribute * size of elements in attribute * vertices count
 	int offset = 0;
-	std::vector<float> vertices(stride * mData.m_positions.size(), 0); //TODO optimize
+	unsigned int bufferSize = stride * m_layout.numOfVertices;
+	unsigned char* vertices = new unsigned char[bufferSize];
 
 	for (auto entry : m_layout.attribs)
 	{
+		auto& attribData = getAttributeData(entry);
+
 		// Parse positions
 		if (LayoutAttribute::Positions == entry)
 		{
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
 				auto pos = mData.m_positions.at(i);
-				vertices[stride * i + offset + 0] = pos.x;
-				vertices[stride * i + offset + 1] = pos.y;
-				vertices[stride * i + offset + 2] = pos.z;
+				auto vOffset = stride * i + offset;
+				memcpy(vertices + vOffset + attribData.size * 0, &pos.x, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 1, &pos.y, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 2, &pos.z, attribData.size);
 			}
 		}
 
@@ -83,9 +89,10 @@ bool Mesh::build(MeshData& mData)
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
 				auto normal = mData.m_normals.at(i);
-				vertices[stride * i + offset + 0] = normal.x;
-				vertices[stride * i + offset + 1] = normal.y;
-				vertices[stride * i + offset + 2] = normal.z;
+				auto vOffset = stride * i + offset;
+				memcpy(vertices + vOffset + attribData.size * 0, &normal.x, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 1, &normal.y, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 2, &normal.z, attribData.size);
 			}
 		}
 
@@ -95,8 +102,9 @@ bool Mesh::build(MeshData& mData)
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
 				auto texCoord = mData.m_texCoords.at(i);
-				vertices[stride * i + offset + 0] = texCoord.x;
-				vertices[stride * i + offset + 1] = texCoord.y;
+				auto vOffset = stride * i + offset;
+				memcpy(vertices + vOffset + attribData.size * 0, &texCoord.x, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 1, &texCoord.y, attribData.size);
 			}
 		}
 
@@ -106,24 +114,53 @@ bool Mesh::build(MeshData& mData)
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
 				auto color = mData.m_colors.at(i);
-				vertices[stride * i + offset + 0] = color.x;
-				vertices[stride * i + offset + 1] = color.y;
-				vertices[stride * i + offset + 2] = color.z;
+				auto vOffset = stride * i + offset;
+				memcpy(vertices + vOffset + attribData.size * 0, &color.x, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 1, &color.y, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 2, &color.z, attribData.size);
 			}
 		}
 
-		// Parse colors
+		// Parse tangents
 		else if (LayoutAttribute::Tangents == entry)
 		{
 			for (int i = 0; i < m_layout.numOfVertices; i++)
 			{
 				auto tangent = mData.m_tangents.at(i);
-				vertices[stride * i + offset + 0] = tangent.x;
-				vertices[stride * i + offset + 1] = tangent.y;
+				auto vOffset = stride * i + offset;
+				memcpy(vertices + vOffset + attribData.size * 0, &tangent.x, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 1, &tangent.y, attribData.size);
 			}
 		}
 
-		offset += getAttributeSize(entry);
+		// Parse tangents
+		else if (LayoutAttribute::BoneIDs == entry)
+		{
+			for (int i = 0; i < m_layout.numOfVertices; i++)
+			{
+				auto boneIDs = mData.bonesIDs.at(i);
+				auto vOffset = stride * i + offset;
+				memcpy(vertices + vOffset + attribData.size * 0, &boneIDs.x, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 1, &boneIDs.y, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 2, &boneIDs.z, attribData.size);
+			}
+		}
+
+		// Parse tangents
+		else if (LayoutAttribute::BoneWeights == entry)
+		{
+			for (int i = 0; i < m_layout.numOfVertices; i++)
+			{
+				auto boneWeights = mData.bonesWeights.at(i);
+				auto vOffset = stride * i + offset;
+				memcpy(vertices + vOffset + attribData.size * 0, &boneWeights.x, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 1, &boneWeights.y, attribData.size);
+				memcpy(vertices + vOffset + attribData.size * 2, &boneWeights.z, attribData.size);
+			}
+		}
+
+		
+		offset += attribData.length * attribData.size;
 	}
 
 	// Create buffers
@@ -131,12 +168,17 @@ bool Mesh::build(MeshData& mData)
 
 	if (mData.m_indices.size() > 0)
 	{
-		m_ibo = std::make_shared<ElementBufferObject>((unsigned int*) & (mData.m_indices[0]), mData.m_indices.size());
+		m_ibo = std::make_shared<ElementBufferObject>((unsigned int*)&(mData.m_indices[0]), mData.m_indices.size());
 	}
 
-	m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), (unsigned int)mData.m_positions.size(), sizeof(float) * stride);
+	m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), m_layout.numOfVertices, bufferSize);
+
+	delete[] vertices;
 
 	m_vao->AttachBuffer(*m_vbo, m_ibo.get(), m_layout);
+
+	m_bonesOffsets = mData.bonesOffsets;
+	m_bonesNameToIDMap = mData.bonesNameToIDMap;
 
 	m_positions = mData.m_positions;
 	//m_normals = std::move(mData.m_normals);
@@ -202,6 +244,21 @@ VertexLayout Mesh::getVertexLayout()
 VertexArrayObject* Mesh::getVAO() const
 {
 	return m_vao.get();
+}
+
+std::vector<glm::mat4> Mesh::getBoneOffsets() const
+{
+	return m_bonesOffsets;
+}
+
+int Mesh::getBoneID(const std::string& boneName) const
+{
+	if (m_bonesNameToIDMap.find(boneName) == m_bonesNameToIDMap.end())
+	{
+		return -1;
+	}
+
+	return m_bonesNameToIDMap.at(boneName);
 }
 
 Mesh::~Mesh()

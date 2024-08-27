@@ -28,6 +28,8 @@ public:
 
 	void setTexture(Texture::Type textureType, Resource<Texture> textureHandler);
 
+	std::vector<Resource<Texture>> getAllTextures() const;
+
 	template <class Archive>
 	void serialize(Archive& archive) {
 		archive(m_textures);

@@ -145,6 +145,34 @@ MeshBuilder& MeshBuilder::addIndices(const unsigned int* indices, size_t size)
 	return *this;
 }
 
+MeshBuilder& MeshBuilder::addBoneIDs(const glm::ivec3& boneIDs)
+{
+	m_data.bonesIDs.push_back(boneIDs);
+
+	return *this;
+}
+
+MeshBuilder& MeshBuilder::addBoneIDs(const std::vector<glm::ivec3>& bonesIDs)
+{
+	m_data.bonesIDs.insert(m_data.bonesIDs.end(), bonesIDs.begin(), bonesIDs.end());
+
+	return *this;
+}
+
+MeshBuilder& MeshBuilder::addBoneWeights(const glm::vec3& boneWeight)
+{
+	m_data.bonesWeights.push_back(boneWeight);
+
+	return *this;
+}
+
+MeshBuilder& MeshBuilder::addBoneWeights(const std::vector<glm::vec3>& boneWeights)
+{
+	m_data.bonesWeights.insert(m_data.bonesWeights.end(), boneWeights.begin(), boneWeights.end());
+
+	return *this;
+}
+
 MeshBuilder& MeshBuilder::addIndices(const std::vector<unsigned int>& indices)
 {
 	addIndices(&indices.data()[0], indices.size());
@@ -184,7 +212,7 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 	int stride = 0;
 	for (auto entry : layout.attribs)
 	{
-		stride += getAttributeSize(entry);
+		stride += getAttributeCompCount(entry);
 	}
 
 	int offset = 0;
@@ -201,11 +229,11 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 		// Parse positions
 		if (LayoutAttribute::Positions == entry)
 		{
-			positions.reserve(layout.numOfVertices * getAttributeSize(entry));
+			positions.reserve(layout.numOfVertices * getAttributeCompCount(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
 				glm::vec3 pos;
-				for (int j = 0; j < getAttributeSize(entry); j++)
+				for (int j = 0; j < getAttributeCompCount(entry); j++)
 				{
 					pos[j] = vertices[stride * i + j + offset];
 				}
@@ -217,11 +245,11 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 		// Parse normals
 		else if (LayoutAttribute::Normals == entry)
 		{
-			normals.reserve(layout.numOfVertices * getAttributeSize(entry));
+			normals.reserve(layout.numOfVertices * getAttributeCompCount(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
 				glm::vec3 normal;
-				for (int j = 0; j < getAttributeSize(entry); j++)
+				for (int j = 0; j < getAttributeCompCount(entry); j++)
 				{
 					normal[j] = vertices[stride * i + j + offset];
 				}
@@ -233,11 +261,11 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 		// Parse texcoords
 		else if (LayoutAttribute::Texcoords == entry)
 		{
-			texcoords.reserve(layout.numOfVertices * getAttributeSize(entry));
+			texcoords.reserve(layout.numOfVertices * getAttributeCompCount(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
 				glm::vec2 vec;
-				for (int j = 0; j < getAttributeSize(entry); j++)
+				for (int j = 0; j < getAttributeCompCount(entry); j++)
 				{
 					vec[j] = vertices[stride * i + j + offset];
 				}
@@ -249,11 +277,11 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 		// Parse colors
 		else if (LayoutAttribute::Colors == entry)
 		{
-			colors.reserve(layout.numOfVertices * getAttributeSize(entry));
+			colors.reserve(layout.numOfVertices * getAttributeCompCount(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
 				glm::vec3 color;
-				for (int j = 0; j < getAttributeSize(entry); j++)
+				for (int j = 0; j < getAttributeCompCount(entry); j++)
 				{
 					color[j] = vertices[stride * i + j + offset];
 				}
@@ -265,11 +293,11 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 		// Parse Tangents
 		else if (LayoutAttribute::Tangents == entry)
 		{
-			tangents.reserve(layout.numOfVertices * getAttributeSize(entry));
+			tangents.reserve(layout.numOfVertices * getAttributeCompCount(entry));
 			for (int i = 0; i < layout.numOfVertices; i++)
 			{
 				glm::vec3 tangent;
-				for (int j = 0; j < getAttributeSize(entry); j++)
+				for (int j = 0; j < getAttributeCompCount(entry); j++)
 				{
 					tangent[j] = vertices[stride * i + j + offset];
 				}
@@ -278,7 +306,21 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 			addTangents(tangents);
 		}
 
-		offset += getAttributeSize(entry);
+		offset += getAttributeCompCount(entry);
+	}
+
+	return *this;
+}
+
+MeshBuilder& MeshBuilder::addBonesInfo(const std::vector<glm::mat4>& bonesOffsets, const std::unordered_map<std::string, unsigned int>& bonesNameToIDMap)
+{
+	for (const glm::mat4& offset : bonesOffsets)
+	{
+		m_data.bonesOffsets.push_back(offset);
+	}
+	for (auto nameToID : bonesNameToIDMap)
+	{
+		m_data.bonesNameToIDMap.emplace(nameToID);
 	}
 
 	return *this;
@@ -286,7 +328,7 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 
 
 
-Resource<Mesh> MeshBuilder::build()
+Resource<Mesh> MeshBuilder::build(const Resource<Mesh>& mesh)
 {
 	if (m_data.m_positions.size() > 0)
 	{
@@ -308,6 +350,14 @@ Resource<Mesh> MeshBuilder::build()
 	{
 		enableAttribute(LayoutAttribute::Tangents);
 	}
+	if (m_data.bonesIDs.size() > 0)
+	{
+		enableAttribute(LayoutAttribute::BoneIDs);
+	}
+	if (m_data.bonesWeights.size() > 0)
+	{
+		enableAttribute(LayoutAttribute::BoneWeights);
+	}
 
 	std::sort(m_data.m_layout.attribs.begin(), m_data.m_layout.attribs.end(),
 		[](LayoutAttribute l1, LayoutAttribute l2)
@@ -315,12 +365,10 @@ Resource<Mesh> MeshBuilder::build()
 		return getAttributeLocationInShader(l1) < getAttributeLocationInShader(l2);
 	});
 
-	Resource<Mesh> mesh = Factory<Mesh>::create();
+	//auto& projectDir = Engine::get()->getProjectDirectory();
 
-	auto& projectDir = Engine::get()->getProjectDirectory();
-
-	MeshSerializer::writeDataToBinaryFile(m_data, projectDir + "/" + mesh.getUID() + ".bin");
-	Engine::get()->getContext()->getProjectAssetRegistry()->addMesh(mesh.getUID());
+	//MeshSerializer::writeDataToBinaryFile(m_data, projectDir + "/" + mesh.getUID() + ".bin");
+	//Engine::get()->getContext()->getProjectAssetRegistry()->addMesh(mesh.getUID());
 
 	//MeshData newMeshData;
 	//MeshSerializer::readDataFromBinaryFile(mesh.getUID() + ".bin", newMeshData);

@@ -1,8 +1,10 @@
 #include "ModelImporter.h"
 
 #include <assimp/Importer.hpp>
+#include <assimp/Exporter.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <algorithm>
 
 #include "Logger.h"
 #include <filesystem>
@@ -15,9 +17,14 @@
 #include "Engine.h"
 #include "CacheSystem.h"
 #include "Scene.h"
+#include "Assets.h"
+#include "AssimpGLMHelpers.h"
+#include "Factory.h"
 
 ModelImporter::ModelImporter()
 {
+	Engine::get()->registerSubSystem<ModelImporter>(this);
+
 	init();
 }
 
@@ -28,19 +35,63 @@ void ModelImporter::init()
 	logInfo("Model importer init successfully.");
 }
 
-Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
+Resource<Mesh> ModelImporter::import(const std::string& path)
 {
+	Resource<Mesh> mesh = Factory<Mesh>::create();
+
 	// validate init
 	if (m_importer == nullptr)
 	{
 		logError("Importer not initialized.");
-		return Entity::EmptyEntity;
+		return Resource<Mesh>::empty;
 	}
 
 	if (!std::filesystem::exists(path))
 	{
 		logError("File doesn't exists: " + path);
-		return Entity::EmptyEntity;
+		return Resource<Mesh>::empty;
+	}
+
+	const aiScene* scene = nullptr;
+
+	// read scene from file
+	scene = m_importer->ReadFile(path, 
+		aiProcess_Triangulate | 
+		aiProcess_GenSmoothNormals | 
+		aiProcess_FlipUVs | 
+		aiProcess_CalcTangentSpace |
+		aiProcess_ValidateDataStructure);
+
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	{
+		logError("ERROR::ASSIMP::{}", m_importer->GetErrorString());
+		return Resource<Mesh>::empty;
+	}
+
+	auto& projectDir = Engine::get()->getProjectDirectory();
+	Assimp::Exporter exporter;
+	const std::string savedFilePath = projectDir + "/" + mesh.getUID() + ".dae";
+	exporter.Export(scene, "collada", savedFilePath);
+	Engine::get()->getContext()->getProjectAssetRegistry()->addMesh(mesh.getUID());
+
+	load(savedFilePath, mesh);
+
+	return mesh;
+}
+
+Resource<Mesh> ModelImporter::load(const std::string & path, Resource<Mesh> mesh)
+{
+	// validate init
+	if (m_importer == nullptr)
+	{
+		logError("Importer not initialized.");
+		return Resource<Mesh>::empty;
+	}
+
+	if (!std::filesystem::exists(path))
+	{
+		logError("File doesn't exists: " + path);
+		return Resource<Mesh>::empty;
 	}
 
 	const aiScene* scene = nullptr;
@@ -54,47 +105,35 @@ Entity ModelImporter::loadModelFromFile(const std::string& path, Scene* pScene)
 	{
 
 		// read scene from file
-		scene = m_importer->ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals
-			| aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+		scene = m_importer->ReadFile(path, aiProcess_ValidateDataStructure);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
 			logError("ERROR::ASSIMP::{}", m_importer->GetErrorString());
-			return Entity::EmptyEntity;
+			return Resource<Mesh>::empty;
 		}
 	}
 
 	m_lastLoadedSceneName = path;
 
-	std::string modelName = path.substr(path.find_last_of('\\') + 1);
+	std::string modelName = path.substr(path.find_last_of('/\\') + 1);
 	modelName = modelName.substr(0, modelName.find_first_of('.'));
-
-	//create new model
-	auto entity = pScene->createEntity(modelName);
-	entity.addComponent<RenderableComponent>();
-	entity.addComponent<MeshComponent>();
-	entity.addComponent<MaterialComponent>();
 
 	// create new model session
 	ModelImportSession session;
 	session.filepath = path;
-	session.fileDir = path.substr(0, path.find_last_of('\\'));
-	session.root = entity;
+	session.fileDir = path.substr(0, path.find_last_of('/\\'));
 	session.name = modelName;
 	session.builder = &MeshBuilder::builder();
 
-	// place session in session map
-	m_sessions[entity.handlerID()] = session;
+	processNode(scene->mRootNode, scene, session);
 
-	processNode(scene->mRootNode, scene, session, entity, pScene);
+	session.builder->build(mesh);
 
-	Resource<Mesh> mesh = session.builder->build();
-	entity.getComponent<MeshComponent>().mesh = mesh;
-
-	return entity;
+	return mesh;
 }
 
-void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporter::ModelImportSession& session, Entity entity, Scene* pScene)
+void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporter::ModelImportSession& session)
 {
 	// process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -143,9 +182,15 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
 		session.childIndex = i;
-		processNode(node->mChildren[i], scene, session, entity, pScene);
+		processNode(node->mChildren[i], scene, session);
 	}
 }
+
+struct BoneWeight
+{
+	unsigned int boneID = -1;
+	float weight = 0.f;
+};
 
 void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporter::ModelImportSession& session)
 {
@@ -201,15 +246,81 @@ void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporte
 			indices.push_back(face.mIndices[j]);
 	}
 
+	
+	
+	if (mesh->HasBones())
+	{
+		std::vector<glm::ivec3> bonesIDs;
+		std::vector<glm::vec3> bonesWeights;
+
+		// Will be used by mesh as base array for bone transformations uniform
+		std::vector<glm::mat4> bonesOffsets;
+
+		// an intermediate helper map used to facilitate in extracting bone weight for each vertex
+		std::map<int, std::map<float, BoneWeight>> vertexToBoneMap;
+
+		// Extract Bone to ID map 
+		auto& boneNameToIDMap = session.boneNameToIDMap;
+		auto& boneCount = session.boneCount;
+
+		// Iterate all bones in Assimp model
+		for (int i = 0; i < mesh->mNumBones; i++)
+		{
+			auto bone = mesh->mBones[i];
+			auto boneName = bone->mName.C_Str();
+
+			// a new bone is found, increment bone ID and add bone offset to offsets array
+			if (boneNameToIDMap.find(boneName) == boneNameToIDMap.end())
+			{
+				boneNameToIDMap[boneName] = boneCount++;
+				bonesOffsets.push_back(AssimpGLMHelpers::convertMat4ToGLMFormat(bone->mOffsetMatrix));
+			}
+
+			// Extract weights for each vertex, we use a map container and a (-weight) key so the entries will be sorted in descending order when we iterate it
+			int numOfWeights = bone->mNumWeights;
+			auto weights = bone->mWeights;
+			for (int j = 0; j < numOfWeights; j++)
+			{
+				unsigned int vertexID = weights[j].mVertexId;
+				float weight = weights[j].mWeight;
+				vertexToBoneMap[vertexID][-weight] = BoneWeight{ boneNameToIDMap[boneName] , weight };
+			}
+		}
+		
+		bonesIDs.resize(vertexToBoneMap.size(), glm::ivec3(- 1));
+		bonesWeights.resize(vertexToBoneMap.size());
+
+		// post process influence data in bone info map, we discard the least influential bone weights
+		for (auto& [vID, boneInfluenceMap] : vertexToBoneMap)
+		{
+			// TODO resize and normalize
+			//if (boneInfluenceMap.size() > 3)
+			//{
+			//	boneInfluenceMap.resize(3);
+			//}
+			auto boneIter = boneInfluenceMap.begin();
+			int index = 0;
+			while (boneIter != boneInfluenceMap.end() && index < 3)
+			{
+				bonesIDs[vID][index] = (int)(*boneIter).second.boneID;
+				bonesWeights[vID][index] = (*boneIter).second.weight;
+				boneIter++;
+				index++;
+			}
+		}
+
+		(*session.builder)
+			.addBoneIDs(bonesIDs)
+			.addBoneWeights(bonesWeights)
+			.addBonesInfo(bonesOffsets, boneNameToIDMap);
+	}
+
 	(*session.builder)
 		.addPositions(positions)
 		.addNormals(normals)
 		.addTexcoords(texcoords)
 		.addIndices(indices)
 		.addTangents(tangents);
-
-
-		
 }
 
 std::vector<Resource<Texture>> ModelImporter::loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImporter::ModelImportSession& session)
@@ -224,7 +335,7 @@ std::vector<Resource<Texture>> ModelImporter::loadMaterialTextures(aiMaterial* m
 		auto textureName = str.C_Str();
 
 		// Texture not found in cache -> load it and add to cache
-		auto textureHandler = Texture::create2DTextureFromFile(session.fileDir + "/" + textureName);
+		auto textureHandler = Engine::get()->getSubSystem<Assets>()->importTexture2D(session.fileDir + "/" + textureName);
 		textureHandlers.push_back(textureHandler);
 	}
 	return textureHandlers;

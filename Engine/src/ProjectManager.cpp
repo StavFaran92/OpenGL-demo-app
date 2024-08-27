@@ -9,6 +9,10 @@
 #include "ProjectAssetRegistry.h"
 #include "MeshSerializer.h"
 #include "Texture.h"
+#include "Assets.h"
+#include "Archiver.h"
+#include "ModelImporter.h"
+#include "AnimationLoader.h"
 //#include "TextureSerializer.h"
 #include <nlohmann/json.hpp>
 
@@ -53,26 +57,17 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
 
     std::vector<std::string> meshNameList = par->getMeshList();
     std::vector<std::string> textureNameList = par->getTextureList();
+    std::vector<std::string> animationNameList = par->getAnimationList();
 
     // Create meshes
     for (const auto& meshUID : meshNameList) 
     {
-        // Open bin file
-        fs::path binFilePath = (projectDir / meshUID).string() + ".bin";
-        std::ifstream binFile(binFilePath, std::ios::binary);
-        if (!binFile.is_open()) 
-        {
-            logError("Failed to open bin file for mesh: " + meshUID + ".bin");
-            continue; // Skip this mesh
-        }
-        MeshData meshData;
-        MeshSerializer::readDataFromBinaryFile(binFilePath.string(), meshData);
-
-        // Create mesh
-        Mesh* mesh = new Mesh();
-        mesh->build(meshData);
-        Engine::get()->getMemoryPool<Mesh>()->add(meshUID, mesh);
+        std::string binFilePath = (projectDir / meshUID).string() + ".dae";
+        Mesh* meshPtr = new Mesh();
+        Resource<Mesh> mesh(meshUID);
+        Engine::get()->getMemoryPool<Mesh>()->add(meshUID, meshPtr);
         Engine::get()->getResourceManager()->incRef(meshUID);
+        Engine::get()->getSubSystem<ModelImporter>()->load(binFilePath, mesh);        
     }
 
     // Create textures
@@ -80,19 +75,25 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     {
         // Open bin file
         fs::path imageFilePath = (projectDir / textureUID).string() + ".png";
-        Texture::TextureData textureData = Texture::extractTextureDataFromFile(imageFilePath.string());
-
-        // Create texture
-        Texture* texture = new Texture();
-        texture->build(textureData);
-        Engine::get()->getMemoryPool<Texture>()->add(textureUID, texture);
-        Engine::get()->getResourceManager()->incRef(textureUID);
+        Engine::get()->getSubSystem<Assets>()->loadTexture2D(textureUID, imageFilePath.string());
     }
 
-    context->deserialize();
+    // Create animations
+    for (const auto& animUID : animationNameList)
+    {
+        std::string binFilePath = (projectDir / animUID).string() + ".dae";
+        Animation* animPtr = new Animation();
+        Resource<Animation> anim(animUID);
+        Engine::get()->getMemoryPool<Animation>()->add(animUID, animPtr);
+        Engine::get()->getResourceManager()->incRef(animUID);
+        Engine::get()->getSubSystem<AnimationLoader>()->load(binFilePath, anim);
+    }
+
+    Archiver::load();
 }
 
 void ProjectManager::saveProject()
 {
-    Engine::get()->getContext()->serialize();
+    Engine::get()->getContext()->save();
+    Archiver::save();
 }

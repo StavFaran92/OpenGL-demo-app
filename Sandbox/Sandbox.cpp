@@ -1,12 +1,24 @@
 #include "EntryPoint.h"
 #include "sge.h"
 
-class CustomBoxBehaviour : public ScriptableEntity
+#include "FlyCamera.h"
+#include "PlayerController.h"
+#include "EnemyController.h"
+
+class CameraScript : public ScriptableEntity
 {
 	virtual void onCreate() override
 	{
-		std::cout << "Box was created modafaka.\n";
+		Engine::get()->getWindow()->lockMouse();
+
+		m_flyCamera = std::make_shared<FlyCamera>(entity, 0, 0, 3, 1);
 	}
+
+	virtual void onUpdate(float deltaTime) {
+		m_flyCamera->onUpdate(deltaTime);
+	};
+
+	std::shared_ptr<FlyCamera> m_flyCamera;
 };
 
 class Sandbox : public Application
@@ -15,7 +27,31 @@ public:
 
 	void start() override
 	{
-		//auto skybox = Skybox::CreateSkybox(Engine::get()->getContext()->getActiveScene().get());
+		// set Editor camera as active camera
+		auto editorCamera = Engine::get()->getContext()->getActiveScene()->createEntity("Editor Camera");
+		editorCamera.addComponent<CameraComponent>();
+		editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
+		Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(editorCamera);
+
+		Entity zombieGirl = Engine::get()->getContext()->getActiveScene()->createEntity("Zombie girl");
+		auto mesh = Engine::get()->getSubSystem<ModelImporter>()->import("C:/Users/Stav/Downloads/FPS Zombie/Scary Zombie Pack/zombiegirl.fbx");
+		zombieGirl.addComponent<RenderableComponent>();
+		zombieGirl.addComponent<MaterialComponent>();
+		zombieGirl.addComponent<MeshComponent>().mesh = mesh;
+
+		//zombieGirl.getComponent<Transformation>().translate({ 0, 0, 10 });
+		zombieGirl.getComponent<Transformation>().scale({ 0.05, 0.05, 0.05 });
+
+		auto animation = Engine::get()->getSubSystem<AnimationLoader>()->import("C:/Users/Stav/Downloads/FPS Zombie/Scary Zombie Pack/Zombie Walk.fbx");
+
+		zombieGirl.addComponent<Animator>(animation);
+
+		Engine::get()->getContext()->getActiveScene()->startSimulation();
+
+		//camTransform.setLocalPosition(playerTransform.getLocalPosition());
+		//camTransform.translate({0,2,0});
+
+		//camera.setParent(player);
 
 		//auto box1 = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
 		//auto& nsc = box1.addComponent<NativeScriptComponent>();
@@ -30,8 +66,6 @@ public:
 		//guitar_forward.getComponent<Transformation>().setLocalPosition({ 0,0,3 });
 		//auto& renderable = guitar_forward.getComponent<RenderableComponent>();
 		//renderable.renderTechnique = RenderableComponent::Forward;
-
-		Skybox::CreateSkyboxFromEquirectangularMap( "C:/Users/Stav/Downloads/medieval_cafe_2k.hdr");
 
 		//auto tHandler = Texture::loadTextureFromFile("C:/Users/Stav/Downloads/gear_store_8k.hdr", Texture::Type::None);
 		//Skybox::CreateSkybox(Skybox::TexType::EQUIRECTANGULAR, tHandler);
@@ -51,40 +85,17 @@ public:
 	
 		//auto box = ShapeFactory::createSphere(getContext()->getActiveScene().get());
 		//auto& mat = gun.addComponent<Material>();
-		//auto albedoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_A.tga", false);
+		//auto albedoMap = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_A.tga", false);
 		//mat.setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
-		//auto roughnessMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_R.tga", false);
+		//auto roughnessMap = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_R.tga", false);
 		//mat.setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
-		//auto normalMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_N.tga", false);
+		//auto normalMap = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_N.tga", false);
 		//mat.setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
-		//auto metallicMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga", false);
+		//auto metallicMap = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga", false);
 		//mat.setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
-		//auto aoMap = Texture::create2DTextureFromFile("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Raw/Cerberus_AO.tga", false);
+		//auto aoMap = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/Cerberus_by_Andrew_Maximov/Textures/Raw/Cerberus_AO.tga", false);
 		//mat.setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
 		//box.getComponent<Transformation>().setLocalPosition({ i * 3,0,j * 3 });
-
-		/*for (int i = -1; i < 2; i++)
-		{
-			for (int j = -1; j < 2; j++)
-			{
-				auto box = ShapeFactory::createSphere(getContext()->getActiveScene().get());
-				auto& mat = box.getComponent<Material>();
-				auto albedoMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_albedo.png", Texture::Type::Albedo);
-				mat.setTexture(Texture::Type::Albedo, Resource<Texture>(albedoMap));
-				auto roughnessMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_roughness.png", Texture::Type::Roughness);
-				mat.setTexture(Texture::Type::Roughness, Resource<Texture>(roughnessMap));
-				auto normalMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_normal-ogl.png", Texture::Type::Normal);
-				mat.setTexture(Texture::Type::Normal, Resource<Texture>(normalMap));
-				auto metallicMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_metallic.png", Texture::Type::Metallic);
-				mat.setTexture(Texture::Type::Metallic, Resource<Texture>(metallicMap));
-				auto aoMap = Texture::loadTextureFromFile("./Resources/Content/Model/glossy-marble-tile-bl/glossy-marble-tile_ao.png", Texture::Type::AmbientOcclusion);
-				mat.setTexture(Texture::Type::AmbientOcclusion, Resource<Texture>(aoMap));
-				box.getComponent<Transformation>().setLocalPosition({ i * 3,0,j*3 });
-			}
-		}*/
-	
-
-
 
 		//auto& transform = guitar->getComponent<Transformation>();
 		//transform.translate({ 10, 0,0 });

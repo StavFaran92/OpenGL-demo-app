@@ -3,12 +3,6 @@
 
 #include <GL/glew.h>
 
-//#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
-//#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
-
 #include "Logger.h"
 #include "Configurations.h"
 #include "CacheSystem.h"
@@ -16,7 +10,6 @@
 #include "Resource.h"
 #include "Factory.h"
 #include "Context.h"
-#include "ProjectAssetRegistry.h"
 
 #include "EquirectangularToCubemapConverter.h" // todo remove
 
@@ -52,30 +45,6 @@ Resource<Texture> Texture::createEmptyTexture(int width, int height, int interna
 	return create2DTextureFromBuffer(textureData);
 }
 
-Resource<Texture> Texture::create2DTextureFromFile(const std::string& fileLocation, bool flip/* = FLIP_TEXTURE*/)
-{
-	// Check if texture is already cached to optimize the load process
-	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
-	std::filesystem::path path(fileLocation);
-	return memoryManagementSystem->createOrGetCached<Texture>(path.filename().string(), [&]() {
-		
-		// todo use RAII
-		TextureData textureData = extractTextureDataFromFile(fileLocation);
-
-		stbi_set_flip_vertically_on_load(flip);
-
-		Resource<Texture> texture = create2DTextureFromBuffer(textureData);
-
-		auto& projectDir = Engine::get()->getProjectDirectory();
-		stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), textureData.width, textureData.height, textureData.bpp, textureData.data, textureData.width * textureData.bpp);
-		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
-
-		stbi_image_free(textureData.data);
-
-		return texture;
-	});
-}
-
 Resource<Texture> Texture::create2DTextureFromBuffer(const TextureData& textureData)
 {
 	Resource<Texture> texture = Factory<Texture>::create();
@@ -91,7 +60,7 @@ Resource<Texture> Texture::create2DTextureFromBuffer(int width, int height, int 
 	textureData.target = GL_TEXTURE_2D;
 	textureData.width = width;
 	textureData.height = height;
-	textureData.bpp = 3;
+	textureData.bpp = 4;
 	textureData.internalFormat = internalFormat;
 	textureData.format = format;
 	textureData.type = type;
@@ -123,43 +92,6 @@ Resource<Texture> Texture::createDummyTexture(unsigned char data[3])
 	texture.get()->unbind();
 
 	return texture;
-}
-
-Texture::TextureData Texture::extractTextureDataFromFile(const std::string& fileLocation)
-{
-	TextureData textureData;
-	textureData.target = GL_TEXTURE_2D;
-
-	textureData.data = stbi_load(fileLocation.c_str(), &textureData.width, &textureData.height, &textureData.bpp, 0);
-
-	// load validation
-	if (!textureData.data)
-	{
-		logError("Failed to find: {}", fileLocation.c_str());
-		return {};
-	}
-
-	GLenum format = GL_RGB;
-	if (textureData.bpp == 1)
-		textureData.format = GL_RED;
-	else if (textureData.bpp == 3)
-		textureData.format = GL_RGB;
-	else if (textureData.bpp == 4)
-		textureData.format = GL_RGBA;
-
-	textureData.internalFormat = textureData.format;
-
-	textureData.type = GL_UNSIGNED_BYTE;
-	textureData.params = {
-		{ GL_TEXTURE_WRAP_S, GL_REPEAT},
-		{ GL_TEXTURE_WRAP_T, GL_REPEAT},
-		{ GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR},
-		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
-	};
-
-	textureData.genMipMap = true;
-
-	return textureData;
 }
 
 void Texture::build(const TextureData& textureData)
@@ -201,6 +133,13 @@ int Texture::getHeight() const
 int Texture::getBitDepth() const
 {
 	return m_bitDepth;
+}
+
+void Texture::setData(int xoffset, int yoffset, int width, int height, const void* data)
+{
+	bind();
+
+	glTexSubImage2D(GL_TEXTURE_2D, 0, xoffset, yoffset, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 }
 
 std::string Texture::textureTypeToString(Type type)

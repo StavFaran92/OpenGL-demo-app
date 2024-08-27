@@ -8,6 +8,7 @@
 #include "Configurations.h"
 #include "Mesh.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "Physics.h"
 
 class Scene;
 class Mesh;
@@ -20,7 +21,7 @@ struct EngineAPI Component
 
 struct EngineAPI TagComponent : public Component
 {
-	[[maybe_unused]] bool empty = false;
+	std::string tag;
 };
 
 struct EngineAPI SkyboxComponent : public Component
@@ -31,10 +32,11 @@ struct EngineAPI SkyboxComponent : public Component
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(skyboxImage);
+		archive(originalImage);
 	}
 
 	Resource<Texture> skyboxImage;
+	Resource<Texture> originalImage;
 };
 
 struct EngineAPI RenderableComponent : public Component
@@ -90,16 +92,31 @@ struct EngineAPI NativeScriptComponent : public Component
 
 struct EngineAPI RigidBodyComponent : public Component
 {
+
 	RigidBodyComponent() = default;
 	RigidBodyComponent(RigidbodyType type, float mass) : type(type), mass(mass) {};
+
+	void addForce(glm::vec3 force);
+	void setForce(glm::vec3 force);
+
+	void move(glm::vec3 position);
 
 	template <class Archive>
 	void serialize(Archive& archive) {
 		archive(type, mass);
 	}
 
+	bool isLockedLinearX = false;
+	bool isLockedLinearY = false;
+	bool isLockedLinearZ = false;
+	bool isLockedAngularX = false;
+	bool isLockedAngularY = false;
+	bool isLockedAngularZ = false;
 	RigidbodyType type = RigidbodyType::Static;
 	float mass = 0;
+	bool isChanged = false;
+	glm::vec3 m_targetPisition{0};
+	glm::vec3 m_force{ 0 };
 	void* simulatedBody = nullptr;
 };
 
@@ -110,10 +127,11 @@ struct EngineAPI CollisionBoxComponent : public Component
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(halfExtent);
+		archive(halfExtent, layerMask);
 	}
 
 	float halfExtent = 0;
+	Physics::LayerMask layerMask = Physics::LayerMask::LAYER_0;
 };
 
 struct EngineAPI CollisionSphereComponent : public Component
@@ -123,10 +141,11 @@ struct EngineAPI CollisionSphereComponent : public Component
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(radius);
+		archive(radius, layerMask);
 	}
 
 	float radius = 0;
+	Physics::LayerMask layerMask = Physics::LayerMask::LAYER_0;
 };
 
 struct EngineAPI CollisionMeshComponent : public Component
@@ -135,11 +154,12 @@ struct EngineAPI CollisionMeshComponent : public Component
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(isConvex);
+		archive(isConvex, layerMask);
 	}
 
 	bool isConvex = false;
 	Resource<Mesh> mesh = Resource<Mesh>::empty;
+	Physics::LayerMask layerMask = Physics::LayerMask::LAYER_0;
 };
 
 struct EngineAPI CameraComponent : public Component
@@ -151,7 +171,8 @@ struct EngineAPI CameraComponent : public Component
 		archive(center, up);
 	}
 
-	//glm::vec3 position;
+	glm::vec3 front{1,0,0};
+	glm::vec3 right;
 	glm::vec3 center;
 	glm::vec3 up;
 };
@@ -284,3 +305,27 @@ private:
 	unsigned int m_id = 0;
 };
 
+struct EngineAPI ImageComponent : public Component
+{
+	ImageComponent() = default;
+
+	ImageComponent(Resource<Texture> image) : image(image) {}
+
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(image, size, position, rotate);
+	}
+
+	glm::vec2 size;
+	glm::vec2 position;
+	float rotate = 0;
+
+	Resource<Texture> image;
+};
+
+struct CharacterController : public Component
+{
+	CharacterController() = default;
+
+
+};

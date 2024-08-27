@@ -5,8 +5,10 @@
 layout (location = 0) in vec3 pos;
 layout (location = 1) in vec3 norm;
 layout (location = 2) in vec2 tex;
+layout (location = 5) in ivec3 boneIDs;
+layout (location = 6) in vec3 boneWeights;
 
-layout (location = 6) in mat4 instanceModel;
+layout (location = 7) in mat4 instanceModel;
 
 // ----- Definitions ----- //
 
@@ -14,6 +16,9 @@ layout (location = 6) in mat4 instanceModel;
 #include ../../../../Engine/Resources/Engine/Shaders/include/structs.glsl
 #include ../../../../Engine/Resources/Engine/Shaders/include/uniforms.glsl
 #include ../../../../Engine/Resources/Engine/Shaders/include/functions.glsl
+
+const int MAX_BONES = 100;
+const int MAX_BONE_INFLUENCE = 3;
 
 // ----- Structs ----- //
 
@@ -26,6 +31,8 @@ out VS_OUT {
 } vs_out;
 
 // ----- Uniforms ----- //
+
+uniform mat4 finalBonesMatrices[MAX_BONES];
 
 // ----- Forward Declerations ----- //
 
@@ -49,17 +56,42 @@ void main()
 		aModel = model * instanceModel;
 	}
 
-	vec3 aPos = pos;
-	vec3 aNorm = mat3(transpose(inverse(aModel))) * norm;
+	vec4 totalPosition = vec4(pos, 1.0f);
+	vec3 totalNormal = norm;
+	
+	if(isAnimated)
+	{
+		totalPosition = vec4(0.0f);
+		totalNormal = vec3(0.0f);
+
+		for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
+		{
+			if(boneIDs[i] == -1) 
+				continue;
+			if(boneIDs[i] >=MAX_BONES) 
+			{
+				totalPosition = vec4(pos,1.0f);
+				totalNormal = norm;
+				break;
+			}
+
+			vec4 localPosition = finalBonesMatrices[boneIDs[i]] * vec4(pos,1.0f);
+			totalPosition += localPosition * boneWeights[i];
+			vec3 localNormal = mat3(finalBonesMatrices[boneIDs[i]]) * norm;
+			totalNormal += localNormal * boneWeights[i];
+		}
+	}
+
+	vec3 aNorm = mat3(transpose(inverse(aModel))) * totalNormal;
 #ifdef CUSTOM_SHADER
-	vert(aPos, aNorm);
+	vert(totalPosition.xyz, aNorm);
 #endif
 
 	vs_out.texCoord = tex;
 	vs_out.normal =  aNorm;
-	vs_out.fragPos = (aModel * vec4(aPos, 1.0)).xyz;
+	vs_out.fragPos = (aModel * totalPosition).xyz;
 
-	gl_Position = projection * view * aModel * vec4(aPos, 1.0);
+	gl_Position = projection * view * aModel * totalPosition;
 }
 
 #frag

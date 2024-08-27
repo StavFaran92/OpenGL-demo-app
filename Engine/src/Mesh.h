@@ -24,6 +24,10 @@ struct MeshData
 	std::vector<glm::vec2> m_texCoords;
 	std::vector<glm::vec3> m_colors;
 	std::vector<unsigned int> m_indices;
+	std::vector<glm::ivec3> bonesIDs;
+	std::vector<glm::vec3> bonesWeights;
+	std::vector<glm::mat4> bonesOffsets;
+	std::unordered_map<std::string, unsigned int> bonesNameToIDMap;
 	VertexLayout m_layout;
 };
 
@@ -86,6 +90,10 @@ public:
 
 	VertexArrayObject* getVAO() const;
 
+	std::vector<glm::mat4> getBoneOffsets() const;
+
+	int getBoneID(const std::string& boneName) const;
+
 	/**
 	 * Build the mesh using the specified vertices data.
 	 * This call will initialize all the OpenGL related Buffer data
@@ -117,4 +125,7 @@ private:
 	size_t m_indexCount = 0;
 	VertexLayout m_layout;
 	bool m_useColors = false;
+
+	std::vector<glm::mat4> m_bonesOffsets;
+	std::unordered_map<std::string, unsigned int> m_bonesNameToIDMap;
 };

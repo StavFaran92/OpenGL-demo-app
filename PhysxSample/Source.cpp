@@ -46,7 +46,7 @@ void createSphere()
 
 
 		auto& mat = sphere.addComponent<Material>();
-		auto tex = Texture::create2DTextureFromFile("Resources/Content/Textures/checkers.jpg");
+		auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D("Resources/Content/Textures/checkers.jpg");
 		mat.setTexture(Texture::Type::Diffuse, Resource<Texture>(tex));
 
 		auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
@@ -67,7 +67,7 @@ void createBox()
 		boxTransform.rotate({ 0, 1, 0 }, 45);
 
 		auto& mat = box.addComponent<Material>();
-		auto tex = Texture::create2DTextureFromFile("Resources/Content/Textures/checkers.jpg");
+		auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D("Resources/Content/Textures/checkers.jpg");
 		mat.setTexture(Texture::Type::Diffuse, Resource<Texture>(tex));
 
 		auto& rb = box.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
@@ -214,7 +214,7 @@ public:
 			//groundTransfrom.rotate({ 0, 0, 1 }, 90);
 
 			auto& mat = ground.addComponent<Material>();
-			auto tex = Texture::create2DTextureFromFile("Resources/Content/Textures/floor.jpg");
+			auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D("Resources/Content/Textures/floor.jpg");
 			mat.setTexture(Texture::Type::Diffuse, Resource<Texture>(tex));
 			auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
 

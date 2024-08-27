@@ -43,6 +43,9 @@
 #include "RenderCommand.h"
 #include "IBL.h"
 #include "Registry.h"
+#include "Physics.h"
+#include "Archiver.h"
+#include "Animator.h"
 
 
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
@@ -93,17 +96,17 @@ glm::mat4 Scene::getProjection() const
 
 Entity Scene::getActiveCamera() const
 {
-	return m_primaryEditorCamera;
+	return m_primaryCamera;
 }
 
-void Scene::setPrimaryEditorCamera(Entity e)
-{
-	m_primaryEditorCamera = e;
-}
+//void Scene::setPrimaryEditorCamera(Entity e)
+//{
+//	m_primaryEditorCamera = e;
+//}
 
-void Scene::setPrimarySceneCamera(Entity e)
+void Scene::setPrimaryCamera(Entity e)
 {
-	m_primarySceneCamera = e;
+	m_primaryCamera = e;
 }
 
 //void Scene::setPrimaryCamera(ICamera* camera)
@@ -198,8 +201,14 @@ void Scene::init(Context* context)
 	}
 
 	m_defaultPerspectiveProjection = glm::perspective(45.0f, (float)4 / 3, 0.1f, 1000.0f);
-	
 
+	m_defaultUIProjection = glm::ortho(0.0f, (float)Engine::get()->getWindow()->getWidth(), (float)Engine::get()->getWindow()->getHeight(), 0.0f, -1.0f, 1.0f);
+	
+	m_quadUI = ShapeFactory::createQuad(&getRegistry());
+	m_quadUI.RemoveComponent<RenderableComponent>();
+	m_quadUI.RemoveComponent<ObjectComponent>();
+
+	m_UIShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/UIShader.glsl");
 
 	
 	//dLight.getComponent<Transformation>().setLocalPosition({ 0 , 2, 0 });;
@@ -234,12 +243,12 @@ void Scene::init(Context* context)
 
 	m_skyboxShader = Shader::createShared<Shader>(SGE_ROOT_DIR +"Resources/Engine/Shaders/SkyboxShader.glsl");
 
-	m_registry->get().on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
-	m_registry->get().on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
-	m_registry->get().on_construct<CollisionSphereComponent>().connect<&Scene::onCollisionConstruct>(this);
-	m_registry->get().on_construct<CollisionMeshComponent>().connect<&Scene::onCollisionConstruct>(this);
-	
-	m_registry->get().on_destroy<RigidBodyComponent>().connect<&Scene::onRigidBodyDestroy>(this);
+	//m_registry->get().on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
+	//m_registry->get().on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
+	//m_registry->get().on_construct<CollisionSphereComponent>().connect<&Scene::onCollisionConstruct>(this);
+	//m_registry->get().on_construct<CollisionMeshComponent>().connect<&Scene::onCollisionConstruct>(this);
+	//
+	//m_registry->get().on_destroy<RigidBodyComponent>().connect<&Scene::onRigidBodyDestroy>(this);
 }
 
 void Scene::update(float deltaTime)
@@ -273,6 +282,52 @@ void Scene::update(float deltaTime)
 		m_PhysicsScene->simulate(1 / 120.f);
 		m_PhysicsScene->fetchResults(true);
 
+		// Update kinematics
+		physx::PxU32 nbDynamicActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC);
+		if (nbDynamicActors)
+		{
+			std::vector<physx::PxRigidActor*> actors(nbDynamicActors);
+			m_PhysicsScene->getActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC, reinterpret_cast<physx::PxActor**>(&actors[0]), nbDynamicActors);
+
+			for (physx::PxRigidActor* actor : actors)
+			{
+				auto dynamicBody = static_cast<physx::PxRigidDynamic*>(actor);
+				auto& flags = dynamicBody->getRigidBodyFlags();
+				if (flags.isSet(physx::PxRigidBodyFlag::eKINEMATIC))
+				{
+					entity_id id = *(entity_id*)actor->userData;
+					Entity e{ entt::entity(id), m_registry.get() };
+					auto& rb = e.getComponent<RigidBodyComponent>();
+
+					physx::PxTransform targetPose = actor->getGlobalPose();
+					targetPose.p += physx::PxVec3(rb.m_targetPisition.x, rb.m_targetPisition.y, rb.m_targetPisition.z);
+					targetPose.q = physx::PxQuat(physx::PxIdentity);
+
+					if (rb.isChanged)
+					{
+						dynamicBody->setKinematicTarget(targetPose);
+						rb.isChanged = false;
+					}
+				}
+				else // Dynamic
+				{
+					entity_id id = *(entity_id*)actor->userData;
+					Entity e{ entt::entity(id), m_registry.get() };
+					auto& rb = e.getComponent<RigidBodyComponent>();
+
+					if (rb.isChanged)
+					{
+						
+						physx::PxVec3 force(rb.m_force.x, rb.m_force.y, rb.m_force.z);
+						dynamicBody->addForce(force);
+						rb.isChanged = false;
+						rb.m_force = glm::vec3(0);
+					}
+				}
+			}
+		}
+
+		// Retrieve Graphics transform from Physics transform
 		physx::PxU32 nbActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
 		if (nbActors)
 		{
@@ -290,20 +345,10 @@ void Scene::update(float deltaTime)
 			}
 		}
 
-		//for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
-		//{
-		//	Entity e{ entity, this };
-		//	auto& transform = e.getComponent<Transformation>();
-		//	physx::PxRigidActor* actor = (physx::PxRigidActor*)rb.simulatedBody;
-		//	
-		//	physx::PxTransform pxTransform = actor->getGlobalPose();
-		//	PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
-		//}
-
-		//for (auto&& [entity, transformation] : m_registry.view<Transformation>().each())
-		//{
-		//	transformation.update(deltaTime);
-		//}
+		for (auto&& [entity, animator, mesh] : m_registry->get().view<Animator, MeshComponent>().each())
+		{
+			animator.update(deltaTime);
+		}
 	}
 }
 
@@ -312,14 +357,8 @@ void Scene::draw(float deltaTime)
 	glViewport(0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
 	m_deferredRenderer->clear();
 
-	Entity primaryCameraEntity = m_primaryEditorCamera;
-	if (m_isSimulationActive)
-	{
-		primaryCameraEntity = m_primarySceneCamera;
-	}
-
-	auto& primaryCamera = primaryCameraEntity.getComponent<CameraComponent>();
-	auto& primaryCameraTransform = primaryCameraEntity.getComponent<Transformation>();
+	auto& primaryCamera = m_primaryCamera.getComponent<CameraComponent>();
+	auto& primaryCameraTransform = m_primaryCamera.getComponent<Transformation>();
 
 
 	IRenderer::DrawQueueRenderParams params;
@@ -327,7 +366,7 @@ void Scene::draw(float deltaTime)
 	params.context = m_context;
 	params.registry = &m_registry->get();
 	params.renderer = m_forwardRenderer.get();
-	params.view = &glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCamera.center, primaryCamera.up);
+	params.view = &glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCameraTransform.getWorldPosition() + primaryCamera.front, primaryCamera.up);
 	params.projection = &m_defaultPerspectiveProjection;
 	params.cameraPos = primaryCameraTransform.getWorldPosition();
 	params.irradianceMap = m_irradianceMap;
@@ -461,6 +500,37 @@ void Scene::draw(float deltaTime)
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// Render UI
+	m_UIShader->use();
+	m_UIShader->setProjectionMatrix(m_defaultUIProjection);
+	auto vao = m_quadUI.getComponent<MeshComponent>().mesh.get()->getVAO();
+
+	for (auto&& [entity, image] : m_registry->get().view<ImageComponent>().each())
+	{
+		Entity entityhandler{ entity, m_registry.get() };
+		params.entity = &entityhandler;
+		image.image.get()->bind();
+		image.image.get()->setSlot(0);
+
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(image.position, 0.0f));
+
+		model = glm::translate(model, glm::vec3(0.5f * image.size.x, 0.5f * image.size.y, 0.0f));
+		model = glm::rotate(model, glm::radians(image.rotate), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(-0.5f * image.size.x, -0.5f * image.size.y, 0.0f));
+
+		model = glm::scale(model, glm::vec3(image.size, 1.0f));
+
+		m_UIShader->setUniformValue("model", model);
+
+		RenderCommand::draw(vao);
+	}
+
+	glDisable(GL_BLEND);
+
 
 #if 1
 
@@ -562,16 +632,10 @@ void Scene::removeEntity(const Entity& e)
 
 glm::mat4 Scene::getActiveCameraView() const
 {
-	Entity primaryCameraEntity = m_primaryEditorCamera;
-	if (m_isSimulationActive)
-	{
-		primaryCameraEntity = m_primarySceneCamera;
-	}
+	auto& primaryCamera = m_primaryCamera.getComponent<CameraComponent>();
+	auto& primaryCameraTransform = m_primaryCamera.getComponent<Transformation>();
 
-	auto& primaryCamera = primaryCameraEntity.getComponent<CameraComponent>();
-	auto& primaryCameraTransform = primaryCameraEntity.getComponent<Transformation>();
-
-	return glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCamera.center, primaryCamera.up);
+	return glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCameraTransform.getWorldPosition() + primaryCamera.front, primaryCamera.up);
 }
 
 
@@ -631,6 +695,20 @@ void Scene::addCoroutine(const std::function<bool(float)>& coroutine)
 //	m_coroutineManager->removeCoroutine(coroutine);
 //}
 
+Entity Scene::getEntityByName(const std::string& name) const
+{
+	// TODO optimize this using hashmap
+	for (auto& [e, obj] : m_registry->getRegistry().view<ObjectComponent>().each())
+	{
+		if (name == obj.name)
+		{
+			return Entity(e, m_registry.get());
+		}
+	}
+
+	return Entity::EmptyEntity;
+}
+
 void Scene::startSimulation()
 {
 	if (m_isSimulationActive)
@@ -639,11 +717,26 @@ void Scene::startSimulation()
 		return;
 	}
 
+	m_serializedScene = Archiver::serializeScene(this);
+
 	auto physicsSystem = Engine::get()->getPhysicsSystem();
 
 	for (auto&& [entity, rb] : m_registry->get().view<RigidBodyComponent>().each())
 	{
 		createActor(entity, rb);
+	}
+
+	// Run all User Scriptable Entities scripts
+	for (auto&& [entity, nsc] : m_registry->get().view<NativeScriptComponent>().each())
+	{
+		if (!nsc.script)
+		{
+			logWarning("Native Script cannot be Null, did you forget to call Bind()?");
+			continue;
+		}
+
+		nsc.script->entity = Entity(entity, &getRegistry());
+		nsc.script->onCreate();
 	}
 
 	//for (auto&& [entity, rb] : m_registry.view<RigidBodyComponent>().each())
@@ -715,7 +808,7 @@ void Scene::createActor(entt::entity entity, RigidBodyComponent& rb)
 	Entity e{ entity, m_registry.get() };
 
 	auto& transform = e.getComponent<Transformation>();
-	auto body = Engine::get()->getPhysicsSystem()->createRigidBody(transform, rb.type, rb.mass);
+	auto body = Engine::get()->getPhysicsSystem()->createRigidBody(transform, rb);
 
 	createShape(Engine::get()->getPhysicsSystem(), body, e, true);
 
@@ -737,7 +830,6 @@ void Scene::stopSimulation()
 {
 	if (!m_isSimulationActive)
 	{
-		logWarning("Simulation already stopped.");
 		return;
 	}
 
@@ -746,8 +838,22 @@ void Scene::stopSimulation()
 		removeActor(entity, rb);
 	}
 
+	for (auto&& [entity, nsc] : m_registry->get().view<NativeScriptComponent>().each())
+	{
+		nsc.script->onDestroy();
+	}
+
+	getRegistry().getRegistry().clear();
+
+	Archiver::deserializeScene(m_serializedScene, *this);
+
 
 	m_isSimulationActive = false;
+}
+
+physx::PxScene* Scene::getPhysicsScene() const
+{
+	return m_PhysicsScene;
 }
 
 bool Scene::isSimulationActive() const
@@ -765,17 +871,38 @@ void Scene::createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body,
 	{
 		auto& collider = e.getComponent<CollisionBoxComponent>();
 		shape = physicsSystem->createBoxShape(collider.halfExtent * scale.x, collider.halfExtent * scale.y, collider.halfExtent * scale.z);
+
+		Physics::LayerMask mask = collider.layerMask;
+
+		physx::PxFilterData filterData;
+		filterData.word0 = mask;
+
+		shape->setQueryFilterData(filterData);
 	}
 	else if (e.HasComponent<CollisionSphereComponent>())
 	{
 		auto& collider = e.getComponent<CollisionSphereComponent>();
 		shape = physicsSystem->createSphereShape(collider.radius * std::max(std::max(scale.x, scale.y), scale.z));
+
+		Physics::LayerMask mask = collider.layerMask;
+
+		physx::PxFilterData filterData;
+		filterData.word0 = mask;
+
+		shape->setQueryFilterData(filterData);
 	}
 	else if (e.HasComponent<CollisionMeshComponent>())
 	{
 		auto collisionMeshComponent = e.getComponent<CollisionMeshComponent>();
 		const std::vector<glm::vec3>& apos = collisionMeshComponent.mesh.get()->getPositions();
 		shape = physicsSystem->createConvexMeshShape(apos);
+
+		Physics::LayerMask mask = collisionMeshComponent.layerMask;
+
+		physx::PxFilterData filterData;
+		filterData.word0 = mask;
+
+		shape->setQueryFilterData(filterData);
 	}
 
 	if (shape)

@@ -104,7 +104,7 @@ private:
 	void addChild(Entity entity);
 	void removeChild(Entity entity);
 private:
-	friend class SceneSerializer;
+	friend class Archiver;
 	glm::vec3 m_translation;
 
 	glm::quat m_rotation;

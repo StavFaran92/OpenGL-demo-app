@@ -30,6 +30,8 @@
 #include "CommonShaders.h"
 #include "CommonTextures.h"
 #include "ObjectPicker.h"
+#include "AnimationLoader.h"
+#include "Assets.h"
 
 #include "Application.h"
 #include "SDL2/SDL.h"
@@ -48,6 +50,8 @@ bool Engine::init(const InitParams& initParams)
         logError("Engine already started!");
         return false;
     }
+
+    m_initParams = initParams;
 
     m_projectDirectory = initParams.projectDir;
 
@@ -89,10 +93,14 @@ bool Engine::init(const InitParams& initParams)
 
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
+    //glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     m_eventSystem = std::make_shared<EventSystem>();
 
     m_memoryPoolTexture = std::make_shared<MemoryPool<Texture>>();
     m_memoryPoolMesh = std::make_shared<MemoryPool<Mesh>>();
+    m_memoryPoolAnimation = std::make_shared<MemoryPool<Animation>>();
 
     m_resourceManager = std::make_shared<ResourceManager>();
 
@@ -158,7 +166,9 @@ bool Engine::init(const InitParams& initParams)
         return false;
     }
 
-    m_modelImporter = std::make_shared<ModelImporter>();
+    auto modelImporter = new ModelImporter();
+    auto animationLoader = new AnimationLoader();
+    m_assets = std::make_shared<Assets>();
 
     m_timeManager = std::make_shared<TimeManager>();
     m_physicsSystem = std::make_shared<PhysicsSystem>();
@@ -190,11 +200,16 @@ bool Engine::init(const InitParams& initParams)
         saveProject();
     }
 
-    m_objectPicker = std::make_shared<ObjectPicker>();
-    if (!m_objectPicker->init())
+    auto objectPicker = new ObjectPicker();
+    if (!objectPicker->init())
     {
         logError("Object picker failed to init!");
         return false;
+    }
+
+    if (initParams.startSimulationOnStartup)
+    {
+        m_context->getActiveScene()->startSimulation();
     }
 
     m_isInit = true;
@@ -279,10 +294,14 @@ void Engine::run(Application* app)
         LAST = NOW;
         NOW = SDL_GetPerformanceCounter();
 
+        if (NOW == LAST) continue;
+
         deltaTime = (double)SDL_GetPerformanceFrequency() / ((NOW - LAST) * 1000);
 
         //Handle events on queue
         handleEvents(e, quit);
+
+        m_window->update();
 
         if (quit)
             return;
@@ -335,11 +354,6 @@ EventSystem* Engine::getEventSystem() const
     return m_eventSystem.get();
 }
 
-ModelImporter* Engine::getModelImporter() const
-{
-    return m_modelImporter.get();
-}
-
 CacheSystem* Engine::getMemoryManagementSystem() const
 {
     return m_memoryManagementSystem.get();
@@ -385,9 +399,9 @@ CommonTextures* Engine::getCommonTextures() const
     return m_commonTextures.get();
 }
 
-ObjectPicker* Engine::getObjectPicker() const
+const InitParams& Engine::getInitParams() const
 {
-    return m_objectPicker.get();
+    return m_initParams;
 }
 
 void Engine::loadProject(const std::string& dirPath)
@@ -453,15 +467,9 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
     dLight.addComponent<DirectionalLight>();
     dLight.getComponent<Transformation>().setLocalRotation(glm::vec3(0, -1, 0));
 
-    auto editorCamera = startupScene->createEntity("Editor Camera");
-    editorCamera.addComponent<CameraComponent>();
-    editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
-    editorCamera.RemoveComponent<ObjectComponent>();
-    startupScene->setPrimaryEditorCamera(editorCamera);
-
     auto mainCamera = startupScene->createEntity("Main Camera");
     mainCamera.addComponent<CameraComponent>();
-    startupScene->setPrimarySceneCamera(mainCamera);
+    startupScene->setPrimaryCamera(mainCamera);
     mainCamera.getComponent<Transformation>().setLocalPosition({10,1,10});
     mainCamera.getComponent<CameraComponent>().center = {0,0,0};
     mainCamera.getComponent<CameraComponent>().up = {0,1,0};
@@ -481,7 +489,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
             auto& groundTransfrom = ground.getComponent<Transformation>();
             groundTransfrom.setLocalScale({ 50, .5f, 50 });
             auto& mat = ground.addComponent<MaterialComponent>();
-            auto tex = Texture::create2DTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
+            auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
             mat.begin()->get()->setTexture(Texture::Type::Albedo, tex);
             auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
             auto& collisionBox = ground.addComponent<CollisionBoxComponent>(.5f);
@@ -503,7 +511,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
 
 
             auto& mat = sphere.addComponent<MaterialComponent>();
-            auto tex = Texture::create2DTextureFromFile(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
+            auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
             mat.begin()->get()->setTexture(Texture::Type::Diffuse, tex);
 
             auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);

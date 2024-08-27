@@ -32,9 +32,9 @@ public:
 			auto& groundTransfrom = ground.getComponent<Transformation>();
 			groundTransfrom.setLocalScale({ 10, .1f, 10 });
 			auto& mat = ground.addComponent<Material>();
-			auto texDiff = Texture::create2DTextureFromFile("Resources/Content/Textures/brickwall.jpg");
+			auto texDiff = Engine::get()->getSubSystem<Assets>()->importTexture2D("Resources/Content/Textures/brickwall.jpg");
 			mat.setTexture(Texture::Type::Albedo, Resource<Texture>(texDiff));
-			auto texNorm = Texture::create2DTextureFromFile("Resources/Content/Textures/brickwall_normal.jpg");
+			auto texNorm = Engine::get()->getSubSystem<Assets>()->importTexture2D("Resources/Content/Textures/brickwall_normal.jpg");
 			mat.setTexture(Texture::Type::Normal, Resource<Texture>(texNorm));
 		}
 

@@ -23,6 +23,11 @@
 
 #include "Logger.h"
 
+ObjectPicker::ObjectPicker()
+{
+	Engine::get()->registerSubSystem<ObjectPicker>(this);
+}
+
 bool ObjectPicker::init()
 {
 	m_pickingShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/PickingShader.glsl");

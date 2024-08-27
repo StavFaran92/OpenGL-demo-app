@@ -29,7 +29,7 @@ private:
 	{
 		auto& shader = ShaderBuilder::create("Resources/Content/Shaders/WaterShader.glsl").build();
 
-		auto brickTexture = Texture::create2DTextureFromFile("Resources/Content/Textures/water_new_height.png");
+		auto brickTexture = Engine::get()->getSubSystem<Assets>()->importTexture2D("Resources/Content/Textures/water_new_height.png");
 		shader.addTexture("waterNormalSampler", brickTexture);
 
 		quad.addComponent<ShaderComponent>(shader);

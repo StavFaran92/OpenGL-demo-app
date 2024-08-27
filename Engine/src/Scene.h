@@ -13,6 +13,7 @@
 #include "glm/glm.hpp"
 #include "IRenderer.h"
 #include "Entity.h"
+#include "Archiver.h"
 
 
 class Model;
@@ -104,19 +105,22 @@ public:
 	glm::mat4 getProjection() const;
 
 	Entity getActiveCamera() const;
-	void setPrimaryEditorCamera(Entity e);
-	void setPrimarySceneCamera(Entity e);
+	void setPrimaryCamera(Entity e);
 
 	void startSimulation();
 	void stopSimulation();
 	bool isSimulationActive() const;
+
+	Entity getEntityByName(const std::string& name) const;
+
+	physx::PxScene* getPhysicsScene() const;
 
 	//void setPrimaryCamera(ICamera* camera);
 
 private:
 	// -------------------- Methods -------------------- //
 	friend class Context;
-	friend class SceneSerializer;
+	friend class Archiver;
 	void update(float deltaTime);
 	inline void SetID(uint32_t id) { m_id = id; }
 	void draw(float deltaTime);
@@ -168,6 +172,7 @@ private:
 	//CameraComponent* m_activeCamera = nullptr;
 
 	glm::mat4 m_defaultPerspectiveProjection;
+	glm::mat4 m_defaultUIProjection;
 
 	std::shared_ptr<UniformBufferObject> m_uboTime;
 
@@ -179,7 +184,11 @@ private:
 	Resource<Texture> m_prefilterEnvMap;
 	Resource<Texture> m_BRDFIntegrationLUT;
 	std::shared_ptr<Shader> m_skyboxShader;
+	std::shared_ptr<Shader> m_UIShader;
 
-	Entity m_primaryEditorCamera;
-	Entity m_primarySceneCamera;
+	Entity m_primaryCamera = Entity::EmptyEntity;
+
+	Entity m_quadUI;
+
+	SerializedScene m_serializedScene;
 };

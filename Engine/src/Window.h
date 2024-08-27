@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "SDL2/SDL_syswm.h"
+#include "SDL2/SDL.h"
 #include "Core.h"
 
 #include "Configurations.h"
@@ -21,6 +22,9 @@ public:
 	void close();
 
 	void SwapBuffer() { SDL_GL_SwapWindow(m_mainWindow); }
+	void update() { if(m_isMouseLocked)SDL_WarpMouseInWindow(m_mainWindow, m_halfWidth, m_halfHeight); }
+	void lockMouse() { m_isMouseLocked = true; }
+	void unlockMouse() { m_isMouseLocked = false; }
 
 	SDL_Window* GetWindow() { return m_mainWindow; }
 	SDL_GLContext GetContext() { return m_glContext; }
@@ -35,10 +39,15 @@ private:
 	int m_width = 0;
 	int m_height = 0;
 
+	int m_halfWidth = 0;
+	int m_halfHeight = 0;
+
 	int m_mousePreviousX = 0;
 	int m_mousePreviousY = 0;
 	int m_mouseX = 0;
 	int m_mouseY = 0;
+
+	bool m_isMouseLocked = false;
 
 	bool m_mouseFirstMoved = false;
 };
