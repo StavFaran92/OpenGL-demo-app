@@ -116,13 +116,13 @@ Resource<Mesh> ModelImporter::load(const std::string & path, Resource<Mesh> mesh
 
 	m_lastLoadedSceneName = path;
 
-	std::string modelName = path.substr(path.find_last_of('\\') + 1);
+	std::string modelName = path.substr(path.find_last_of('/\\') + 1);
 	modelName = modelName.substr(0, modelName.find_first_of('.'));
 
 	// create new model session
 	ModelImportSession session;
 	session.filepath = path;
-	session.fileDir = path.substr(0, path.find_last_of('\\'));
+	session.fileDir = path.substr(0, path.find_last_of('/\\'));
 	session.name = modelName;
 	session.builder = &MeshBuilder::builder();
 

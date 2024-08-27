@@ -697,7 +697,26 @@ void ShowModelCreatorWindow()
 
 			//todo validate input
 
-			auto entity = Engine::get()->getContext()->getActiveScene()->createEntity(modelPathBuffer.c_str());
+			//extract model name
+			std::string modelName = modelPathBuffer.c_str();
+
+			// Find the last occurrence of either '/' or '\\'
+			size_t lastSlash = modelName.find_last_of("/\\");
+
+			// Extract the model name after the last slash (if found)
+			if (lastSlash != std::string::npos) 
+			{
+				modelName = modelName.substr(lastSlash + 1);
+			}
+
+			// Remove the file extension by finding the first occurrence of '.'
+			size_t dotPosition = modelName.find_first_of('.');
+			if (dotPosition != std::string::npos) 
+			{
+				modelName = modelName.substr(0, dotPosition);
+			}
+
+			auto entity = Engine::get()->getContext()->getActiveScene()->createEntity(modelName);
 			entity.addComponent<RenderableComponent>();
 
 			auto mesh = Engine::get()->getSubSystem<ModelImporter>()->import(modelPathBuffer.c_str());

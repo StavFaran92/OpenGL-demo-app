@@ -20,7 +20,7 @@ public:
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(m_currentAnimation);
+		archive(m_currentAnimation, m_playbackSpeed);
 	}
 
 	Resource<Animation> m_currentAnimation;
