@@ -9,7 +9,7 @@ void TerrainSystem::init()
 {
 	glPatchParameteri(GL_PATCH_VERTICES, 4);
 
-	auto terrainShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/terrainShader.glsl");
+	//auto terrainShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/terrainShader.glsl");
 
 
 }

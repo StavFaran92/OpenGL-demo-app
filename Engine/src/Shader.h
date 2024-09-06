@@ -12,6 +12,8 @@
 
 #include "glm/glm.hpp"
 
+struct ShadersInfo;
+
 using Value = std::variant<float, glm::vec2, glm::vec3, glm::vec4, int, unsigned int, glm::mat3, glm::mat4>;
 
 class EngineAPI Shader : public std::enable_shared_from_this<Shader>
@@ -70,7 +72,7 @@ protected:
 
 
 	void clear();
-	virtual void BuildShaders(const ShaderLoader::ShadersInfo& shader);
+	virtual void BuildShaders(const ShadersInfo& shader);
 	uint32_t AddShader(const std::string& shaderCode, unsigned int shaderType);
 	bool ValidateProgramLink();
 	bool validateCompilation(const unsigned int& theShader, const unsigned int& shaderType);

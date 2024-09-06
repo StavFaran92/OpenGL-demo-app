@@ -21,7 +21,7 @@ Shader::Shader(const std::string& glslFilePath) :
 {
 	std::string& fullShaderCode = Engine::get()->getShaderLoader()->readShader(glslFilePath);
 
-	ShaderLoader::ShadersInfo shaders;
+	ShadersInfo shaders;
 	Engine::get()->getShaderLoader()->parseGLSLShader(fullShaderCode, shaders);
 
 	// Build shaders
@@ -39,7 +39,7 @@ void Shader::bindUniformBlockToBindPoint(const std::string& uniformBlockName, in
 	glUniformBlockBinding(m_id, uniformBlockIndex, bindPointIndex);
 }
 
-void Shader::BuildShaders(const ShaderLoader::ShadersInfo& shaderCode)
+void Shader::BuildShaders(const ShadersInfo& shaderCode)
 {
 	//Create a new shader program
 	m_id = glCreateProgram();

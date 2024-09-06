@@ -5,21 +5,22 @@
 
 #include "IShaderParser.h"
 
+struct ShadersInfo
+{
+	std::string vertexCode;
+	std::string fragmentCode;
+	std::string geometryCode;
+	std::string computeCode;
+	std::string tessControlCode;
+	std::string tessEvaluationCode;
+};
+
 class ShaderLoader
 {
 public:
 	struct LoadParams
 	{
 		bool extendShader = false;
-	};
-	struct ShadersInfo
-	{
-		std::string vertexCode;
-		std::string fragmentCode;
-		std::string geometryCode;
-		std::string computeCode;
-		std::string tessControlCode;
-		std::string tessEvaluationCode;
 	};
 
 	ShaderLoader(std::shared_ptr<IShaderParser> shaderParser, LoadParams eParams);
@@ -35,5 +36,4 @@ private:
 	std::shared_ptr<IShaderParser> m_shaderParser = nullptr;
 
 	LoadParams m_params;
-
 };

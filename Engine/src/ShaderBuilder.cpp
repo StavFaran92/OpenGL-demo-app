@@ -124,14 +124,14 @@ ShaderComponent ShaderBuilder::build()
 
 	std::string& customShaderSource = Engine::get()->getShaderLoader()->readShader(m_filepath);
 
-	ShaderLoader::ShadersInfo customShaders;
+	ShadersInfo customShaders;
 	Engine::get()->getShaderLoader()->parseGLSLShader(customShaderSource, customShaders);
 	
 	if(!customShaders.vertexCode.empty())
 	{
 		std::string& geomPassShaderSources = Engine::get()->getShaderLoader()->readShader(SGE_ROOT_DIR + "Resources/Engine/Shaders/PBR_GeomPassShader.glsl");
 
-		ShaderLoader::ShadersInfo shaders;
+		ShadersInfo shaders;
 		Engine::get()->getShaderLoader()->parseGLSLShader(geomPassShaderSources, shaders);
 
 		std::string macro = "CUSTOM_SHADER";
@@ -141,7 +141,7 @@ ShaderComponent ShaderBuilder::build()
 
 		// build shader geom
 		Shader* shader = new Shader();
-		shader->BuildShaders(shaders.vertexCode, shaders.fragmentCode, "");
+		shader->BuildShaders(shaders);
 
 		shaderComponent.m_vertexShader = shader;
 	}
@@ -150,7 +150,7 @@ ShaderComponent ShaderBuilder::build()
 	{
 		std::string& lightPassShaderSources = Engine::get()->getShaderLoader()->readShader(SGE_ROOT_DIR + "Resources/Engine/Shaders/PBR_LightPassShader.glsl");
 
-		ShaderLoader::ShadersInfo shaders;
+		ShadersInfo shaders;
 		Engine::get()->getShaderLoader()->parseGLSLShader(lightPassShaderSources, shaders);
 
 		std::string macro = "CUSTOM_SHADER";
@@ -160,7 +160,7 @@ ShaderComponent ShaderBuilder::build()
 
 		// build shader light
 		Shader* shader = new Shader();
-		shader->BuildShaders(shaders.vertexCode, shaders.fragmentCode, "");
+		shader->BuildShaders(shaders);
 
 		shaderComponent.m_fragmentShader = shader;
 	}

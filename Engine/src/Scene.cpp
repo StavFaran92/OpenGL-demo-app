@@ -501,6 +501,8 @@ void Scene::draw(float deltaTime)
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);
 
+	auto terrainShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/terrainShader.glsl"); // todo fix
+	terrainShader->use();
 
 	// Render terrain
 	for (auto&& [entity, terrain] : m_registry->get().view<Terrain>().each())
@@ -508,7 +510,7 @@ void Scene::draw(float deltaTime)
 		// TODO fix
 		auto vao = terrain.getVAO();
 		auto rez = terrain.getRez();
-		vao.bind();
+		vao->Bind();
 		glDrawArrays(GL_PATCHES, 0, 4 * rez * rez);
 	}
 	

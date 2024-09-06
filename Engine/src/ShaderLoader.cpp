@@ -31,14 +31,16 @@ std::string ShaderLoader::readShader(const std::string& path)
     return m_shaderParser->parse(path);
 }
 
-bool ShaderLoader::parseGLSLShader(const std::string& sCode, ShadersInfo& shader) {
+bool ShaderLoader::parseGLSLShader(const std::string& sCode, ShadersInfo& shader) 
+{
     std::stringstream stream(sCode);
 
     std::string line, directive;
     ShaderType sType = ShaderType::NONE;
     std::map<ShaderType, std::stringstream> shaderStreams;
 
-    while (std::getline(stream, line)) {
+    while (std::getline(stream, line)) 
+    {
         std::stringstream lineStream(line);
         lineStream >> directive;
 
@@ -65,6 +67,7 @@ bool ShaderLoader::parseGLSLShader(const std::string& sCode, ShadersInfo& shader
         else if (directive == "#tese") {
             sType = ShaderType::TESE;
             continue;
+        }
 
         shaderStreams[sType] << line << '\n';
     }

@@ -1,10 +1,11 @@
 #include "Terrain.h"
 #include "Texture.h"
 #include "VertexLayout.h"
+#include "Assets.h"
 
 Terrain Terrain::generateTerrain(int rez, int scale, const std::string& heightMapFilepath)
 {
-	auto heightmap = Texture::create2DTextureFromFile(heightMapFilepath);
+	auto heightmap = Engine::get()->getSubSystem<Assets>()->importTexture2D(heightMapFilepath);
 	auto height = heightmap.get()->getHeight();
 	auto width = heightmap.get()->getWidth();
 
@@ -45,7 +46,7 @@ Terrain Terrain::generateTerrain(int rez, int scale, const std::string& heightMa
 	}
 
 	Terrain terrain;
-
+	terrain.m_rez = rez;
 	terrain.m_vao = std::make_shared<VertexArrayObject>();
 	terrain.m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), vCount, vCount * sizeof(float));
 
@@ -56,4 +57,14 @@ Terrain Terrain::generateTerrain(int rez, int scale, const std::string& heightMa
 	terrain.m_vao->AttachBuffer(*terrain.m_vbo, nullptr, layout);
 
 	return terrain; // todo fix
+}
+
+std::shared_ptr<VertexArrayObject> Terrain::getVAO() const
+{
+	return m_vao;
+}
+
+int Terrain::getRez() const
+{
+	return m_rez;
 }
