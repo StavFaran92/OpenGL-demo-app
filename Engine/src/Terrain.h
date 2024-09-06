@@ -13,7 +13,6 @@ public:
 	static Terrain generateTerrain(int rez, float scale, const std::string& heightMapFilepath);
 
 	VertexArrayObject* getVAO() const;
-	int getRez() const;
 	float getScale() const;
 	Resource<Texture> getHeightmap() const;
 

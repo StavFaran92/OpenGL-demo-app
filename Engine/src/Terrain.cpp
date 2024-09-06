@@ -77,11 +77,6 @@ VertexArrayObject* Terrain::getVAO() const
 	return m_vao.get();
 }
 
-int Terrain::getRez() const
-{
-	return m_rez;
-}
-
 float Terrain::getScale() const
 {
 	return m_scale;
