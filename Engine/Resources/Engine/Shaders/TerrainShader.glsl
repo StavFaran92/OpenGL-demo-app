@@ -112,6 +112,6 @@ out vec4 color;
 
 void main()
 {
-    float h = (height);
-    color = vec4(1, 0, 0, 1.0);
+    float h = (height)/scale;
+    color = vec4(h, h, h, 1.0);
 }

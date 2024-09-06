@@ -56,6 +56,18 @@ Terrain Terrain::generateTerrain(int rez, float scale, const std::string& height
 	layout.attribs.push_back(LayoutAttribute::Positions);
 	layout.attribs.push_back(LayoutAttribute::Texcoords);
 
+	// calculate stride
+	int stride = 0;
+	for (auto entry : layout.attribs)
+	{
+		auto& attribData = getAttributeData(entry);
+		stride += attribData.length * attribData.size;
+	}
+
+	// Update layout info
+	layout.numOfVertices = vCount;
+	layout.stride = stride;
+
 	terrain.m_vao->AttachBuffer(*terrain.m_vbo, nullptr, layout);
 
 	return terrain; // todo fix
