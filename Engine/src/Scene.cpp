@@ -46,6 +46,7 @@
 #include "Physics.h"
 #include "Archiver.h"
 #include "Animator.h"
+#include "Terrain.h"
 
 
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
@@ -500,10 +501,21 @@ void Scene::draw(float deltaTime)
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// Render terrain
+	for (auto&& [entity, terrain] : m_registry->get().view<Terrain>().each())
+	{
+		// TODO fix
+		auto vao = terrain.getVAO();
+		auto rez = terrain.getRez();
+		vao.bind();
+		glDrawArrays(GL_PATCHES, 0, 4 * rez * rez);
+	}
+	
 
 	// Render UI
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	m_UIShader->use();
 	m_UIShader->setProjectionMatrix(m_defaultUIProjection);
 	auto vao = m_quadUI.getComponent<MeshComponent>().mesh.get()->getVAO();

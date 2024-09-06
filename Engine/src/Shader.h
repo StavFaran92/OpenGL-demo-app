@@ -70,7 +70,7 @@ protected:
 
 
 	void clear();
-	virtual void BuildShaders(const std::string& vertexCode, const std::string& fragmentCode, const std::string& geometryShader);
+	virtual void BuildShaders(const ShaderLoader::ShadersInfo& shader);
 	uint32_t AddShader(const std::string& shaderCode, unsigned int shaderType);
 	bool ValidateProgramLink();
 	bool validateCompilation(const unsigned int& theShader, const unsigned int& shaderType);

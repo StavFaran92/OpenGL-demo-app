@@ -18,6 +18,8 @@ public:
 		std::string fragmentCode;
 		std::string geometryCode;
 		std::string computeCode;
+		std::string tessControlCode;
+		std::string tessEvaluationCode;
 	};
 
 	ShaderLoader(std::shared_ptr<IShaderParser> shaderParser, LoadParams eParams);

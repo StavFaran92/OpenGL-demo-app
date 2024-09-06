@@ -25,7 +25,7 @@ Shader::Shader(const std::string& glslFilePath) :
 	Engine::get()->getShaderLoader()->parseGLSLShader(fullShaderCode, shaders);
 
 	// Build shaders
-	BuildShaders(shaders.vertexCode, shaders.fragmentCode, shaders.geometryCode);
+	BuildShaders(shaders);
 }
 
 void Shader::init()
@@ -39,7 +39,7 @@ void Shader::bindUniformBlockToBindPoint(const std::string& uniformBlockName, in
 	glUniformBlockBinding(m_id, uniformBlockIndex, bindPointIndex);
 }
 
-void Shader::BuildShaders(const std::string& vertexCode, const std::string& fragmentCode, const std::string& geometryCode) 
+void Shader::BuildShaders(const ShaderLoader::ShadersInfo& shaderCode)
 {
 	//Create a new shader program
 	m_id = glCreateProgram();
@@ -52,24 +52,36 @@ void Shader::BuildShaders(const std::string& vertexCode, const std::string& frag
 	}
 
 	// Create and attach vertex shader to program
-	GLuint vertexShader = AddShader(vertexCode, GL_VERTEX_SHADER);
-
-	//ShaderExtender::ExtensionParams eParams{};
-	//std::string extendedVertexCode = ShaderExtender::ExtendVertexShader(vertexCode, eParams);
-	//GLuint extendedVertexShader = AddShader(vertexCode, GL_VERTEX_SHADER);
+	GLuint vertexShader = AddShader(shaderCode.vertexCode, GL_VERTEX_SHADER);
 	glAttachShader(m_id, vertexShader);
 
+	// Create and attach fragment shader to program
+	GLuint fragShader = AddShader(shaderCode.fragmentCode, GL_FRAGMENT_SHADER);
+	glAttachShader(m_id, fragShader);
+
+	// Create and attach geometry shader to program if needed
 	GLuint geometryShader = 0;
-	if (!geometryCode.empty())
+	if (!shaderCode.geometryCode.empty())
 	{
-		// Create and attach geometry shader to program
-		geometryShader = AddShader(geometryCode, GL_GEOMETRY_SHADER);
+		geometryShader = AddShader(shaderCode.geometryCode, GL_GEOMETRY_SHADER);
 		glAttachShader(m_id, geometryShader);
 	}
 
-	// Create and attach fragment shader to program
-	GLuint fragShader = AddShader(fragmentCode, GL_FRAGMENT_SHADER);
-	glAttachShader(m_id, fragShader);
+	// Create and attach tesselation control shader to program if needed
+	GLuint tessCtrlShader = 0;
+	if (!shaderCode.tessControlCode.empty())
+	{
+		tessCtrlShader = AddShader(shaderCode.tessControlCode, GL_TESS_CONTROL_SHADER);
+		glAttachShader(m_id, tessCtrlShader);
+	}
+
+	// Create and attach tesselation evaluation shader to program if needed
+	GLuint tessEvalShader = 0;
+	if (!shaderCode.tessEvaluationCode.empty())
+	{
+		tessEvalShader = AddShader(shaderCode.tessEvaluationCode, GL_TESS_EVALUATION_SHADER);
+		glAttachShader(m_id, tessEvalShader);
+	}
 
 	// Link shader program
 	glLinkProgram(m_id);
@@ -83,6 +95,12 @@ void Shader::BuildShaders(const std::string& vertexCode, const std::string& frag
 
 	if (geometryShader)
 		glDeleteShader(geometryShader);
+
+	if (tessCtrlShader)
+		glDeleteShader(tessCtrlShader);
+
+	if (tessEvalShader)
+		glDeleteShader(tessEvalShader);
 }
 
 bool Shader::ValidateProgramLink()

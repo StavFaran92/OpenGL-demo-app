@@ -9,6 +9,8 @@ enum class ShaderType
     FRAGMENT,
     GEOMETRY,
     COMPUTE,
+    TESC,
+    TESE,
 
     NONE
 };
@@ -56,6 +58,13 @@ bool ShaderLoader::parseGLSLShader(const std::string& sCode, ShadersInfo& shader
             sType = ShaderType::COMPUTE;
             continue;
         }
+        else if (directive == "#tesc") {
+            sType = ShaderType::TESC;
+            continue;
+        }
+        else if (directive == "#tese") {
+            sType = ShaderType::TESE;
+            continue;
 
         shaderStreams[sType] << line << '\n';
     }
@@ -64,6 +73,8 @@ bool ShaderLoader::parseGLSLShader(const std::string& sCode, ShadersInfo& shader
     shader.fragmentCode = shaderStreams[ShaderType::FRAGMENT].str();
     shader.geometryCode = shaderStreams[ShaderType::GEOMETRY].str();
     shader.computeCode = shaderStreams[ShaderType::COMPUTE].str();
+    shader.tessControlCode = shaderStreams[ShaderType::TESC].str();
+    shader.tessEvaluationCode = shaderStreams[ShaderType::TESE].str();
 
     return true;
 }
