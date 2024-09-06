@@ -185,6 +185,7 @@ private:
 	Resource<Texture> m_BRDFIntegrationLUT;
 	std::shared_ptr<Shader> m_skyboxShader;
 	std::shared_ptr<Shader> m_UIShader;
+	std::shared_ptr<Shader> m_terrainShader;
 
 	Entity m_primaryCamera = Entity::EmptyEntity;
 

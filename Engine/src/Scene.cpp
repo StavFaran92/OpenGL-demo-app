@@ -211,6 +211,8 @@ void Scene::init(Context* context)
 
 	m_UIShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/UIShader.glsl");
 
+	m_terrainShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/TerrainShader.glsl"); // todo consider move to context (or even Engine)
+
 	
 	//dLight.getComponent<Transformation>().setLocalPosition({ 0 , 2, 0 });;
 	
@@ -501,12 +503,20 @@ void Scene::draw(float deltaTime)
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);
 
-	auto terrainShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/terrainShader.glsl"); // todo fix
-	terrainShader->use();
+	m_terrainShader->use();
+	m_terrainShader->setUniformValue("model", glm::mat4(1));
+	m_terrainShader->setUniformValue("view", *params.view);
+	m_terrainShader->setUniformValue("projection", *params.projection);
+	
 
 	// Render terrain
 	for (auto&& [entity, terrain] : m_registry->get().view<Terrain>().each())
 	{
+		m_terrainShader->setUniformValue("scale", terrain.getScale());
+		Resource<Texture> heightmap = terrain.getHeightmap();
+		heightmap.get()->bind();
+		heightmap.get()->setSlot(0);
+		m_terrainShader->setUniformValue("heightMap", 0);
 		// TODO fix
 		auto vao = terrain.getVAO();
 		auto rez = terrain.getRez();

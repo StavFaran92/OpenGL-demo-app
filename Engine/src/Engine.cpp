@@ -483,17 +483,17 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
             SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
             SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" }, context->getActiveScene().get());
 
-
-        {
-            auto ground = ShapeFactory::createBox(&context->getActiveScene()->getRegistry());
-            auto& groundTransfrom = ground.getComponent<Transformation>();
-            groundTransfrom.setLocalScale({ 50, .5f, 50 });
-            auto& mat = ground.addComponent<MaterialComponent>();
-            auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
-            mat.begin()->get()->setTexture(Texture::Type::Albedo, tex);
-            auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
-            auto& collisionBox = ground.addComponent<CollisionBoxComponent>(.5f);
-        }
+        // todo revert
+        //{
+        //    auto ground = ShapeFactory::createBox(&context->getActiveScene()->getRegistry());
+        //    auto& groundTransfrom = ground.getComponent<Transformation>();
+        //    groundTransfrom.setLocalScale({ 50, .5f, 50 });
+        //    auto& mat = ground.addComponent<MaterialComponent>();
+        //    auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
+        //    mat.begin()->get()->setTexture(Texture::Type::Albedo, tex);
+        //    auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
+        //    auto& collisionBox = ground.addComponent<CollisionBoxComponent>(.5f);
+        //}
 
         {
             //editorCamera->lookAt(0, 5, 0);
