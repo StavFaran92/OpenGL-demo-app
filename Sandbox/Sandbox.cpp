@@ -33,20 +33,25 @@ public:
 		editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
 		Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(editorCamera);
 
-		Entity zombieGirl = Engine::get()->getContext()->getActiveScene()->createEntity("Zombie girl");
-		auto mesh = Engine::get()->getSubSystem<ModelImporter>()->import("C:/Users/Stav/Downloads/FPS Zombie/Scary Zombie Pack/zombiegirl.fbx");
-		zombieGirl.addComponent<RenderableComponent>();
-		zombieGirl.addComponent<MaterialComponent>();
-		zombieGirl.addComponent<MeshComponent>().mesh = mesh;
+		Entity terrainEnt = Engine::get()->getContext()->getActiveScene()->createEntity("Terrain");
+		auto terrain = Terrain::generateTerrain(100, 100, 64, "C:/Users/Stav/Downloads/HeightMap.png");
+		terrainEnt.addComponent<Terrain>(terrain);
 
-		//zombieGirl.getComponent<Transformation>().translate({ 0, 0, 10 });
-		zombieGirl.getComponent<Transformation>().scale({ 0.05, 0.05, 0.05 });
 
-		auto animation = Engine::get()->getSubSystem<AnimationLoader>()->import("C:/Users/Stav/Downloads/FPS Zombie/Scary Zombie Pack/Zombie Walk.fbx");
+		//Entity zombieGirl = Engine::get()->getContext()->getActiveScene()->createEntity("Zombie girl");
+		//auto mesh = Engine::get()->getSubSystem<ModelImporter>()->import("C:/Users/Stav/Downloads/FPS Zombie/Scary Zombie Pack/zombiegirl.fbx");
+		//zombieGirl.addComponent<RenderableComponent>();
+		//zombieGirl.addComponent<MaterialComponent>();
+		//zombieGirl.addComponent<MeshComponent>().mesh = mesh;
 
-		zombieGirl.addComponent<Animator>(animation);
+		////zombieGirl.getComponent<Transformation>().translate({ 0, 0, 10 });
+		//zombieGirl.getComponent<Transformation>().scale({ 0.05, 0.05, 0.05 });
 
-		Engine::get()->getContext()->getActiveScene()->startSimulation();
+		//auto animation = Engine::get()->getSubSystem<AnimationLoader>()->import("C:/Users/Stav/Downloads/FPS Zombie/Scary Zombie Pack/Zombie Walk.fbx");
+
+		//zombieGirl.addComponent<Animator>(animation);
+
+		//Engine::get()->getContext()->getActiveScene()->startSimulation();
 
 		//camTransform.setLocalPosition(playerTransform.getLocalPosition());
 		//camTransform.translate({0,2,0});

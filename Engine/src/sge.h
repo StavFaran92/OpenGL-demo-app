@@ -58,3 +58,4 @@
 #include "Archiver.h"
 #include "AnimationLoader.h"
 #include "Animator.h"
+#include "Terrain.h"
