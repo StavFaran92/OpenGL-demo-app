@@ -12,7 +12,7 @@ class EngineAPI Terrain : public Component
 public:
 	static Terrain generateTerrain(int rez, float scale, const std::string& heightMapFilepath);
 
-	std::shared_ptr<VertexArrayObject> getVAO() const;
+	VertexArrayObject* getVAO() const;
 	int getRez() const;
 	float getScale() const;
 	Resource<Texture> getHeightmap() const;

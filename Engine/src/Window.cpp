@@ -22,9 +22,9 @@ int Window::init()
 		return false;
 	}
 
-	//Use OpenGL 3.1 core
+	//Use OpenGL 4.1 core
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
@@ -38,7 +38,7 @@ int Window::init()
 	SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
 
 	//Create window
-	m_mainWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, window_flags);
+	m_mainWindow = SDL_CreateWindow("SGE", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, window_flags);
 	if (!m_mainWindow)
 	{
 		logError("Window could not be created! SDL Error: {}", SDL_GetError());
@@ -76,7 +76,6 @@ int Window::init()
 	}
 		
 	logInfo("SDL has initialized successfully.");
-	glPatchParameteri(GL_PATCH_VERTICES, 4); // todo fix
 
 	return true;
 }

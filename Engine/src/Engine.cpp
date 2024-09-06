@@ -146,6 +146,8 @@ bool Engine::init(const InitParams& initParams)
         return false;
     }
 
+    glPatchParameteri(GL_PATCH_VERTICES, 4);
+
     m_input = std::make_shared<Input>();
     m_input->init();
 

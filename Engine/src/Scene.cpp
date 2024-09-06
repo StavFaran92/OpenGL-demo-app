@@ -504,24 +504,23 @@ void Scene::draw(float deltaTime)
 	glDepthFunc(GL_LESS);
 
 	m_terrainShader->use();
-	m_terrainShader->setUniformValue("model", glm::mat4(1));
+	
 	m_terrainShader->setUniformValue("view", *params.view);
 	m_terrainShader->setUniformValue("projection", *params.projection);
 	
 
 	// Render terrain
-	for (auto&& [entity, terrain] : m_registry->get().view<Terrain>().each())
+	for (auto&& [entity, terrain, transform] : m_registry->get().view<Terrain, Transformation>().each())
 	{
 		m_terrainShader->setUniformValue("scale", terrain.getScale());
+		m_terrainShader->setUniformValue("model", transform.getWorldTransformation());
 		Resource<Texture> heightmap = terrain.getHeightmap();
 		heightmap.get()->bind();
 		heightmap.get()->setSlot(0);
 		m_terrainShader->setUniformValue("heightMap", 0);
-		// TODO fix
+
 		auto vao = terrain.getVAO();
-		auto rez = terrain.getRez();
-		vao->Bind();
-		glDrawArrays(GL_PATCHES, 0, 4 * rez * rez);
+		RenderCommand::drawPatches(vao);
 	}
 	
 

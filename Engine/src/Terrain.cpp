@@ -11,9 +11,9 @@ Terrain Terrain::generateTerrain(int rez, float scale, const std::string& height
 
 	// vertex generation
 	std::vector<float> vertices;
-	int vCount = rez * rez * 5 * 4;
+	int vertexCount = rez * rez * 4;
 
-	vertices.reserve(vCount);
+	vertices.reserve(vertexCount * 5);
 
 	for (unsigned i = 0; i <= rez - 1; i++)
 	{
@@ -50,7 +50,7 @@ Terrain Terrain::generateTerrain(int rez, float scale, const std::string& height
 	terrain.m_scale = scale;
 	terrain.m_rez = rez;
 	terrain.m_vao = std::make_shared<VertexArrayObject>();
-	terrain.m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), vCount, vertices.size() * sizeof(float));
+	terrain.m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), vertexCount, vertices.size() * sizeof(float));
 
 	VertexLayout layout;
 	layout.attribs.push_back(LayoutAttribute::Positions);
@@ -65,7 +65,6 @@ Terrain Terrain::generateTerrain(int rez, float scale, const std::string& height
 	}
 
 	// Update layout info
-	layout.numOfVertices = vCount;
 	layout.stride = stride;
 
 	terrain.m_vao->AttachBuffer(*terrain.m_vbo, nullptr, layout);
@@ -73,9 +72,9 @@ Terrain Terrain::generateTerrain(int rez, float scale, const std::string& height
 	return terrain; // todo fix
 }
 
-std::shared_ptr<VertexArrayObject> Terrain::getVAO() const
+VertexArrayObject* Terrain::getVAO() const
 {
-	return m_vao;
+	return m_vao.get();
 }
 
 int Terrain::getRez() const
