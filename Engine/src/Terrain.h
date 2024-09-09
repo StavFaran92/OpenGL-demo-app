@@ -10,11 +10,15 @@
 class EngineAPI Terrain : public Component
 {
 public:
-	static Terrain generateTerrain(int rez, float scale, const std::string& heightMapFilepath);
+	//static Terrain generateTerrain(int rez, float scale, const std::string& heightMapFilepath);
+	static Terrain generateTerrain(int width, int height, float scale, const std::string& heightMapFilepath);
 
 	VertexArrayObject* getVAO() const;
 	float getScale() const;
 	Resource<Texture> getHeightmap() const;
+
+	int getWidth() const;
+	int getHeight() const;
 
 	Terrain() = default;
 private:
@@ -23,6 +27,7 @@ private:
 
 	Resource<Texture> m_heightmap;
 
-	int m_rez = 0;
+	int m_width = 0;
+	int m_height = 0;
 	int m_scale = 0;
 };

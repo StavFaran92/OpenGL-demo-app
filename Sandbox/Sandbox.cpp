@@ -34,7 +34,7 @@ public:
 		Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(editorCamera);
 
 		Entity terrainEnt = Engine::get()->getContext()->getActiveScene()->createEntity("Terrain");
-		auto terrain = Terrain::generateTerrain(10, 64, "C:/Users/Stav/Downloads/iceland_heightmap.png");
+		auto terrain = Terrain::generateTerrain(200, 200, 12, "C:/Users/Stav/Downloads/test_heightmap.png");
 		//auto terrain = Terrain::generateTerrain(100, 100, 64, "C:/Users/Stav/Downloads/HeightMap.png");
 		terrainEnt.addComponent<Terrain>(terrain);
 

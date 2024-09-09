@@ -6,11 +6,16 @@ layout (location = 0) in vec3 aPos;
 layout (location = 2) in vec2 aTexCoords;                                        
 
 out vec2 texCoords;
-                                                                                    
+
+uniform int width;
+uniform int height;
+                                                            
 void main()                                                                         
 {
     texCoords = aTexCoords;
-    gl_Position = vec4(aPos.xyz, 1.0);                                       
+    vec3 pos = aPos.xyz;
+    pos *= vec3(width, 0, height);
+    gl_Position = vec4(pos, 1.0);                                       
 }
 
 #tesc
