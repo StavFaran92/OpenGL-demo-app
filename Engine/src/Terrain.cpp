@@ -2,6 +2,8 @@
 #include "Texture.h"
 #include "VertexLayout.h"
 #include "Assets.h"
+#include "MeshBuilder.h"
+#include "Factory.h"
 
 Terrain Terrain::generateTerrain(int width, int height, float scale, const std::string& heightMapFilepath)
 {
@@ -44,37 +46,31 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, const std::
 		}
 	}
 
+	Resource<Mesh> mesh = Factory<Mesh>::create();
+
+	VertexLayout layout;
+	layout.attribs.push_back(LayoutAttribute::Positions);
+	layout.attribs.push_back(LayoutAttribute::Texcoords);
+	layout.numOfVertices = vertexCount;
+	layout.build();
+
+	MeshBuilder::builder()
+		.addRawVertices(vertices.data(), layout)
+		.build(mesh);
+
 	Terrain terrain;
 	terrain.m_heightmap = Engine::get()->getSubSystem<Assets>()->importTexture2D(heightMapFilepath);
 	terrain.m_scale = scale;
 	terrain.m_width = width;
 	terrain.m_height = height;
-	terrain.m_vao = std::make_shared<VertexArrayObject>();
-	terrain.m_vbo = std::make_shared<VertexBufferObject>(&(vertices[0]), vertexCount, vertices.size() * sizeof(float));
-
-	VertexLayout layout;
-	layout.attribs.push_back(LayoutAttribute::Positions);
-	layout.attribs.push_back(LayoutAttribute::Texcoords);
-
-	// calculate stride
-	int stride = 0;
-	for (auto entry : layout.attribs)
-	{
-		auto& attribData = getAttributeData(entry);
-		stride += attribData.length * attribData.size;
-	}
-
-	// Update layout info
-	layout.stride = stride;
-
-	terrain.m_vao->AttachBuffer(*terrain.m_vbo, nullptr, layout);
+	terrain.m_mesh = mesh;
 
 	return terrain; // todo fix
 }
 
-VertexArrayObject* Terrain::getVAO() const
+Resource<Mesh> Terrain::getMesh() const
 {
-	return m_vao.get();
+	return m_mesh;
 }
 
 float Terrain::getScale() const

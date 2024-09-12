@@ -521,7 +521,7 @@ void Scene::draw(float deltaTime)
 		heightmap.get()->setSlot(0);
 		m_terrainShader->setUniformValue("heightMap", 0);
 
-		auto vao = terrain.getVAO();
+		auto vao = terrain.getMesh().get()->getVAO();
 		RenderCommand::drawPatches(vao);
 	}
 	

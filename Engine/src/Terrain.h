@@ -10,21 +10,19 @@
 class EngineAPI Terrain : public Component
 {
 public:
-	//static Terrain generateTerrain(int rez, float scale, const std::string& heightMapFilepath);
 	static Terrain generateTerrain(int width, int height, float scale, const std::string& heightMapFilepath);
 
-	VertexArrayObject* getVAO() const;
-	float getScale() const;
+	Terrain() = default;
+
+	Resource<Mesh> getMesh() const;
 	Resource<Texture> getHeightmap() const;
 
+	float getScale() const;
 	int getWidth() const;
 	int getHeight() const;
 
-	Terrain() = default;
 private:
-	std::shared_ptr<VertexArrayObject> m_vao;
-	std::shared_ptr<VertexBufferObject> m_vbo;
-
+	Resource<Mesh> m_mesh;
 	Resource<Texture> m_heightmap;
 
 	int m_width = 0;
