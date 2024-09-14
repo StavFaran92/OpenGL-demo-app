@@ -11,6 +11,8 @@ class EngineAPI Terrain : public Component
 {
 public:
 	static Terrain generateTerrain(int width, int height, float scale, const std::string& heightMapFilepath);
+	static Terrain generateTerrain(int width, int height, float scale, Resource<Texture> heightMap);
+
 
 	Terrain() = default;
 
@@ -21,11 +23,13 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 
-private:
 	Resource<Mesh> m_mesh;
 	Resource<Texture> m_heightmap;
 
-	int m_width = 0;
-	int m_height = 0;
-	int m_scale = 0;
+	int m_width = 100;
+	int m_height = 100;
+	int m_scale = 1;
+
+private:
+	
 };

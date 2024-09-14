@@ -4,8 +4,56 @@
 #include "Assets.h"
 #include "MeshBuilder.h"
 #include "Factory.h"
+#include "MeshExporter.h"
+
+aiScene* generateScene(const std::vector<float>& vertices)
+{
+	// Create a new mesh
+	aiMesh* mesh = new aiMesh();
+	mesh->mNumVertices = vertices.size();
+	mesh->mVertices = new aiVector3D[mesh->mNumVertices];
+	mesh->mNormals = new aiVector3D[mesh->mNumVertices];
+	mesh->mTextureCoords[0] = new aiVector3D[mesh->mNumVertices];
+	mesh->mNumUVComponents[0] = 2;
+	mesh->mNumFaces = vertices.size() / 2;
+	mesh->mFaces = new aiFace[mesh->mNumFaces];
+
+	// Set vertices
+	for (unsigned int i = 0; i < mesh->mNumVertices; ++i) 
+	{
+		mesh->mVertices[i] = aiVector3D(vertices[i * 5 + 0], vertices[i * 5 + 1], vertices[i * 5 + 2]);
+		mesh->mTextureCoords[0][i] = aiVector3D(vertices[i * 5 + 3], vertices[i * 5 + 4], 0.0f);
+	}
+
+	//// Set faces (triangles)
+	//for (unsigned int i = 0; i < mesh->mNumFaces; ++i) {
+	//	mesh->mFaces[i].mNumIndices = 3;
+	//	mesh->mFaces[i].mIndices = new unsigned int[3] { indices[i * 3 + 0], indices[i * 3 + 1], indices[i * 3 + 2] };
+	//}
+
+	mesh->mPrimitiveTypes = aiPrimitiveType_TRIANGLE;
+
+	// Create a new scene
+	aiScene* scene = new aiScene();
+	scene->mNumMeshes = 1;
+	scene->mMeshes = new aiMesh * [1] { mesh };
+	scene->mNumMaterials = 1;
+	scene->mMaterials = new aiMaterial * [1] { new aiMaterial() };
+	scene->mRootNode = new aiNode();
+	scene->mRootNode->mNumMeshes = 1;
+	scene->mRootNode->mMeshes = new unsigned int[1] { 0 };
+
+	return scene;
+}
 
 Terrain Terrain::generateTerrain(int width, int height, float scale, const std::string& heightMapFilepath)
+{
+	auto heightMap = Engine::get()->getSubSystem<Assets>()->importTexture2D(heightMapFilepath);
+
+	return generateTerrain(width, height, scale, heightMap);
+}
+
+Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Texture> heightMap)
 {
 	int xRez = 10;
 	int yRez = 10;
@@ -58,8 +106,12 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, const std::
 		.addRawVertices(vertices.data(), layout)
 		.build(mesh);
 
+	aiScene* scene = generateScene(vertices);
+
+	MeshExporter::exportMesh(mesh, scene);
+
 	Terrain terrain;
-	terrain.m_heightmap = Engine::get()->getSubSystem<Assets>()->importTexture2D(heightMapFilepath);
+	terrain.m_heightmap = heightMap;
 	terrain.m_scale = scale;
 	terrain.m_width = width;
 	terrain.m_height = height;

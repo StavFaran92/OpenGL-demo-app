@@ -20,6 +20,7 @@
 #include "Assets.h"
 #include "AssimpGLMHelpers.h"
 #include "Factory.h"
+#include "MeshExporter.h"
 
 ModelImporter::ModelImporter()
 {
@@ -68,11 +69,7 @@ Resource<Mesh> ModelImporter::import(const std::string& path)
 		return Resource<Mesh>::empty;
 	}
 
-	auto& projectDir = Engine::get()->getProjectDirectory();
-	Assimp::Exporter exporter;
-	const std::string savedFilePath = projectDir + "/" + mesh.getUID() + ".dae";
-	exporter.Export(scene, "collada", savedFilePath);
-	Engine::get()->getContext()->getProjectAssetRegistry()->addMesh(mesh.getUID());
+	auto savedFilePath = MeshExporter::exportMesh(mesh, scene);
 
 	load(savedFilePath, mesh);
 

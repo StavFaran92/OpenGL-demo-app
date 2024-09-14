@@ -1498,6 +1498,15 @@ void RenderInspectorWindow(float width, float height)
 			ImGui::DragFloat("playback speed", &animator.m_playbackSpeed);
 			});
 
+		displayComponent<Terrain>("Terrain", [](Terrain& terrain) {
+			addTextureEditWidget(terrain.m_heightmap, { 50, 50 }, [&](std::string uuid) {
+				terrain = Terrain::generateTerrain(terrain.m_width, terrain.m_height, terrain.m_scale, Resource<Texture>(uuid));
+			});
+			ImGui::DragInt("height", &terrain.m_height);
+			ImGui::DragInt("width", &terrain.m_width);
+			ImGui::DragInt("scale", &terrain.m_scale);
+		});
+
 		if (ImGui::Button("Add Component", ImVec2(windowWidth, 0)))
 		{
 			ImGui::OpenPopup("AddComponentPopup");
@@ -1568,6 +1577,11 @@ void RenderInspectorWindow(float width, float height)
 			if (ImGui::MenuItem("Animator"))
 			{
 				auto& animator = selectedEntity.addComponent<Animator>();
+			}
+
+			if (ImGui::MenuItem("Terrain"))
+			{
+				auto& terrain = selectedEntity.addComponent<Terrain>();
 			}
 
 			ImGui::EndPopup();
