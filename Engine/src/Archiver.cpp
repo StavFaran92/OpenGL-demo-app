@@ -23,6 +23,7 @@ SerializedEntity Archiver::serializeEntity(Entity e)
 	serializedEntity.skybox = getComponentIfExists<SkyboxComponent>(e);
 	serializedEntity.transform = getComponentIfExists<Transformation>(e);
 	serializedEntity.animator = getComponentIfExists<Animator>(e);
+	serializedEntity.terrain = getComponentIfExists<Terrain>(e);
 
 	return serializedEntity;
 }
@@ -118,6 +119,11 @@ void Archiver::deserializeEntity(SerializedEntity serializedEnt, Scene& scene)
 	if (serializedEnt.animator)
 	{
 		entityHandler.addComponent<Animator>(serializedEnt.animator.value());
+	}
+
+	if (serializedEnt.terrain)
+	{
+		entityHandler.addComponent<Terrain>(serializedEnt.terrain.value());
 	}
 }
 

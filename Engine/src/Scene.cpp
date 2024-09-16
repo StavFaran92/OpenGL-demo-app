@@ -508,6 +508,9 @@ void Scene::draw(float deltaTime)
 	m_terrainShader->setUniformValue("view", *params.view);
 	m_terrainShader->setUniformValue("projection", *params.projection);
 	
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glEnable(GL_POLYGON_OFFSET_LINE);
+	glPolygonOffset(-1.0, -1.0);
 
 	// Render terrain
 	for (auto&& [entity, terrain, transform] : m_registry->get().view<Terrain, Transformation>().each())
@@ -528,6 +531,9 @@ void Scene::draw(float deltaTime)
 		auto vao = terrain.getMesh().get()->getVAO();
 		RenderCommand::drawPatches(vao);
 	}
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glDisable(GL_POLYGON_OFFSET_LINE);
 	
 
 	// Render UI

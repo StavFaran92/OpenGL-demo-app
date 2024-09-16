@@ -6,7 +6,7 @@
 #include "Factory.h"
 #include "MeshExporter.h"
 
-aiScene* generateScene(const std::vector<float>& vertices)
+aiScene* generateScene(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
 {
 	// Create a new mesh
 	aiMesh* mesh = new aiMesh();
@@ -15,7 +15,7 @@ aiScene* generateScene(const std::vector<float>& vertices)
 	mesh->mNormals = new aiVector3D[mesh->mNumVertices];
 	mesh->mTextureCoords[0] = new aiVector3D[mesh->mNumVertices];
 	mesh->mNumUVComponents[0] = 2;
-	mesh->mNumFaces = vertices.size() / 2;
+	mesh->mNumFaces = vertices.size() / 4;
 	mesh->mFaces = new aiFace[mesh->mNumFaces];
 
 	// Set vertices
@@ -25,11 +25,14 @@ aiScene* generateScene(const std::vector<float>& vertices)
 		mesh->mTextureCoords[0][i] = aiVector3D(vertices[i * 5 + 3], vertices[i * 5 + 4], 0.0f);
 	}
 
-	//// Set faces (triangles)
-	//for (unsigned int i = 0; i < mesh->mNumFaces; ++i) {
-	//	mesh->mFaces[i].mNumIndices = 3;
-	//	mesh->mFaces[i].mIndices = new unsigned int[3] { indices[i * 3 + 0], indices[i * 3 + 1], indices[i * 3 + 2] };
-	//}
+	mesh->mNumFaces = indices.size() / 3; // Number of triangles (3 indices per triangle)
+	mesh->mFaces = new aiFace[mesh->mNumFaces];
+
+	// Set faces
+	for (unsigned int i = 0; i < mesh->mNumFaces; ++i) {
+		mesh->mFaces[i].mNumIndices = 3;
+		mesh->mFaces[i].mIndices = new unsigned int[3] { indices[i * 3 + 0], indices[i * 3 + 1], indices[i * 3 + 2] };
+	}
 
 	mesh->mPrimitiveTypes = aiPrimitiveType_TRIANGLE;
 
@@ -60,37 +63,54 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Te
 
 	// vertex generation
 	std::vector<float> vertices;
+	std::vector<unsigned int> indices;
 	int vertexCount = xRez * yRez * 4;
 
 	vertices.reserve(vertexCount * 5);
 
-	for (unsigned i = 0; i < xRez; i++)
+	for (unsigned i = 0; i < yRez; i++)
 	{
-		for (unsigned j = 0; j < yRez; j++)
+		for (unsigned j = 0; j < xRez; j++)
 		{
-			vertices.push_back((i / (float)xRez) - .5f);				// v.x
+			vertices.push_back((j / (float)xRez) - .5f);				// v.x
 			vertices.push_back(0.0f);									// v.y
-			vertices.push_back(j / (float)yRez - .5f);					// v.z
-			vertices.push_back(i / (float)xRez);						// u
-			vertices.push_back(j / (float)yRez);						// v
+			vertices.push_back(i / (float)yRez - .5f);					// v.z
+			vertices.push_back(j / (float)xRez);						// u
+			vertices.push_back(i / (float)yRez);						// v
 
-			vertices.push_back(((i + 1) / (float)xRez) - .5f);			// v.x
+			vertices.push_back(((j + 1) / (float)xRez) - .5f);			// v.x
 			vertices.push_back(0.0f);									// v.y
-			vertices.push_back(j / (float)yRez - .5f);					// v.z
-			vertices.push_back((i + 1) / (float)xRez);					// u
-			vertices.push_back(j / (float)yRez);						// v
+			vertices.push_back(i / (float)yRez - .5f);					// v.z
+			vertices.push_back((j + 1) / (float)xRez);					// u
+			vertices.push_back(i / (float)yRez);						// v
 
-			vertices.push_back((i / (float)xRez) - .5f);				// v.x
+			vertices.push_back((j / (float)xRez) - .5f);				// v.x
 			vertices.push_back(0.0f);									// v.y
-			vertices.push_back((j + 1) / (float)yRez - .5f);			// v.z
-			vertices.push_back((i) / (float)xRez);						// u
-			vertices.push_back((j + 1) / (float)yRez);					// v
+			vertices.push_back((i + 1) / (float)yRez - .5f);			// v.z
+			vertices.push_back((j) / (float)xRez);						// u
+			vertices.push_back((i + 1) / (float)yRez);					// v
 
-			vertices.push_back(((i + 1) / (float)xRez) - .5f);			// v.x
+			vertices.push_back(((j + 1) / (float)xRez) - .5f);			// v.x
 			vertices.push_back(0.0f);									// v.y
-			vertices.push_back((j + 1) / (float)yRez - .5f);			// v.z
-			vertices.push_back((i + 1) / (float)xRez);					// u
-			vertices.push_back((j + 1) / (float)yRez);					// v
+			vertices.push_back((i + 1) / (float)yRez - .5f);			// v.z
+			vertices.push_back((j + 1) / (float)xRez);					// u
+			vertices.push_back((i + 1) / (float)yRez);					// v
+
+			// Indices for two triangles forming a quad
+			unsigned int topLeft = i * yRez + j;
+			unsigned int topRight = topLeft + 1;
+			unsigned int bottomLeft = (i + 1) * yRez + j;
+			unsigned int bottomRight = bottomLeft + 1;
+
+			// First triangle of the quad
+			indices.push_back(topLeft);
+			indices.push_back(bottomLeft);
+			indices.push_back(topRight);
+
+			// Second triangle of the quad
+			indices.push_back(topRight);
+			indices.push_back(bottomLeft);
+			indices.push_back(bottomRight);
 		}
 	}
 
@@ -106,7 +126,7 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Te
 		.addRawVertices(vertices.data(), layout)
 		.build(mesh);
 
-	aiScene* scene = generateScene(vertices);
+	aiScene* scene = generateScene(vertices, indices);
 
 	MeshExporter::exportMesh(mesh, scene);
 

@@ -23,7 +23,12 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 
-	Resource<Mesh> m_mesh;
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(m_mesh, m_heightmap, m_width, m_height, m_scale);
+	}
+
+	
 	Resource<Texture> m_heightmap;
 
 	int m_width = 100;
@@ -31,5 +36,5 @@ public:
 	int m_scale = 1;
 
 private:
-	
+	Resource<Mesh> m_mesh;
 };

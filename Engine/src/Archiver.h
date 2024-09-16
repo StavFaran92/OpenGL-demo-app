@@ -23,6 +23,7 @@
 #include "Skybox.h"
 #include "Context.h"
 #include "Animator.h"
+#include "Terrain.h"
 
 class Scene;
 class Entity;
@@ -75,6 +76,7 @@ struct SerializedEntity
 	std::optional<SkyboxComponent> skybox;
 	std::optional<ImageComponent> image;
 	std::optional<Animator> animator;
+	std::optional<Terrain> terrain;
 
 	template <class Archive>
 	void serialize(Archive& archive) {
@@ -93,7 +95,8 @@ struct SerializedEntity
 			obj,
 			skybox,
 			image,
-			animator);
+			animator,
+			terrain);
 	}
 };
 
