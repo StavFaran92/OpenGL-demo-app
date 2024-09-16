@@ -64,11 +64,14 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Te
 	std::vector<unsigned int> indices;
 	int vertexCount = (xRez + 1) * (yRez + 1);
 
-	//vertices.reserve(vertexCount * 5);
+	vertices.reserve(vertexCount * 5);
+	indices.reserve(xRez * yRez * 4);
 
 	// Vertex generation
-	for (int i = 0; i <= yRez; i++) { // Include the last row
-		for (int j = 0; j <= xRez; j++) { // Include the last column
+	for (int i = 0; i <= yRez; i++) 
+	{ 
+		for (int j = 0; j <= xRez; j++) 
+		{ 
 			// Vertex positions
 			float xPos = (j / (float)xRez) - 0.5f;  // Normalize to [-0.5, 0.5]
 			float zPos = (i / (float)yRez) - 0.5f;  // Normalize to [-0.5, 0.5]
@@ -88,14 +91,16 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Te
 	}
 
 	// Index generation for the grid
-	for (int i = 0; i < yRez; i++) {
-		for (int j = 0; j < xRez; j++) {
-			int topLeft = i * (xRez + 1) + j;         // Corrected calculation with (xRez + 1)
+	for (int i = 0; i < yRez; i++) 
+	{
+		for (int j = 0; j < xRez; j++) 
+		{
+			int topLeft = i * (xRez + 1) + j;
 			int topRight = topLeft + 1;
 			int bottomLeft = (i + 1) * (xRez + 1) + j;
 			int bottomRight = bottomLeft + 1;
 
-			// First triangle of the quad (top-left, bottom-left, top-right)
+			// Quad indices
 			indices.push_back(topLeft);
 			indices.push_back(topRight);
 			indices.push_back(bottomLeft);
