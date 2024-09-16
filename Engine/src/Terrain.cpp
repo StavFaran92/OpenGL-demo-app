@@ -32,7 +32,7 @@ aiScene* generateScene(const std::vector<float>& vertices, const std::vector<uns
 		mesh->mFaces[i].mIndices = new unsigned int[3] { indices[i * 3 + 0], indices[i * 3 + 1], indices[i * 3 + 2] };
 	}
 
-	mesh->mPrimitiveTypes = aiPrimitiveType_POLYGON;
+	mesh->mPrimitiveTypes = aiPrimitiveType_TRIANGLE;
 
 	// Create a new scene
 	aiScene* scene = new aiScene();
@@ -56,60 +56,47 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, const std::
 
 Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Texture> heightMap)
 {
-	int xRez = 10;
-	int yRez = 10;
+	int xRez = 2;
+	int yRez = 2;
 
 	// vertex generation
 	std::vector<float> vertices;
 	std::vector<unsigned int> indices;
-	int vertexCount = xRez * yRez * 4;
+	int vertexCount = (xRez + 1) * (yRez + 1);
 
-	vertices.reserve(vertexCount * 5);
+	//vertices.reserve(vertexCount * 5);
 
-	for (unsigned i = 0; i < yRez; i++)
-	{
-		for (unsigned j = 0; j < xRez; j++)
-		{
-			// Vertex 1 (top-left)
-			vertices.push_back((j / (float)xRez) - 0.5f);   // v.x
-			vertices.push_back(0.0f);                       // v.y
-			vertices.push_back((i / (float)yRez) - 0.5f);   // v.z
-			vertices.push_back(j / (float)xRez);            // u
-			vertices.push_back(i / (float)yRez);            // v
+	// Vertex generation
+	for (int i = 0; i <= yRez; i++) { // Include the last row
+		for (int j = 0; j <= xRez; j++) { // Include the last column
+			// Vertex positions
+			float xPos = (j / (float)xRez) - 0.5f;  // Normalize to [-0.5, 0.5]
+			float zPos = (i / (float)yRez) - 0.5f;  // Normalize to [-0.5, 0.5]
+			float yPos = 0.0f;  // Flat terrain
 
-			// Vertex 2 (top-right)
-			vertices.push_back(((j + 1) / (float)xRez) - 0.5f);  // v.x
-			vertices.push_back(0.0f);                            // v.y
-			vertices.push_back((i / (float)yRez) - 0.5f);        // v.z
-			vertices.push_back((j + 1) / (float)xRez);           // u
-			vertices.push_back(i / (float)yRez);                 // v
+			// Texture coordinates
+			float u = j / (float)xRez;
+			float v = i / (float)yRez;
 
-			// Vertex 3 (bottom-left)
-			vertices.push_back((j / (float)xRez) - 0.5f);   // v.x
-			vertices.push_back(0.0f);                       // v.y
-			vertices.push_back(((i + 1) / (float)yRez) - 0.5f);  // v.z
-			vertices.push_back(j / (float)xRez);            // u
-			vertices.push_back((i + 1) / (float)yRez);      // v
+			// Add position and texture coordinate to vertex list
+			vertices.push_back(xPos);  // x
+			vertices.push_back(yPos);  // y
+			vertices.push_back(zPos);  // z
+			vertices.push_back(u);     // u
+			vertices.push_back(v);     // v
+		}
+	}
 
-			// Vertex 4 (bottom-right)
-			vertices.push_back(((j + 1) / (float)xRez) - 0.5f);  // v.x
-			vertices.push_back(0.0f);                            // v.y
-			vertices.push_back(((i + 1) / (float)yRez) - 0.5f);  // v.z
-			vertices.push_back((j + 1) / (float)xRez);           // u
-			vertices.push_back((i + 1) / (float)yRez);           // v
+	// Index generation for the grid
+	for (int i = 0; i < yRez; i++) {
+		for (int j = 0; j < xRez; j++) {
+			int topLeft = i * (xRez + 1) + j;         // Corrected calculation with (xRez + 1)
+			int topRight = topLeft + 1;
+			int bottomLeft = (i + 1) * (xRez + 1) + j;
+			int bottomRight = bottomLeft + 1;
 
-			// Calculate indices for two triangles (using the correct indexing)
-			unsigned int topLeft = (i * yRez + j) * 4;
-			unsigned int topRight = topLeft + 1;
-			unsigned int bottomLeft = topLeft + 2;
-			unsigned int bottomRight = topLeft + 3;
-
-			// First triangle of the quad
+			// First triangle of the quad (top-left, bottom-left, top-right)
 			indices.push_back(topLeft);
-			indices.push_back(bottomLeft);
-			indices.push_back(topRight);
-
-			// Second triangle of the quad
 			indices.push_back(topRight);
 			indices.push_back(bottomLeft);
 			indices.push_back(bottomRight);
@@ -127,6 +114,7 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Te
 
 	MeshBuilder::builder()
 		.addRawVertices(vertices.data(), layout)
+		.addIndices(indices)
 		.build(mesh);
 
 	aiScene* scene = generateScene(vertices, indices);

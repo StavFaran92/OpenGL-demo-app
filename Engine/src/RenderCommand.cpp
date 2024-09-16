@@ -25,7 +25,7 @@ void RenderCommand::drawPatches(const VertexArrayObject* vao)
 {
 	vao->Bind();
 
-	glDrawArrays(GL_PATCHES, 0, vao->GetVerticesCount());
+	glDrawElements(GL_PATCHES, vao->GetIndexCount() , GL_UNSIGNED_INT, 0);
 }
 
 void RenderCommand::drawInstanced(const VertexArrayObject* vao, int count)
