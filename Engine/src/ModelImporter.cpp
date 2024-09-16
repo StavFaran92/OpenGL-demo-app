@@ -57,7 +57,7 @@ Resource<Mesh> ModelImporter::import(const std::string& path)
 
 	// read scene from file
 	scene = m_importer->ReadFile(path, 
-		aiProcess_Triangulate | 
+		//aiProcess_Triangulate | 
 		aiProcess_GenSmoothNormals | 
 		aiProcess_FlipUVs | 
 		aiProcess_CalcTangentSpace |

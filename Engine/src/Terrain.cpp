@@ -23,16 +23,16 @@ aiScene* generateScene(const std::vector<float>& vertices, const std::vector<uns
 		mesh->mTextureCoords[0][i] = aiVector3D(vertices[i * 5 + 3], vertices[i * 5 + 4], 0.0f);
 	}
 
-	mesh->mNumFaces = indices.size() / 3; // Number of triangles (3 indices per triangle)
+	mesh->mNumFaces = indices.size() / 4;
 	mesh->mFaces = new aiFace[mesh->mNumFaces];
 
 	// Set faces
 	for (unsigned int i = 0; i < mesh->mNumFaces; ++i) {
-		mesh->mFaces[i].mNumIndices = 3;
-		mesh->mFaces[i].mIndices = new unsigned int[3] { indices[i * 3 + 0], indices[i * 3 + 1], indices[i * 3 + 2] };
+		mesh->mFaces[i].mNumIndices = 4;
+		mesh->mFaces[i].mIndices = new unsigned int[4] { indices[i * 4 + 0], indices[i * 4 + 1], indices[i * 4 + 2], indices[i * 4 + 3] };
 	}
 
-	mesh->mPrimitiveTypes = aiPrimitiveType_TRIANGLE;
+	mesh->mPrimitiveTypes = aiPrimitiveType_POLYGON;
 
 	// Create a new scene
 	aiScene* scene = new aiScene();
@@ -56,8 +56,8 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, const std::
 
 Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Texture> heightMap)
 {
-	int xRez = 2;
-	int yRez = 2;
+	int xRez = 10;
+	int yRez = 10;
 
 	// vertex generation
 	std::vector<float> vertices;
