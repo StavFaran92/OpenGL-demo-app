@@ -15,8 +15,6 @@ aiScene* generateScene(const std::vector<float>& vertices, const std::vector<uns
 	mesh->mNormals = new aiVector3D[mesh->mNumVertices];
 	mesh->mTextureCoords[0] = new aiVector3D[mesh->mNumVertices];
 	mesh->mNumUVComponents[0] = 2;
-	mesh->mNumFaces = vertices.size() / 4;
-	mesh->mFaces = new aiFace[mesh->mNumFaces];
 
 	// Set vertices
 	for (unsigned int i = 0; i < mesh->mNumVertices; ++i) 
@@ -34,7 +32,7 @@ aiScene* generateScene(const std::vector<float>& vertices, const std::vector<uns
 		mesh->mFaces[i].mIndices = new unsigned int[3] { indices[i * 3 + 0], indices[i * 3 + 1], indices[i * 3 + 2] };
 	}
 
-	mesh->mPrimitiveTypes = aiPrimitiveType_TRIANGLE;
+	mesh->mPrimitiveTypes = aiPrimitiveType_POLYGON;
 
 	// Create a new scene
 	aiScene* scene = new aiScene();
@@ -72,35 +70,39 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Te
 	{
 		for (unsigned j = 0; j < xRez; j++)
 		{
-			vertices.push_back((j / (float)xRez) - .5f);				// v.x
-			vertices.push_back(0.0f);									// v.y
-			vertices.push_back(i / (float)yRez - .5f);					// v.z
-			vertices.push_back(j / (float)xRez);						// u
-			vertices.push_back(i / (float)yRez);						// v
+			// Vertex 1 (top-left)
+			vertices.push_back((j / (float)xRez) - 0.5f);   // v.x
+			vertices.push_back(0.0f);                       // v.y
+			vertices.push_back((i / (float)yRez) - 0.5f);   // v.z
+			vertices.push_back(j / (float)xRez);            // u
+			vertices.push_back(i / (float)yRez);            // v
 
-			vertices.push_back(((j + 1) / (float)xRez) - .5f);			// v.x
-			vertices.push_back(0.0f);									// v.y
-			vertices.push_back(i / (float)yRez - .5f);					// v.z
-			vertices.push_back((j + 1) / (float)xRez);					// u
-			vertices.push_back(i / (float)yRez);						// v
+			// Vertex 2 (top-right)
+			vertices.push_back(((j + 1) / (float)xRez) - 0.5f);  // v.x
+			vertices.push_back(0.0f);                            // v.y
+			vertices.push_back((i / (float)yRez) - 0.5f);        // v.z
+			vertices.push_back((j + 1) / (float)xRez);           // u
+			vertices.push_back(i / (float)yRez);                 // v
 
-			vertices.push_back((j / (float)xRez) - .5f);				// v.x
-			vertices.push_back(0.0f);									// v.y
-			vertices.push_back((i + 1) / (float)yRez - .5f);			// v.z
-			vertices.push_back((j) / (float)xRez);						// u
-			vertices.push_back((i + 1) / (float)yRez);					// v
+			// Vertex 3 (bottom-left)
+			vertices.push_back((j / (float)xRez) - 0.5f);   // v.x
+			vertices.push_back(0.0f);                       // v.y
+			vertices.push_back(((i + 1) / (float)yRez) - 0.5f);  // v.z
+			vertices.push_back(j / (float)xRez);            // u
+			vertices.push_back((i + 1) / (float)yRez);      // v
 
-			vertices.push_back(((j + 1) / (float)xRez) - .5f);			// v.x
-			vertices.push_back(0.0f);									// v.y
-			vertices.push_back((i + 1) / (float)yRez - .5f);			// v.z
-			vertices.push_back((j + 1) / (float)xRez);					// u
-			vertices.push_back((i + 1) / (float)yRez);					// v
+			// Vertex 4 (bottom-right)
+			vertices.push_back(((j + 1) / (float)xRez) - 0.5f);  // v.x
+			vertices.push_back(0.0f);                            // v.y
+			vertices.push_back(((i + 1) / (float)yRez) - 0.5f);  // v.z
+			vertices.push_back((j + 1) / (float)xRez);           // u
+			vertices.push_back((i + 1) / (float)yRez);           // v
 
-			// Indices for two triangles forming a quad
-			unsigned int topLeft = i * yRez + j;
+			// Calculate indices for two triangles (using the correct indexing)
+			unsigned int topLeft = (i * yRez + j) * 4;
 			unsigned int topRight = topLeft + 1;
-			unsigned int bottomLeft = (i + 1) * yRez + j;
-			unsigned int bottomRight = bottomLeft + 1;
+			unsigned int bottomLeft = topLeft + 2;
+			unsigned int bottomRight = topLeft + 3;
 
 			// First triangle of the quad
 			indices.push_back(topLeft);
@@ -113,6 +115,7 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Te
 			indices.push_back(bottomRight);
 		}
 	}
+
 
 	Resource<Mesh> mesh = Factory<Mesh>::create();
 
