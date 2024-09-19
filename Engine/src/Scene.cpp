@@ -508,9 +508,9 @@ void Scene::draw(float deltaTime)
 	m_terrainShader->setUniformValue("view", *params.view);
 	m_terrainShader->setUniformValue("projection", *params.projection);
 	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glEnable(GL_POLYGON_OFFSET_LINE);
-	glPolygonOffset(-1.0, -1.0);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glEnable(GL_POLYGON_OFFSET_LINE);
+	//glPolygonOffset(-1.0, -1.0);
 
 	// Render terrain
 	for (auto&& [entity, terrain, transform] : m_registry->get().view<Terrain, Transformation>().each())
@@ -528,12 +528,26 @@ void Scene::draw(float deltaTime)
 		heightmap.get()->setSlot(0);
 		m_terrainShader->setUniformValue("heightMap", 0);
 
+		int textureCount = terrain.getTextureCount();
+		m_terrainShader->setUniformValue("textureCount", textureCount);
+
+		for (int i = 0; i < textureCount; i++)
+		{
+			auto texture = terrain.getTexture(i);
+			texture.get()->setSlot(i + 1);
+			texture.get()->bind();
+			m_terrainShader->setUniformValue("texture_" + std::to_string(i), i + 1);
+
+			auto textureBlend = terrain.getTextureBlend(i);
+			m_terrainShader->setUniformValue("textureBlend[" + std::to_string(i) + "]", textureBlend);
+		}
+
 		auto vao = terrain.getMesh().get()->getVAO();
 		RenderCommand::drawPatches(vao);
 	}
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glDisable(GL_POLYGON_OFFSET_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glDisable(GL_POLYGON_OFFSET_LINE);
 	
 
 	// Render UI

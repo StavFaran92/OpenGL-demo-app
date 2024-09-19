@@ -89,6 +89,8 @@ uniform float scale;
 
 in vec2 outTexCoords[];
 
+out vec2 texCoord;
+
 // Send to fragment shader for coloring
 out float height;
 
@@ -106,10 +108,10 @@ void main()
     // bilinearly interpolate texture coordinate across patch
     vec2 t0 = (t01 - t00) * u + t00;
     vec2 t1 = (t11 - t10) * u + t10;
-    vec2 texCoord = (t1 - t0) * v + t0;
+    texCoord = (t1 - t0) * v + t0;
 
     // lookup texel at patch coordinate for height and scale
-    height = texture(heightMap, texCoord).y * scale;
+    height = texture(heightMap, texCoord).y;
 
     // get point position
     vec4 p00 = gl_in[0].gl_Position;
@@ -128,7 +130,7 @@ void main()
     vec4 p = (p1 - p0) * v + p0;
 
     // displace point along normal
-    p += normal * height;
+    p += normal * height * scale;
 
     gl_Position = projection * view * model * p;
 }
@@ -137,14 +139,51 @@ void main()
 
 #version 410 core
 
+//uniform int textureCount;
+
+uniform sampler2D texture_0;
+uniform sampler2D texture_1;
+uniform sampler2D texture_2;
+uniform sampler2D texture_3;
+
+uniform float textureBlend[4];
+
 uniform float scale;
 
 in float height;
+in vec2 texCoord;
 
 out vec4 color;
 
 void main()
 {
-    float h = (height)/scale;
-    color = vec4(h, h, h, 1.0);
+    if(height < textureBlend[0])
+    {
+        color = texture(texture_0, texCoord);
+    }
+    else if(height >= textureBlend[0] && height < textureBlend[1])
+    {
+        float b1 = height - textureBlend[0];
+        float b2 = textureBlend[1] - height;
+        float blend = b1 / (b1 + b2);
+        color = mix(texture(texture_0, texCoord), texture(texture_1, texCoord), blend);
+    }
+    else if(height >= textureBlend[1] && height < textureBlend[2])
+    {
+        float b1 = height - textureBlend[1];
+        float b2 = textureBlend[2] - height;
+        float blend = b1 / (b1 + b2);
+        color = mix(texture(texture_1, texCoord), texture(texture_2, texCoord), blend);
+    }
+    else if(height >= textureBlend[2] && height < textureBlend[3])
+    {
+        float b1 = height - textureBlend[2];
+        float b2 = textureBlend[3] - height;
+        float blend = b1 / (b1 + b2);
+        color = mix(texture(texture_2, texCoord), texture(texture_3, texCoord), blend);
+    }
+    else if(height >= textureBlend[3])
+    {
+        color = texture(texture_3, texCoord);
+    }
 }

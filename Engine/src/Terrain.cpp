@@ -5,6 +5,7 @@
 #include "MeshBuilder.h"
 #include "Factory.h"
 #include "MeshExporter.h"
+#include "Logger.h"
 
 aiScene* generateScene(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
 {
@@ -159,4 +160,47 @@ int Terrain::getWidth() const
 int Terrain::getHeight() const
 {
 	return m_height;
+}
+
+void Terrain::addTexture(Resource<Texture> texture)
+{
+	m_textures.push_back(texture);
+}
+
+void Terrain::setTextureBlend(int index, float val)
+{
+	if (index > m_blends.size() - 1)
+	{
+		logWarning("Invalid texture blend specified: " + std::to_string(index));
+		return;
+	}
+
+	m_blends[index] = val;
+}
+
+Resource<Texture>& Terrain::getTexture(int index)
+{
+	if (index > m_textures.size() - 1)
+	{
+		logWarning("Invalid texture index specified: " + std::to_string(index));
+		return Resource<Texture>::empty;
+	}
+
+	return m_textures.at(index);
+}
+
+float Terrain::getTextureBlend(int index) const
+{
+	if (index > m_blends.size() - 1)
+	{
+		logWarning("Invalid texture blend specified: " + std::to_string(index));
+		return 0;
+	}
+
+	return m_blends.at(index);
+}
+
+int Terrain::getTextureCount() const
+{
+	return m_textures.size();
 }
