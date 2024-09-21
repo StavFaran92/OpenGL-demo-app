@@ -17,6 +17,11 @@ struct TextureBlend
 	float blend = 0;
 	float scaleX = 1;
 	float scaleY = 1;
+
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(texture, blend, scaleX, scaleY);
+	}
 };
 
 class EngineAPI Terrain : public Component
@@ -48,7 +53,7 @@ public:
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(m_mesh, m_heightmap, m_width, m_height, m_scale);
+		archive(m_mesh, m_heightmap, m_width, m_height, m_scale, m_textureCount, m_textureBlends);
 	}
 
 	
@@ -57,7 +62,7 @@ public:
 	int m_width = 100;
 	int m_height = 100;
 	int m_scale = 1;
-	int m_textureCount = 1;
+	int m_textureCount = 0;
 
 	std::vector<TextureBlend> m_textureBlends {  };
 	//std::vector<Resource<Texture>> m_textures{  };

@@ -19,7 +19,7 @@ aiScene* generateScene(const std::vector<float>& vertices, const std::vector<uns
 	mesh->mNumUVComponents[0] = 2;
 
 	// Set vertices
-	for (unsigned int i = 0; i < mesh->mNumVertices; ++i) 
+	for (unsigned int i = 0; i < mesh->mNumVertices / 5; ++i) 
 	{
 		mesh->mVertices[i] = aiVector3D(vertices[i * 5 + 0], vertices[i * 5 + 1], vertices[i * 5 + 2]);
 		mesh->mTextureCoords[0][i] = aiVector3D(vertices[i * 5 + 3], vertices[i * 5 + 4], 0.0f);

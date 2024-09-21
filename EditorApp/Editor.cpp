@@ -1510,19 +1510,26 @@ void RenderInspectorWindow(float width, float height)
 
 
 			ImGui::Separator();
-			ImGui::LabelText("Textures", "Textures");
+			ImGui::LabelText("Textures", "");
 
 			ImGui::SliderInt("Textures", &terrain.m_textureCount, 0, MAX_TEXTURE_COUNT);
 			for (int i = 0; i < terrain.m_textureCount; i++)
 			{
 				ImGui::PushID(i);
 				auto texture = terrain.getTexture(i);
-				addTextureEditWidget(terrain.m_heightmap, { 50, 50 }, [&](std::string uuid) {
+				addTextureEditWidget(texture, { 50, 50 }, [i, &terrain](std::string uuid) {
 					terrain.setTexture(i, Resource<Texture>(uuid));
 				});
-				ImGui::DragFloat("Height blend", &terrain.m_blends[i]);
-				ImGui::DragInt("scaleX", &terrain.m_scale);
-				ImGui::DragInt("scaleY", &terrain.m_scale);
+				ImGui::DragFloat("Height blend", &terrain.m_textureBlends[i].blend, .01f);
+				auto scale = terrain.getTextureScale(i);
+				if (ImGui::DragFloat("scaleX", &scale.r, .01f))
+				{
+					terrain.setTextureScaleX(i, scale.r);
+				}
+				if (ImGui::DragFloat("scaleY", &scale.g, .01f))
+				{
+					terrain.setTextureScaleY(i, scale.g);
+				}
 				ImGui::PopID();
 			}
 		});
