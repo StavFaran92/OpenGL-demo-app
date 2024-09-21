@@ -171,13 +171,13 @@ void main()
     {
         color = texture(texture_0, texCoord);
     }
-    else if(height >= textureBlend[textureCount])
+    else if(height >= textureBlend[textureCount - 1])
     {
-        color = sampleFromTexture(textureCount, texCoord);
+        color = sampleFromTexture(textureCount - 1, texCoord);
     }
     else
     {
-        for(int i=0; i < textureCount; i++)
+        for(int i=0; i < textureCount - 1; i++)
         {
             if(height >= textureBlend[i] && height < textureBlend[i + 1])
             {
