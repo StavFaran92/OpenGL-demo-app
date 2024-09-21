@@ -111,7 +111,7 @@ void main()
     texCoord = (t1 - t0) * v + t0;
 
     // lookup texel at patch coordinate for height and scale
-    height = texture(heightMap, texCoord).y;
+    height = texture(heightMap, texCoord).r;
 
     // get point position
     vec4 p00 = gl_in[0].gl_Position;

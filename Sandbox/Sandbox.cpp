@@ -39,23 +39,29 @@ public:
 
 		terrain.m_textureCount = 3;
 
-		auto textureRock = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Rock050_1K-JPG_Color.jpg");
-		terrain.setTexture(0, textureRock);
-		terrain.setTextureBlend(0, .10f);
-		terrain.setTextureScaleX(0, 10.f);
-		terrain.setTextureScaleY(0, 10.f);
+		{
+			auto texture = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Grass003_1K-JPG_Color.jpg");
+			terrain.setTexture(0, texture);
+			terrain.setTextureBlend(0, .10f);
+			terrain.setTextureScaleX(0, 10.f);
+			terrain.setTextureScaleY(0, 10.f);
+		}
 
-		auto textureGrass = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Grass004_1K-JPG_Color.jpg");
-		terrain.setTexture(1, textureGrass);
-		terrain.setTextureBlend(1, .30f);
-		terrain.setTextureScaleX(1, 15.f);
-		terrain.setTextureScaleY(1, 15.f);
+		{
+			auto texture = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Grass004_1K-JPG_Color.jpg");
+			terrain.setTexture(1, texture);
+			terrain.setTextureBlend(1, .20f);
+			terrain.setTextureScaleX(1, 15.f);
+			terrain.setTextureScaleY(1, 15.f);
+		}
 
-		auto textureGround = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Ground037_1K-JPG_Color.jpg");
-		terrain.setTexture(2, textureGround);
-		terrain.setTextureBlend(2, .50f);
-		terrain.setTextureScaleX(2, 5.f);
-		terrain.setTextureScaleY(2, 5.f);
+		{
+			auto texture = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Ground037_1K-JPG_Color.jpg");
+			terrain.setTexture(2, texture);
+			terrain.setTextureBlend(2, .50f);
+			terrain.setTextureScaleX(2, 13.f);
+			terrain.setTextureScaleY(2, 13.f);
+		}
 
 		//auto textureSnow = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Snow008A_1K-JPG_Color.jpg");
 		//terrain.setTexture(3, textureSnow);
