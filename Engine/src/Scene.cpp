@@ -540,6 +540,9 @@ void Scene::draw(float deltaTime)
 
 			auto textureBlend = terrain.getTextureBlend(i);
 			m_terrainShader->setUniformValue("textureBlend[" + std::to_string(i) + "]", textureBlend);
+
+			glm::vec2 textureScale = terrain.getTextureScale(i);
+			m_terrainShader->setUniformValue("textureScale[" + std::to_string(i) + "]", textureScale);
 		}
 
 		auto vao = terrain.getMesh().get()->getVAO();

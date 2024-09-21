@@ -37,23 +37,29 @@ public:
 		//auto terrain = Terrain::generateTerrain(100, 100, 64, "C:/Users/Stav/Downloads/HeightMap.png");
 		auto& terrain = terrainEnt.addComponent<Terrain>(Terrain::generateTerrain(500, 500, 10, "C:/Users/Stav/Downloads/tex/iceland_heightmap.png"));
 
-		terrain.m_textureCount = 4;
+		terrain.m_textureCount = 3;
 
 		auto textureRock = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Rock050_1K-JPG_Color.jpg");
 		terrain.setTexture(0, textureRock);
 		terrain.setTextureBlend(0, .10f);
+		terrain.setTextureScaleX(0, 10.f);
+		terrain.setTextureScaleY(0, 10.f);
 
 		auto textureGrass = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Grass004_1K-JPG_Color.jpg");
 		terrain.setTexture(1, textureGrass);
 		terrain.setTextureBlend(1, .30f);
+		terrain.setTextureScaleX(1, 15.f);
+		terrain.setTextureScaleY(1, 15.f);
 
 		auto textureGround = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Ground037_1K-JPG_Color.jpg");
 		terrain.setTexture(2, textureGround);
 		terrain.setTextureBlend(2, .50f);
+		terrain.setTextureScaleX(2, 5.f);
+		terrain.setTextureScaleY(2, 5.f);
 
-		auto textureSnow = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Snow008A_1K-JPG_Color.jpg");
-		terrain.setTexture(3, textureSnow);
-		terrain.setTextureBlend(3, .80f);
+		//auto textureSnow = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Snow008A_1K-JPG_Color.jpg");
+		//terrain.setTexture(3, textureSnow);
+		//terrain.setTextureBlend(3, .80f);
 
 
 

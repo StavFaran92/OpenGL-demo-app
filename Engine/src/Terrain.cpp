@@ -137,8 +137,10 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Te
 
 	for (int i = 0; i < MAX_TEXTURE_COUNT; i++)
 	{
-		terrain.m_textures.push_back(Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1));
-		terrain.m_blends.push_back(i * .2f + .2f);
+		TextureBlend blend;
+		blend.texture = Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1);
+		blend.blend = i * .2f + .2f;
+		terrain.m_textureBlends.push_back(blend);
 	}
 
 	return terrain; // todo fix
@@ -171,46 +173,80 @@ int Terrain::getHeight() const
 
 void Terrain::setTexture(int index, Resource<Texture> texture)
 {
-	if (index > m_textures.size() - 1)
+	if (index > m_textureBlends.size() - 1)
 	{
 		logWarning("Invalid texture specified: " + std::to_string(index));
 		return;
 	}
 
-	m_textures[index] = texture;
+	m_textureBlends[index].texture = texture;
+}
+
+void Terrain::setTextureScaleX(int index, float scaleX)
+{
+	if (index > m_textureBlends.size() - 1)
+	{
+		logWarning("Invalid texture index specified: " + std::to_string(index));
+		return;
+	}
+
+	m_textureBlends.at(index).scaleX = scaleX;
+}
+
+void Terrain::setTextureScaleY(int index, float scaleY)
+{
+	if (index > m_textureBlends.size() - 1)
+	{
+		logWarning("Invalid texture index specified: " + std::to_string(index));
+		return;
+	}
+
+	m_textureBlends.at(index).scaleY = scaleY;
 }
 
 void Terrain::setTextureBlend(int index, float val)
 {
-	if (index > m_blends.size() - 1)
+	if (index > m_textureBlends.size() - 1)
 	{
 		logWarning("Invalid texture blend specified: " + std::to_string(index));
 		return;
 	}
 
-	m_blends[index] = val;
+	m_textureBlends[index].blend = val;
 }
 
 Resource<Texture>& Terrain::getTexture(int index)
 {
-	if (index > m_textures.size() - 1)
+	if (index > m_textureBlends.size() - 1)
 	{
 		logWarning("Invalid texture index specified: " + std::to_string(index));
 		return Resource<Texture>::empty;
 	}
 
-	return m_textures.at(index);
+	return m_textureBlends.at(index).texture;
 }
 
 float Terrain::getTextureBlend(int index) const
 {
-	if (index > m_blends.size() - 1)
+	if (index > m_textureBlends.size() - 1)
 	{
 		logWarning("Invalid texture blend specified: " + std::to_string(index));
 		return 0;
 	}
 
-	return m_blends.at(index);
+	return m_textureBlends.at(index).blend;
+}
+
+glm::vec2 Terrain::getTextureScale(int index) const
+{
+	if (index > m_textureBlends.size() - 1)
+	{
+		logWarning("Invalid texture blend specified: " + std::to_string(index));
+		return {};
+	}
+
+	auto& textureBlend = m_textureBlends.at(index);
+	return { textureBlend.scaleX, textureBlend.scaleY };
 }
 
 int Terrain::getTextureCount() const

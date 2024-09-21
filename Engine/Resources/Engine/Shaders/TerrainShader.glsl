@@ -147,6 +147,7 @@ uniform sampler2D texture_2;
 uniform sampler2D texture_3;
 
 uniform float textureBlend[4];
+uniform vec2 textureScale[4];
 
 uniform float scale;
 
@@ -157,6 +158,8 @@ out vec4 color;
 
 vec4 sampleFromTexture(int textureIndex, vec2 uv)
 {
+    uv *= textureScale[textureIndex];
+
     if (textureIndex == 0)  return texture(texture_0, uv);
     else if (textureIndex == 1) return texture(texture_1, uv);
     else if (textureIndex == 2) return texture(texture_2, uv);
@@ -169,7 +172,7 @@ void main()
 {
     if(height < textureBlend[0])
     {
-        color = texture(texture_0, texCoord);
+        color = sampleFromTexture(0, texCoord);
     }
     else if(height >= textureBlend[textureCount - 1])
     {

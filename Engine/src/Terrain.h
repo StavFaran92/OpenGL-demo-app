@@ -11,6 +11,14 @@
 
 static const int MAX_TEXTURE_COUNT = 4;
 
+struct TextureBlend
+{
+	Resource<Texture> texture;
+	float blend = 0;
+	float scaleX = 1;
+	float scaleY = 1;
+};
+
 class EngineAPI Terrain : public Component
 {
 public:
@@ -28,10 +36,13 @@ public:
 	int getHeight() const;
 
 	void setTexture(int index, Resource<Texture> texture);
+	void setTextureScaleX(int index, float scaleX);
+	void setTextureScaleY(int index, float scaleY);
 	void setTextureBlend(int index, float val);
 
 	Resource<Texture>& getTexture(int index);
 	float getTextureBlend(int index) const;
+	glm::vec2 getTextureScale(int index) const;
 
 	int getTextureCount() const;
 
@@ -48,8 +59,9 @@ public:
 	int m_scale = 1;
 	int m_textureCount = 1;
 
-	std::vector<Resource<Texture>> m_textures{  };
-	std::vector<float> m_blends{ };
+	std::vector<TextureBlend> m_textureBlends {  };
+	//std::vector<Resource<Texture>> m_textures{  };
+	//std::vector<float> m_blends{ };
 
 private:
 	Resource<Mesh> m_mesh;
