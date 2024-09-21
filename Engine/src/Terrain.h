@@ -9,6 +9,8 @@
 #include "TerrainMaterial.h"
 #include "TextureArray.h"
 
+static const int MAX_TEXTURE_COUNT = 4;
+
 class EngineAPI Terrain : public Component
 {
 public:
@@ -25,7 +27,7 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 
-	void addTexture(Resource<Texture> texture);
+	void setTexture(int index, Resource<Texture> texture);
 	void setTextureBlend(int index, float val);
 
 	Resource<Texture>& getTexture(int index);
@@ -44,10 +46,13 @@ public:
 	int m_width = 100;
 	int m_height = 100;
 	int m_scale = 1;
+	int m_textureCount = 1;
+
+	std::vector<Resource<Texture>> m_textures{  };
+	std::vector<float> m_blends{ };
 
 private:
 	Resource<Mesh> m_mesh;
 	//std::shared_ptr<TextureArray> m_textures;
-	std::vector<Resource<Texture>> m_textures;
-	std::vector<float> m_blends{ 16 };
+	
 };

@@ -219,12 +219,14 @@ static void displayAssetTextureSelectWindow()
 
 			}
 			showAssetTextureSelectWindow = false;
+			selectedTextureIndex = -1;
 		}
 
 		ImGui::SameLine();
 
 		if (ImGui::Button("Cancel")) {
 			showAssetTextureSelectWindow = false;
+			selectedTextureIndex = -1;
 		}
 
 		ImGui::End();
@@ -1505,6 +1507,24 @@ void RenderInspectorWindow(float width, float height)
 			ImGui::DragInt("height", &terrain.m_height);
 			ImGui::DragInt("width", &terrain.m_width);
 			ImGui::DragInt("scale", &terrain.m_scale);
+
+
+			ImGui::Separator();
+			ImGui::LabelText("Textures", "Textures");
+
+			ImGui::SliderInt("Textures", &terrain.m_textureCount, 0, MAX_TEXTURE_COUNT);
+			for (int i = 0; i < terrain.m_textureCount; i++)
+			{
+				ImGui::PushID(i);
+				auto texture = terrain.getTexture(i);
+				addTextureEditWidget(terrain.m_heightmap, { 50, 50 }, [&](std::string uuid) {
+					terrain.setTexture(i, Resource<Texture>(uuid));
+				});
+				ImGui::DragFloat("Height blend", &terrain.m_blends[i]);
+				ImGui::DragInt("scaleX", &terrain.m_scale);
+				ImGui::DragInt("scaleY", &terrain.m_scale);
+				ImGui::PopID();
+			}
 		});
 
 		if (ImGui::Button("Add Component", ImVec2(windowWidth, 0)))

@@ -6,6 +6,7 @@
 #include "Factory.h"
 #include "MeshExporter.h"
 #include "Logger.h"
+#include "CommonTextures.h"
 
 aiScene* generateScene(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
 {
@@ -134,6 +135,12 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Te
 	terrain.m_height = height;
 	terrain.m_mesh = mesh;
 
+	for (int i = 0; i < MAX_TEXTURE_COUNT; i++)
+	{
+		terrain.m_textures.push_back(Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1));
+		terrain.m_blends.push_back(i * .2f + .2f);
+	}
+
 	return terrain; // todo fix
 }
 
@@ -162,9 +169,15 @@ int Terrain::getHeight() const
 	return m_height;
 }
 
-void Terrain::addTexture(Resource<Texture> texture)
+void Terrain::setTexture(int index, Resource<Texture> texture)
 {
-	m_textures.push_back(texture);
+	if (index > m_textures.size() - 1)
+	{
+		logWarning("Invalid texture specified: " + std::to_string(index));
+		return;
+	}
+
+	m_textures[index] = texture;
 }
 
 void Terrain::setTextureBlend(int index, float val)
@@ -202,5 +215,5 @@ float Terrain::getTextureBlend(int index) const
 
 int Terrain::getTextureCount() const
 {
-	return m_textures.size();
+	return m_textureCount;
 }
