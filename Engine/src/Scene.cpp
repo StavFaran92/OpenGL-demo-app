@@ -47,6 +47,8 @@
 #include "Archiver.h"
 #include "Animator.h"
 #include "Terrain.h"
+#include "AABB.h"
+#include "Frustum.h"
 
 
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
@@ -399,6 +401,7 @@ void Scene::draw(float deltaTime)
 	m_uboTime->setData(0, sizeof(float), &elapsed);
 	m_uboTime->unbind();
 
+	Frustum frustum()
 
 	auto view = m_registry->get().view<MeshComponent, Transformation, RenderableComponent>();
 
@@ -413,6 +416,13 @@ void Scene::draw(float deltaTime)
 		auto& renderable = entityhandler.getComponent<RenderableComponent>();
 		if (renderable.renderTechnique == RenderableComponent::RenderTechnique::Deferred)
 		{
+			auto& transform = entityhandler.getComponent<Transformation>();
+
+			// create AABB from transform
+			AABB aabb(transform.getGlobalPosition(), { /*TBD*/ });
+
+			// is AABB intersects frustum
+
 			deferredRendererEntityGroup.push_back(entityhandler);
 		}
 		else if (renderable.renderTechnique == RenderableComponent::RenderTechnique::Forward)
