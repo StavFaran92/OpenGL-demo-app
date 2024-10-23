@@ -171,6 +171,16 @@ struct EngineAPI CameraComponent : public Component
 		archive(center, up);
 	}
 
+	glm::mat4 getProjection() const
+	{
+		return glm::perspective(fovy, aspect, znear, zfar);
+	}
+
+	float fovy = 0;
+	float aspect = 0;
+	float znear = 0;
+	float zfar = 0;
+
 	glm::vec3 front{1,0,0};
 	glm::vec3 right;
 	glm::vec3 center;

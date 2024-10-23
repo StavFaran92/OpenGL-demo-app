@@ -198,6 +198,21 @@ glm::vec3 Transformation::getWorldScale() const
 	}
 }
 
+glm::vec3 Transformation::getForward() const
+{
+	return m_rotation * glm::vec3(0, 0, -1);
+}
+
+glm::vec3 Transformation::getUp() const
+{
+	return m_rotation * glm::vec3(0, 1, 0);
+}
+
+glm::vec3 Transformation::getRight() const
+{
+	return m_rotation * glm::vec3(1,0,0);
+}
+
 void Transformation::translate(float x, float y, float z)
 {
 	m_translation.x += x;

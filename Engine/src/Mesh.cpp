@@ -181,6 +181,23 @@ bool Mesh::build(MeshData& mData)
 	m_bonesNameToIDMap = mData.bonesNameToIDMap;
 
 	m_positions = mData.m_positions;
+
+	glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
+	glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
+
+	// TODO this can be optimized using assimp premade aabb structure
+	for (auto&& pos : m_positions)
+	{
+		minAABB.x = std::min(minAABB.x, pos.x);
+		minAABB.y = std::min(minAABB.y, pos.y);
+		minAABB.z = std::min(minAABB.z, pos.z);
+
+		maxAABB.x = std::max(maxAABB.x, pos.x);
+		maxAABB.y = std::max(maxAABB.y, pos.y);
+		maxAABB.z = std::max(maxAABB.z, pos.z);
+	}
+
+	m_aabb = AABB::createFromMinMax(minAABB, maxAABB);
 	//m_normals = std::move(mData.m_normals);
 
 	return true;
@@ -259,6 +276,11 @@ int Mesh::getBoneID(const std::string& boneName) const
 	}
 
 	return m_bonesNameToIDMap.at(boneName);
+}
+
+AABB Mesh::getAABB() const
+{
+	return m_aabb;
 }
 
 Mesh::~Mesh()

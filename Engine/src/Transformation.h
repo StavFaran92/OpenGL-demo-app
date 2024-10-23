@@ -73,6 +73,10 @@ public:
 	glm::vec3 getLocalScale() const;
 	glm::vec3 getWorldScale() const;
 
+	glm::vec3 getForward() const;
+	glm::vec3 getUp() const;
+	glm::vec3 getRight() const;
+
 	void translate(float x, float y, float z);
 	void translate(glm::vec3 translation);
 

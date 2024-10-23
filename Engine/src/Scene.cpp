@@ -50,7 +50,6 @@
 #include "AABB.h"
 #include "Frustum.h"
 
-
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
 {
 	auto mesh = e.tryGetComponent<MeshComponent>();
@@ -401,7 +400,14 @@ void Scene::draw(float deltaTime)
 	m_uboTime->setData(0, sizeof(float), &elapsed);
 	m_uboTime->unbind();
 
-	Frustum frustum()
+	Frustum frustum(primaryCameraTransform.getWorldPosition(), 
+		primaryCamera.front, 
+		primaryCamera.up, 
+		primaryCamera.right, 
+		primaryCamera.aspect, 
+		primaryCamera.fovy, 
+		primaryCamera.znear, 
+		primaryCamera.zfar);
 
 	auto view = m_registry->get().view<MeshComponent, Transformation, RenderableComponent>();
 
@@ -417,13 +423,15 @@ void Scene::draw(float deltaTime)
 		if (renderable.renderTechnique == RenderableComponent::RenderTechnique::Deferred)
 		{
 			auto& transform = entityhandler.getComponent<Transformation>();
+			auto& mesh = entityhandler.getComponent<MeshComponent>();
 
-			// create AABB from transform
-			AABB aabb(transform.getGlobalPosition(), { /*TBD*/ });
-
-			// is AABB intersects frustum
-
-			deferredRendererEntityGroup.push_back(entityhandler);
+			AABB& aabb = mesh.mesh.get()->getAABB();
+			aabb.adjustToTransform(transform);
+			
+			if(aabb.isOnFrustum(frustum))
+			{
+				deferredRendererEntityGroup.push_back(entityhandler);
+			}
 		}
 		else if (renderable.renderTechnique == RenderableComponent::RenderTechnique::Forward)
 		{

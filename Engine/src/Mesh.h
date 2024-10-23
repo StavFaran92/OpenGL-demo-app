@@ -15,6 +15,7 @@
 
 #include "Configurations.h"
 #include "VertexLayout.h"
+#include "AABB.h"
 
 struct MeshData
 {
@@ -94,6 +95,8 @@ public:
 
 	int getBoneID(const std::string& boneName) const;
 
+	AABB getAABB() const;
+
 	/**
 	 * Build the mesh using the specified vertices data.
 	 * This call will initialize all the OpenGL related Buffer data
@@ -128,4 +131,6 @@ private:
 
 	std::vector<glm::mat4> m_bonesOffsets;
 	std::unordered_map<std::string, unsigned int> m_bonesNameToIDMap;
+
+	AABB m_aabb;
 };
