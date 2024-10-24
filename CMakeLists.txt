@@ -15,4 +15,5 @@ add_subdirectory(ShadowSample)
 add_subdirectory(OceanSample)
 add_subdirectory(InstancingSample)
 add_subdirectory(ShaderToy)
+add_subdirectory(TerrainSample)
 
