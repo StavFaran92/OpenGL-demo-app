@@ -29,38 +29,21 @@ public:
 	{
 		// set Editor camera as active camera
 		auto editorCamera = Engine::get()->getContext()->getActiveScene()->createEntity("Editor Camera");
-		editorCamera.addComponent<CameraComponent>();
+		editorCamera.addComponent<CameraComponent>(CameraComponent::createPerspectiveCamera(45.0f, (float)4 / 3, 0.1f, 1000.0f));
 		editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
 		Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(editorCamera);
 
-		Entity terrainEnt = Engine::get()->getContext()->getActiveScene()->createEntity("Terrain");
-		//auto terrain = Terrain::generateTerrain(100, 100, 64, "C:/Users/Stav/Downloads/HeightMap.png");
-		auto& terrain = terrainEnt.addComponent<Terrain>(Terrain::generateTerrain(500, 500, 10, "C:/Users/Stav/Downloads/tex/iceland_heightmap.png"));
+		
 
-		terrain.m_textureCount = 3;
+		const int gridLength = 100;
 
+		for (int i = 0; i < gridLength; i++)
 		{
-			auto texture = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Grass003_1K-JPG_Color.jpg");
-			terrain.setTexture(0, texture);
-			terrain.setTextureBlend(0, .10f);
-			terrain.setTextureScaleX(0, 10.f);
-			terrain.setTextureScaleY(0, 10.f);
-		}
-
-		{
-			auto texture = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Grass004_1K-JPG_Color.jpg");
-			terrain.setTexture(1, texture);
-			terrain.setTextureBlend(1, .20f);
-			terrain.setTextureScaleX(1, 15.f);
-			terrain.setTextureScaleY(1, 15.f);
-		}
-
-		{
-			auto texture = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Ground037_1K-JPG_Color.jpg");
-			terrain.setTexture(2, texture);
-			terrain.setTextureBlend(2, .50f);
-			terrain.setTextureScaleX(2, 13.f);
-			terrain.setTextureScaleY(2, 13.f);
+			for (int j = 0; j < gridLength; j++)
+			{
+				auto sphere = ShapeFactory::createSphere(&Engine::get()->getContext()->getActiveScene()->getRegistry());
+				sphere.getComponent<Transformation>().setLocalPosition({ (i - gridLength / 2) * 5, 0, (j - gridLength / 2) * 5 });
+			}
 		}
 
 		//auto textureSnow = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Snow008A_1K-JPG_Color.jpg");
