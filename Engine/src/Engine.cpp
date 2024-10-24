@@ -470,7 +470,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
     dLight.getComponent<Transformation>().setLocalRotation(glm::vec3(0, -1, 0));
 
     auto mainCamera = startupScene->createEntity("Main Camera");
-    mainCamera.addComponent<CameraComponent>();
+    mainCamera.addComponent<CameraComponent>(CameraComponent::createPerspectiveCamera(45.0f, (float)4 / 3, 0.1f, 1000.0f));
     startupScene->setPrimaryCamera(mainCamera);
     mainCamera.getComponent<Transformation>().setLocalPosition({10,1,10});
     mainCamera.getComponent<CameraComponent>().center = {0,0,0};

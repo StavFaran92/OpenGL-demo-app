@@ -171,6 +171,17 @@ struct EngineAPI CameraComponent : public Component
 		archive(center, up);
 	}
 
+	static CameraComponent createPerspectiveCamera(float fovy, float aspect, float znear, float zfar)
+	{
+		CameraComponent cam;
+		cam.fovy = fovy;
+		cam.aspect = aspect;
+		cam.znear = znear;
+		cam.zfar = zfar;
+		cam.type = CamType::PERSPECTIVE;
+		return cam;
+	}
+
 	glm::mat4 getProjection() const
 	{
 		return glm::perspective(fovy, aspect, znear, zfar);
@@ -181,10 +192,18 @@ struct EngineAPI CameraComponent : public Component
 	float znear = 0;
 	float zfar = 0;
 
-	glm::vec3 front{1,0,0};
+	enum CamType
+	{
+		PERSPECTIVE,
+		ORTHOGRAPHIC
+	};
+
+	CamType type;
+
+	glm::vec3 front{0,0,-1};
 	glm::vec3 right;
-	glm::vec3 center;
-	glm::vec3 up;
+	glm::vec3 center{ 0,0,0 };
+	glm::vec3 up{ 0,1,0 };
 };
 
 struct EngineAPI MeshComponent : public Component

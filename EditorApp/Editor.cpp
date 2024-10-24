@@ -1767,7 +1767,7 @@ public:
 
 		// set Editor camera as active camera
 		auto editorCamera = m_editorRegistry->createEntity("Editor Camera");
-		editorCamera.addComponent<CameraComponent>();
+		editorCamera.addComponent<CameraComponent>(CameraComponent::createPerspectiveCamera(45.0f, (float)4 / 3, 0.1f, 1000.0f));
 		editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
 		scene->setPrimaryCamera(editorCamera);
 
