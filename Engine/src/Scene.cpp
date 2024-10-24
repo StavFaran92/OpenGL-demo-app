@@ -257,6 +257,11 @@ void Scene::init(Context* context)
 
 void Scene::update(float deltaTime)
 {
+	for (auto&& [entity, transform] : m_registry->get().view<Transformation>().each())
+	{
+		transform.update();
+	}
+
 	if (m_isSimulationActive)
 	{
 

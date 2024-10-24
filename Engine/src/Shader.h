@@ -45,6 +45,8 @@ public:
 
 	int getUniformLocation(const std::string& name);
 
+	int getUniformBlockLocation(const std::string& name);
+
 	void setModelMatrix(glm::mat4 model);
 	void setViewMatrix(glm::mat4 view);
 	void setProjectionMatrix(glm::mat4 projection);
@@ -94,6 +96,8 @@ private:
 protected:
 	unsigned int m_id;
 	std::unordered_map<std::string, int> m_uniformLocationCache;
+
+	std::unordered_map<std::string, int> m_uniformBlockLocationCache;
 
 	std::string m_glslFilePath;
 

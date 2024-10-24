@@ -35,7 +35,8 @@ void Shader::init()
 
 void Shader::bindUniformBlockToBindPoint(const std::string& uniformBlockName, int bindPointIndex)
 {
-	unsigned int uniformBlockIndex = glGetUniformBlockIndex(m_id, uniformBlockName.c_str());
+	int uniformBlockIndex = getUniformBlockLocation(uniformBlockName);
+	if (uniformBlockIndex < 0) return;
 	glUniformBlockBinding(m_id, uniformBlockIndex, bindPointIndex);
 }
 
@@ -189,6 +190,23 @@ bool Shader::validateCompilation(const unsigned int& shader, const unsigned int&
 	return true;
 }
 
+//int Shader::getUniformBlockLocation(const std::string& name)
+//{
+//	if (m_uniformBlockLocationCache.find(name) != m_uniformBlockLocationCache.end())
+//		return m_uniformBlockLocationCache[name];
+//
+//	int location = glGetUniformBlockIndex(m_id, name.c_str());
+//
+//	if (location == -1) {
+//		//logWarning("Uniform {} doesn't exists!", name.c_str());
+//		return -1;
+//	}
+//
+//	m_uniformBlockLocationCache[name] = location;
+//
+//	return location;
+//}
+
 int Shader::getUniformLocation(const std::string& name)
 {
 	if (m_uniformLocationCache.find(name) != m_uniformLocationCache.end())
@@ -202,6 +220,23 @@ int Shader::getUniformLocation(const std::string& name)
 	}
 
 	m_uniformLocationCache[name] = location;
+
+	return location;
+}
+
+int Shader::getUniformBlockLocation(const std::string& name)
+{
+	if (m_uniformBlockLocationCache.find(name) != m_uniformBlockLocationCache.end())
+		return m_uniformBlockLocationCache[name];
+
+	int location = glGetUniformBlockIndex(m_id, name.c_str());
+
+	if (location == -1) 
+	{
+		return -1;
+	}
+
+	m_uniformBlockLocationCache[name] = location;
 
 	return location;
 }
