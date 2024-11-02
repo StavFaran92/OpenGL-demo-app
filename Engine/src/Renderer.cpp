@@ -43,6 +43,15 @@ void Renderer::render(const DrawQueueRenderParams& renderParams)
 
     // Draw
     draw(*renderParams.mesh->getVAO());
+
+
+    // Release
+    if (renderParams.material)
+    {
+        renderParams.material->release();
+    }
+
+    renderParams.shader->release();
 }
 
 void Renderer::enableWireframeMode(bool enable)

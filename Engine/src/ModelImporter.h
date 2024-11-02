@@ -10,6 +10,7 @@
 #include "Texture.h"
 #include "Entity.h"
 #include "MeshBuilder.h"
+#include "Material.h"
 
 // Forward declerations
 struct aiNode;
@@ -43,6 +44,12 @@ public:
 		unsigned int boneCount = 0;
 	};
 
+	struct ModelInfo
+	{
+		Resource<Mesh> mesh;
+		std::vector<std::shared_ptr<Material>> materials;
+	};
+
 	/** Constructor */
 	ModelImporter();
 
@@ -53,7 +60,7 @@ public:
 	 * \param flipTexture	should flip loaded texture
 	 * \return A poitner to the newly created model
 	 */
-	Resource<Mesh> import(const std::string& path);
+	ModelImporter::ModelInfo import(const std::string& path);
 
 	/**
 	 * Import a model from a file.
@@ -62,14 +69,13 @@ public:
 	 * \param flipTexture	should flip loaded texture
 	 * \return A poitner to the newly created model
 	 */
-	Resource<Mesh> load(const std::string& path, Resource<Mesh> mesh);
+	ModelInfo load(const std::string& path, ModelInfo& modelInfo);
 private:
 	friend class Engine;
-	/** Init the model loader module */
-	void init();
+
 	void processNode(aiNode* node, const aiScene* scene, ModelImportSession& session);
 	void processMesh(aiMesh* mesh, const aiScene* scene, ModelImportSession& session);
-	std::vector<Resource<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImportSession& session);
+	Resource<Texture> importAiMaterialTexture(aiMaterial* mat, aiTextureType type, const std::string& dir);
 	static Texture::Type getTextureType(aiTextureType type);
 private:
 	//std::unordered_map<std::string, std::weak_ptr<Texture>> m_texturesCache;

@@ -35,16 +35,16 @@ public:
 
 		
 
-		const int gridLength = 100;
-
-		for (int i = 0; i < gridLength; i++)
-		{
-			for (int j = 0; j < gridLength; j++)
-			{
-				auto sphere = ShapeFactory::createSphere(&Engine::get()->getContext()->getActiveScene()->getRegistry());
-				sphere.getComponent<Transformation>().setLocalPosition({ (i - gridLength / 2) * 5, 0, (j - gridLength / 2) * 5 });
-			}
-		}
+		//Entity zombieGirl = Engine::get()->getContext()->getActiveScene()->createEntity("Zombie girl");
+		//auto modelInfo = Engine::get()->getSubSystem<ModelImporter>()->import("C:/Users/Stav/Downloads/backpack/backpack.obj");
+		////auto modelInfo = Engine::get()->getSubSystem<ModelImporter>()->import("C:/dev/repos/glTF-Sample-Models/2.0/Sponza/glTF/Sponza.gltf");
+		//zombieGirl.addComponent<RenderableComponent>();
+		//auto& matComponent = zombieGirl.addComponent<MaterialComponent>();
+		//for (auto& mat : modelInfo.materials)
+		//{
+		//	matComponent.addMaterial(mat);
+		//}
+		//zombieGirl.addComponent<MeshComponent>().mesh = modelInfo.mesh;
 
 		//auto textureSnow = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Snow008A_1K-JPG_Color.jpg");
 		//terrain.setTexture(3, textureSnow);

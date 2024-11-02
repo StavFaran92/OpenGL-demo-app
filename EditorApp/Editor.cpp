@@ -721,10 +721,15 @@ void ShowModelCreatorWindow()
 			auto entity = Engine::get()->getContext()->getActiveScene()->createEntity(modelName);
 			entity.addComponent<RenderableComponent>();
 
-			auto mesh = Engine::get()->getSubSystem<ModelImporter>()->import(modelPathBuffer.c_str());
-			entity.addComponent<MeshComponent>().mesh = mesh;
+			auto modelInfo = Engine::get()->getSubSystem<ModelImporter>()->import(modelPathBuffer.c_str());
+			entity.addComponent<MeshComponent>().mesh = modelInfo.mesh;
 
-			entity.addComponent<MaterialComponent>().addMaterial(mat);
+			auto& materialComponent = entity.addComponent<MaterialComponent>();
+			for(auto& m : modelInfo.materials)
+			{
+				materialComponent.addMaterial(m);
+			}
+
 			mat = nullptr;
 			modelPathBuffer.clear();
 
@@ -1758,7 +1763,7 @@ public:
 
 		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_SCANCODE_ESCAPE, [](SDL_Event e) { stopSimulation(); });
 
-		NativeScriptsLoader::instance->init();
+		//NativeScriptsLoader::instance->init();
 
 		auto scene = Engine::get()->getContext()->getActiveScene();
 
@@ -1769,7 +1774,7 @@ public:
 		auto editorCamera = m_editorRegistry->createEntity("Editor Camera");
 		editorCamera.addComponent<CameraComponent>(CameraComponent::createPerspectiveCamera(45.0f, (float)4 / 3, 0.1f, 1000.0f));
 		editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
-		scene->setPrimaryCamera(editorCamera);
+		Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(editorCamera);
 
 		g_editorCamera = editorCamera;
 

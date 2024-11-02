@@ -26,32 +26,24 @@ ModelImporter::ModelImporter()
 {
 	Engine::get()->registerSubSystem<ModelImporter>(this);
 
-	init();
-}
-
-void ModelImporter::init()
-{
 	m_importer = std::make_shared<Assimp::Importer>();
 
 	logInfo("Model importer init successfully.");
 }
 
-Resource<Mesh> ModelImporter::import(const std::string& path)
+ModelImporter::ModelInfo ModelImporter::import(const std::string& path)
 {
-	Resource<Mesh> mesh = Factory<Mesh>::create();
+	ModelImporter::ModelInfo mInfo;
 
-	// validate init
-	if (m_importer == nullptr)
-	{
-		logError("Importer not initialized.");
-		return Resource<Mesh>::empty;
-	}
+	mInfo.mesh = Factory<Mesh>::create();
 
 	if (!std::filesystem::exists(path))
 	{
 		logError("File doesn't exists: " + path);
-		return Resource<Mesh>::empty;
+		return {};
 	}
+
+	auto fileDir = std::filesystem::path(path).parent_path().string();
 
 	const aiScene* scene = nullptr;
 
@@ -66,29 +58,48 @@ Resource<Mesh> ModelImporter::import(const std::string& path)
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
 		logError("ERROR::ASSIMP::{}", m_importer->GetErrorString());
-		return Resource<Mesh>::empty;
+		return {};
 	}
 
-	auto savedFilePath = MeshExporter::exportMesh(mesh, scene);
+	auto savedFilePath = MeshExporter::exportMesh(mInfo.mesh, scene);
 
-	load(savedFilePath, mesh);
+	if (scene->HasMaterials())
+	{
+		for (unsigned int i = 0; i < scene->mNumMaterials; i++)
+		{
+			auto& material = std::make_shared<Material>();
+			auto& aMaterial = scene->mMaterials[i];
 
-	return mesh;
+			auto& diffuse = importAiMaterialTexture(aMaterial, aiTextureType::aiTextureType_DIFFUSE, fileDir);
+			if (!diffuse.isEmpty())
+			{
+				material->setTexture(Texture::Type::Diffuse, diffuse);
+			}
+
+			auto& normal = importAiMaterialTexture(aMaterial, aiTextureType::aiTextureType_NORMALS, fileDir);
+			if (!normal.isEmpty())
+			{
+				material->setTexture(Texture::Type::Normal, normal);
+			}
+
+			if (material->getAllTextures().size() > 0)
+			{
+				mInfo.materials.push_back(material);
+			}
+		}
+	}
+
+	load(savedFilePath, mInfo);
+
+	return mInfo;
 }
 
-Resource<Mesh> ModelImporter::load(const std::string & path, Resource<Mesh> mesh)
+ModelImporter::ModelInfo ModelImporter::load(const std::string & path, ModelImporter::ModelInfo& modelInfo)
 {
-	// validate init
-	if (m_importer == nullptr)
-	{
-		logError("Importer not initialized.");
-		return Resource<Mesh>::empty;
-	}
-
 	if (!std::filesystem::exists(path))
 	{
 		logError("File doesn't exists: " + path);
-		return Resource<Mesh>::empty;
+		return {};
 	}
 
 	const aiScene* scene = nullptr;
@@ -107,27 +118,63 @@ Resource<Mesh> ModelImporter::load(const std::string & path, Resource<Mesh> mesh
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
 			logError("ERROR::ASSIMP::{}", m_importer->GetErrorString());
-			return Resource<Mesh>::empty;
+			return {};
 		}
 	}
 
 	m_lastLoadedSceneName = path;
 
-	std::string modelName = path.substr(path.find_last_of('/\\') + 1);
+	std::string modelName = std::filesystem::path(path).filename().string();
 	modelName = modelName.substr(0, modelName.find_first_of('.'));
 
 	// create new model session
 	ModelImportSession session;
 	session.filepath = path;
-	session.fileDir = path.substr(0, path.find_last_of('/\\'));
+	session.fileDir = std::filesystem::path(path).parent_path().string();
 	session.name = modelName;
 	session.builder = &MeshBuilder::builder();
 
+	// extract mesh from root node
 	processNode(scene->mRootNode, scene, session);
 
-	session.builder->build(mesh);
+	// build mesh
+	session.builder->build(modelInfo.mesh);
 
-	return mesh;
+	if (scene->HasMaterials())
+	{
+		for (unsigned int i = 0; i < scene->mNumMaterials; i++)
+		{
+			auto& material = std::make_shared<Material>();
+			auto& aMaterial = scene->mMaterials[i];
+
+			// get uuid using tex name from association map
+
+			// load texture
+
+			//Engine::get()->getSubSystem<Assets>()->loadTexture2D()
+
+			auto& diffuse = importAiMaterialTexture(aMaterial, aiTextureType::aiTextureType_DIFFUSE, session.fileDir);
+			if (!diffuse.isEmpty())
+			{
+				material->setTexture(Texture::Type::Diffuse, diffuse);
+			}
+
+			auto& normal = importAiMaterialTexture(aMaterial, aiTextureType::aiTextureType_NORMALS, session.fileDir);
+			if (!normal.isEmpty())
+			{
+				material->setTexture(Texture::Type::Normal, normal);
+			}
+
+			if (material->getAllTextures().size() > 0)
+			{
+				modelInfo.materials.push_back(material);
+			}
+		}
+	}
+
+	
+
+	return modelInfo;
 }
 
 void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporter::ModelImportSession& session)
@@ -135,50 +182,12 @@ void ModelImporter::processNode(aiNode* node, const aiScene* scene, ModelImporte
 	// process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
-		session.nodeIndex = i;
-		aiMesh* aimesh = scene->mMeshes[node->mMeshes[i]];
-		std::string meshName = session.filepath + "_" + std::to_string(session.nodeIndex) + "_" + std::to_string(session.childIndex);
-		auto memoryManager = Engine::get()->getMemoryManagementSystem();
-		processMesh(aimesh, scene, session);
-		//Resource<Mesh> mesh = memoryManager->createOrGetCached<Mesh>(meshName, [&]() {  });
-		//entity.getComponent<MeshComponent>().mesh = mesh;
-
-		//TODO fix the code below
-
-		//auto textureHandlers = new std::vector<Resource<Texture>>();
-
-		//auto& sgeMaterial = entity.addComponent<Material>();
-		//// process material
-		//aiMaterial* material = scene->mMaterials[aimesh->mMaterialIndex];
-
-		//auto diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, session);
-		//textureHandlers->insert(textureHandlers->end(), diffuseMaps.begin(), diffuseMaps.end());
-
-		//if (diffuseMaps.size() > 0)
-		//{
-		//	sgeMaterial.setTexture(Texture::Type::Diffuse, Resource<Texture>(diffuseMaps[0]));
-		//}
-
-		//auto specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, session);
-		//textureHandlers->insert(textureHandlers->end(), specularMaps.begin(), specularMaps.end());
-
-		////TODO fix
-		//if (specularMaps.size() > 0)
-		//{
-		//	sgeMaterial.setTexture(Texture::Type::Specular, Resource<Texture>(specularMaps[0]));
-		//}
-
-		//auto normalMap = loadMaterialTextures(material, aiTextureType_HEIGHT, session);
-		//if (normalMap.size() > 0)
-		//{
-		//	sgeMaterial.setTexture(Texture::Type::Normal, Resource<Texture>(normalMap[0]));
-		//}
-		
+		processMesh(scene->mMeshes[node->mMeshes[i]], scene, session);
 	}
+
 	// then do the same for each of its children
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
-		session.childIndex = i;
 		processNode(node->mChildren[i], scene, session);
 	}
 }
@@ -320,22 +329,15 @@ void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporte
 		.addTangents(tangents);
 }
 
-std::vector<Resource<Texture>> ModelImporter::loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImporter::ModelImportSession& session)
+Resource<Texture> ModelImporter::importAiMaterialTexture(aiMaterial* mat, aiTextureType type, const std::string& dir)
 {
-	std::vector<Resource<Texture>> textureHandlers;
-
-	// Iterate material's textures
-	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+	aiString str;
+	if (mat->GetTexture(type, 0, &str) != aiReturn_SUCCESS)
 	{
-		aiString str;
-		mat->GetTexture(type, i, &str);
-		auto textureName = str.C_Str();
-
-		// Texture not found in cache -> load it and add to cache
-		auto textureHandler = Engine::get()->getSubSystem<Assets>()->importTexture2D(session.fileDir + "/" + textureName);
-		textureHandlers.push_back(textureHandler);
+		return Resource<Texture>::empty;
 	}
-	return textureHandlers;
+	auto texture = Engine::get()->getSubSystem<Assets>()->importTexture2D(dir + "/" + str.C_Str());
+	return texture;
 }
 
 Texture::Type ModelImporter::getTextureType(aiTextureType type)

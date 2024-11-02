@@ -13,3 +13,8 @@ std::string MeshExporter::exportMesh(Resource<Mesh> mesh, const aiScene* scene)
 	Engine::get()->getContext()->getProjectAssetRegistry()->addMesh(mesh.getUID());
 	return savedFilePath;
 }
+
+std::string MeshExporter::exportMaterial(std::vector<std::shared_ptr<Material>> materials, const aiScene* scene)
+{
+	return "";
+}

@@ -147,7 +147,7 @@ std::string Texture::textureTypeToString(Type type)
 	switch (type)
 	{
 		case Texture::Type::Diffuse:
-			return Constants::g_textureDiffuse;
+			return Constants::g_textureAlbedo;
 		case Texture::Type::Specular:
 			return Constants::g_textureSpecular;
 		case Texture::Type::Albedo:

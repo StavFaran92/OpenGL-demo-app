@@ -59,12 +59,13 @@ void Material::setTextureInShader(Shader& shader, Texture::Type ttype, int slot)
 
 void Material::setTexturesInShader(Shader& shader)
 {
-	int index = 0;
-	setTextureInShader(shader, Texture::Type::Albedo, index++);
-	setTextureInShader(shader, Texture::Type::Normal, index++);
-	setTextureInShader(shader, Texture::Type::Metallic, index++);
-	setTextureInShader(shader, Texture::Type::Roughness, index++);
-	setTextureInShader(shader, Texture::Type::AmbientOcclusion, index++);
+	// It either has diffuse or albedo
+	setTextureInShader(shader, Texture::Type::Diffuse, 0);
+	setTextureInShader(shader, Texture::Type::Albedo, 0);
+	setTextureInShader(shader, Texture::Type::Normal, 1);
+	setTextureInShader(shader, Texture::Type::Metallic, 2);
+	setTextureInShader(shader, Texture::Type::Roughness, 3);
+	setTextureInShader(shader, Texture::Type::AmbientOcclusion, 4);
 }
 
 void Material::setTexture(Texture::Type textureType, Resource<Texture> textureHandler)

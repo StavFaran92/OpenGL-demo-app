@@ -134,5 +134,5 @@ private:
 	Entity m_root = Entity::EmptyEntity;
 	std::unordered_map<entity_id, Entity> m_children{};
 
-	bool m_isDirty = false;
+	bool m_isDirty = true;
 };

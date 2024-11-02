@@ -21,7 +21,7 @@ static const unsigned int indices[] = {
 
 Resource<Mesh> Quad::createMesh()
 {
-	return Engine::get()->getSubSystem<ModelImporter>()->import(SGE_ROOT_DIR + "Resources/Engine/Meshes/plane.gltf");
+	return Engine::get()->getSubSystem<ModelImporter>()->import(SGE_ROOT_DIR + "Resources/Engine/Meshes/plane.gltf").mesh;
 	//VertexLayout layout;
 	//layout.numOfVertices = 4;
 	//layout.attribs.emplace_back(LayoutAttribute::Positions);

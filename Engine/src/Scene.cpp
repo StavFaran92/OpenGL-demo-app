@@ -433,7 +433,7 @@ void Scene::draw(float deltaTime)
 			AABB& aabb = mesh.mesh.get()->getAABB();
 			aabb.adjustToTransform(transform);
 			
-			if(aabb.isOnFrustum(frustum))
+			//if(aabb.isOnFrustum(frustum))
 			{
 				deferredRendererEntityGroup.push_back(entityhandler);
 			}
