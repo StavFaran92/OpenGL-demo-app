@@ -73,7 +73,7 @@ ModelImporter::ModelInfo ModelImporter::import(const std::string& path)
 			auto& diffuse = importAiMaterialTexture(aMaterial, aiTextureType::aiTextureType_DIFFUSE, fileDir);
 			if (!diffuse.isEmpty())
 			{
-				material->setTexture(Texture::Type::Diffuse, diffuse);
+				material->setTexture(Texture::Type::Albedo, diffuse);
 			}
 
 			auto& normal = importAiMaterialTexture(aMaterial, aiTextureType::aiTextureType_NORMALS, fileDir);
@@ -156,7 +156,7 @@ ModelImporter::ModelInfo ModelImporter::load(const std::string & path, ModelImpo
 			auto& diffuse = importAiMaterialTexture(aMaterial, aiTextureType::aiTextureType_DIFFUSE, session.fileDir);
 			if (!diffuse.isEmpty())
 			{
-				material->setTexture(Texture::Type::Diffuse, diffuse);
+				material->setTexture(Texture::Type::Albedo, diffuse);
 			}
 
 			auto& normal = importAiMaterialTexture(aMaterial, aiTextureType::aiTextureType_NORMALS, session.fileDir);
