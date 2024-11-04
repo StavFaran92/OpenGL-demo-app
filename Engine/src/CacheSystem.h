@@ -44,6 +44,16 @@ public:
 		return resource;
 	}
 
+	UUID getAssociation(const std::string& name) const
+	{
+		auto it = m_associations.find(name);
+		if (it != m_associations.end())
+		{
+			return it->second;
+		}
+		return EMPTY_UUID;
+	}
+
 	void clear();
 private:
 	std::unordered_map<std::string, UUID> m_associations;

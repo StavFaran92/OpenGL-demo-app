@@ -48,6 +48,7 @@ public:
 	{
 		Resource<Mesh> mesh;
 		std::vector<std::shared_ptr<Material>> materials;
+		std::vector<Resource<Texture>> textures;
 	};
 
 	/** Constructor */

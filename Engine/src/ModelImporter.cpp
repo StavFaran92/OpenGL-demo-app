@@ -67,24 +67,18 @@ ModelImporter::ModelInfo ModelImporter::import(const std::string& path)
 	{
 		for (unsigned int i = 0; i < scene->mNumMaterials; i++)
 		{
-			auto& material = std::make_shared<Material>();
 			auto& aMaterial = scene->mMaterials[i];
 
 			auto& diffuse = importAiMaterialTexture(aMaterial, aiTextureType::aiTextureType_DIFFUSE, fileDir);
 			if (!diffuse.isEmpty())
 			{
-				material->setTexture(Texture::Type::Albedo, diffuse);
+				mInfo.textures.push_back(diffuse);
 			}
 
 			auto& normal = importAiMaterialTexture(aMaterial, aiTextureType::aiTextureType_NORMALS, fileDir);
 			if (!normal.isEmpty())
 			{
-				material->setTexture(Texture::Type::Normal, normal);
-			}
-
-			if (material->getAllTextures().size() > 0)
-			{
-				mInfo.materials.push_back(material);
+				mInfo.textures.push_back(normal);
 			}
 		}
 	}
@@ -149,20 +143,23 @@ ModelImporter::ModelInfo ModelImporter::load(const std::string & path, ModelImpo
 
 			// get uuid using tex name from association map
 
+
 			// load texture
 
-			//Engine::get()->getSubSystem<Assets>()->loadTexture2D()
-
-			auto& diffuse = importAiMaterialTexture(aMaterial, aiTextureType::aiTextureType_DIFFUSE, session.fileDir);
-			if (!diffuse.isEmpty())
+			aiString diffuseStr;
+			if (aMaterial->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &diffuseStr) == aiReturn_SUCCESS)
 			{
-				material->setTexture(Texture::Type::Albedo, diffuse);
+				UUID uuid = Engine::get()->getMemoryManagementSystem()->getAssociation(diffuseStr.C_Str());
+				Resource<Texture> texture = Resource<Texture>(uuid);
+				material->setTexture(Texture::Type::Albedo, texture);
 			}
 
-			auto& normal = importAiMaterialTexture(aMaterial, aiTextureType::aiTextureType_NORMALS, session.fileDir);
-			if (!normal.isEmpty())
+			aiString normalStr;
+			if (aMaterial->GetTexture(aiTextureType::aiTextureType_NORMALS, 0, &normalStr) == aiReturn_SUCCESS)
 			{
-				material->setTexture(Texture::Type::Normal, normal);
+				UUID uuid = Engine::get()->getMemoryManagementSystem()->getAssociation(normalStr.C_Str());
+				Resource<Texture> texture = Resource<Texture>(uuid);
+				material->setTexture(Texture::Type::Albedo, texture);
 			}
 
 			if (material->getAllTextures().size() > 0)
@@ -336,7 +333,7 @@ Resource<Texture> ModelImporter::importAiMaterialTexture(aiMaterial* mat, aiText
 	{
 		return Resource<Texture>::empty;
 	}
-	auto texture = Engine::get()->getSubSystem<Assets>()->importTexture2D(dir + "/" + str.C_Str());
+	auto texture = Engine::get()->getSubSystem<Assets>()->importTexture2D(dir + "/" + str.C_Str(), true);
 	return texture;
 }
 
