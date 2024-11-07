@@ -22,16 +22,16 @@ public:
 
 	bool init() override;
 
-	void render(const IRenderer::DrawQueueRenderParams& renderParams);
+	void render();
 
 	void enableWireframeMode(bool enable);
 	// Inherited via IRenderer
-	void renderScene(DrawQueueRenderParams& renderParams) override;
+	void renderScene(Scene*) override;
 
 	uint32_t getRenderTarget() const override;
 
 private:
-	void setUniforms(const DrawQueueRenderParams& renderParams);
+	void setUniforms();
 protected:
 	bool m_wireFrameMode = false;
 

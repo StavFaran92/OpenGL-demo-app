@@ -13,6 +13,7 @@
 #include "Component.h"
 #include "Texture.h"
 #include "MeshCollection.h"
+#include "Graphics.h"
 
 #include "GL/glew.h"
 
@@ -20,7 +21,7 @@ PostProcessProjector::PostProcessProjector(Scene* scene)
 {
 	m_scene = scene;
 
-	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const IRenderer::DrawQueueRenderParams* params) {
+	scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=]() {
 
 		// Post process Enable writing
 		if (isEnabled())
@@ -29,7 +30,7 @@ PostProcessProjector::PostProcessProjector(Scene* scene)
 		}
 	});
 
-	scene->addRenderCallback(Scene::RenderPhase::POST_RENDER_END, [=](const IRenderer::DrawQueueRenderParams* params) {
+	scene->addRenderCallback(Scene::RenderPhase::POST_RENDER_END, [=]() {
 
 		// Post process Enable writing
 		if (isEnabled())
@@ -97,6 +98,8 @@ void PostProcessProjector::disableWriting()
 
 void PostProcessProjector::draw()
 {
+	auto graphics = Engine::get()->getSubSystem<Graphics>();
+
 	// Clean buffers
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -109,10 +112,9 @@ void PostProcessProjector::draw()
 	
 	auto& mesh = m_quad.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh();
 
-	IRenderer::DrawQueueRenderParams renderParams;
-	renderParams.mesh = mesh.get();
-	renderParams.shader = m_screenShader.get();
-	m_renderer->render(renderParams);
+	graphics->mesh = mesh.get();
+	graphics->shader = m_screenShader.get();
+	m_renderer->render();
 
 	m_textureHandler.get()->unbind();
 }

@@ -24,6 +24,7 @@
 #include "Transformation.h"
 #include "CommonShaders.h"
 #include "MeshCollection.h"
+#include "Graphics.h"
 
 
 Renderer::Renderer(std::shared_ptr<FrameBufferObject> renderTarget, Scene* scene)
@@ -36,23 +37,25 @@ bool Renderer::init()
     return true;
 }
 
-void Renderer::render(const DrawQueueRenderParams& renderParams)
+void Renderer::render()
 {
+    auto graphics = Engine::get()->getSubSystem<Graphics>();
+
     // Setup
-    renderParams.shader->use();
-    setUniforms(renderParams);
+    graphics->shader->use();
+    setUniforms();
 
     // Draw
-    draw(*renderParams.mesh->getVAO());
+    draw(*graphics->mesh->getVAO());
 
 
     // Release
-    if (renderParams.material)
+    if (graphics->material)
     {
-        renderParams.material->release();
+        graphics->material->release();
     }
 
-    renderParams.shader->release();
+    graphics->shader->release();
 }
 
 void Renderer::enableWireframeMode(bool enable)
@@ -60,53 +63,53 @@ void Renderer::enableWireframeMode(bool enable)
     m_wireFrameMode = enable;
 }
 
-void Renderer::renderScene(DrawQueueRenderParams& renderParams)
+void Renderer::renderScene(Scene* scene)
 {
+    auto graphics = Engine::get()->getSubSystem<Graphics>();
+
     glEnable(GL_DEPTH_TEST);
     SetDrawType(Renderer::DrawType::Triangles);
 
     m_renderTargetFBO->bind();
 
     // Render Phase
-    for (auto& entityHandler : *renderParams.entityGroup)
+    for (auto& entityHandler : *graphics->entityGroup)
 	{
-        renderParams.entity = &entityHandler;
+        graphics->entity = &entityHandler;
         for (auto& mesh : entityHandler.getComponent<MeshComponent>().mesh.get()->getMeshes())
         {
 
             auto tempModel = entityHandler.getComponent<Transformation>().getWorldTransformation();
-            renderParams.model = &tempModel;
-            renderParams.shader = Engine::get()->getCommonShaders()->getShader(CommonShaders::ShaderType::PHONG_SHADER).get();
-            renderParams.mesh = mesh.get();
+            graphics->model = &tempModel;
+            graphics->shader = Engine::get()->getCommonShaders()->getShader(CommonShaders::ShaderType::PHONG_SHADER).get();
+            graphics->mesh = mesh.get();
 
             // TODO rethink this feature
-            Shader* attachedShader = renderParams.entity->tryGetComponentInParent<Shader>();
+            Shader* attachedShader = graphics->entity->tryGetComponentInParent<Shader>();
             if (attachedShader)
             {
-                renderParams.shader = attachedShader;
+                graphics->shader = attachedShader;
             }
 
-            Material* mat = renderParams.entity->tryGetComponentInParent<Material>();
+            Material* mat = graphics->entity->tryGetComponentInParent<Material>();
 
             if (mat)
             {
-                renderParams.material = mat;
+                graphics->material = mat;
             }
 
             // draw model
-            render(renderParams);
-
-            renderParams.entity = nullptr;
-            renderParams.mesh = nullptr;
-            renderParams.model = nullptr;
+            render();
         }
     };
 
     m_renderTargetFBO->unbind();
 }
 
-void Renderer::setUniforms(const DrawQueueRenderParams& renderParams)
+void Renderer::setUniforms()
 {
+
+    auto graphics = Engine::get()->getSubSystem<Graphics>();
 
     //auto context = Engine::get()->getContext();
     //if (context->getActiveScene()->getSkybox() && entity->HasComponent<Material>())
@@ -143,30 +146,30 @@ void Renderer::setUniforms(const DrawQueueRenderParams& renderParams)
     //}
 
     // Model
-    if (renderParams.model)
+    if (graphics->model)
     {
-        renderParams.shader->setModelMatrix(*renderParams.model);
+        graphics->shader->setModelMatrix(*graphics->model);
     }
 
     // View
-    if (renderParams.view)
+    if (graphics->view)
     {
-        renderParams.shader->setViewMatrix(*renderParams.view);
+        graphics->shader->setViewMatrix(*graphics->view);
     }
 
     // Projection
-    if (renderParams.projection)
+    if (graphics->projection)
     {
-        renderParams.shader->setProjectionMatrix(*renderParams.projection);
+        graphics->shader->setProjectionMatrix(*graphics->projection);
     }
 
-    if (renderParams.material)
+    if (graphics->material)
     {
-        renderParams.material->use(*renderParams.shader);
+        graphics->material->use(*graphics->shader);
     }
 
-    renderParams.shader->bindUniformBlockToBindPoint("Time", 0);
-    renderParams.shader->bindUniformBlockToBindPoint("Lights", 1);
+    graphics->shader->bindUniformBlockToBindPoint("Time", 0);
+    graphics->shader->bindUniformBlockToBindPoint("Lights", 1);
 
 
 }

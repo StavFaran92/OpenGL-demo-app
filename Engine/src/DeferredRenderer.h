@@ -17,9 +17,9 @@ public:
 	DeferredRenderer(std::shared_ptr<FrameBufferObject> renderTarget, Scene* scene);
 	// Inherited via IRenderer
 	bool init() override;
-	void render(const DrawQueueRenderParams& renderParams) override;
-	void renderScene(DrawQueueRenderParams& renderParams) override;
-	void renderSceneUsingCustomShader(DrawQueueRenderParams& renderParams);
+	void render() override;
+	void renderScene(Scene* scene) override;
+	void renderSceneUsingCustomShader();
 	uint32_t getRenderTarget() const override;
 	void setUniforms(Shader* shader);
 

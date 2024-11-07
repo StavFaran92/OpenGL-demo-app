@@ -32,6 +32,7 @@
 #include "ObjectPicker.h"
 #include "AnimationLoader.h"
 #include "Assets.h"
+#include "Graphics.h"
 
 #include "Application.h"
 #include "SDL2/SDL.h"
@@ -170,6 +171,7 @@ bool Engine::init(const InitParams& initParams)
 
     auto modelImporter = new ModelImporter();
     auto animationLoader = new AnimationLoader();
+    auto graphics = new Graphics();
     m_assets = std::make_shared<Assets>();
 
     m_timeManager = std::make_shared<TimeManager>();

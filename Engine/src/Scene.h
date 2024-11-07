@@ -69,7 +69,7 @@ public:
 		POST_RENDER_END
 	};
 
-	using RenderCallback = std::function<void(const IRenderer::DrawQueueRenderParams*)>;
+	using RenderCallback = std::function<void()>;
 public:
 	// -------------------- Methods -------------------- //
 	Scene(Context* context);
@@ -96,7 +96,7 @@ public:
 
 	glm::mat4 getActiveCameraView() const;
 	
-	void displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params);
+	void displayWireframeMesh(Entity e);
 
 	void setIBLData(Resource<Texture> irradianceMap, Resource<Texture> prefilterEnvMap);
 

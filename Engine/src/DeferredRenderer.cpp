@@ -16,6 +16,7 @@
 #include "Context.h"
 #include "Animator.h"
 #include "MeshCollection.h"
+#include "Graphics.h"
 
 static float lerp(float a, float b, float t)
 {
@@ -172,44 +173,48 @@ bool DeferredRenderer::init()
 	return true;
 }
 
-void DeferredRenderer::render(const DrawQueueRenderParams& renderParams)
+void DeferredRenderer::render()
 {
-    renderParams.shader->setModelMatrix(*renderParams.model);
-    renderParams.shader->setViewMatrix(*renderParams.view);
-    renderParams.shader->setProjectionMatrix(*renderParams.projection);
+	auto graphics = Engine::get()->getSubSystem<Graphics>();
 
-    if (renderParams.material)
+    graphics->shader->setModelMatrix(*graphics->model);
+    graphics->shader->setViewMatrix(*graphics->view);
+    graphics->shader->setProjectionMatrix(*graphics->projection);
+
+    if (graphics->material)
     {
-        renderParams.material->use(*renderParams.shader);
+        graphics->material->use(*graphics->shader);
     }
 
-    renderParams.shader->bindUniformBlockToBindPoint("Time", 0);
-    renderParams.shader->bindUniformBlockToBindPoint("Lights", 1);
+    graphics->shader->bindUniformBlockToBindPoint("Time", 0);
+    graphics->shader->bindUniformBlockToBindPoint("Lights", 1);
 
 	// Draw
-	auto instanceBatch = renderParams.entity->tryGetComponent<InstanceBatch>();
+	auto instanceBatch = graphics->entity->tryGetComponent<InstanceBatch>();
 	if (!instanceBatch)
 	{
-		renderParams.shader->setUniformValue("isGpuInstanced", false);
-		RenderCommand::draw(renderParams.mesh->getVAO());
+		graphics->shader->setUniformValue("isGpuInstanced", false);
+		RenderCommand::draw(graphics->mesh->getVAO());
 	}
 	else
 	{
-		renderParams.shader->setUniformValue("isGpuInstanced", true);
-		RenderCommand::drawInstanced(renderParams.mesh->getVAO(), instanceBatch->getCount());
+		graphics->shader->setUniformValue("isGpuInstanced", true);
+		RenderCommand::drawInstanced(graphics->mesh->getVAO(), instanceBatch->getCount());
 	}
 
 	// Release
-	if (renderParams.material)
+	if (graphics->material)
 	{
-		renderParams.material->release();
+		graphics->material->release();
 	}
 
-	//renderParams.shader->release();
+	//graphics->shader->release();
 }
 
-void DeferredRenderer::renderSceneUsingCustomShader(DrawQueueRenderParams& renderParams)
+void DeferredRenderer::renderSceneUsingCustomShader()
 {
+	auto graphics = Engine::get()->getSubSystem<Graphics>();
+
 	m_gBuffer.bind();
 
 	glEnable(GL_DEPTH_TEST);
@@ -219,19 +224,19 @@ void DeferredRenderer::renderSceneUsingCustomShader(DrawQueueRenderParams& rende
 	
 	// TODO fix
 
-	renderParams.entity = renderParams.entity;
-	renderParams.mesh = 0;// renderParams.entity->getComponent<MeshComponent>().mesh.get();
-	auto tempModel = renderParams.entity->getComponent<Transformation>().getWorldTransformation();
-	auto& shaderComponent = renderParams.entity->getComponent<ShaderComponent>();
+	graphics->entity = graphics->entity;
+	graphics->mesh = 0;// graphics->entity->getComponent<MeshComponent>().mesh.get();
+	auto tempModel = graphics->entity->getComponent<Transformation>().getWorldTransformation();
+	auto& shaderComponent = graphics->entity->getComponent<ShaderComponent>();
 	Shader* vertexShader = shaderComponent.m_vertexShader ? shaderComponent.m_vertexShader : m_gBufferShader.get();
 	Shader* fragmentShader = shaderComponent.m_fragmentShader ? shaderComponent.m_fragmentShader : m_lightPassShader.get();
 	vertexShader->use();
-	renderParams.shader = vertexShader;
-	renderParams.model = &tempModel;
+	graphics->shader = vertexShader;
+	graphics->model = &tempModel;
 
-	MaterialComponent& mat = renderParams.entity->getRoot().getComponent<MaterialComponent>();
+	MaterialComponent& mat = graphics->entity->getRoot().getComponent<MaterialComponent>();
 
-	renderParams.material = mat.begin()->second.get();
+	graphics->material = mat.begin()->second.get();
 
 	{
 		int currentSlot = 8;
@@ -245,7 +250,7 @@ void DeferredRenderer::renderSceneUsingCustomShader(DrawQueueRenderParams& rende
 	}
 
 	// draw model
-	render(renderParams);
+	render();
 
 	// unbind gBuffer
 	m_gBuffer.unbind();
@@ -271,22 +276,22 @@ void DeferredRenderer::renderSceneUsingCustomShader(DrawQueueRenderParams& rende
 	m_MRATexture.get()->bind();
 	fragmentShader->setUniformValue("gMRA", 3);
 
-	renderParams.irradianceMap.get()->setSlot(4);
-	renderParams.irradianceMap.get()->bind();
+	graphics->irradianceMap.get()->setSlot(4);
+	graphics->irradianceMap.get()->bind();
 	fragmentShader->setUniformValue("gIrradianceMap", 4);
 
 
-	renderParams.prefilterEnvMap.get()->setSlot(5);
-	renderParams.prefilterEnvMap.get()->bind();
+	graphics->prefilterEnvMap.get()->setSlot(5);
+	graphics->prefilterEnvMap.get()->bind();
 	fragmentShader->setUniformValue("gPrefilterEnvMap", 5);
 
 
-	renderParams.brdfLUT.get()->setSlot(6);
-	renderParams.brdfLUT.get()->bind();
+	graphics->brdfLUT.get()->setSlot(6);
+	graphics->brdfLUT.get()->bind();
 	fragmentShader->setUniformValue("gBRDFIntegrationLUT", 6);
 
-	renderParams.shadowMap.get()->setSlot(7);
-	renderParams.shadowMap.get()->bind();
+	graphics->shadowMap.get()->setSlot(7);
+	graphics->shadowMap.get()->bind();
 	fragmentShader->setUniformValue("gShadowMap", 7);
 
 	//{
@@ -316,8 +321,8 @@ void DeferredRenderer::renderSceneUsingCustomShader(DrawQueueRenderParams& rende
 	fragmentShader->bindUniformBlockToBindPoint("Time", 0);
 	fragmentShader->bindUniformBlockToBindPoint("Lights", 1);
 
-	fragmentShader->setUniformValue("cameraPos", renderParams.cameraPos);
-	fragmentShader->setUniformValue("lightSpaceMatrix", renderParams.lightSpaceMatrix);
+	fragmentShader->setUniformValue("cameraPos", graphics->cameraPos);
+	fragmentShader->setUniformValue("lightSpaceMatrix", graphics->lightSpaceMatrix);
 
 	{
 		// render to quad
@@ -328,70 +333,71 @@ void DeferredRenderer::renderSceneUsingCustomShader(DrawQueueRenderParams& rende
 	m_renderTargetFBO->unbind();
 }
 
-void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
+void DeferredRenderer::renderScene(Scene* scene)
 {
+	auto graphics = Engine::get()->getSubSystem<Graphics>();
+
 	glEnable(GL_DEPTH_TEST);
 
-	// bind gBuffer
-	//m_gBuffer.bind();
-
-	// clear color and buffers
-	//clear();
-
-	//// bind vShader 
-	//m_gBufferShader->use();
-
 	// Render all objects
-	for (auto& entityHandler : *renderParams.entityGroup)
+	for (auto& entityHandler : *graphics->entityGroup)
 	{
 		// TODO optimize
 		Resource<MeshCollection> meshCollecton = entityHandler.getComponent<MeshComponent>().mesh;
 		for (auto mesh : meshCollecton.get()->getMeshes())
 		{
-			renderParams.entity = &entityHandler;
-			renderParams.mesh = mesh.get();
-			auto tempModel = entityHandler.getComponent<Transformation>().getWorldTransformation();
-			renderParams.model = &tempModel;
+			graphics->entity = &entityHandler;
+			graphics->mesh = mesh.get();
+
+			graphics->entity = &entityHandler;
+			graphics->mesh = mesh.get();
+			auto& transform = entityHandler.getComponent<Transformation>();
+			graphics->model = &transform.getWorldTransformation();
+
+			// TODO get this to work
+			//AABB& aabb = mesh.get()->getAABB();
+			//aabb.adjustToTransform(transform);
+
+			//if (!aabb.isOnFrustum(*graphics->frustum))
+			//{
+			//	continue;
+			//}
 
 			auto shader = entityHandler.tryGetComponent<ShaderComponent>();
-			renderParams.shader = shader ? shader->m_vertexShader : m_gBufferShader.get();
-			renderParams.shader->use();
+			graphics->shader = shader ? shader->m_vertexShader : m_gBufferShader.get();
+			graphics->shader->use();
 
 			auto animator = entityHandler.tryGetComponent<Animator>();
 			if (!animator || animator->m_currentAnimation.isEmpty())
 			{
-				renderParams.shader->setUniformValue("isAnimated", false);
+				graphics->shader->setUniformValue("isAnimated", false);
 			}
 			else
 			{
 				std::vector<glm::mat4> finalBoneMatrices;
-				animator->getFinalBoneMatrices(renderParams.mesh, finalBoneMatrices);
+				animator->getFinalBoneMatrices(graphics->mesh, finalBoneMatrices);
 				for (int i = 0; i < finalBoneMatrices.size(); ++i)
 				{
-					renderParams.shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
+					graphics->shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
 				}
 
-				renderParams.shader->setUniformValue("isAnimated", true);
+				graphics->shader->setUniformValue("isAnimated", true);
 			}
 
 
-			MaterialComponent& mat = renderParams.entity->getRoot().getComponent<MaterialComponent>();
+			MaterialComponent& mat = graphics->entity->getRoot().getComponent<MaterialComponent>();
 
 			auto matIndex = mesh->getMaterialIndex();
 			
-			renderParams.material = mat.at(matIndex).get();
+			graphics->material = mat.at(matIndex).get();
 
-			if (!renderParams.material)
+			if (!graphics->material)
 			{
-				renderParams.material = Engine::get()->getDefaultMaterial().get();
+				graphics->material = Engine::get()->getDefaultMaterial().get();
 			}
 
 			// draw model
-			render(renderParams);
-
-			renderParams.entity = nullptr;
-			renderParams.mesh = nullptr;
-			renderParams.model = nullptr;
+			render();
 		}
 		
 	};
@@ -430,7 +436,7 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 		m_ssaoPassShader->setValue("ssaoKernel[" + std::to_string(i) + "]", m_ssaoKernel[i]);
 	}
 
-	m_ssaoPassShader->setValue("projection", *renderParams.projection);
+	m_ssaoPassShader->setValue("projection", *graphics->projection);
 
 	m_ssaoPassShader->use();
 
@@ -487,22 +493,22 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_MRATexture.get()->bind();
 	m_lightPassShader->setUniformValue("gMRA", 3);
 
-	renderParams.irradianceMap.get()->setSlot(4);
-	renderParams.irradianceMap.get()->bind();
+	graphics->irradianceMap.get()->setSlot(4);
+	graphics->irradianceMap.get()->bind();
 	m_lightPassShader->setUniformValue("gIrradianceMap", 4);
 
 
-	renderParams.prefilterEnvMap.get()->setSlot(5);
-	renderParams.prefilterEnvMap.get()->bind();
+	graphics->prefilterEnvMap.get()->setSlot(5);
+	graphics->prefilterEnvMap.get()->bind();
 	m_lightPassShader->setUniformValue("gPrefilterEnvMap", 5);
 
 
-	renderParams.brdfLUT.get()->setSlot(6);
-	renderParams.brdfLUT.get()->bind();
+	graphics->brdfLUT.get()->setSlot(6);
+	graphics->brdfLUT.get()->bind();
 	m_lightPassShader->setUniformValue("gBRDFIntegrationLUT", 6);
 
-	renderParams.shadowMap.get()->setSlot(7);
-	renderParams.shadowMap.get()->bind();
+	graphics->shadowMap.get()->setSlot(7);
+	graphics->shadowMap.get()->bind();
 	m_lightPassShader->setUniformValue("gShadowMap", 7);
 
 #if 0
@@ -519,8 +525,8 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	m_lightPassShader->bindUniformBlockToBindPoint("Time", 0);
 	m_lightPassShader->bindUniformBlockToBindPoint("Lights", 1);
 
-	m_lightPassShader->setUniformValue("cameraPos", renderParams.cameraPos);
-	m_lightPassShader->setUniformValue("lightSpaceMatrix", renderParams.lightSpaceMatrix);
+	m_lightPassShader->setUniformValue("cameraPos", graphics->cameraPos);
+	m_lightPassShader->setUniformValue("lightSpaceMatrix", graphics->lightSpaceMatrix);
 
 	{
 		// render to quad

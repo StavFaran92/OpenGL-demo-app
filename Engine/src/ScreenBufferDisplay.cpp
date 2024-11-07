@@ -13,6 +13,7 @@
 #include "Component.h"
 #include "Texture.h"
 #include "MeshCollection.h"
+#include "Graphics.h"
 
 #include "GL/glew.h"
 
@@ -37,6 +38,8 @@ bool ScreenBufferDisplay::init(int windowWidth, int windowHeight)
 
 void ScreenBufferDisplay::draw(Resource<Texture> textureHandler)
 {
+	auto graphics = Engine::get()->getSubSystem<Graphics>();
+
 	// Clean buffers
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -49,10 +52,9 @@ void ScreenBufferDisplay::draw(Resource<Texture> textureHandler)
 	
 	auto mesh = m_quad.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh().get();
 
-	IRenderer::DrawQueueRenderParams renderParams;
-	renderParams.mesh = mesh;
-	renderParams.shader = m_screenShader.get();
-	m_renderer->render(renderParams);
+	graphics->mesh = mesh;
+	graphics->shader = m_screenShader.get();
+	m_renderer->render();
 
 	//mesh.mesh->render(*m_screenShader, *m_renderer);
 

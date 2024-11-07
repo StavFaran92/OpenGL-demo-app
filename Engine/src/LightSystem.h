@@ -14,7 +14,7 @@ public:
 	LightSystem(Context* context, Scene* scene);
 	bool init();
 private:
-	void setLightsInUBO(const IRenderer::DrawQueueRenderParams* params);
+	void setLightsInUBO();
 private:
 	bool m_isInit = false;
 

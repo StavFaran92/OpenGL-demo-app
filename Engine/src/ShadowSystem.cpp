@@ -17,6 +17,10 @@
 #include "Texture.h"
 #include "Animator.h"
 #include "MeshCollection.h"
+#include "Graphics.h"
+#include "RenderCommand.h"
+#include "ShapeFactory.h"
+
 
 const unsigned int SHADOW_WIDTH = 1024;
 const unsigned int SHADOW_HEIGHT = 1024;
@@ -58,14 +62,20 @@ bool ShadowSystem::init()
 
 	m_simpleDepthShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/SimpleDepthShader.glsl");
 
+	m_quad = ShapeFactory::createQuad(&Engine::get()->getContext()->getRegistry());
+	m_quad.RemoveComponent<RenderableComponent>();
+	m_quad.RemoveComponent<ObjectComponent>();
+
 	//m_bufferDisplay = std::make_shared<ScreenBufferDisplay>(m_scene);
 	//m_bufferDisplay->init(Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
 
 	return true;
 }
 
-void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* params)
+void ShadowSystem::renderToDepthMap()
 {
+	auto graphics = Engine::get()->getSubSystem<Graphics>();
+
 	glEnable(GL_DEPTH_TEST);
 	glCullFace(GL_FRONT);
 
@@ -79,8 +89,8 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	// Configure Shadow pass matrices
-	auto entt = params->registry->view<DirectionalLight>().front();
-	Entity e{ entt, &params->scene->getRegistry()};
+	auto entt = m_scene->getRegistry().getRegistry().view<DirectionalLight>().front();
+	Entity e{ entt, &m_scene->getRegistry() };
 	auto& dirLight = e.getComponent<DirectionalLight>();
 
 	//todo verify exists
@@ -103,25 +113,23 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 
 	m_lightSpaceMatrix = lightProjection * dirLightView;
 
-	auto drawQueueRenderParams = *params;
-
-	drawQueueRenderParams.shader = m_simpleDepthShader.get();
-	drawQueueRenderParams.shader->setUniformValue("lightSpaceMatrix", m_lightSpaceMatrix);
+	graphics->shader = m_simpleDepthShader.get();
+	graphics->shader->setUniformValue("lightSpaceMatrix", m_lightSpaceMatrix);
 
 	// Render Scene 
 	for (auto&& [entity, mesh, transform, renderable] : 
-		params->registry->view<MeshComponent, Transformation, RenderableComponent>().each())
+		m_scene->getRegistry().getRegistry().view<MeshComponent, Transformation, RenderableComponent>().each())
 	{
 		
 
 		Entity entityhandler{ entity, &m_scene->getRegistry()};
-		drawQueueRenderParams.entity = &entityhandler;
+		graphics->entity = &entityhandler;
 
 		
 		for (auto& mesh : mesh.mesh.get()->getMeshes())
 		{
-			drawQueueRenderParams.mesh = mesh.get();
-			drawQueueRenderParams.shader->setUniformValue("model", transform.getWorldTransformation());
+			graphics->mesh = mesh.get();
+			graphics->shader->setUniformValue("model", transform.getWorldTransformation());
 
 			auto animator = entityhandler.tryGetComponent<Animator>();
 			if (animator)
@@ -130,25 +138,22 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 				animator->getFinalBoneMatrices(mesh.get(), finalBoneMatrices);
 				for (int i = 0; i < finalBoneMatrices.size(); ++i)
 				{
-					drawQueueRenderParams.shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
+					graphics->shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
 				}
 
-				drawQueueRenderParams.shader->setUniformValue("isAnimated", true);
+				graphics->shader->setUniformValue("isAnimated", true);
 			}
 			else
 			{
-				drawQueueRenderParams.shader->setUniformValue("isAnimated", false);
+				graphics->shader->setUniformValue("isAnimated", false);
 			}
 
-
-
-			//auto tempModel = transform.getWorldTransformation();
-			drawQueueRenderParams.model = nullptr;
-			drawQueueRenderParams.view = nullptr;
-			drawQueueRenderParams.projection = nullptr;
-
 			// draw model
-			params->renderer->render(drawQueueRenderParams);
+			auto vao = m_quad.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh()->getVAO();
+
+			// render to quad
+			RenderCommand::draw(vao);
+			//graphics->renderer->render();
 
 		}
 	};

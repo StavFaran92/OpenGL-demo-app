@@ -50,23 +50,21 @@
 #include "AABB.h"
 #include "Frustum.h"
 #include "MeshCollection.h"
+#include "Graphics.h"
 
-void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
+void Scene::displayWireframeMesh(Entity e)
 {
+	auto graphics = Engine::get()->getSubSystem<Graphics>();
+
 	for (auto& mesh : e.tryGetComponent<MeshComponent>()->mesh.get()->getMeshes())
 	{
-		params.entity = &e;
-		params.shader = m_tempOutlineShader;
-		params.mesh = mesh.get();
+		graphics->entity = &e;
+		graphics->shader = m_tempOutlineShader;
+		graphics->mesh = mesh.get();
 		auto tempModel = e.getComponent<Transformation>().getWorldTransformation();
-		params.model = &tempModel;
+		graphics->model = &tempModel;
 
-		m_deferredRenderer->render(params);
-
-		params.entity = nullptr;
-		params.shader = nullptr;
-		params.mesh = nullptr;
-		params.model = nullptr;
+		m_deferredRenderer->render();
 	}
 }
 
@@ -353,6 +351,8 @@ void Scene::update(float deltaTime)
 
 void Scene::draw(float deltaTime)
 {
+	auto graphics = Engine::get()->getSubSystem<Graphics>();
+
 	glViewport(0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
 	m_deferredRenderer->clear();
 
@@ -360,32 +360,30 @@ void Scene::draw(float deltaTime)
 	auto& primaryCameraTransform = m_primaryCamera.getComponent<Transformation>();
 
 
-	IRenderer::DrawQueueRenderParams params;
-	params.scene = this;
-	params.context = m_context;
-	params.registry = &m_registry->get();
-	params.renderer = m_forwardRenderer.get();
-	params.view = &glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCameraTransform.getWorldPosition() + primaryCamera.front, primaryCamera.up);
-	params.projection = &m_defaultPerspectiveProjection;
-	params.cameraPos = primaryCameraTransform.getWorldPosition();
-	params.irradianceMap = m_irradianceMap;
-	params.prefilterEnvMap = m_prefilterEnvMap;
-	params.brdfLUT = m_BRDFIntegrationLUT;
+	graphics->scene = this;
+	graphics->context = m_context;
+	graphics->renderer = m_forwardRenderer.get();
+	graphics->view = &glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCameraTransform.getWorldPosition() + primaryCamera.front, primaryCamera.up);
+	graphics->projection = &m_defaultPerspectiveProjection;
+	graphics->cameraPos = primaryCameraTransform.getWorldPosition();
+	graphics->irradianceMap = m_irradianceMap;
+	graphics->prefilterEnvMap = m_prefilterEnvMap;
+	graphics->brdfLUT = m_BRDFIntegrationLUT;
 
-	m_shadowSystem->renderToDepthMap(&params);
+	m_shadowSystem->renderToDepthMap();
 
-	params.lightSpaceMatrix = m_shadowSystem->getLightSpaceMat();
-	params.shadowMap = m_shadowSystem->getShadowMap();
+	graphics->lightSpaceMatrix = m_shadowSystem->getLightSpaceMat();
+	graphics->shadowMap = m_shadowSystem->getShadowMap();
 
 	// PRE Render Phase
 	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])
 	{
-		cb(&params);
+		cb();
 	}
 
 	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_END])
 	{
-		cb(&params);
+		cb();
 	}
 
 	// Set time elapsed
@@ -403,6 +401,8 @@ void Scene::draw(float deltaTime)
 		primaryCamera.fovy, 
 		primaryCamera.znear, 
 		primaryCamera.zfar);
+
+	graphics->frustum = &frustum;
 
 	auto view = m_registry->get().view<MeshComponent, Transformation, RenderableComponent>();
 
@@ -458,16 +458,16 @@ void Scene::draw(float deltaTime)
 	m_deferredRenderer->clear();
 
 	// Render entities with built-in shader
-	params.entityGroup = &builtInShaderEntityGroup;
-	m_deferredRenderer->renderScene(params);
+	graphics->entityGroup = &builtInShaderEntityGroup;
+	m_deferredRenderer->renderScene(this);
 
 	//glBindFramebuffer(GL_FRAMEBUFFER, m_deferredRenderer->getGBuffer().getID());
 
 	// Render entities with custom shader
 	for (auto& e : customShaderEntityGroup)
 	{
-		params.entity = &e;
-		m_deferredRenderer->renderSceneUsingCustomShader(params);
+		graphics->entity = &e;
+		m_deferredRenderer->renderSceneUsingCustomShader();
 	}
 
 	const FrameBufferObject& gBuffer = m_deferredRenderer->getGBuffer();
@@ -488,9 +488,9 @@ void Scene::draw(float deltaTime)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, rTarget);
 
-	params.entityGroup = &forwardRendererEntityGroup;
+	graphics->entityGroup = &forwardRendererEntityGroup;
 
-	m_forwardRenderer->renderScene(params);
+	m_forwardRenderer->renderScene(this);
 
 	// Render skybox
 	glDepthMask(GL_FALSE);
@@ -498,20 +498,20 @@ void Scene::draw(float deltaTime)
 	m_skyboxShader->use();
 	m_renderTargetFBO->bind();
 
-	m_skyboxShader->setViewMatrix(*params.view);
-	m_skyboxShader->setProjectionMatrix(*params.projection);
+	m_skyboxShader->setViewMatrix(*graphics->view);
+	m_skyboxShader->setProjectionMatrix(*graphics->projection);
 
 	for (auto&& [entity, skybox, mesh, transform] : 
 		m_registry->get().view<SkyboxComponent, MeshComponent, Transformation>().each())
 	{
 		Entity entityhandler{ entity, m_registry.get()};
-		params.entity = &entityhandler;
-		params.mesh = mesh.mesh.get()->getPrimaryMesh().get();
-		params.model = &transform.getWorldTransformation();
+		graphics->entity = &entityhandler;
+		graphics->mesh = mesh.mesh.get()->getPrimaryMesh().get();
+		graphics->model = &transform.getWorldTransformation();
 		skybox.skyboxImage.get()->bind();
 		skybox.skyboxImage.get()->setSlot(0);
 
-		auto vao = params.mesh->getVAO();
+		auto vao = graphics->mesh->getVAO();
 		RenderCommand::draw(vao);
 	}
 	glDepthMask(GL_TRUE);
@@ -519,8 +519,8 @@ void Scene::draw(float deltaTime)
 
 	m_terrainShader->use();
 	
-	m_terrainShader->setUniformValue("view", *params.view);
-	m_terrainShader->setUniformValue("projection", *params.projection);
+	m_terrainShader->setUniformValue("view", *graphics->view);
+	m_terrainShader->setUniformValue("projection", *graphics->projection);
 	
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glEnable(GL_POLYGON_OFFSET_LINE);
@@ -559,7 +559,7 @@ void Scene::draw(float deltaTime)
 			m_terrainShader->setUniformValue("textureScale[" + std::to_string(i) + "]", textureScale);
 		}
 
-		auto vao = terrain.getMesh().get()->getPrimaryMesh()->getVAO(); //todo fix
+		auto vao = terrain.getMesh().get()->getPrimaryMesh()->getVAO();
 		RenderCommand::drawPatches(vao);
 	}
 
@@ -577,7 +577,7 @@ void Scene::draw(float deltaTime)
 	for (auto&& [entity, image] : m_registry->get().view<ImageComponent>().each())
 	{
 		Entity entityhandler{ entity, m_registry.get() };
-		params.entity = &entityhandler;
+		graphics->entity = &entityhandler;
 		image.image.get()->bind();
 		image.image.get()->setSlot(0);
 
@@ -637,12 +637,12 @@ void Scene::draw(float deltaTime)
 
 	for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_BEGIN])
 	{
-		cb(&params);
+		cb();
 	}
 
 	for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_END])
 	{
-		cb(&params);
+		cb();
 	}
 }
 

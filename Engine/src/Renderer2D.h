@@ -11,9 +11,9 @@ public:
 	Renderer2D() = default;
 
 	// Inherited via IRenderer
-	virtual void render(const DrawQueueRenderParams& renderParams) override;
+	virtual void render() override;
 
 	// Inherited via IRenderer
-	void renderScene(DrawQueueRenderParams& renderParams) override;
+	void renderScene(Scene*) override;
 };
 
