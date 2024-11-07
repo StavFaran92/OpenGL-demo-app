@@ -159,7 +159,7 @@ ModelImporter::ModelInfo ModelImporter::load(const std::string & path, ModelImpo
 			{
 				UUID uuid = Engine::get()->getMemoryManagementSystem()->getAssociation(normalStr.C_Str());
 				Resource<Texture> texture = Resource<Texture>(uuid);
-				material->setTexture(Texture::Type::Albedo, texture);
+				material->setTexture(Texture::Type::Normal, texture);
 			}
 
 			if (material->getAllTextures().size() > 0)
