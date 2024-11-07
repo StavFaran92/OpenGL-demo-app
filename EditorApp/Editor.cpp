@@ -725,9 +725,9 @@ void ShowModelCreatorWindow()
 			entity.addComponent<MeshComponent>().mesh = modelInfo.mesh;
 
 			auto& materialComponent = entity.addComponent<MaterialComponent>();
-			for(auto& m : modelInfo.materials)
+			for(auto& [idx, m] : modelInfo.materials)
 			{
-				materialComponent.addMaterial(m);
+				materialComponent.setMaterial(idx, m);
 			}
 
 			mat = nullptr;
@@ -1403,7 +1403,7 @@ void RenderInspectorWindow(float width, float height)
 
 		displayComponent<MaterialComponent>("Materials", [](MaterialComponent& materials) {
 			int index = 0;
-			for (auto& mat : materials)
+			for (auto& [id, mat] : materials)
 			{
 				// Start a new collapsible header for each material
 				if (ImGui::CollapsingHeader(("Material " + std::to_string(index)).c_str()))
@@ -1775,7 +1775,7 @@ public:
 		// set Editor camera as active camera
 		//auto editorCamera = m_editorRegistry->createEntity("Editor Camera"); //This causes a wierd bug ATM
 		auto editorCamera = Engine::get()->getContext()->getActiveScene()->createEntity("Editor Camera");
-		editorCamera.addComponent<CameraComponent>(CameraComponent::createPerspectiveCamera(45.0f, (float)4 / 3, 0.1f, 1000.0f));
+		editorCamera.addComponent<CameraComponent>(CameraComponent::createPerspectiveCamera(45.0f, (float)4 / 3, 0.1f, 3000.0f));
 		editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
 		Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(editorCamera);
 

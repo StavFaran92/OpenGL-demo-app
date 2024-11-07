@@ -161,7 +161,7 @@ ModelImporter::ModelInfo ModelImporter::load(const std::string & path, ModelImpo
 
 			if (material->getAllTextures().size() > 0)
 			{
-				modelInfo.materials.push_back(material);
+				modelInfo.materials[i] = material;
 			}
 		}
 	}

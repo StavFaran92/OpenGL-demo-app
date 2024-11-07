@@ -231,7 +231,7 @@ void DeferredRenderer::renderSceneUsingCustomShader(DrawQueueRenderParams& rende
 
 	MaterialComponent& mat = renderParams.entity->getRoot().getComponent<MaterialComponent>();
 
-	renderParams.material = mat.begin()->get();
+	renderParams.material = mat.begin()->second.get();
 
 	{
 		int currentSlot = 8;
@@ -379,7 +379,12 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 
 			auto matIndex = mesh->getMaterialIndex();
 			
-			renderParams.material = mat.materials[matIndex].get();
+			renderParams.material = mat.at(matIndex).get();
+
+			if (!renderParams.material)
+			{
+				renderParams.material = Engine::get()->getDefaultMaterial().get();
+			}
 
 			// draw model
 			render(renderParams);

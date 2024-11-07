@@ -9,7 +9,7 @@
 MaterialComponent::MaterialComponent()
 {
 	auto mat = std::make_shared<Material>(*Engine::get()->getDefaultMaterial().get());
-	materials.push_back(mat);
+	materials[0] = mat;
 }
 
 InstanceBatch::InstanceBatch()

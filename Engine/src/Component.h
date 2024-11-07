@@ -254,21 +254,26 @@ struct EngineAPI MaterialComponent : public Component
 
 	void addMaterial(const std::shared_ptr<Material>& mat)
 	{
-		if (isUsingDefault)
-		{
-			materials.clear();
-			isUsingDefault = false;
-		}
-		materials.push_back(mat);
+		materials[count++] = mat;
+	}
+
+	void setMaterial(int index, const std::shared_ptr<Material>& mat)
+	{
+		materials[index] = mat;
+	}
+
+	std::shared_ptr<Material> at(int index)
+	{
+		return materials.at(index);
 	}
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(materials, isUsingDefault);
+		archive(materials);
 	}
 
-	bool isUsingDefault = true;
-	std::vector<std::shared_ptr<Material>> materials;
+	std::map<int, std::shared_ptr<Material>> materials;
+	int count = 0;
 };
 
 struct EngineAPI ObjectComponent : public Component

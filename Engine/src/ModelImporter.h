@@ -48,7 +48,7 @@ public:
 	struct ModelInfo
 	{
 		Resource<MeshCollection> mesh;
-		std::vector<std::shared_ptr<Material>> materials;
+		std::map<int, std::shared_ptr<Material>> materials;
 		std::vector<Resource<Texture>> textures;
 	};
 

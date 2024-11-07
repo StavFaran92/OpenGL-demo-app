@@ -514,7 +514,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
 
             auto& mat = sphere.addComponent<MaterialComponent>();
             auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
-            mat.begin()->get()->setTexture(Texture::Type::Diffuse, tex);
+            mat.at(0)->setTexture(Texture::Type::Diffuse, tex);
 
             auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
             auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);
