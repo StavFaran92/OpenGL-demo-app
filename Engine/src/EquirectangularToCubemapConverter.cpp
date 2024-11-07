@@ -14,7 +14,7 @@
 #include "RenderCommand.h"
 #include "Entity.h"
 #include "Component.h"
-#include "Mesh.h"
+#include "MeshCollection.h"
 #include "Context.h"
 #include "Cubemap.h"
 
@@ -68,7 +68,7 @@ Resource<Texture> EquirectangularToCubemapConverter::fromEquirectangularToCubema
 	auto box = ShapeFactory::createBox(&Engine::get()->getContext()->getRegistry());
 	box.RemoveComponent<RenderableComponent>();
 	box.RemoveComponent<ObjectComponent>();
-	auto vao = box.getComponent<MeshComponent>().mesh.get()->getVAO();
+	auto vao = box.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh()->getVAO();
 
 	// render to cube
 	// Attach cube map to frame buffer
@@ -135,7 +135,7 @@ Resource<Texture> EquirectangularToCubemapConverter::fromCubemapToEquirectangula
 	auto quad = ShapeFactory::createQuad(&Engine::get()->getContext()->getRegistry());
 	quad.RemoveComponent<RenderableComponent>();
 	quad.RemoveComponent<ObjectComponent>();
-	auto vao = quad.getComponent<MeshComponent>().mesh.get()->getVAO();
+	auto vao = quad.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh()->getVAO();
 
 	// render to quad
 	// attach cubemap face to fbo

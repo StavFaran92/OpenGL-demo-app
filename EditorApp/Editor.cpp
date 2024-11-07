@@ -243,7 +243,7 @@ static void displaySelectMeshWindow(std::string& uuid)
 
 		static int selectedMeshIndex = -1;
 
-		auto& meshList = Engine::get()->getMemoryPool<Mesh>()->getAll(); // todo fix
+		auto& meshList = Engine::get()->getMemoryPool<MeshCollection>()->getAll(); // todo fix
 
 		for (int i = 0; i < meshList.size(); i++) 
 		{
@@ -1345,26 +1345,27 @@ void RenderInspectorWindow(float width, float height)
 		displayComponent<MeshComponent>("Mesh", [](MeshComponent& meshComponent) {
 			if (meshComponent.mesh.isEmpty()) return;
 
-			ImGui::Text("Number of vertices: %d", (int)meshComponent.mesh.get()->getNumOfVertices());
+			// TODO fix
+			//ImGui::Text("Number of vertices: %d", (int)meshComponent.mesh.get()->getNumOfVertices());
 
 			// Button to trigger some action
-			if (ImGui::Button("Select Mesh")) 
-			{
-				showMeshSelector = true;
-			}
+			//if (ImGui::Button("Select Mesh")) 
+			//{
+			//	showMeshSelector = true;
+			//}
 
-			std::string selectedMeshUID;
-			displaySelectMeshWindow(selectedMeshUID);
+			//std::string selectedMeshUID;
+			//displaySelectMeshWindow(selectedMeshUID);
 
-			if (!selectedMeshUID.empty())
-			{
-				meshComponent.mesh = Resource<Mesh>(selectedMeshUID);
-			}
+			//if (!selectedMeshUID.empty())
+			//{
+			//	meshComponent.mesh = Resource<Mesh>(selectedMeshUID);
+			//}
 
-			ImGui::SameLine();
+			//ImGui::SameLine();
 
-			// Text display field
-			ImGui::Text(meshComponent.mesh.getUID().c_str());
+			//// Text display field
+			//ImGui::Text(meshComponent.mesh.getUID().c_str());
 			});
 
 		displayComponent<RenderableComponent>("Renderer", [](RenderableComponent& renderComponent) {
@@ -1568,12 +1569,13 @@ void RenderInspectorWindow(float width, float height)
 
 			if (ImGui::MenuItem("Collision Mesh"))
 			{
-				auto meshComponent = selectedEntity.tryGetComponent<MeshComponent>();
-				if (meshComponent)
-				{
-					auto& meshCollisions = selectedEntity.addComponent<CollisionMeshComponent>();
-					meshCollisions.mesh = meshComponent->mesh;
-				}
+				// TODO fix
+				//auto meshComponent = selectedEntity.tryGetComponent<MeshComponent>();
+				//if (meshComponent)
+				//{
+				//	auto& meshCollisions = selectedEntity.addComponent<CollisionMeshComponent>();
+				//	meshCollisions.mesh = meshComponent->mesh;
+				//}
 			}
 
 			if (ImGui::MenuItem("Mesh"))
@@ -1596,7 +1598,7 @@ void RenderInspectorWindow(float width, float height)
 				auto meshComponent = selectedEntity.tryGetComponent<MeshComponent>();
 				if (meshComponent)
 				{
-					selectedEntity.addComponent<InstanceBatch>(std::vector<std::shared_ptr<Transformation>>{}, meshComponent->mesh);
+					//selectedEntity.addComponent<InstanceBatch>(std::vector<std::shared_ptr<Transformation>>{}, meshComponent->mesh);
 				}
 			}
 
@@ -1634,7 +1636,7 @@ void RenderAssetViewWindow(float width, float height) {
 	ImGui::Begin("Asset View", nullptr, style);
 	ImVec2 listBoxSize(windowWidth, height * 0.2f - 35);
 
-	auto& meshList = Engine::get()->getMemoryPool<Mesh>()->getAll();
+	auto& meshList = Engine::get()->getMemoryPool<MeshCollection>()->getAll();
 
 	if (ImGui::TreeNode("Meshes")) {
 		for (int i = 0; i < meshList.size(); i++) {

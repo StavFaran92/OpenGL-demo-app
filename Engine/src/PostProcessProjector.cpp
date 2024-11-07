@@ -12,6 +12,7 @@
 #include "Entity.h"
 #include "Component.h"
 #include "Texture.h"
+#include "MeshCollection.h"
 
 #include "GL/glew.h"
 
@@ -106,10 +107,10 @@ void PostProcessProjector::draw()
 
 	m_renderer->SetDrawType(Renderer::DrawType::Triangles);
 	
-	auto& mesh = m_quad.getComponent<MeshComponent>();
+	auto& mesh = m_quad.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh();
 
 	IRenderer::DrawQueueRenderParams renderParams;
-	renderParams.mesh = mesh.mesh.get();
+	renderParams.mesh = mesh.get();
 	renderParams.shader = m_screenShader.get();
 	m_renderer->render(renderParams);
 

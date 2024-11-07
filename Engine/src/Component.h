@@ -208,7 +208,7 @@ struct EngineAPI CameraComponent : public Component
 
 struct EngineAPI MeshComponent : public Component
 {
-	MeshComponent(const Resource<Mesh>& mesh) : mesh(mesh) {};
+	MeshComponent(const Resource<MeshCollection>& mesh) : mesh(mesh) {};
 	MeshComponent() = default;
 
 	template <class Archive>
@@ -217,7 +217,7 @@ struct EngineAPI MeshComponent : public Component
 	}
 
 	float materialSlot = 0; // todo this will be used (probably as a list) to support multi material models
-	Resource<Mesh> mesh = Resource<Mesh>::empty;
+	Resource<MeshCollection> mesh = Resource<MeshCollection>::empty;
 };
 
 //struct EngineAPI MeshArrayRendererComponent : public Component

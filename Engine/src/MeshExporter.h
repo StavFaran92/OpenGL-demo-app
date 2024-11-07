@@ -6,11 +6,11 @@
 #include <assimp/postprocess.h>
 
 #include "Resource.h"
-#include "Mesh.h"
+#include "MeshCollection.h"
 
 class MeshExporter
 {
 public:
-	static std::string exportMesh(Resource<Mesh> mesh, const aiScene* scene);
+	static std::string exportMesh(Resource<MeshCollection> mesh, const aiScene* scene);
 	static std::string exportMaterial(std::vector<std::shared_ptr<Material>> materials, const aiScene* scene);
 };

@@ -15,6 +15,7 @@
 #include "RenderCommand.h"
 #include "Context.h"
 #include "Animator.h"
+#include "MeshCollection.h"
 
 static float lerp(float a, float b, float t)
 {
@@ -216,10 +217,10 @@ void DeferredRenderer::renderSceneUsingCustomShader(DrawQueueRenderParams& rende
 	
 	
 	
-
+	// TODO fix
 
 	renderParams.entity = renderParams.entity;
-	renderParams.mesh = renderParams.entity->getComponent<MeshComponent>().mesh.get();
+	renderParams.mesh = 0;// renderParams.entity->getComponent<MeshComponent>().mesh.get();
 	auto tempModel = renderParams.entity->getComponent<Transformation>().getWorldTransformation();
 	auto& shaderComponent = renderParams.entity->getComponent<ShaderComponent>();
 	Shader* vertexShader = shaderComponent.m_vertexShader ? shaderComponent.m_vertexShader : m_gBufferShader.get();
@@ -320,12 +321,8 @@ void DeferredRenderer::renderSceneUsingCustomShader(DrawQueueRenderParams& rende
 
 	{
 		// render to quad
-		auto& mesh = m_quad.getComponent<MeshComponent>();
-
-		DrawQueueRenderParams renderParams2D;
-		auto vao = mesh.mesh.get()->getVAO();
-
-		RenderCommand::draw(vao);
+		auto& mesh = m_quad.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh();
+		RenderCommand::draw(mesh->getVAO());
 	}
 
 	m_renderTargetFBO->unbind();
@@ -347,43 +344,51 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 	// Render all objects
 	for (auto& entityHandler : *renderParams.entityGroup)
 	{
-		renderParams.entity = &entityHandler;
-		renderParams.mesh = entityHandler.getComponent<MeshComponent>().mesh.get();
-		auto tempModel = entityHandler.getComponent<Transformation>().getWorldTransformation();
-		renderParams.model = &tempModel;
-
-		auto shader = entityHandler.tryGetComponent<ShaderComponent>();
-		renderParams.shader = shader ? shader->m_vertexShader : m_gBufferShader.get();
-		renderParams.shader->use();
-
-		auto animator = entityHandler.tryGetComponent<Animator>();
-		if (!animator || animator->m_currentAnimation.isEmpty())
+		// TODO optimize
+		Resource<MeshCollection> meshCollecton = entityHandler.getComponent<MeshComponent>().mesh;
+		for (auto mesh : meshCollecton.get()->getMeshes())
 		{
-			renderParams.shader->setUniformValue("isAnimated", false);
-		}
-		else
-		{
-			std::vector<glm::mat4> finalBoneMatrices;
-			animator->getFinalBoneMatrices(renderParams.mesh, finalBoneMatrices);
-			for (int i = 0; i < finalBoneMatrices.size(); ++i)
+			renderParams.entity = &entityHandler;
+			renderParams.mesh = mesh.get();
+			auto tempModel = entityHandler.getComponent<Transformation>().getWorldTransformation();
+			renderParams.model = &tempModel;
+
+			auto shader = entityHandler.tryGetComponent<ShaderComponent>();
+			renderParams.shader = shader ? shader->m_vertexShader : m_gBufferShader.get();
+			renderParams.shader->use();
+
+			auto animator = entityHandler.tryGetComponent<Animator>();
+			if (!animator || animator->m_currentAnimation.isEmpty())
 			{
-				renderParams.shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
+				renderParams.shader->setUniformValue("isAnimated", false);
+			}
+			else
+			{
+				std::vector<glm::mat4> finalBoneMatrices;
+				animator->getFinalBoneMatrices(renderParams.mesh, finalBoneMatrices);
+				for (int i = 0; i < finalBoneMatrices.size(); ++i)
+				{
+					renderParams.shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
+				}
+
+				renderParams.shader->setUniformValue("isAnimated", true);
 			}
 
-			renderParams.shader->setUniformValue("isAnimated", true);
+
+			MaterialComponent& mat = renderParams.entity->getRoot().getComponent<MaterialComponent>();
+
+			auto matIndex = mesh->getMaterialIndex();
+			
+			renderParams.material = mat.materials[matIndex].get();
+
+			// draw model
+			render(renderParams);
+
+			renderParams.entity = nullptr;
+			renderParams.mesh = nullptr;
+			renderParams.model = nullptr;
 		}
 		
-
-		MaterialComponent& mat = renderParams.entity->getRoot().getComponent<MaterialComponent>();
-
-		renderParams.material = mat.begin()->get();
-
-		// draw model
-		render(renderParams);
-
-		renderParams.entity = nullptr;
-		renderParams.mesh = nullptr;
-		renderParams.model = nullptr;
 	};
 
 	// unbind gBuffer
@@ -514,12 +519,8 @@ void DeferredRenderer::renderScene(DrawQueueRenderParams& renderParams)
 
 	{
 		// render to quad
-		auto& mesh = m_quad.getComponent<MeshComponent>();
-
-		DrawQueueRenderParams renderParams2D;
-		auto vao = mesh.mesh.get()->getVAO();
-
-		RenderCommand::draw(vao);
+		auto& mesh = m_quad.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh();
+		RenderCommand::draw(mesh->getVAO());
 	}
 
 	m_renderTargetFBO->unbind();

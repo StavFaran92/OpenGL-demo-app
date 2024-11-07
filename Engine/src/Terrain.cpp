@@ -111,7 +111,9 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Te
 	}
 
 
-	Resource<Mesh> mesh = Factory<Mesh>::create();
+	Resource<MeshCollection> meshCollection = Factory<MeshCollection>::create();
+
+	auto mesh = std::make_shared<Mesh>();
 
 	VertexLayout layout;
 	layout.attribs.push_back(LayoutAttribute::Positions);
@@ -122,18 +124,20 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Te
 	MeshBuilder::builder()
 		.addRawVertices(vertices.data(), layout)
 		.addIndices(indices)
-		.build(mesh);
+		.build(*mesh.get());
+
+	meshCollection.get()->addMesh(mesh);
 
 	aiScene* scene = generateScene(vertices, indices);
 
-	MeshExporter::exportMesh(mesh, scene);
+	MeshExporter::exportMesh(meshCollection, scene);
 
 	Terrain terrain;
 	terrain.m_heightmap = heightMap;
 	terrain.m_scale = scale;
 	terrain.m_width = width;
 	terrain.m_height = height;
-	terrain.m_mesh = mesh;
+	terrain.m_mesh = meshCollection;
 
 	for (int i = 0; i < MAX_TEXTURE_COUNT; i++)
 	{
@@ -146,7 +150,7 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Te
 	return terrain; // todo fix
 }
 
-Resource<Mesh> Terrain::getMesh() const
+Resource<MeshCollection> Terrain::getMesh() const
 {
 	return m_mesh;
 }

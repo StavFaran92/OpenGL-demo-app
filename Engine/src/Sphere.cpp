@@ -5,7 +5,7 @@
 #include "Engine.h"
 #include "ModelImporter.h"
 
-Resource<Mesh> Sphere::createMesh(float radius, int sectors, int stacks)
+Resource<MeshCollection> Sphere::createMesh(float radius, int sectors, int stacks)
 {
     return Engine::get()->getSubSystem<ModelImporter>()->import(SGE_ROOT_DIR + "Resources/Engine/Meshes/sphere.gltf").mesh;
     //// clear memory of prev arrays

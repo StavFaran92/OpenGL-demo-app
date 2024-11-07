@@ -4,7 +4,7 @@
 #include "Context.h"
 #include "ProjectAssetRegistry.h"
 
-std::string MeshExporter::exportMesh(Resource<Mesh> mesh, const aiScene* scene)
+std::string MeshExporter::exportMesh(Resource<MeshCollection> mesh, const aiScene* scene)
 {
 	auto& projectDir = Engine::get()->getProjectDirectory();
 	Assimp::Exporter exporter;

@@ -326,9 +326,16 @@ MeshBuilder& MeshBuilder::addBonesInfo(const std::vector<glm::mat4>& bonesOffset
 	return *this;
 }
 
+MeshBuilder& MeshBuilder::setMaterialIndex(int index)
+{
+	m_data.materialIndex = index;
+
+	return *this;
+}
 
 
-Resource<Mesh> MeshBuilder::build(const Resource<Mesh>& mesh)
+
+void MeshBuilder::build(Mesh& mesh)
 {
 	if (m_data.m_positions.size() > 0)
 	{
@@ -373,18 +380,10 @@ Resource<Mesh> MeshBuilder::build(const Resource<Mesh>& mesh)
 	//MeshData newMeshData;
 	//MeshSerializer::readDataFromBinaryFile(mesh.getUID() + ".bin", newMeshData);
 
-	if (!mesh.get()->build(m_data))
+	if (!mesh.build(m_data))
 	{
 		logError("Mesh Builder failed to build mesh.");
-
-		delete this;
-
-		return nullptr;
 	}
-
-	delete this;
-
-	return mesh;
 }
 
 MeshBuilder& MeshBuilder::builder()

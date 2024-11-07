@@ -16,6 +16,7 @@
 #include "Context.h"
 #include "Texture.h"
 #include "Animator.h"
+#include "MeshCollection.h"
 
 const unsigned int SHADOW_WIDTH = 1024;
 const unsigned int SHADOW_HEIGHT = 1024;
@@ -115,35 +116,41 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 
 		Entity entityhandler{ entity, &m_scene->getRegistry()};
 		drawQueueRenderParams.entity = &entityhandler;
-		drawQueueRenderParams.mesh = mesh.mesh.get();
-		drawQueueRenderParams.shader->setUniformValue("model", transform.getWorldTransformation());
 
-		auto animator = entityhandler.tryGetComponent<Animator>();
-		if (animator)
+		
+		for (auto& mesh : mesh.mesh.get()->getMeshes())
 		{
-			std::vector<glm::mat4> finalBoneMatrices;
-			animator->getFinalBoneMatrices(mesh.mesh.get(), finalBoneMatrices);
-			for (int i = 0; i < finalBoneMatrices.size(); ++i)
+			drawQueueRenderParams.mesh = mesh.get();
+			drawQueueRenderParams.shader->setUniformValue("model", transform.getWorldTransformation());
+
+			auto animator = entityhandler.tryGetComponent<Animator>();
+			if (animator)
 			{
-				drawQueueRenderParams.shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
+				std::vector<glm::mat4> finalBoneMatrices;
+				animator->getFinalBoneMatrices(mesh.get(), finalBoneMatrices);
+				for (int i = 0; i < finalBoneMatrices.size(); ++i)
+				{
+					drawQueueRenderParams.shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
+				}
+
+				drawQueueRenderParams.shader->setUniformValue("isAnimated", true);
+			}
+			else
+			{
+				drawQueueRenderParams.shader->setUniformValue("isAnimated", false);
 			}
 
-			drawQueueRenderParams.shader->setUniformValue("isAnimated", true);
+
+
+			//auto tempModel = transform.getWorldTransformation();
+			drawQueueRenderParams.model = nullptr;
+			drawQueueRenderParams.view = nullptr;
+			drawQueueRenderParams.projection = nullptr;
+
+			// draw model
+			params->renderer->render(drawQueueRenderParams);
+
 		}
-		else
-		{
-			drawQueueRenderParams.shader->setUniformValue("isAnimated", false);
-		}
-
-
-
-		//auto tempModel = transform.getWorldTransformation();
-		drawQueueRenderParams.model = nullptr;
-		drawQueueRenderParams.view = nullptr;
-		drawQueueRenderParams.projection = nullptr;
-
-		// draw model
-		params->renderer->render(drawQueueRenderParams);
 	};
 
 	// Unbind FBO

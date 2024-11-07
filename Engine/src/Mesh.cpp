@@ -198,6 +198,7 @@ bool Mesh::build(MeshData& mData)
 	}
 
 	m_aabb = AABB::createFromMinMax(minAABB, maxAABB);
+	materialIndex = mData.materialIndex;
 	//m_normals = std::move(mData.m_normals);
 
 	return true;
@@ -281,6 +282,11 @@ int Mesh::getBoneID(const std::string& boneName) const
 AABB Mesh::getAABB() const
 {
 	return m_aabb;
+}
+
+int Mesh::getMaterialIndex() const
+{
+	return materialIndex;
 }
 
 Mesh::~Mesh()

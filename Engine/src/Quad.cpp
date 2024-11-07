@@ -19,7 +19,7 @@ static const unsigned int indices[] = {
 	1, 0, 3    // second triangle
 };
 
-Resource<Mesh> Quad::createMesh()
+Resource<MeshCollection> Quad::createMesh()
 {
 	return Engine::get()->getSubSystem<ModelImporter>()->import(SGE_ROOT_DIR + "Resources/Engine/Meshes/plane.gltf").mesh;
 	//VertexLayout layout;

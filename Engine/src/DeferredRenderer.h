@@ -21,6 +21,7 @@ public:
 	void renderScene(DrawQueueRenderParams& renderParams) override;
 	void renderSceneUsingCustomShader(DrawQueueRenderParams& renderParams);
 	uint32_t getRenderTarget() const override;
+	void setUniforms(Shader* shader);
 
 	const FrameBufferObject& getGBuffer() const;
 

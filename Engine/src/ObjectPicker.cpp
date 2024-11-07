@@ -20,6 +20,7 @@
 #include "RenderCommand.h"
 #include "ShapeFactory.h"
 #include "Transformation.h"
+#include "MeshCollection.h"
 
 #include "Logger.h"
 
@@ -78,16 +79,20 @@ int ObjectPicker::pickObject(int x, int y)
 	m_pickingShader->setUniformValue("projection", activeScene->getProjection());
 	m_pickingShader->setUniformValue("view", activeScene->getActiveCameraView());
 
-	for (auto& [entity, mesh, transform] : activeScene->getRegistry().getRegistry().view<MeshComponent, Transformation>().each())
+	for (auto& [entity, meshComponent, transform] : activeScene->getRegistry().getRegistry().view<MeshComponent, Transformation>().each())
 	{
 		Entity entityhandler{ entity, &activeScene->getRegistry() };
 		m_pickingShader->setUniformValue("objectIndex", (unsigned int)entityhandler.handlerID());
 		m_pickingShader->setUniformValue("model", transform.getWorldTransformation());
 
-		auto vao = mesh.mesh.get()->getVAO();
+		for (auto& mesh : meshComponent.mesh.get()->getMeshes())
+		{
 
-		// render to quad
-		RenderCommand::draw(vao);
+			auto vao = mesh->getVAO();
+
+			// render to quad
+			RenderCommand::draw(vao);
+		}
 	}
 
 	PixelInfo pixel;

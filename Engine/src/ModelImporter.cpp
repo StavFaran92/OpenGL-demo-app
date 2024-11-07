@@ -35,7 +35,7 @@ ModelImporter::ModelInfo ModelImporter::import(const std::string& path)
 {
 	ModelImporter::ModelInfo mInfo;
 
-	mInfo.mesh = Factory<Mesh>::create();
+	mInfo.mesh = Factory<MeshCollection>::create();
 
 	if (!std::filesystem::exists(path))
 	{
@@ -126,13 +126,10 @@ ModelImporter::ModelInfo ModelImporter::load(const std::string & path, ModelImpo
 	session.filepath = path;
 	session.fileDir = std::filesystem::path(path).parent_path().string();
 	session.name = modelName;
-	session.builder = &MeshBuilder::builder();
+	session.mesh = modelInfo.mesh;
 
 	// extract mesh from root node
 	processNode(scene->mRootNode, scene, session);
-
-	// build mesh
-	session.builder->build(modelInfo.mesh);
 
 	if (scene->HasMaterials())
 	{
@@ -197,6 +194,10 @@ struct BoneWeight
 
 void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporter::ModelImportSession& session)
 {
+	MeshBuilder builder;
+
+	std::shared_ptr<Mesh> generatedMesh = std::make_shared<Mesh>();
+
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec3> tangents;
@@ -312,18 +313,23 @@ void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporte
 			}
 		}
 
-		(*session.builder)
-			.addBoneIDs(bonesIDs)
+		builder.addBoneIDs(bonesIDs)
 			.addBoneWeights(bonesWeights)
 			.addBonesInfo(bonesOffsets, boneNameToIDMap);
 	}
 
-	(*session.builder)
-		.addPositions(positions)
+	builder.setMaterialIndex(mesh->mMaterialIndex);
+
+	builder.addPositions(positions)
 		.addNormals(normals)
 		.addTexcoords(texcoords)
 		.addIndices(indices)
 		.addTangents(tangents);
+
+	// build mesh
+	builder.build(*generatedMesh.get());
+
+	session.mesh.get()->addMesh(generatedMesh);
 }
 
 Resource<Texture> ModelImporter::importAiMaterialTexture(aiMaterial* mat, aiTextureType type, const std::string& dir)

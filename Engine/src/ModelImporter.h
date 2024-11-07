@@ -11,6 +11,7 @@
 #include "Entity.h"
 #include "MeshBuilder.h"
 #include "Material.h"
+#include "MeshCollection.h"
 
 // Forward declerations
 struct aiNode;
@@ -39,14 +40,14 @@ public:
 		int nodeIndex = 0;
 		int childIndex = 0;
 		Entity root;
-		MeshBuilder* builder = nullptr;
 		std::unordered_map<std::string, unsigned int> boneNameToIDMap;
 		unsigned int boneCount = 0;
+		Resource<MeshCollection> mesh;
 	};
 
 	struct ModelInfo
 	{
-		Resource<Mesh> mesh;
+		Resource<MeshCollection> mesh;
 		std::vector<std::shared_ptr<Material>> materials;
 		std::vector<Resource<Texture>> textures;
 	};

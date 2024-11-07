@@ -99,7 +99,7 @@ bool Engine::init(const InitParams& initParams)
     m_eventSystem = std::make_shared<EventSystem>();
 
     m_memoryPoolTexture = std::make_shared<MemoryPool<Texture>>();
-    m_memoryPoolMesh = std::make_shared<MemoryPool<Mesh>>();
+    m_memoryPoolMeshCollection = std::make_shared<MemoryPool<MeshCollection>>();
     m_memoryPoolAnimation = std::make_shared<MemoryPool<Animation>>();
 
     m_resourceManager = std::make_shared<ResourceManager>();

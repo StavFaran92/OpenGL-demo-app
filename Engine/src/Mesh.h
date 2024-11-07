@@ -29,6 +29,7 @@ struct MeshData
 	std::vector<glm::vec3> bonesWeights;
 	std::vector<glm::mat4> bonesOffsets;
 	std::unordered_map<std::string, unsigned int> bonesNameToIDMap;
+	int materialIndex{};
 	VertexLayout m_layout;
 };
 
@@ -97,6 +98,8 @@ public:
 
 	AABB getAABB() const;
 
+	int getMaterialIndex() const;
+
 	/**
 	 * Build the mesh using the specified vertices data.
 	 * This call will initialize all the OpenGL related Buffer data
@@ -133,4 +136,5 @@ private:
 	std::unordered_map<std::string, unsigned int> m_bonesNameToIDMap;
 
 	AABB m_aabb;
+	int materialIndex{};
 };

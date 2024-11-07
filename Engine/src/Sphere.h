@@ -6,5 +6,5 @@
 class EngineAPI Sphere
 {
 public:
-	static Resource<Mesh> createMesh(float radius, int sectors, int stacks);
+	static Resource<MeshCollection> createMesh(float radius, int sectors, int stacks);
 };

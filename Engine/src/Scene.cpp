@@ -49,16 +49,15 @@
 #include "Terrain.h"
 #include "AABB.h"
 #include "Frustum.h"
+#include "MeshCollection.h"
 
 void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
 {
-	auto mesh = e.tryGetComponent<MeshComponent>();
-
-	if (mesh)
+	for (auto& mesh : e.tryGetComponent<MeshComponent>()->mesh.get()->getMeshes())
 	{
 		params.entity = &e;
 		params.shader = m_tempOutlineShader;
-		params.mesh = mesh->mesh.get();
+		params.mesh = mesh.get();
 		auto tempModel = e.getComponent<Transformation>().getWorldTransformation();
 		params.model = &tempModel;
 
@@ -68,15 +67,6 @@ void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams para
 		params.shader = nullptr;
 		params.mesh = nullptr;
 		params.model = nullptr;
-	}
-
-	auto children = e.getChildren();
-	if (children.size() > 0)
-	{
-		for (auto& [e, childEnt] : children)
-		{
-			displayWireframeMesh(childEnt, params);
-		}
 	}
 }
 
@@ -430,8 +420,9 @@ void Scene::draw(float deltaTime)
 			auto& transform = entityhandler.getComponent<Transformation>();
 			auto& mesh = entityhandler.getComponent<MeshComponent>();
 
-			AABB& aabb = mesh.mesh.get()->getAABB();
-			aabb.adjustToTransform(transform);
+			// TODO Fix
+			//AABB& aabb = mesh.mesh.get()->getAABB();
+			//aabb.adjustToTransform(transform);
 			
 			//if(aabb.isOnFrustum(frustum))
 			{
@@ -515,7 +506,7 @@ void Scene::draw(float deltaTime)
 	{
 		Entity entityhandler{ entity, m_registry.get()};
 		params.entity = &entityhandler;
-		params.mesh = mesh.mesh.get();
+		params.mesh = mesh.mesh.get()->getPrimaryMesh().get();
 		params.model = &transform.getWorldTransformation();
 		skybox.skyboxImage.get()->bind();
 		skybox.skyboxImage.get()->setSlot(0);
@@ -568,7 +559,7 @@ void Scene::draw(float deltaTime)
 			m_terrainShader->setUniformValue("textureScale[" + std::to_string(i) + "]", textureScale);
 		}
 
-		auto vao = terrain.getMesh().get()->getVAO();
+		auto vao = terrain.getMesh().get()->getPrimaryMesh()->getVAO(); //todo fix
 		RenderCommand::drawPatches(vao);
 	}
 
@@ -581,7 +572,7 @@ void Scene::draw(float deltaTime)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	m_UIShader->use();
 	m_UIShader->setProjectionMatrix(m_defaultUIProjection);
-	auto vao = m_quadUI.getComponent<MeshComponent>().mesh.get()->getVAO();
+	auto vao = m_quadUI.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh()->getVAO();
 
 	for (auto&& [entity, image] : m_registry->get().view<ImageComponent>().each())
 	{

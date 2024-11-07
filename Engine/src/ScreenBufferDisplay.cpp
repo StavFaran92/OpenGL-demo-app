@@ -12,6 +12,7 @@
 #include "Entity.h"
 #include "Component.h"
 #include "Texture.h"
+#include "MeshCollection.h"
 
 #include "GL/glew.h"
 
@@ -46,10 +47,10 @@ void ScreenBufferDisplay::draw(Resource<Texture> textureHandler)
 
 	m_renderer->SetDrawType(Renderer::DrawType::Triangles);
 	
-	auto& mesh = m_quad.getComponent<MeshComponent>();
+	auto mesh = m_quad.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh().get();
 
 	IRenderer::DrawQueueRenderParams renderParams;
-	renderParams.mesh = mesh.mesh.get();
+	renderParams.mesh = mesh;
 	renderParams.shader = m_screenShader.get();
 	m_renderer->render(renderParams);
 

@@ -23,6 +23,7 @@
 #include "Component.h"
 #include "Transformation.h"
 #include "CommonShaders.h"
+#include "MeshCollection.h"
 
 
 Renderer::Renderer(std::shared_ptr<FrameBufferObject> renderTarget, Scene* scene)
@@ -70,31 +71,35 @@ void Renderer::renderScene(DrawQueueRenderParams& renderParams)
     for (auto& entityHandler : *renderParams.entityGroup)
 	{
         renderParams.entity = &entityHandler;
-        renderParams.mesh = entityHandler.getComponent<MeshComponent>().mesh.get();
-        auto tempModel = entityHandler.getComponent<Transformation>().getWorldTransformation();
-        renderParams.model = &tempModel;
-        renderParams.shader = Engine::get()->getCommonShaders()->getShader(CommonShaders::ShaderType::PHONG_SHADER).get();
-
-        // TODO rethink this feature
-        Shader* attachedShader = renderParams.entity->tryGetComponentInParent<Shader>();
-        if (attachedShader)
+        for (auto& mesh : entityHandler.getComponent<MeshComponent>().mesh.get()->getMeshes())
         {
-            renderParams.shader = attachedShader;
+
+            auto tempModel = entityHandler.getComponent<Transformation>().getWorldTransformation();
+            renderParams.model = &tempModel;
+            renderParams.shader = Engine::get()->getCommonShaders()->getShader(CommonShaders::ShaderType::PHONG_SHADER).get();
+            renderParams.mesh = mesh.get();
+
+            // TODO rethink this feature
+            Shader* attachedShader = renderParams.entity->tryGetComponentInParent<Shader>();
+            if (attachedShader)
+            {
+                renderParams.shader = attachedShader;
+            }
+
+            Material* mat = renderParams.entity->tryGetComponentInParent<Material>();
+
+            if (mat)
+            {
+                renderParams.material = mat;
+            }
+
+            // draw model
+            render(renderParams);
+
+            renderParams.entity = nullptr;
+            renderParams.mesh = nullptr;
+            renderParams.model = nullptr;
         }
-
-        Material* mat = renderParams.entity->tryGetComponentInParent<Material>();
-
-        if (mat)
-        {
-            renderParams.material = mat;
-        }
-
-        // draw model
-        render(renderParams);
-
-        renderParams.entity = nullptr;
-        renderParams.mesh = nullptr;
-        renderParams.model = nullptr;
     };
 
     m_renderTargetFBO->unbind();

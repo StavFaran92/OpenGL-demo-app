@@ -33,7 +33,7 @@ public:
 
 	Terrain() = default;
 
-	Resource<Mesh> getMesh() const;
+	Resource<MeshCollection> getMesh() const;
 	Resource<Texture> getHeightmap() const;
 
 	float getScale() const;
@@ -69,7 +69,7 @@ public:
 	//std::vector<float> m_blends{ };
 
 private:
-	Resource<Mesh> m_mesh;
+	Resource<MeshCollection> m_mesh;
 	//std::shared_ptr<TextureArray> m_textures;
 	
 };
