@@ -1568,6 +1568,7 @@ void RenderInspectorWindow(float width, float height)
 
 			if (ImGui::MenuItem("Collision Mesh"))
 			{
+				throw std::runtime_error("Not implemented");
 				// TODO fix
 				//auto meshComponent = selectedEntity.tryGetComponent<MeshComponent>();
 				//if (meshComponent)
@@ -1597,6 +1598,8 @@ void RenderInspectorWindow(float width, float height)
 				auto meshComponent = selectedEntity.tryGetComponent<MeshComponent>();
 				if (meshComponent)
 				{
+					throw std::runtime_error("Not implemented");
+					// TODO fix
 					//selectedEntity.addComponent<InstanceBatch>(std::vector<std::shared_ptr<Transformation>>{}, meshComponent->mesh);
 				}
 			}
