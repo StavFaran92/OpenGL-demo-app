@@ -180,14 +180,13 @@ void DeferredRenderer::render()
     graphics->shader->setModelMatrix(*graphics->model);
     graphics->shader->setViewMatrix(*graphics->view);
     graphics->shader->setProjectionMatrix(*graphics->projection);
+	graphics->shader->bindUniformBlockToBindPoint("Time", 0);
+	graphics->shader->bindUniformBlockToBindPoint("Lights", 1);
 
     if (graphics->material)
     {
         graphics->material->use(*graphics->shader);
     }
-
-    graphics->shader->bindUniformBlockToBindPoint("Time", 0);
-    graphics->shader->bindUniformBlockToBindPoint("Lights", 1);
 
 	// Draw
 	auto instanceBatch = graphics->entity->tryGetComponent<InstanceBatch>();
@@ -201,14 +200,6 @@ void DeferredRenderer::render()
 		graphics->shader->setUniformValue("isGpuInstanced", true);
 		RenderCommand::drawInstanced(graphics->mesh->getVAO(), instanceBatch->getCount());
 	}
-
-	// Release
-	if (graphics->material)
-	{
-		graphics->material->release();
-	}
-
-	//graphics->shader->release();
 }
 
 void DeferredRenderer::renderSceneUsingCustomShader()
@@ -339,33 +330,28 @@ void DeferredRenderer::renderScene(Scene* scene)
 
 	glEnable(GL_DEPTH_TEST);
 
+	graphics->shader = m_gBufferShader.get();
+	graphics->shader->use();
+
 	// Render all objects
 	for (auto& entityHandler : *graphics->entityGroup)
 	{
-		// TODO optimize
 		Resource<MeshCollection> meshCollecton = entityHandler.getComponent<MeshComponent>().mesh;
 		for (auto mesh : meshCollecton.get()->getMeshes())
 		{
-			graphics->entity = &entityHandler;
-			graphics->mesh = mesh.get();
-
 			graphics->entity = &entityHandler;
 			graphics->mesh = mesh.get();
 			auto& transform = entityHandler.getComponent<Transformation>();
 			graphics->model = &transform.getWorldTransformation();
 
 			// TODO get this to work
-			//AABB& aabb = mesh.get()->getAABB();
-			//aabb.adjustToTransform(transform);
+			AABB& aabb = mesh.get()->getAABB();
+			aabb.adjustToTransform(transform);
 
-			//if (!aabb.isOnFrustum(*graphics->frustum))
-			//{
-			//	continue;
-			//}
-
-			auto shader = entityHandler.tryGetComponent<ShaderComponent>();
-			graphics->shader = shader ? shader->m_vertexShader : m_gBufferShader.get();
-			graphics->shader->use();
+			if (!aabb.isOnFrustum(*graphics->frustum))
+			{
+				continue;
+			}
 
 			auto animator = entityHandler.tryGetComponent<Animator>();
 			if (!animator || animator->m_currentAnimation.isEmpty())
@@ -384,13 +370,8 @@ void DeferredRenderer::renderScene(Scene* scene)
 				graphics->shader->setUniformValue("isAnimated", true);
 			}
 
-
-			MaterialComponent& mat = graphics->entity->getRoot().getComponent<MaterialComponent>();
-
 			auto matIndex = mesh->getMaterialIndex();
-			
-			graphics->material = mat.at(matIndex).get();
-
+			graphics->material = graphics->entity->getComponent<MaterialComponent>().at(matIndex).get();
 			if (!graphics->material)
 			{
 				graphics->material = Engine::get()->getDefaultMaterial().get();
