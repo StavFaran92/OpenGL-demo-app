@@ -15,3 +15,13 @@ std::vector<std::shared_ptr<Mesh>> MeshCollection::getMeshes() const
 {
 	return m_meshes;
 }
+
+size_t MeshCollection::getNumOfVertices() const
+{
+	size_t vCount = 0;
+	for (auto& mesh : m_meshes)
+	{
+		vCount += mesh->getNumOfVertices();
+	}
+	return vCount;
+}

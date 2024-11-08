@@ -15,6 +15,8 @@ public:
 
 	std::vector<std::shared_ptr<Mesh>> getMeshes() const;
 
+	size_t getNumOfVertices() const;
+
 private:
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
 };

@@ -1345,27 +1345,26 @@ void RenderInspectorWindow(float width, float height)
 		displayComponent<MeshComponent>("Mesh", [](MeshComponent& meshComponent) {
 			if (meshComponent.mesh.isEmpty()) return;
 
-			// TODO fix
-			//ImGui::Text("Number of vertices: %d", (int)meshComponent.mesh.get()->getNumOfVertices());
+			ImGui::Text("Number of vertices: %d", (int)meshComponent.mesh.get()->getNumOfVertices());
 
-			// Button to trigger some action
-			//if (ImGui::Button("Select Mesh")) 
-			//{
-			//	showMeshSelector = true;
-			//}
+			 //Button to trigger some action
+			if (ImGui::Button("Select Mesh")) 
+			{
+				showMeshSelector = true;
+			}
 
-			//std::string selectedMeshUID;
-			//displaySelectMeshWindow(selectedMeshUID);
+			std::string selectedMeshUID;
+			displaySelectMeshWindow(selectedMeshUID);
 
-			//if (!selectedMeshUID.empty())
-			//{
-			//	meshComponent.mesh = Resource<Mesh>(selectedMeshUID);
-			//}
+			if (!selectedMeshUID.empty())
+			{
+				meshComponent.mesh = Resource<MeshCollection>(selectedMeshUID);
+			}
 
-			//ImGui::SameLine();
+			ImGui::SameLine();
 
-			//// Text display field
-			//ImGui::Text(meshComponent.mesh.getUID().c_str());
+			// Text display field
+			ImGui::Text(meshComponent.mesh.getUID().c_str());
 			});
 
 		displayComponent<RenderableComponent>("Renderer", [](RenderableComponent& renderComponent) {
