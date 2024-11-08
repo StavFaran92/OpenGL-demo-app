@@ -8,6 +8,8 @@
 #include "Logger.h"
 #include "ShaderLoader.h"
 #include "Engine.h"
+#include "Texture.h"
+#include "Resource.h"
 
 uint32_t Shader::s_activeShader = 0;
 
@@ -38,6 +40,13 @@ void Shader::bindUniformBlockToBindPoint(const std::string& uniformBlockName, in
 	int uniformBlockIndex = getUniformBlockLocation(uniformBlockName);
 	if (uniformBlockIndex < 0) return;
 	glUniformBlockBinding(m_id, uniformBlockIndex, bindPointIndex);
+}
+
+void Shader::setTextureInShader(Resource<Texture> texture, const std::string& uniform, int slot)
+{
+	texture.get()->setSlot(slot);
+	texture.get()->bind();
+	setUniformValue(uniform, slot);
 }
 
 void Shader::BuildShaders(const ShadersInfo& shaderCode)

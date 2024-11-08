@@ -251,39 +251,14 @@ void DeferredRenderer::renderSceneUsingCustomShader()
 
 	// bind textures
 	// Todo solve slots issue
-	m_positionTexture.get()->setSlot(0);
-	m_positionTexture.get()->bind();
-	fragmentShader->setUniformValue("gPosition", 0);
-
-	m_normalTexture.get()->setSlot(1);
-	m_normalTexture.get()->bind();
-	fragmentShader->setUniformValue("gNormal", 1);
-
-	m_albedoTexture.get()->setSlot(2);
-	m_albedoTexture.get()->bind();
-	fragmentShader->setUniformValue("gAlbedo", 2);
-
-	m_MRATexture.get()->setSlot(3);
-	m_MRATexture.get()->bind();
-	fragmentShader->setUniformValue("gMRA", 3);
-
-	graphics->irradianceMap.get()->setSlot(4);
-	graphics->irradianceMap.get()->bind();
-	fragmentShader->setUniformValue("gIrradianceMap", 4);
-
-
-	graphics->prefilterEnvMap.get()->setSlot(5);
-	graphics->prefilterEnvMap.get()->bind();
-	fragmentShader->setUniformValue("gPrefilterEnvMap", 5);
-
-
-	graphics->brdfLUT.get()->setSlot(6);
-	graphics->brdfLUT.get()->bind();
-	fragmentShader->setUniformValue("gBRDFIntegrationLUT", 6);
-
-	graphics->shadowMap.get()->setSlot(7);
-	graphics->shadowMap.get()->bind();
-	fragmentShader->setUniformValue("gShadowMap", 7);
+	fragmentShader->setTextureInShader(m_positionTexture, "gPosition", 0);
+	fragmentShader->setTextureInShader(m_normalTexture, "gNormal", 1);
+	fragmentShader->setTextureInShader(m_albedoTexture, "gAlbedo", 2);
+	fragmentShader->setTextureInShader(m_MRATexture, "gMRA", 3);
+	fragmentShader->setTextureInShader(graphics->irradianceMap, "gIrradianceMap", 4);
+	fragmentShader->setTextureInShader(graphics->prefilterEnvMap, "gPrefilterEnvMap", 5);
+	fragmentShader->setTextureInShader(graphics->brdfLUT, "gBRDFIntegrationLUT", 6);
+	fragmentShader->setTextureInShader(graphics->shadowMap, "gShadowMap", 7);
 
 	//{
 	//	// This needs to be fixed since the texture limit will might eventually reached.
@@ -458,39 +433,14 @@ void DeferredRenderer::renderScene(Scene* scene)
 
 	// bind textures
 	// Todo solve slots issue
-	m_positionTexture.get()->setSlot(0);
-	m_positionTexture.get()->bind();
-	m_lightPassShader->setUniformValue("gPosition", 0);
-
-	m_normalTexture.get()->setSlot(1);
-	m_normalTexture.get()->bind();
-	m_lightPassShader->setUniformValue("gNormal", 1);
-
-	m_albedoTexture.get()->setSlot(2);
-	m_albedoTexture.get()->bind();
-	m_lightPassShader->setUniformValue("gAlbedo", 2);
-
-	m_MRATexture.get()->setSlot(3);
-	m_MRATexture.get()->bind();
-	m_lightPassShader->setUniformValue("gMRA", 3);
-
-	graphics->irradianceMap.get()->setSlot(4);
-	graphics->irradianceMap.get()->bind();
-	m_lightPassShader->setUniformValue("gIrradianceMap", 4);
-
-
-	graphics->prefilterEnvMap.get()->setSlot(5);
-	graphics->prefilterEnvMap.get()->bind();
-	m_lightPassShader->setUniformValue("gPrefilterEnvMap", 5);
-
-
-	graphics->brdfLUT.get()->setSlot(6);
-	graphics->brdfLUT.get()->bind();
-	m_lightPassShader->setUniformValue("gBRDFIntegrationLUT", 6);
-
-	graphics->shadowMap.get()->setSlot(7);
-	graphics->shadowMap.get()->bind();
-	m_lightPassShader->setUniformValue("gShadowMap", 7);
+	m_lightPassShader->setTextureInShader(m_positionTexture, "gPosition", 0);
+	m_lightPassShader->setTextureInShader(m_normalTexture, "gNormal", 1);
+	m_lightPassShader->setTextureInShader(m_albedoTexture, "gAlbedo", 2);
+	m_lightPassShader->setTextureInShader(m_MRATexture, "gMRA", 3);
+	m_lightPassShader->setTextureInShader(graphics->irradianceMap, "gIrradianceMap", 4);
+	m_lightPassShader->setTextureInShader(graphics->prefilterEnvMap, "gPrefilterEnvMap", 5);
+	m_lightPassShader->setTextureInShader(graphics->brdfLUT, "gBRDFIntegrationLUT", 6);
+	m_lightPassShader->setTextureInShader(graphics->shadowMap, "gShadowMap", 7);
 
 #if 0
 	m_ssaoBlurColorBuffer->setSlot(3);
