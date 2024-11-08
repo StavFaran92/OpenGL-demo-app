@@ -62,10 +62,6 @@ bool ShadowSystem::init()
 
 	m_simpleDepthShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/SimpleDepthShader.glsl");
 
-	m_quad = ShapeFactory::createQuad(&Engine::get()->getContext()->getRegistry());
-	m_quad.RemoveComponent<RenderableComponent>();
-	m_quad.RemoveComponent<ObjectComponent>();
-
 	//m_bufferDisplay = std::make_shared<ScreenBufferDisplay>(m_scene);
 	//m_bufferDisplay->init(Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
 
@@ -113,8 +109,8 @@ void ShadowSystem::renderToDepthMap()
 
 	m_lightSpaceMatrix = lightProjection * dirLightView;
 
-	graphics->shader = m_simpleDepthShader.get();
-	graphics->shader->setUniformValue("lightSpaceMatrix", m_lightSpaceMatrix);
+	m_simpleDepthShader->use();
+	m_simpleDepthShader->setUniformValue("lightSpaceMatrix", m_lightSpaceMatrix);
 
 	// Render Scene 
 	for (auto&& [entity, mesh, transform, renderable] : 
@@ -129,7 +125,7 @@ void ShadowSystem::renderToDepthMap()
 		for (auto& mesh : mesh.mesh.get()->getMeshes())
 		{
 			graphics->mesh = mesh.get();
-			graphics->shader->setUniformValue("model", transform.getWorldTransformation());
+			m_simpleDepthShader->setUniformValue("model", transform.getWorldTransformation());
 
 			auto animator = entityhandler.tryGetComponent<Animator>();
 			if (animator)
@@ -138,22 +134,21 @@ void ShadowSystem::renderToDepthMap()
 				animator->getFinalBoneMatrices(mesh.get(), finalBoneMatrices);
 				for (int i = 0; i < finalBoneMatrices.size(); ++i)
 				{
-					graphics->shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
+					m_simpleDepthShader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
 				}
 
-				graphics->shader->setUniformValue("isAnimated", true);
+				m_simpleDepthShader->setUniformValue("isAnimated", true);
 			}
 			else
 			{
-				graphics->shader->setUniformValue("isAnimated", false);
+				m_simpleDepthShader->setUniformValue("isAnimated", false);
 			}
 
 			// draw model
-			auto vao = m_quad.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh()->getVAO();
+			auto vao = mesh->getVAO();
 
 			// render to quad
 			RenderCommand::draw(vao);
-			//graphics->renderer->render();
 
 		}
 	};

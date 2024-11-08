@@ -43,6 +43,4 @@ private:
 	Context* m_context = nullptr;
 
 	glm::mat4 m_lightSpaceMatrix;
-
-	Entity m_quad;
 };
