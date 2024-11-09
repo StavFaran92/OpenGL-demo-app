@@ -22,6 +22,41 @@
 #include "Factory.h"
 #include "MeshExporter.h"
 
+bool findFile(const std::filesystem::path& directory, const std::string& fileName, std::filesystem::path& outputPath)
+{
+	for (const auto& entry : std::filesystem::recursive_directory_iterator(directory))
+	{
+		if (entry.is_regular_file() && entry.path().filename() == fileName)
+		{
+			outputPath = entry.path();  // Return the path if the file is found
+			return true;
+		}
+	}
+	return false;  // Return an empty optional if the file is not found
+}
+
+std::string findTexture(aiString str, const std::string& dir)
+{
+	std::filesystem::path filenamePath(str.C_Str());
+	std::string filename = filenamePath.filename().string();
+
+	std::string path = dir + "/" + filename;
+
+	if (!std::filesystem::exists(path))
+	{
+		std::filesystem::path outputPath;
+		if (!findFile(dir, filename, outputPath))
+		{
+			logWarning("Could not find texture: " + std::string(filename));
+			return "";
+		}
+		path = outputPath.string();
+
+	}
+
+	return path;
+}
+
 ModelImporter::ModelImporter()
 {
 	Engine::get()->registerSubSystem<ModelImporter>(this);
@@ -146,7 +181,8 @@ ModelImporter::ModelInfo ModelImporter::load(const std::string & path, ModelImpo
 			aiString diffuseStr;
 			if (aMaterial->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &diffuseStr) == aiReturn_SUCCESS)
 			{
-				UUID uuid = Engine::get()->getMemoryManagementSystem()->getAssociation(diffuseStr.C_Str());
+				std::string name = std::filesystem::path(diffuseStr.C_Str()).filename().string();
+				UUID uuid = Engine::get()->getMemoryManagementSystem()->getAssociation(name);
 				Resource<Texture> texture = Resource<Texture>(uuid);
 				material->setTexture(Texture::Type::Albedo, texture);
 			}
@@ -154,9 +190,12 @@ ModelImporter::ModelInfo ModelImporter::load(const std::string & path, ModelImpo
 			aiString normalStr;
 			if (aMaterial->GetTexture(aiTextureType::aiTextureType_NORMALS, 0, &normalStr) == aiReturn_SUCCESS)
 			{
-				UUID uuid = Engine::get()->getMemoryManagementSystem()->getAssociation(normalStr.C_Str());
+				std::string name = std::filesystem::path(normalStr.C_Str()).filename().string();
+				UUID uuid = Engine::get()->getMemoryManagementSystem()->getAssociation(name);
 				Resource<Texture> texture = Resource<Texture>(uuid);
 				material->setTexture(Texture::Type::Normal, texture);
+
+				
 			}
 
 			if (material->getAllTextures().size() > 0)
@@ -332,6 +371,8 @@ void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporte
 	session.mesh.get()->addMesh(generatedMesh);
 }
 
+
+
 Resource<Texture> ModelImporter::importAiMaterialTexture(aiMaterial* mat, aiTextureType type, const std::string& dir)
 {
 	aiString str;
@@ -339,7 +380,14 @@ Resource<Texture> ModelImporter::importAiMaterialTexture(aiMaterial* mat, aiText
 	{
 		return Resource<Texture>::empty;
 	}
-	auto texture = Engine::get()->getSubSystem<Assets>()->importTexture2D(dir + "/" + str.C_Str(), true);
+
+	std::string path = findTexture(str, dir);
+	if (path.empty())
+	{
+		return Resource<Texture>::empty;
+	}
+
+	auto texture = Engine::get()->getSubSystem<Assets>()->importTexture2D(path, true);
 	return texture;
 }
 

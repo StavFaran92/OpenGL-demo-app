@@ -346,7 +346,8 @@ void DeferredRenderer::renderScene(Scene* scene)
 			}
 
 			auto matIndex = mesh->getMaterialIndex();
-			graphics->material = graphics->entity->getComponent<MaterialComponent>().at(matIndex).get();
+			auto& materialComponent = graphics->entity->getComponent<MaterialComponent>();
+			graphics->material = materialComponent.at(matIndex).get();
 			if (!graphics->material)
 			{
 				graphics->material = Engine::get()->getDefaultMaterial().get();

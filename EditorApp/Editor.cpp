@@ -17,9 +17,6 @@
 namespace fs = std::filesystem;
 
 static bool ShowLightCreatorWindow = false;
-static bool showModelCreatorWindow = false;
-static bool showTextureImportWindow = false;
-static bool showAnimationImportWindow = false;
 static bool showAssetTextureSelectWindow = false;
 static bool showModelInspectorWindow = false;
 static bool showPrimitiveCreatorWindow = false;
@@ -576,175 +573,109 @@ static void addAssetLoadWidget(const std::string& name, ImGuiTextBuffer& textBuf
 
 void ShowTextureImportWindow()
 {
-	if (showTextureImportWindow)
+	static ImGuiTextBuffer texturePathBuffer;
+
+	const char* filepath = tinyfd_openFileDialog(
+		"Select an asset to load",
+		"",
+		4,
+		Constants::g_textureSupportedFormats,
+		"",
+		0);
+
+	if (filepath)
 	{
-		ImGui::SetNextWindowSize({ 200, 300 }, ImGuiCond_Appearing);
-		ImGui::Begin("Import Texture", false);
-
-		static ImGuiTextBuffer texturePathBuffer;
-
-		addAssetLoadWidget("Texture", texturePathBuffer, Constants::g_textureSupportedFormats, 4);
-
-		static bool flip = false;
-		ImGui::Checkbox("Flip", &flip);
-
-		ImGui::Separator();
-
-		if (ImGui::Button("Ok"))
-		{
-			if (texturePathBuffer.empty())
-			{
-				logError("Texture Path not specified.");
-				showTextureImportWindow = false;
-				return;
-			}
-
-			//todo validate input
-
-			Engine::get()->getSubSystem<Assets>()->importTexture2D(texturePathBuffer.c_str(), flip);
-
-			texturePathBuffer.clear();
-
-			showTextureImportWindow = false;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel"))
-		{
-			showTextureImportWindow = false;
-		}
-
-		ImGui::End();
+		texturePathBuffer.clear();
+		texturePathBuffer.append(filepath);
 	}
+
+	std::filesystem::path path(texturePathBuffer.c_str());
+
+	if (!std::filesystem::exists(path))
+	{
+		logError("Texture Path not found: " + path.string());
+		return;
+	}
+
+	Engine::get()->getSubSystem<Assets>()->importTexture2D(texturePathBuffer.c_str(), false);
+
+	texturePathBuffer.clear();
 }
 
 void ShowAnimationImportWindow()
 {
-	if (showAnimationImportWindow)
+	static ImGuiTextBuffer animationPathBuffer;
+
+	const char* filepath = tinyfd_openFileDialog(
+		"Select an asset to load",
+		"",
+		1,
+		Constants::g_animationSupportedFormats,
+		"",
+		0);
+
+	if (filepath)
 	{
-		ImGui::SetNextWindowSize({ 400, 150 }, ImGuiCond_Appearing);
-		ImGui::Begin("Import Animation", false);
-
-		static ImGuiTextBuffer animationPathBuffer;
-
-		addAssetLoadWidget("Animation", animationPathBuffer, Constants::g_animationSupportedFormats, 1);
-
-		ImGui::Separator();
-
-		if (ImGui::Button("Ok"))
-		{
-			if (animationPathBuffer.empty())
-			{
-				logError("Animation Path not specified.");
-				showAnimationImportWindow = false;
-				return;
-			}
-
-			//todo validate input
-
-			Engine::get()->getSubSystem<Assets>()->importAnimation(animationPathBuffer.c_str());
-
-			animationPathBuffer.clear();
-
-			showAnimationImportWindow = false;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel"))
-		{
-			showAnimationImportWindow = false;
-		}
-
-		ImGui::End();
+		animationPathBuffer.clear();
+		animationPathBuffer.append(filepath);
 	}
+
+	std::filesystem::path path(animationPathBuffer.c_str());
+
+	if (!std::filesystem::exists(path))
+	{
+		logError("Animation Path not found: " + path.string());
+		return;
+	}
+
+	Engine::get()->getSubSystem<Assets>()->importAnimation(animationPathBuffer.c_str());
+
+	animationPathBuffer.clear();
 }
 
 void ShowModelCreatorWindow()
 {
-	if (showModelCreatorWindow)
+	static ImGuiTextBuffer modelPathBuffer;
+
+	const char* filepath = tinyfd_openFileDialog(
+		"Select an asset to load",
+		"",
+		4,
+		g_supportedFormats,
+		"",
+		0);
+
+	if (filepath)
 	{
-		ImGui::SetNextWindowSize({ 400, 300 }, ImGuiCond_Appearing);
-		ImGui::Begin("Import model", false, ImGuiWindowFlags_AlwaysAutoResize);
-
-		static ImGuiTextBuffer modelPathBuffer;
-
-		static glm::vec3 pos(0.f, 0.f, 0.f);
-		static glm::vec3 rotation(0.f, 0.f, 0.f);
-		static glm::vec3 scale(1.f, 1.f, 1.f);
-
-		// Model
-		addAssetLoadWidget("Model", modelPathBuffer, g_supportedFormats, 4);
-
-		ImGui::Separator();
-		ImGui::LabelText("", "Texture");
-
-		// Textures
-		static std::shared_ptr<Material> mat;
-		if(!mat) mat = std::make_shared<Material>(*Engine::get()->getDefaultMaterial().get());
-
-		addTextureEditWidget(mat, "Albedo", Texture::Type::Albedo);
-		addTextureEditWidget(mat, "Normal", Texture::Type::Normal);
-		addTextureEditWidget(mat, "Metallic", Texture::Type::Metallic);
-		addTextureEditWidget(mat, "Roughness", Texture::Type::Roughness);
-		addTextureEditWidget(mat, "Occlusion", Texture::Type::AmbientOcclusion);
-
-		ImGui::Separator();
-
-		if (ImGui::Button("Ok"))
-		{
-			if (modelPathBuffer.empty())
-			{
-				logError("Model Path not specified.")
-				showModelCreatorWindow = false;
-				return;
-			}
-
-			//todo validate input
-
-			//extract model name
-			std::string modelName = modelPathBuffer.c_str();
-
-			// Find the last occurrence of either '/' or '\\'
-			size_t lastSlash = modelName.find_last_of("/\\");
-
-			// Extract the model name after the last slash (if found)
-			if (lastSlash != std::string::npos) 
-			{
-				modelName = modelName.substr(lastSlash + 1);
-			}
-
-			// Remove the file extension by finding the first occurrence of '.'
-			size_t dotPosition = modelName.find_first_of('.');
-			if (dotPosition != std::string::npos) 
-			{
-				modelName = modelName.substr(0, dotPosition);
-			}
-
-			auto entity = Engine::get()->getContext()->getActiveScene()->createEntity(modelName);
-			entity.addComponent<RenderableComponent>();
-
-			auto modelInfo = Engine::get()->getSubSystem<ModelImporter>()->import(modelPathBuffer.c_str());
-			entity.addComponent<MeshComponent>().mesh = modelInfo.mesh;
-
-			auto& materialComponent = entity.addComponent<MaterialComponent>();
-			for(auto& [idx, m] : modelInfo.materials)
-			{
-				materialComponent.setMaterial(idx, m);
-			}
-
-			mat = nullptr;
-			modelPathBuffer.clear();
-
-			showModelCreatorWindow = false;
-
-			updateScene();
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel"))
-		{
-			showModelCreatorWindow = false;
-		}
-
-		ImGui::End();
+		modelPathBuffer.clear();
+		modelPathBuffer.append(filepath);
 	}
+
+	std::filesystem::path path(modelPathBuffer.c_str());
+
+	if (!std::filesystem::exists(path))
+	{
+		logError("Model Path not found: " + path.string());
+		return;
+	}
+
+	auto modelName = path.filename().replace_extension().string();
+
+	auto entity = Engine::get()->getContext()->getActiveScene()->createEntity(modelName);
+	entity.addComponent<RenderableComponent>();
+
+	auto modelInfo = Engine::get()->getSubSystem<ModelImporter>()->import(modelPathBuffer.c_str());
+	entity.addComponent<MeshComponent>().mesh = modelInfo.mesh;
+
+	auto& materialComponent = entity.addComponent<MaterialComponent>();
+	for(auto& [idx, m] : modelInfo.materials)
+	{
+		materialComponent.setMaterial(idx, m);
+	}
+
+	modelPathBuffer.clear();
+
+	updateScene();
 }
 
 void displayentityName(const Entity& e)
@@ -1704,14 +1635,14 @@ class GUI_Helper : public GuiMenu {
 					}
 					if (ImGui::BeginMenu("Import")) {
 						if (ImGui::MenuItem("Model")) {
-							showModelCreatorWindow = true;
+							ShowModelCreatorWindow();
 						}
 						if (ImGui::MenuItem("Texture")) {
-							showTextureImportWindow = true;
+							ShowTextureImportWindow();
 						}
 						if (ImGui::MenuItem("Animation")) {
 							// Action for importing animation
-							showAnimationImportWindow = true;
+							ShowAnimationImportWindow();
 						}
 						ImGui::EndMenu();
 					}
@@ -1742,9 +1673,6 @@ class GUI_Helper : public GuiMenu {
 		RenderInspectorWindow(screenWidth, screenHeight);
 		RenderAssetViewWindow(screenWidth, screenHeight); // Add the Asset View window
 
-		ShowTextureImportWindow();
-		ShowAnimationImportWindow();
-		ShowModelCreatorWindow();
 		displayAssetTextureSelectWindow();
 		
 	}
