@@ -1594,6 +1594,21 @@ void RenderAssetViewWindow(float width, float height) {
 	ImGui::End();
 }
 
+void DisplayDebugInfoWindow()
+{
+	//if (displayDebugInfoWindow)
+	{
+		ImVec2 windowSize(200.f, 150.f);
+		ImGui::SetNextWindowSize(windowSize);
+		ImGui::Begin("Debug Info", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
+		auto fps = Engine::get()->getSubSystem<System>()->getFPS();
+		ImGui::Text("FPS: %.1f", fps);
+
+		ImGui::End();
+	}
+}
+
 
 class GUI_Helper : public GuiMenu {
 	// Inherited via GuiMenu
@@ -1674,6 +1689,7 @@ class GUI_Helper : public GuiMenu {
 		RenderAssetViewWindow(screenWidth, screenHeight); // Add the Asset View window
 
 		displayAssetTextureSelectWindow();
+		DisplayDebugInfoWindow();
 		
 	}
 };

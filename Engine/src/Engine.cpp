@@ -33,6 +33,7 @@
 #include "AnimationLoader.h"
 #include "Assets.h"
 #include "Graphics.h"
+#include "System.h"
 
 #include "Application.h"
 #include "SDL2/SDL.h"
@@ -172,6 +173,7 @@ bool Engine::init(const InitParams& initParams)
     auto modelImporter = new ModelImporter();
     auto animationLoader = new AnimationLoader();
     auto graphics = new Graphics();
+    auto system = new System();
     m_assets = std::make_shared<Assets>();
 
     m_timeManager = std::make_shared<TimeManager>();
@@ -286,6 +288,8 @@ void Engine::run(Application* app)
     //Main loop flag
     bool quit = false;
 
+    auto system = getSubSystem<System>();
+
     //Event handler
     SDL_Event e;
 
@@ -300,7 +304,9 @@ void Engine::run(Application* app)
 
         if (NOW == LAST) continue;
 
-        deltaTime = (double)SDL_GetPerformanceFrequency() / ((NOW - LAST) * 1000);
+        deltaTime = ((NOW - LAST) / (double)SDL_GetPerformanceFrequency());
+
+        system->setFPS(1.0 / deltaTime);
 
         //Handle events on queue
         handleEvents(e, quit);
