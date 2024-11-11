@@ -17,6 +17,7 @@
 #include "Animator.h"
 #include "MeshCollection.h"
 #include "Graphics.h"
+#include "System.h"
 
 static float lerp(float a, float b, float t)
 {

@@ -1,4 +1,6 @@
 #include "RenderCommand.h"
+#include "Engine.h"
+#include "System.h"
 
 #include <GL/glew.h>
 
@@ -9,6 +11,8 @@ void RenderCommand::clear()
 
 void RenderCommand::draw(const VertexArrayObject* vao)
 {
+	Engine::get()->getSubSystem<System>()->addTriangleCount(vao->GetIndexCount() / 3);
+
 	vao->Bind();
 
 	if (vao->GetIndexCount() == 0)

@@ -1605,6 +1605,12 @@ void DisplayDebugInfoWindow()
 		auto fps = Engine::get()->getSubSystem<System>()->getFPS();
 		ImGui::Text("FPS: %.1f", fps);
 
+		auto deltaTime = Engine::get()->getSubSystem<System>()->getDeltaTime() * 1000;
+		ImGui::Text("Delta time: %.1f ms", deltaTime);
+
+		auto triangleCount = Engine::get()->getSubSystem<System>()->getTriangleCount();
+		ImGui::Text("Triangle count: %u", triangleCount);
+
 		ImGui::End();
 	}
 }
