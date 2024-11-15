@@ -597,7 +597,7 @@ void ShowTextureImportWindow()
 		return;
 	}
 
-	Engine::get()->getSubSystem<Assets>()->importTexture2D(texturePathBuffer.c_str(), false);
+	Engine::get()->getSubSystem<Assets>()->importTexture2D(texturePathBuffer.c_str(), true);
 
 	texturePathBuffer.clear();
 }
@@ -1666,6 +1666,18 @@ class GUI_Helper : public GuiMenu {
 							ShowAnimationImportWindow();
 						}
 						ImGui::EndMenu();
+					}
+					if (ImGui::MenuItem("Build", "")) {
+						// Path to the Python script
+						std::string pythonScriptPath = "../../scripts/build_shipping.py";
+
+						// Command to execute the Python script with folderPath as an argument
+						std::string command = "python \"" + pythonScriptPath + "\" \"" + Engine::get()->getInitParams().projectDir + "\"";
+
+						// Run the command
+						std::system(command.c_str());
+
+						//std::filesystem::create_directories("../Game/data");
 					}
 					ImGui::Separator(); // Optional: Add a separator
 					if (ImGui::MenuItem("Quit", "Alt+F4")) {
