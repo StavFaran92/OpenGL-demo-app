@@ -8,6 +8,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE 
 	${CMAKE_SOURCE_DIR}/Engine/src
+	${CMAKE_SOURCE_DIR}/NativeScripts
 )
 
 target_link_directories(${PROJECT_NAME} PRIVATE
