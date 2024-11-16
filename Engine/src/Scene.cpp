@@ -250,6 +250,8 @@ void Scene::update(float deltaTime)
 		transform.update();
 	}
 
+	m_primaryCamera.getComponent<Transformation>().update();
+
 	if (m_isSimulationActive)
 	{
 

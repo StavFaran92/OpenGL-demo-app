@@ -1737,8 +1737,7 @@ public:
 		g_primaryCamera = scene->getActiveCamera();
 
 		// set Editor camera as active camera
-		//auto editorCamera = m_editorRegistry->createEntity("Editor Camera"); //This causes a wierd bug ATM
-		auto editorCamera = Engine::get()->getContext()->getActiveScene()->createEntity("Editor Camera");
+		auto editorCamera = m_editorRegistry->createEntity("Editor Camera");
 		editorCamera.addComponent<CameraComponent>(CameraComponent::createPerspectiveCamera(45.0f, (float)4 / 3, 0.1f, 3000.0f));
 		editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
 		Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(editorCamera);
