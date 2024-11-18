@@ -45,13 +45,13 @@ InitParams parseArgs(int argc, char* argv[])
 
 void sgeEntry(int argc, char* argv[])
 {
-#if SGE_EDITOR
-	InitParams initParams = parseArgs(argc, argv);
-#else
+#if SGE_SHIPPING
     InitParams initParams;
     initParams.loadExistingProject = true;
     initParams.startSimulationOnStartup = true;
     initParams.projectDir = "./data/";
+#else
+    InitParams initParams = parseArgs(argc, argv);
 #endif
 
     ArchiveInitializer::init();

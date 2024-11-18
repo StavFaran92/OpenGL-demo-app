@@ -6,6 +6,8 @@ file(GLOB_RECURSE SOURCES *.cpp *.h)
 # Add shared library target
 add_executable(${PROJECT_NAME} ${SOURCES})
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE SGE_SHIPPING)
+
 target_include_directories(${PROJECT_NAME} PRIVATE 
 	${CMAKE_SOURCE_DIR}/Engine/src
 	${CMAKE_SOURCE_DIR}/NativeScripts

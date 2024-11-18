@@ -22,6 +22,8 @@ public:
 		m_relativeRot(1.f)
 	{
 		m_root = m_entity;
+		m_isDirty = true;
+		update();
 	}
 
 	Transformation(const Entity& entity) :
@@ -32,6 +34,8 @@ public:
 		m_relativeRot(1.f)
 	{
 		m_root = entity;
+		m_isDirty = true;
+		update();
 	}
 
 	Transformation(const Entity& entity, glm::vec3 translation) :
@@ -43,6 +47,7 @@ public:
 	{
 		m_root = entity;
 		m_isDirty = true;
+		update();
 	}
 
 	Transformation(const Entity& entity, glm::vec3 translation, glm::quat rotation) :
@@ -54,6 +59,7 @@ public:
 	{
 		m_root = entity;
 		m_isDirty = true;
+		update();
 	}
 
 

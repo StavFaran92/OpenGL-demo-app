@@ -3,39 +3,39 @@
 
 void createGuitar()
 {
-	auto importer = Engine::get()->getContext()->getModelImporter();
-	auto guitar = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", Engine::get()->getContext()->getActiveScene().get());
+	//auto importer = Engine::get()->getContext()->getModelImporter();
+	//auto guitar = importer->loadModelFromFile("C:/Users/Stav/Downloads/backpack/backpack.obj", Engine::get()->getContext()->getActiveScene().get());
 
-	auto random = Engine::get()->getRandomSystem();
-	auto x = random->rand() * 10 - 5;
-	auto z = random->rand() * 10 - 5;
+	//auto random = Engine::get()->getRandomSystem();
+	//auto x = random->rand() * 10 - 5;
+	//auto z = random->rand() * 10 - 5;
 
-	auto& guitarTransform = guitar.getComponent<Transformation>();
-	guitarTransform.setLocalPosition({ x, 10, z });
-	guitarTransform.rotate({ 0, 1, 0 }, 45);
+	//auto& guitarTransform = guitar.getComponent<Transformation>();
+	//guitarTransform.setLocalPosition({ x, 10, z });
+	//guitarTransform.rotate({ 0, 1, 0 }, 45);
 
-	auto& rb = guitar.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
+	//auto& rb = guitar.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
 
-	guitar.addComponent<CollisionMeshComponent>();
+	//guitar.addComponent<CollisionMeshComponent>();
 
-		for (auto& child : guitar.getChildren())
-			{
-				child.second.addComponent<CollisionMeshComponent>();
-				//auto& rb = child.second.addComponent<RigidBodyComponent>();
-				//rb.mass = 1;
-				//rb.type = RigidbodyType::Kinematic;
+	//	for (auto& child : guitar.getChildren())
+	//		{
+	//			child.second.addComponent<CollisionMeshComponent>();
+	//			//auto& rb = child.second.addComponent<RigidBodyComponent>();
+	//			//rb.mass = 1;
+	//			//rb.type = RigidbodyType::Kinematic;
 
-				//auto& rb = child.second.addComponent<RigidBodyComponent>();
-				//rb.mass = 1;
-				//rb.type = RigidbodyType::Dynamic;
-			}
-		
+	//			//auto& rb = child.second.addComponent<RigidBodyComponent>();
+	//			//rb.mass = 1;
+	//			//rb.type = RigidbodyType::Dynamic;
+	//		}
+	//	
 
 }
 
 void createSphere()
 {
-	auto sphere = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get());
+	auto sphere = ShapeFactory::createSphere(&Engine::get()->getContext()->getActiveScene()->getRegistry());
 	{
 		auto random = Engine::get()->getRandomSystem();
 		auto x = random->rand() * 10 - 5;
@@ -45,18 +45,18 @@ void createSphere()
 		sphereTransform.setLocalPosition({ x, 10, z });
 
 
-		auto& mat = sphere.addComponent<Material>();
-		auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D("Resources/Content/Textures/checkers.jpg");
-		mat.setTexture(Texture::Type::Diffuse, Resource<Texture>(tex));
+		//auto& mat = sphere.addComponent<Material>();
+		//auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D("Resources/Content/Textures/checkers.jpg");
+		//mat.setTexture(Texture::Type::Diffuse, Resource<Texture>(tex));
 
-		auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
-		auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);
+		sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
+		sphere.addComponent<CollisionSphereComponent>(1.f);
 	}
 }
 
 void createBox()
 {
-	auto box = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+	auto box = ShapeFactory::createBox(&Engine::get()->getContext()->getActiveScene()->getRegistry());
 	{
 		auto random = Engine::get()->getRandomSystem();
 		auto x = random->rand() * 10 - 5;
@@ -66,12 +66,12 @@ void createBox()
 		boxTransform.setLocalPosition({ x, 10, z });
 		boxTransform.rotate({ 0, 1, 0 }, 45);
 
-		auto& mat = box.addComponent<Material>();
-		auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D("Resources/Content/Textures/checkers.jpg");
-		mat.setTexture(Texture::Type::Diffuse, Resource<Texture>(tex));
+		//auto& mat = box.addComponent<Material>();
+		//auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D("Resources/Content/Textures/checkers.jpg");
+		//mat.setTexture(Texture::Type::Diffuse, Resource<Texture>(tex));
 
-		auto& rb = box.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
-		auto& collisionBox = box.addComponent<CollisionBoxComponent>(.5f);
+		box.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
+		box.addComponent<CollisionBoxComponent>(.5f);
 	}
 }
 
@@ -101,6 +101,18 @@ class GUI_Helper : public GuiMenu
 			createGuitar();
 		}
 
+		if (ImGui::Button("Start Sim"))
+		{
+			Engine::get()->getContext()->getActiveScene()->startSimulation();
+		}
+
+		if (ImGui::Button("Stop Sim"))
+		{
+			Engine::get()->getContext()->getActiveScene()->stopSimulation();
+		}
+
+		
+
 		ImGui::PopItemWidth();
 
 
@@ -114,12 +126,21 @@ public:
 
 	void start() override
 	{
-		Skybox::CreateSkyboxFromEquirectangularMap({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
+		ImGui::SetCurrentContext((ImGuiContext*)Engine::get()->getImguiHandler()->getCurrentContext());
+
+
+		// set Editor camera as active camera
+		auto editorCamera = Engine::get()->getContext()->getActiveScene()->createEntity("Editor Camera");
+		editorCamera.addComponent<CameraComponent>(CameraComponent::createPerspectiveCamera(45.0f, (float)4 / 3, 0.1f, 3000.0f));
+		editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
+		Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(editorCamera);
+
+		Skybox::CreateSkyboxFromCubemap({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
 		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/left.jpg",
 		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/top.jpg",
 		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/bottom.jpg",
 		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/front.jpg",
-		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/back.jpg" });
+		SGE_ROOT_DIR +"Resources/Engine/Textures/Skybox/back.jpg" }, Engine::get()->getContext()->getActiveScene().get());
 
 		//auto camera = Engine::get()->getContext()->getActiveScene()->getActiveCamera();
 		//camera->lookAt(0, 5, 0);
@@ -156,8 +177,10 @@ public:
 		//	}
 		//}
 
+		
 
-		auto box = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+
+		auto box = ShapeFactory::createBox(&Engine::get()->getContext()->getActiveScene()->getRegistry());
 		{
 
 			auto& boxTransform = box.getComponent<Transformation>();
@@ -187,7 +210,7 @@ public:
 		//			//collisionBox.halfExtent = .5f;
 		//		}
 
-		auto sphere = ShapeFactory::createSphere(Engine::get()->getContext()->getActiveScene().get());
+		auto sphere = ShapeFactory::createSphere(&Engine::get()->getContext()->getActiveScene()->getRegistry());
 		{
 			
 			auto& sphereTransform = sphere.getComponent<Transformation>();
@@ -207,15 +230,15 @@ public:
 
 
 		{
-			auto ground = ShapeFactory::createBox(Engine::get()->getContext()->getActiveScene().get());
+			auto ground = ShapeFactory::createBox(&Engine::get()->getContext()->getActiveScene()->getRegistry());
 			auto& groundTransfrom = ground.getComponent<Transformation>();
 			groundTransfrom.setLocalScale({ 50, .5f, 50 });
 			//groundTransfrom.rotate({ 0, 0, 1 }, 20);
 			//groundTransfrom.rotate({ 0, 0, 1 }, 90);
 
-			auto& mat = ground.addComponent<Material>();
-			auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D("Resources/Content/Textures/floor.jpg");
-			mat.setTexture(Texture::Type::Diffuse, Resource<Texture>(tex));
+			//auto& mat = ground.addComponent<Material>();
+			//auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D("Resources/Content/Textures/floor.jpg");
+			//mat.setTexture(Texture::Type::Diffuse, Resource<Texture>(tex));
 			auto& rb = ground.addComponent<RigidBodyComponent>(RigidbodyType::Static, 1.f);
 
 
