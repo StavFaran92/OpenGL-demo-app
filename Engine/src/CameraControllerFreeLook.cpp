@@ -34,8 +34,8 @@ void CameraControllerFreeLook::onCreate(Entity& e)
 			
 			if (m_state == ControllerState::ROTATE)
 			{
-				int xChange = e.motion.xrel;
-				int yChange = e.motion.yrel;
+				float xChange = e.motion.xrel;
+				float yChange = e.motion.yrel;
 
 				xChange *= m_turnSpeed;
 				yChange *= m_turnSpeed;
@@ -58,8 +58,8 @@ void CameraControllerFreeLook::onCreate(Entity& e)
 
 			if (m_state == ControllerState::TRANSFORM)
 			{
-				int xChange = e.motion.xrel;
-				int yChange = e.motion.yrel;
+				float xChange = e.motion.xrel;
+				float yChange = e.motion.yrel;
 
 				xChange *= m_movementSpeed;
 				yChange *= m_movementSpeed;
