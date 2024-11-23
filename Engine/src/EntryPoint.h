@@ -38,6 +38,11 @@ InitParams parseArgs(int argc, char* argv[])
         {
             params.startSimulationOnStartup = true;
         }
+
+        else if (strcmp(argv[i], "-fs") == 0)
+        {
+            params.fullScreen = true;
+        }
     }
 
     return params;
@@ -49,6 +54,7 @@ void sgeEntry(int argc, char* argv[])
     InitParams initParams;
     initParams.loadExistingProject = true;
     initParams.startSimulationOnStartup = true;
+    initParams.shipping = true;
     initParams.projectDir = "./data/";
 #else
     InitParams initParams = parseArgs(argc, argv);

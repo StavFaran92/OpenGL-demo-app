@@ -54,6 +54,8 @@ struct InitParams
     bool overwriteExisting = false;
     bool templateScene = false;
     bool startSimulationOnStartup = false;
+    bool fullScreen = false;
+    bool shipping = false;
 };
 
 class EngineAPI Engine

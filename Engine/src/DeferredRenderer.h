@@ -6,6 +6,7 @@
 #include "RenderBufferObject.h"
 #include "Resource.h"
 #include "Entity.h"
+#include "Window.h"
 #include "Configurations.h"
 
 class FrameBufferObject;
@@ -32,7 +33,7 @@ private:
 private:
 	FrameBufferObject m_gBuffer;
 	
-	RenderBufferObject m_renderBuffer{ SCREEN_WIDTH,SCREEN_HEIGHT };
+	RenderBufferObject m_renderBuffer{ Engine::get()->getWindow()->getWidth(),Engine::get()->getWindow()->getHeight() };
 	
 	Resource<Texture> m_positionTexture = nullptr;
 	Resource<Texture> m_normalTexture = nullptr;
@@ -52,14 +53,14 @@ private:
 
 	// SSAO
 	FrameBufferObject m_ssaoFBO;
-	RenderBufferObject m_ssaoRenderBuffer{ SCREEN_WIDTH,SCREEN_HEIGHT };
+	RenderBufferObject m_ssaoRenderBuffer{ Engine::get()->getWindow()->getWidth(),Engine::get()->getWindow()->getHeight() };
 	Resource<Texture> m_ssaoNoiseTexture = nullptr;
 	Resource<Texture> m_ssaoColorBuffer = nullptr;
 	std::shared_ptr<Shader> m_ssaoPassShader;
 	std::vector<glm::vec3> m_ssaoKernel;
 	
 	FrameBufferObject m_ssaoBlurFBO;
-	RenderBufferObject m_ssaoBlurRenderBuffer{ SCREEN_WIDTH,SCREEN_HEIGHT };
+	RenderBufferObject m_ssaoBlurRenderBuffer{ Engine::get()->getWindow()->getWidth(),Engine::get()->getWindow()->getHeight() };
 	Resource<Texture> m_ssaoBlurColorBuffer = nullptr;
 	std::shared_ptr<Shader> m_ssaoBlurPassShader;
 

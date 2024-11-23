@@ -101,9 +101,9 @@ static void displayComponent(const std::string& componentName, std::function<voi
 
 void RenderSimulationControlView(float width, float height)
 {
-	float windowWidth = width * 0.6f - 10;
+	float windowWidth = width * 0.7f - 10;
 	float windowHeight = 35;
-	float startX = width * 0.2f + 10; // Add a gap of 10 pixels
+	float startX = width * 0.15f + 10; // Add a gap of 10 pixels
 	ImGui::SetNextWindowPos(ImVec2(startX, 25)); // Adjust vertical position to make space for the menu bar
 	ImGui::SetNextWindowSize(ImVec2(windowWidth, windowHeight));
 
@@ -882,9 +882,9 @@ void RenderSceneHierarchyWindow(float width, float height)
 	//}
 	//ImGui::End();
 
-	float windowWidth = width * 0.2f;
+	float windowWidth = width * 0.15f;
 	ImVec2 windowPos(5, 25); // Adjust vertical position to make space for the menu bar
-	ImVec2 windowSize(windowWidth, height * 0.8f);
+	ImVec2 windowSize(windowWidth, height * 0.7f);
 	ImGui::SetNextWindowPos(windowPos);
 	ImGui::SetNextWindowSize(windowSize);
 	ImGui::Begin("Scene Hierarchy", nullptr, style);
@@ -968,9 +968,9 @@ void RenderSceneHierarchyWindow(float width, float height)
 
 void RenderViewWindow(float width, float height) 
 {
-	float windowWidth = width * 0.6f - 10;
-	float windowHeight = height * 0.8f;
-	float startX = width * 0.2f + 10; // Add a gap of 10 pixels
+	float windowWidth = width * 0.7f - 10;
+	float windowHeight = height * 0.7f;
+	float startX = width * 0.15f + 10; // Add a gap of 10 pixels
 	ImGui::SetNextWindowPos(ImVec2(startX, 65)); // Adjust vertical position to make space for the menu bar
 	ImGui::SetNextWindowSize(ImVec2(windowWidth, windowHeight - 40));
 	ImGui::Begin("View", nullptr, style | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoDecoration);
@@ -1215,10 +1215,10 @@ static void addSkyboxTextureEditWidget(SkyboxComponent& skybox)
 
 void RenderInspectorWindow(float width, float height) 
 {
-	float windowWidth = width * 0.2f - 5;
-	float startX = width * 0.8f + 5; // Add a gap of 5 pixels
+	float windowWidth = width * 0.15f - 5;
+	float startX = width * 0.85f + 5; // Add a gap of 5 pixels
 	ImGui::SetNextWindowPos(ImVec2(startX, 25)); // Adjust vertical position to make space for the menu bar
-	ImGui::SetNextWindowSize(ImVec2(windowWidth - 5, height * 0.8f));
+	ImGui::SetNextWindowSize(ImVec2(windowWidth - 5, height * 0.7f));
 	ImGui::Begin("Inspector", nullptr, style | ImGuiWindowFlags_NoScrollbar);
 
 	if (selectedEntity != Entity::EmptyEntity)
@@ -1563,11 +1563,11 @@ void RenderInspectorWindow(float width, float height)
 void RenderAssetViewWindow(float width, float height) {
 	float windowWidth = width - 10;
 	float startX = 5; // Add a gap of 5 pixels
-	float startY = height * 0.8f + 30; // Adjust vertical position to place it below the "Scene Hierarchy" window
+	float startY = height * 0.7f + 30; // Adjust vertical position to place it below the "Scene Hierarchy" window
 	ImGui::SetNextWindowPos(ImVec2(startX, startY));
-	ImGui::SetNextWindowSize(ImVec2(windowWidth, height * 0.2f - 35)); // Adjust height as needed
+	ImGui::SetNextWindowSize(ImVec2(windowWidth, height * 0.3f - 35)); // Adjust height as needed
 	ImGui::Begin("Asset View", nullptr, style);
-	ImVec2 listBoxSize(windowWidth, height * 0.2f - 35);
+	ImVec2 listBoxSize(windowWidth, height * 0.3f - 35);
 
 	auto& meshList = Engine::get()->getMemoryPool<MeshCollection>()->getAll();
 

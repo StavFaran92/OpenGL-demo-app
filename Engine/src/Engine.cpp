@@ -141,7 +141,7 @@ bool Engine::init(const InitParams& initParams)
 
     m_defaultMaterial = std::make_shared<Material>();
 
-    m_window = std::make_shared<Window>(SCREEN_WIDTH, SCREEN_HEIGHT);
+    m_window = std::make_shared<Window>();
     if (!m_window->init())
     {
         logError("Window init failed!");

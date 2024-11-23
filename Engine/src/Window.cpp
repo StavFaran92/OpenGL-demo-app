@@ -5,12 +5,10 @@
 
 
 #include "Logger.h"
+#include "Engine.h"
 
-Window::Window(int width, int height) :
-	m_width(width), m_height(height)
+Window::Window()
 {
-	m_halfWidth = m_width / 2.f;
-	m_halfHeight = m_height / 2.f;
 }
 
 int Window::init()
@@ -33,12 +31,26 @@ int Window::init()
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
-	
 
 	SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_SHOWN);
 
+	m_width = SCREEN_WIDTH;
+	m_height = SCREEN_HEIGHT;
+
+	if (Engine::get()->getInitParams().fullScreen || Engine::get()->getInitParams().shipping)
+	{
+		window_flags = (SDL_WindowFlags)(window_flags | SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+		SDL_Rect displayBounds;
+		if (SDL_GetDisplayBounds(0, &displayBounds) == 0)
+		{
+			m_width = displayBounds.w;
+			m_height = displayBounds.h;
+		}
+	}
+
 	//Create window
-	m_mainWindow = SDL_CreateWindow("SGE", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, window_flags);
+	m_mainWindow = SDL_CreateWindow("SGE", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_width, m_height, window_flags);
 	if (!m_mainWindow)
 	{
 		logError("Window could not be created! SDL Error: {}", SDL_GetError());
@@ -74,6 +86,9 @@ int Window::init()
 		logError("Warning: Unable to set VSync! SDL Error: {}", SDL_GetError());
 		return false;
 	}
+
+	m_halfWidth = m_width / 2.f;
+	m_halfHeight = m_height / 2.f;
 		
 	logInfo("SDL has initialized successfully.");
 
@@ -93,6 +108,17 @@ void Window::close()
 	SDL_Quit();
 
 	m_mainWindow = NULL;
+}
+
+inline void Window::SwapBuffer() 
+{ 
+	SDL_GL_SwapWindow(m_mainWindow); 
+}
+
+void Window::update()
+{ 
+	if (m_isMouseLocked)
+		SDL_WarpMouseInWindow(m_mainWindow, m_halfWidth, m_halfHeight); 
 }
 
 void* Window::GetNativeWindow()
