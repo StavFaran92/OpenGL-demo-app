@@ -4,6 +4,7 @@
 #include "EventSystem.h"
 #include "ApplicationConstants.h"
 #include "Transformation.h"
+#include "System.h"
 #include <algorithm>
 #include "glm/glm.hpp"
 
@@ -31,14 +32,15 @@ void CameraControllerFreeLook::onCreate(Entity& e)
 
 	eventSystem->addEventListener(SDL_MOUSEMOTION, [this](SDL_Event e)
 		{
-			
+			auto system = Engine::get()->getSubSystem<System>();
+
 			if (m_state == ControllerState::ROTATE)
 			{
 				float xChange = e.motion.xrel;
 				float yChange = e.motion.yrel;
 
-				xChange *= m_turnSpeed;
-				yChange *= m_turnSpeed;
+				xChange *= m_turnSpeed * system->getDeltaTime();
+				yChange *= m_turnSpeed * system->getDeltaTime();
 
 				m_yaw += xChange;
 				m_pitch -= yChange;
@@ -58,14 +60,16 @@ void CameraControllerFreeLook::onCreate(Entity& e)
 
 			if (m_state == ControllerState::TRANSFORM)
 			{
+				auto system = Engine::get()->getSubSystem<System>();
+
 				float xChange = e.motion.xrel;
 				float yChange = e.motion.yrel;
 
-				xChange *= m_movementSpeed;
-				yChange *= m_movementSpeed;
+				xChange *= m_movementSpeed * system->getDeltaTime();
+				yChange *= m_movementSpeed * system->getDeltaTime();
 
-				float xVelocity = .1f * xChange;// *deltaTime // todo fix
-				float yVelocity = .1f * yChange;// *deltaTime
+				float xVelocity = .1f * xChange;
+				float yVelocity = .1f * yChange;
 
 
 				m_cameraTransform->translate(m_right * xVelocity);
