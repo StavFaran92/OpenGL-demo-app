@@ -21,6 +21,7 @@
 #include "AssimpGLMHelpers.h"
 #include "Factory.h"
 #include "MeshExporter.h"
+#include "ShapeFactory.h"
 
 bool findFile(const std::filesystem::path& directory, const std::string& fileName, std::filesystem::path& outputPath)
 {
@@ -119,6 +120,20 @@ ModelImporter::ModelInfo ModelImporter::import(const std::string& path)
 	}
 
 	load(savedFilePath, mInfo);
+
+#if 1 // todo remove
+	for (auto& mesh : mInfo.mesh.get()->getMeshes())
+	{
+
+		auto aabb = mesh->getAABB();
+
+		auto aabbEnt = ShapeFactory::createBox(&Engine::get()->getContext()->getActiveScene()->getRegistry());
+
+		auto& aabbTransform = aabbEnt.getComponent<Transformation>();
+		aabbTransform.scale(aabb.extents.x, aabb.extents.y, aabb.extents.z);
+		aabbTransform.translate(aabb.center.x, aabb.center.y, aabb.center.z);
+	}
+#endif 
 
 	return mInfo;
 }

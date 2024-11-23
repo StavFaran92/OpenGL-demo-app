@@ -372,7 +372,7 @@ void Scene::draw(float deltaTime)
 	graphics->prefilterEnvMap = m_prefilterEnvMap;
 	graphics->brdfLUT = m_BRDFIntegrationLUT;
 
-	m_shadowSystem->renderToDepthMap();
+	//m_shadowSystem->renderToDepthMap();
 
 	graphics->lightSpaceMatrix = m_shadowSystem->getLightSpaceMat();
 	graphics->shadowMap = m_shadowSystem->getShadowMap();
@@ -422,14 +422,7 @@ void Scene::draw(float deltaTime)
 			auto& transform = entityhandler.getComponent<Transformation>();
 			auto& mesh = entityhandler.getComponent<MeshComponent>();
 
-			// TODO Fix
-			//AABB& aabb = mesh.mesh.get()->getAABB();
-			//aabb.adjustToTransform(transform);
-			
-			//if(aabb.isOnFrustum(frustum))
-			{
-				deferredRendererEntityGroup.push_back(entityhandler);
-			}
+			deferredRendererEntityGroup.push_back(entityhandler);
 		}
 		else if (renderable.renderTechnique == RenderableComponent::RenderTechnique::Forward)
 		{

@@ -18,6 +18,7 @@
 #include "MeshCollection.h"
 #include "Graphics.h"
 #include "System.h"
+#include "ShapeFactory.h"
 
 static float lerp(float a, float b, float t)
 {
