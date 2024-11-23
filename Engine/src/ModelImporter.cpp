@@ -353,8 +353,9 @@ void ModelImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelImporte
 		}
 
 		builder.addBoneIDs(bonesIDs)
-			.addBoneWeights(bonesWeights)
-			.addBonesInfo(bonesOffsets, boneNameToIDMap);
+			.addBoneWeights(bonesWeights);
+
+		session.mesh.get()->addBonesInfo(bonesOffsets, boneNameToIDMap);
 	}
 
 	builder.setMaterialIndex(mesh->mMaterialIndex);

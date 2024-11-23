@@ -177,9 +177,6 @@ bool Mesh::build(MeshData& mData)
 
 	m_vao->AttachBuffer(*m_vbo, m_ibo.get(), m_layout);
 
-	m_bonesOffsets = mData.bonesOffsets;
-	m_bonesNameToIDMap = mData.bonesNameToIDMap;
-
 	m_positions = mData.m_positions;
 
 	glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
@@ -262,21 +259,6 @@ VertexLayout Mesh::getVertexLayout()
 VertexArrayObject* Mesh::getVAO() const
 {
 	return m_vao.get();
-}
-
-std::vector<glm::mat4> Mesh::getBoneOffsets() const
-{
-	return m_bonesOffsets;
-}
-
-int Mesh::getBoneID(const std::string& boneName) const
-{
-	if (m_bonesNameToIDMap.find(boneName) == m_bonesNameToIDMap.end())
-	{
-		return -1;
-	}
-
-	return m_bonesNameToIDMap.at(boneName);
 }
 
 AABB Mesh::getAABB() const

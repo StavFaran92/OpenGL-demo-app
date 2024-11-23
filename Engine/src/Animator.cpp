@@ -1,6 +1,7 @@
 #include "Animator.h"
 
 #include "Animation.h"
+#include "MeshCollection.h"
 
 Animator::Animator(Resource<Animation> animation)
 	: m_currentAnimation(animation)
@@ -19,7 +20,7 @@ void Animator::update(float dt)
 	}
 }
 
-void Animator::getFinalBoneMatrices(const Mesh* mesh, std::vector<glm::mat4>& outFinalBoneMatrices) const
+void Animator::getFinalBoneMatrices(const MeshCollection* meshCollection, std::vector<glm::mat4>& outFinalBoneMatrices) const
 {
 	if (m_currentAnimation.isEmpty()) 
 		return;
@@ -27,12 +28,12 @@ void Animator::getFinalBoneMatrices(const Mesh* mesh, std::vector<glm::mat4>& ou
 	std::unordered_map<std::string, glm::mat4> m_intermediateBoneMatrices;
 	m_currentAnimation.get()->calculateFinalBoneMatrices(m_currentTime, m_intermediateBoneMatrices);
 	
-	outFinalBoneMatrices = mesh->getBoneOffsets();
+	outFinalBoneMatrices = meshCollection->getBoneOffsets();
 
 	for (auto& [boneName, boneTransform] : m_intermediateBoneMatrices)
 	{
 		// Get static bone offset
-		auto boneID = mesh->getBoneID(boneName);
+		auto boneID = meshCollection->getBoneID(boneName);
 		if (boneID == -1)
 		{
 			continue;

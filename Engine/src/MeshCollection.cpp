@@ -25,3 +25,30 @@ size_t MeshCollection::getNumOfVertices() const
 	}
 	return vCount;
 }
+
+void MeshCollection::addBonesInfo(const std::vector<glm::mat4>& bonesOffsets, const std::unordered_map<std::string, unsigned int>& bonesNameToIDMap)
+{
+	for (const glm::mat4& offset : bonesOffsets)
+	{
+		m_bonesOffsets.push_back(offset);
+	}
+	for (auto nameToID : bonesNameToIDMap)
+	{
+		m_bonesNameToIDMap.emplace(nameToID);
+	}
+}
+
+std::vector<glm::mat4> MeshCollection::getBoneOffsets() const
+{
+	return m_bonesOffsets;
+}
+
+int MeshCollection::getBoneID(const std::string& boneName) const
+{
+	if (m_bonesNameToIDMap.find(boneName) == m_bonesNameToIDMap.end())
+	{
+		return -1;
+	}
+
+	return m_bonesNameToIDMap.at(boneName);
+}

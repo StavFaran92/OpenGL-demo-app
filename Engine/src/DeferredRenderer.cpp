@@ -313,6 +313,24 @@ void DeferredRenderer::renderScene(Scene* scene)
 	for (auto& entityHandler : *graphics->entityGroup)
 	{
 		Resource<MeshCollection> meshCollecton = entityHandler.getComponent<MeshComponent>().mesh;
+
+		auto animator = entityHandler.tryGetComponent<Animator>();
+		if (!animator || animator->m_currentAnimation.isEmpty())
+		{
+			graphics->shader->setUniformValue("isAnimated", false);
+		}
+		else
+		{
+			std::vector<glm::mat4> finalBoneMatrices;
+			animator->getFinalBoneMatrices(meshCollecton.get(), finalBoneMatrices);
+			for (int i = 0; i < finalBoneMatrices.size(); ++i)
+			{
+				graphics->shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
+			}
+
+			graphics->shader->setUniformValue("isAnimated", true);
+		}
+
 		for (auto mesh : meshCollecton.get()->getMeshes())
 		{
 			graphics->entity = &entityHandler;
@@ -327,23 +345,6 @@ void DeferredRenderer::renderScene(Scene* scene)
 			if (!aabb.isOnFrustum(*graphics->frustum))
 			{
 				continue;
-			}
-
-			auto animator = entityHandler.tryGetComponent<Animator>();
-			if (!animator || animator->m_currentAnimation.isEmpty())
-			{
-				graphics->shader->setUniformValue("isAnimated", false);
-			}
-			else
-			{
-				std::vector<glm::mat4> finalBoneMatrices;
-				animator->getFinalBoneMatrices(graphics->mesh, finalBoneMatrices);
-				for (int i = 0; i < finalBoneMatrices.size(); ++i)
-				{
-					graphics->shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
-				}
-
-				graphics->shader->setUniformValue("isAnimated", true);
 			}
 
 			auto matIndex = mesh->getMaterialIndex();

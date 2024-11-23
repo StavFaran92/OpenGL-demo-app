@@ -14,7 +14,7 @@ public:
 	Animator() = default;
 	Animator(Resource<Animation> animation);
 	void update(float dt);
-	void getFinalBoneMatrices(const Mesh* mesh, std::vector<glm::mat4>& outFinalBoneMatrices) const;
+	void getFinalBoneMatrices(const MeshCollection* meshCollection, std::vector<glm::mat4>& outFinalBoneMatrices) const;
 	void playAnimation(Resource<Animation> animation);
 	void setPlaybackSpeed(float playbackSpeed);
 

@@ -121,28 +121,32 @@ void ShadowSystem::renderToDepthMap()
 		Entity entityhandler{ entity, &m_scene->getRegistry()};
 		graphics->entity = &entityhandler;
 
+		auto meshCollection = mesh.mesh;
+
+		auto animator = entityhandler.tryGetComponent<Animator>();
+		if (animator)
+		{
+			std::vector<glm::mat4> finalBoneMatrices;
+			animator->getFinalBoneMatrices(meshCollection.get(), finalBoneMatrices);
+			for (int i = 0; i < finalBoneMatrices.size(); ++i)
+			{
+				m_simpleDepthShader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
+			}
+
+			m_simpleDepthShader->setUniformValue("isAnimated", true);
+		}
+		else
+		{
+			m_simpleDepthShader->setUniformValue("isAnimated", false);
+		}
+
 		
 		for (auto& mesh : mesh.mesh.get()->getMeshes())
 		{
 			graphics->mesh = mesh.get();
 			m_simpleDepthShader->setUniformValue("model", transform.getWorldTransformation());
 
-			auto animator = entityhandler.tryGetComponent<Animator>();
-			if (animator)
-			{
-				std::vector<glm::mat4> finalBoneMatrices;
-				animator->getFinalBoneMatrices(mesh.get(), finalBoneMatrices);
-				for (int i = 0; i < finalBoneMatrices.size(); ++i)
-				{
-					m_simpleDepthShader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
-				}
-
-				m_simpleDepthShader->setUniformValue("isAnimated", true);
-			}
-			else
-			{
-				m_simpleDepthShader->setUniformValue("isAnimated", false);
-			}
+			
 
 			// draw model
 			auto vao = mesh->getVAO();
