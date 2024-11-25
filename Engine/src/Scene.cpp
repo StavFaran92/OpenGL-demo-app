@@ -51,6 +51,7 @@
 #include "Frustum.h"
 #include "MeshCollection.h"
 #include "Graphics.h"
+#include "DebugHelper.h"
 
 void Scene::displayWireframeMesh(Entity e)
 {
@@ -591,6 +592,8 @@ void Scene::draw(float deltaTime)
 	}
 
 	glDisable(GL_BLEND);
+
+	DebugHelper::drawPoint({0,0,0});
 
 
 #if 1
