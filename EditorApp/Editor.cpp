@@ -1010,72 +1010,97 @@ void RenderViewWindow(float width, float height)
 			}
 		}
 
+		
+		// Define the size and position of the inner window
+		float innerWindowWidth = windowWidth - 10;
+		float innerWindowHeight = 35.0f;
+		ImGui::SetNextWindowPos(ImVec2(startX + 7, 72)); // Adjust position as needed
+		ImGui::SetNextWindowSize(ImVec2(innerWindowWidth, innerWindowHeight)); // Adjust size as needed
+
+		// Transformation mode enum and current mode variable
+		enum TransformMode { TRANSLATE, ROTATE, SCALE, UNIVERSAL };
+		static TransformMode currentMode = TRANSLATE;
+
+		// Gizmo mode variable
+		static ImGuizmo::MODE currentGizmoMode = ImGuizmo::LOCAL;
+
+		// Snap options
+		static bool useSnap = false;
+		static float snapValues[3] = { 1.0f, 1.0f, 1.0f };
+
+		
+
+		if (ImGui::BeginChild("TransformWindow", ImVec2(innerWindowWidth, innerWindowHeight), true))
+		{
+			// Radio buttons for transformation mode
+			ImGui::RadioButton("Translate", (int*)&currentMode, TRANSLATE);
+			ImGui::SameLine();
+			ImGui::RadioButton("Rotate", (int*)&currentMode, ROTATE);
+			ImGui::SameLine();
+			ImGui::RadioButton("Scale", (int*)&currentMode, SCALE);
+			ImGui::SameLine();
+			ImGui::RadioButton("Universal", (int*)&currentMode, UNIVERSAL);
+
+			// Button to toggle between local and world gizmo modes
+			ImGui::SameLine();
+			if (ImGui::Button(currentGizmoMode == ImGuizmo::LOCAL ? "Local" : "World"))
+			{
+				currentGizmoMode = (currentGizmoMode == ImGuizmo::LOCAL) ? ImGuizmo::WORLD : ImGuizmo::LOCAL;
+			}
+
+			// Checkbox for snap
+			ImGui::SameLine();
+			ImGui::Checkbox("Snap", &useSnap);
+
+			// Input fields for snap values
+			ImGui::SameLine();
+			float snapInputWidth = 80.0f;
+			if (currentMode == TRANSLATE)
+			{
+				ImGui::SetNextItemWidth(snapInputWidth * 3);
+				ImGui::InputFloat3("Snap Translate", snapValues);
+			}
+			else if (currentMode == ROTATE)
+			{
+				ImGui::SetNextItemWidth(snapInputWidth);
+				ImGui::InputFloat("Snap Angle", &snapValues[0]);
+			}
+			else if (currentMode == SCALE)
+			{
+				ImGui::SetNextItemWidth(snapInputWidth);
+				ImGui::InputFloat("Snap Scale", &snapValues[0]);
+			}
+
+			ImGui::SameLine();
+
+			static const char* renderModeOptions[] = { "Shaded", "Wireframe"};
+			static int currentItem = 0; // Index of the selected item
+
+			ImGui::SetCursorPosX(windowWidth - 170); // Adjust 200 to match the width of the dropdown
+			ImGui::PushItemWidth(150.0f); // Set dropdown width to 150
+			if (ImGui::BeginCombo("##RenderMode", renderModeOptions[currentItem])) // Label for the combo box
+			{
+				for (int i = 0; i < IM_ARRAYSIZE(renderModeOptions); i++)
+				{
+					bool isSelected = (currentItem == i);
+					if (ImGui::Selectable(renderModeOptions[i], isSelected))
+					{
+						currentItem = i; // Update selected index
+						Engine::get()->getContext()->setRenderMode((RenderMode)currentItem);
+					}
+
+					if (isSelected)
+						ImGui::SetItemDefaultFocus(); // Set focus to the current item
+				}
+				ImGui::EndCombo();
+			}
+			ImGui::PopItemWidth(); // Restore default width
+			ImGui::EndChild(); // End the inner window
+		}
+
 		if (selectedEntity != Entity::EmptyEntity)
 		{
-			// Define the size and position of the inner window
-			float innerWindowWidth = windowWidth - 10;
-			float innerWindowHeight = 35.0f;
-			ImGui::SetNextWindowPos(ImVec2(startX + 7, 72)); // Adjust position as needed
-			ImGui::SetNextWindowSize(ImVec2(innerWindowWidth, innerWindowHeight)); // Adjust size as needed
-
-			// Transformation mode enum and current mode variable
-			enum TransformMode { TRANSLATE, ROTATE, SCALE, UNIVERSAL };
-			static TransformMode currentMode = TRANSLATE;
-
-			// Gizmo mode variable
-			static ImGuizmo::MODE currentGizmoMode = ImGuizmo::LOCAL;
-
-			// Snap options
-			static bool useSnap = false;
-			static float snapValues[3] = { 1.0f, 1.0f, 1.0f };
-
 			auto& transform = selectedEntity.getComponent<Transformation>();
-
-			if (ImGui::BeginChild("TransformWindow", ImVec2(innerWindowWidth, innerWindowHeight), true))
-			{
-				// Radio buttons for transformation mode
-				ImGui::RadioButton("Translate", (int*)&currentMode, TRANSLATE);
-				ImGui::SameLine();
-				ImGui::RadioButton("Rotate", (int*)&currentMode, ROTATE);
-				ImGui::SameLine();
-				ImGui::RadioButton("Scale", (int*)&currentMode, SCALE);
-				ImGui::SameLine();
-				ImGui::RadioButton("Universal", (int*)&currentMode, UNIVERSAL);
-
-				// Button to toggle between local and world gizmo modes
-				ImGui::SameLine();
-				if (ImGui::Button(currentGizmoMode == ImGuizmo::LOCAL ? "Local" : "World"))
-				{
-					currentGizmoMode = (currentGizmoMode == ImGuizmo::LOCAL) ? ImGuizmo::WORLD : ImGuizmo::LOCAL;
-				}
-
-				// Checkbox for snap
-				ImGui::SameLine();
-				ImGui::Checkbox("Snap", &useSnap);
-
-				// Input fields for snap values
-				ImGui::SameLine();
-				float snapInputWidth = 80.0f;
-				if (currentMode == TRANSLATE)
-				{
-					ImGui::SetNextItemWidth(snapInputWidth * 3);
-					ImGui::InputFloat3("Snap Translate", snapValues);
-				}
-				else if (currentMode == ROTATE)
-				{
-					ImGui::SetNextItemWidth(snapInputWidth);
-					ImGui::InputFloat("Snap Angle", &snapValues[0]);
-				}
-				else if (currentMode == SCALE)
-				{
-					ImGui::SetNextItemWidth(snapInputWidth);
-					ImGui::InputFloat("Snap Scale", &snapValues[0]);
-				}
-
-
-
-				ImGui::EndChild(); // End the inner window
-			}
 
 			glm::mat4 glmMat = transform.getLocalTransformation();
 			float* matrixPtr = glm::value_ptr(glmMat);

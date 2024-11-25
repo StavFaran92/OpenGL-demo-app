@@ -14,6 +14,12 @@ class Material;
 class Texture;
 class Frustum;
 
+enum class RenderMode
+{
+	SHADED = 0,
+	WIREFRAME = 1
+};
+
 class Graphics
 {
 public:
@@ -43,4 +49,6 @@ public:
 	Resource<Texture> shadowMap = nullptr;
 	glm::mat4 lightSpaceMatrix;
 	Frustum* frustum = nullptr;
+
+	RenderMode renderMode = RenderMode::SHADED;
 };

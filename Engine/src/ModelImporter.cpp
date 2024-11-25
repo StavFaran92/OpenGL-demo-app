@@ -121,7 +121,7 @@ ModelImporter::ModelInfo ModelImporter::import(const std::string& path)
 
 	load(savedFilePath, mInfo);
 
-#if 1 // todo remove
+#if 0 // todo remove
 	for (auto& mesh : mInfo.mesh.get()->getMeshes())
 	{
 

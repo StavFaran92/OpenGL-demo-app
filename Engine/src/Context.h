@@ -26,6 +26,7 @@ class Material;
 class ProjectAssetRegistry;
 class SGE_Regsitry;
 class Archiver;
+enum class RenderMode;
 
 
 class EngineAPI Context
@@ -68,6 +69,9 @@ public:
 	void save() const;
 
 	void close();
+
+	void setRenderMode(RenderMode mode);
+	RenderMode getRenderMode() const;
 
 private:
 	friend class Engine;

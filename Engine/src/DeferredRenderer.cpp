@@ -307,6 +307,13 @@ void DeferredRenderer::renderScene(Scene* scene)
 
 	glEnable(GL_DEPTH_TEST);
 
+	if (graphics->renderMode == RenderMode::WIREFRAME)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glEnable(GL_POLYGON_OFFSET_LINE);
+		glPolygonOffset(-1.0, -1.0);
+	}
+
 	graphics->shader = m_gBufferShader.get();
 	graphics->shader->use();
 
@@ -361,6 +368,12 @@ void DeferredRenderer::renderScene(Scene* scene)
 		}
 		
 	};
+
+	if (graphics->renderMode == RenderMode::WIREFRAME)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDisable(GL_POLYGON_OFFSET_LINE);
+	}
 
 	// unbind gBuffer
 	m_gBuffer.unbind();
