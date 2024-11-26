@@ -593,7 +593,9 @@ void Scene::draw(float deltaTime)
 
 	glDisable(GL_BLEND);
 
-	DebugHelper::drawPoint({0,0,0});
+	static float move = 0;
+	move += .1f;
+	DebugHelper::getInstance().drawPoint({ move,0,0});
 
 
 #if 1

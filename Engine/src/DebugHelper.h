@@ -1,16 +1,45 @@
 #pragma once
 
+#include <memory>
+
 #include "Engine.h"
 #include "Core.h"
 
 #include <glm/glm.hpp>
 
+class VertexArrayObject;
+class VertexBufferObject;
+class Shader;
+
 class EngineAPI DebugHelper
 {
 public:
-	static void drawPoint(const glm::vec3& pos);
+    // Delete copy constructor and assignment operator to prevent duplication
+    DebugHelper(const DebugHelper&) = delete;
+    DebugHelper& operator=(const DebugHelper&) = delete;
 
-	static void drawLine(const glm::vec3& p1, const glm::vec3& p2);
+    // Static method to get the instance
+    static DebugHelper& getInstance()
+    {
+        // Use local static variable for thread-safe lazy initialization
+        static DebugHelper instance;
+        return instance;
+    }
 
-	static void drawTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3);
+	void drawPoint(const glm::vec3& pos);
+
+	void drawLine(const glm::vec3& p1, const glm::vec3& p2);
+
+	void drawTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3);
+
+private:
+    // Private constructor to prevent direct instantiation
+    DebugHelper();
+
+    // Optional: Private destructor
+    ~DebugHelper() {  }
+
+    std::shared_ptr<VertexArrayObject> m_vao;
+    std::shared_ptr<VertexBufferObject> m_vbo;
+    std::shared_ptr<Shader> m_shader;
 };
