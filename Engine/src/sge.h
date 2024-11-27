@@ -60,3 +60,4 @@
 #include "Animator.h"
 #include "Terrain.h"
 #include "System.h"
+#include "DebugHelper.h"

@@ -593,37 +593,12 @@ void Scene::draw(float deltaTime)
 
 	glDisable(GL_BLEND);
 
-	float halfVSide = primaryCamera.zfar * tanf(primaryCamera.fovy * .5f);
-	float halfHSide = halfVSide * primaryCamera.aspect;
-	glm::vec3 frontMultFar = primaryCameraTransform.getWorldPosition() + primaryCamera.zfar * primaryCamera.front;
-
-	static bool flag = true;
-	static glm::vec3 top_right;
-	static glm::vec3 top_left;
-	static glm::vec3 bottom_right;
-	static glm::vec3 bottom_left;
-	static glm::vec3 pos;
-	if (flag)
-	{
-		pos = primaryCameraTransform.getWorldPosition();
-		top_right = frontMultFar + halfHSide * primaryCamera.right + halfVSide * primaryCamera.up;
-		top_left = frontMultFar - halfHSide * primaryCamera.right + halfVSide * primaryCamera.up;
-		bottom_right = frontMultFar + halfHSide * primaryCamera.right - halfVSide * primaryCamera.up;
-		bottom_left = frontMultFar - halfHSide * primaryCamera.right - halfVSide * primaryCamera.up;
-		flag = false;
-	}
-
-	DebugHelper::getInstance().drawLine(pos, top_right);
-	DebugHelper::getInstance().drawLine(pos, top_left);
-	DebugHelper::getInstance().drawLine(pos, bottom_right);
-	DebugHelper::getInstance().drawLine(pos, bottom_left);
-
 #if 1
 
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_renderTargetFBO->getID());
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_READ_FRAMEBUFFER, m_renderTargetFBO->getID());
+	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	//glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 #endif 
 

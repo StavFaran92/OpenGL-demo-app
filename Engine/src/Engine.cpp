@@ -271,10 +271,6 @@ Context* Engine::getContext() const
 void Engine::draw(float deltaTime)
 {
     m_context->draw(deltaTime);
-
-    m_imguiHandler->render();
-
-    m_window->SwapBuffer();
 }
 
 
@@ -318,6 +314,16 @@ void Engine::run(Application* app)
 
         update(deltaTime);
         draw(deltaTime);
+        app->update();
+
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_context->getActiveScene()->getRenderTarget());
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glBlitFramebuffer(0, 0, m_window->getWidth(), m_window->getHeight(), 0, 0, m_window->getWidth(), m_window->getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        m_imguiHandler->render();
+
+        m_window->SwapBuffer();
 
         system->reset();
 

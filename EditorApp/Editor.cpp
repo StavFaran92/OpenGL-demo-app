@@ -1771,10 +1771,50 @@ public:
 
 		
 
+
+
 		updateScene();
 
 		auto gui = new GUI_Helper();
 		Engine::get()->getImguiHandler()->addGUI(gui);
+	}
+
+	void update() override
+	{
+		
+
+		static bool flag = true;
+		static glm::vec3 frontMultFar;
+		static glm::vec3 top_right;
+		static glm::vec3 top_left;
+		static glm::vec3 bottom_right;
+		static glm::vec3 bottom_left;
+		static glm::vec3 pos;
+		if (flag)
+		{
+			auto& camComponent = g_editorCamera.getComponent<CameraComponent>();
+			auto& camTransform = g_editorCamera.getComponent<Transformation>();
+
+
+
+
+			float halfVSide = camComponent.zfar * tanf(camComponent.fovy * .5f);
+			float halfHSide = halfVSide * camComponent.aspect;
+
+			frontMultFar = camTransform.getWorldPosition() + camComponent.zfar * camComponent.front;
+
+			pos = camTransform.getWorldPosition();
+			top_right = frontMultFar + halfHSide * camComponent.right + halfVSide * camComponent.up;
+			top_left = frontMultFar - halfHSide * camComponent.right + halfVSide * camComponent.up;
+			bottom_right = frontMultFar + halfHSide * camComponent.right - halfVSide * camComponent.up;
+			bottom_left = frontMultFar - halfHSide * camComponent.right - halfVSide * camComponent.up;
+			flag = false;
+		}
+
+		DebugHelper::getInstance().drawLine(pos, top_right);
+		DebugHelper::getInstance().drawLine(pos, top_left);
+		DebugHelper::getInstance().drawLine(pos, bottom_right);
+		DebugHelper::getInstance().drawLine(pos, bottom_left);
 	}
 
 	std::shared_ptr<SGE_Regsitry> m_editorRegistry;
