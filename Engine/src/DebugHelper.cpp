@@ -10,17 +10,10 @@
 
 DebugHelper::DebugHelper()
 {
-	{
-		void* data = new float[3] {0, 0, 0};
-		m_pointVAO = std::make_shared<VertexArrayObject>();
-		m_pointVBO = std::make_shared<VertexBufferObject>(data, 3, sizeof(float) * 3);
-		VertexLayout layout;
-		layout.attribs.push_back(LayoutAttribute::Positions);
-		layout.build();
-		m_pointVAO->AttachBuffer(*m_pointVBO.get(), NULL, layout);
-	}
+	m_vao = std::make_shared<VertexArrayObject>();
 
-	m_shader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/PointDebugShader.glsl");
+	m_pointShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/PointDebugShader.glsl");
+	m_lineShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/LineDebugShader.glsl");
 }
 
 
@@ -33,13 +26,13 @@ void DebugHelper::drawPoint(const glm::vec3& pos, const glm::vec3& color/* = { 1
 
 	auto model = glm::translate(glm::mat4(1.0f), pos);
 
-	m_shader->use();
-	m_shader->setUniformValue("color", color);
-	m_shader->setModelMatrix(model);
-	m_shader->setViewMatrix(*graphics->view);
-	m_shader->setProjectionMatrix(*graphics->projection);
+	m_pointShader->use();
+	m_pointShader->setUniformValue("color", color);
+	m_pointShader->setModelMatrix(model);
+	m_pointShader->setViewMatrix(*graphics->view);
+	m_pointShader->setProjectionMatrix(*graphics->projection);
 
-	m_pointVAO->Bind();
+	m_vao->Bind();
 
 	// Draw the point
 	glDrawArrays(GL_POINTS, 0, 1);
@@ -47,6 +40,25 @@ void DebugHelper::drawPoint(const glm::vec3& pos, const glm::vec3& color/* = { 1
 
 void DebugHelper::drawLine(const glm::vec3& p1, const glm::vec3& p2)
 {
+	auto graphics = Engine::get()->getSubSystem<Graphics>();
+
+	// Set the size of the point
+	glLineWidth(10); // Size in pixels
+
+	auto m1 = glm::translate(glm::mat4(1.0f), p1);
+	auto m2 = glm::translate(glm::mat4(1.0f), p2);
+
+	m_lineShader->use();
+	m_lineShader->setUniformValue("color", glm::vec3{ 1,0,0 });
+	m_lineShader->setUniformValue("m1", m1);
+	m_lineShader->setUniformValue("m2", m2);
+	m_lineShader->setViewMatrix(*graphics->view);
+	m_lineShader->setProjectionMatrix(*graphics->projection);
+
+	m_vao->Bind();
+
+	// Draw the point
+	glDrawArrays(GL_LINES, 0, 2);
 }
 
 void DebugHelper::drawTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3)

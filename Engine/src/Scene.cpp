@@ -603,7 +603,7 @@ void Scene::draw(float deltaTime)
 	DebugHelper::getInstance().drawPoint(frontMultFar + halfVSide * primaryCamera.up);
 	DebugHelper::getInstance().drawPoint(frontMultFar - halfVSide * primaryCamera.up);
 
-	//DebugHelper::getInstance().drawPoint({ 0,0,0 });
+	DebugHelper::getInstance().drawLine({ 0,0,0 }, {1,0,0});
 
 #if 1
 

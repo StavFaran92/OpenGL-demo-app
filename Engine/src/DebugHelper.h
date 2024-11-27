@@ -39,7 +39,8 @@ private:
     // Optional: Private destructor
     ~DebugHelper() {  }
 
-    std::shared_ptr<VertexArrayObject> m_pointVAO;
+    std::shared_ptr<VertexArrayObject> m_vao;
     std::shared_ptr<VertexBufferObject> m_pointVBO;
-    std::shared_ptr<Shader> m_shader;
+    std::shared_ptr<Shader> m_pointShader;
+    std::shared_ptr<Shader> m_lineShader;
 };
