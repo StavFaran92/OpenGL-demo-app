@@ -593,10 +593,17 @@ void Scene::draw(float deltaTime)
 
 	glDisable(GL_BLEND);
 
-	static float move = 0;
-	move += .1f;
-	DebugHelper::getInstance().drawPoint({ move,0,0});
+	float halfVSide = primaryCamera.zfar * tanf(primaryCamera.fovy * .5f);
+	float halfHSide = halfVSide * primaryCamera.aspect;
+	glm::vec3 frontMultFar = primaryCameraTransform.getWorldPosition() + primaryCamera.zfar * primaryCamera.front;
 
+	//DebugHelper::getInstance().drawPoint(primaryCameraTransform.getWorldPosition());
+	DebugHelper::getInstance().drawPoint(frontMultFar + halfHSide * primaryCamera.right);
+	DebugHelper::getInstance().drawPoint(frontMultFar - halfHSide * primaryCamera.right);
+	DebugHelper::getInstance().drawPoint(frontMultFar + halfVSide * primaryCamera.up);
+	DebugHelper::getInstance().drawPoint(frontMultFar - halfVSide * primaryCamera.up);
+
+	//DebugHelper::getInstance().drawPoint({ 0,0,0 });
 
 #if 1
 

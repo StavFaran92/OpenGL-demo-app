@@ -26,7 +26,7 @@ public:
         return instance;
     }
 
-	void drawPoint(const glm::vec3& pos);
+    void drawPoint(const glm::vec3& pos, const glm::vec3& color = {1.f,0.f,0.f}, float size = 10.f);
 
 	void drawLine(const glm::vec3& p1, const glm::vec3& p2);
 
@@ -39,7 +39,7 @@ private:
     // Optional: Private destructor
     ~DebugHelper() {  }
 
-    std::shared_ptr<VertexArrayObject> m_vao;
-    std::shared_ptr<VertexBufferObject> m_vbo;
+    std::shared_ptr<VertexArrayObject> m_pointVAO;
+    std::shared_ptr<VertexBufferObject> m_pointVBO;
     std::shared_ptr<Shader> m_shader;
 };
