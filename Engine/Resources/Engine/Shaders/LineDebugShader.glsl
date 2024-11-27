@@ -2,16 +2,17 @@
 
 #version 330
 
-uniform mat4 m1;
-uniform mat4 m2;
+uniform vec3 p1;
+uniform vec3 p2;
+
 uniform mat4 projection;
 uniform mat4 view;
 
 void main()
 {
-    mat4 model = (gl_VertexID == 0) ? m1 : m2;
+    vec3 point = (gl_VertexID == 0) ? p1 : p2;
 
-	gl_Position = projection * view * model * vec4(0,0,0, 1.0);
+	gl_Position = projection * view * vec4(point, 1.0);
 }
 
 #frag

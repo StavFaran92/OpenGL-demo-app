@@ -45,13 +45,10 @@ void DebugHelper::drawLine(const glm::vec3& p1, const glm::vec3& p2)
 	// Set the size of the point
 	glLineWidth(10); // Size in pixels
 
-	auto m1 = glm::translate(glm::mat4(1.0f), p1);
-	auto m2 = glm::translate(glm::mat4(1.0f), p2);
-
 	m_lineShader->use();
 	m_lineShader->setUniformValue("color", glm::vec3{ 1,0,0 });
-	m_lineShader->setUniformValue("m1", m1);
-	m_lineShader->setUniformValue("m2", m2);
+	m_lineShader->setUniformValue("p1", p1);
+	m_lineShader->setUniformValue("p2", p2);
 	m_lineShader->setViewMatrix(*graphics->view);
 	m_lineShader->setProjectionMatrix(*graphics->projection);
 
