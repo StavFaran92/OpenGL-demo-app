@@ -597,15 +597,26 @@ void Scene::draw(float deltaTime)
 	float halfHSide = halfVSide * primaryCamera.aspect;
 	glm::vec3 frontMultFar = primaryCameraTransform.getWorldPosition() + primaryCamera.zfar * primaryCamera.front;
 
-	//DebugHelper::getInstance().drawPoint(primaryCameraTransform.getWorldPosition());
-	DebugHelper::getInstance().drawPoint(frontMultFar + halfHSide * primaryCamera.right);
-	DebugHelper::getInstance().drawPoint(frontMultFar - halfHSide * primaryCamera.right);
-	DebugHelper::getInstance().drawPoint(frontMultFar + halfVSide * primaryCamera.up);
-	DebugHelper::getInstance().drawPoint(frontMultFar - halfVSide * primaryCamera.up);
+	static bool flag = true;
+	static glm::vec3 top_right;
+	static glm::vec3 top_left;
+	static glm::vec3 bottom_right;
+	static glm::vec3 bottom_left;
+	static glm::vec3 pos;
+	if (flag)
+	{
+		pos = primaryCameraTransform.getWorldPosition();
+		top_right = frontMultFar + halfHSide * primaryCamera.right + halfVSide * primaryCamera.up;
+		top_left = frontMultFar - halfHSide * primaryCamera.right + halfVSide * primaryCamera.up;
+		bottom_right = frontMultFar + halfHSide * primaryCamera.right - halfVSide * primaryCamera.up;
+		bottom_left = frontMultFar - halfHSide * primaryCamera.right - halfVSide * primaryCamera.up;
+		flag = false;
+	}
 
-	auto top_right = frontMultFar + halfHSide * primaryCamera.right + halfVSide * primaryCamera.up;
-
-	DebugHelper::getInstance().drawLine(primaryCameraTransform.getWorldPosition() + primaryCamera.front * 10.f, top_right);
+	DebugHelper::getInstance().drawLine(pos, top_right);
+	DebugHelper::getInstance().drawLine(pos, top_left);
+	DebugHelper::getInstance().drawLine(pos, bottom_right);
+	DebugHelper::getInstance().drawLine(pos, bottom_left);
 
 #if 1
 
