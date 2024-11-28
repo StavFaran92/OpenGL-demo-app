@@ -312,6 +312,7 @@ void DeferredRenderer::renderScene(Scene* scene)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glEnable(GL_POLYGON_OFFSET_LINE);
 		glPolygonOffset(-1.0, -1.0);
+		glLineWidth(1); // Size in pixels
 	}
 
 	graphics->shader = m_gBufferShader.get();

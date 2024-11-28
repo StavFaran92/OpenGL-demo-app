@@ -1783,7 +1783,7 @@ public:
 	{
 		
 
-		static bool flag = true;
+		static bool flag = false;
 		static glm::vec3 frontMultFar;
 		static glm::vec3 top_right;
 		static glm::vec3 top_left;
@@ -1810,6 +1810,10 @@ public:
 			bottom_left = frontMultFar - halfHSide * camComponent.right - halfVSide * camComponent.up;
 			flag = false;
 		}
+
+		Engine::get()->getInput()->getKeyboard()->onKeyPressed(SDL_SCANCODE_Q, [&](SDL_Event e) {
+			flag = true;
+			});
 
 		DebugHelper::getInstance().drawLine(pos, top_right);
 		DebugHelper::getInstance().drawLine(pos, top_left);
