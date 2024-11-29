@@ -139,3 +139,8 @@ std::vector<std::string> Assets::getAllAnimations() const
 	}
 	return result;
 }
+
+std::string Assets::getAlias(UUID uid) const
+{
+	return Engine::get()->getMemoryManagementSystem()->getName(uid);
+}

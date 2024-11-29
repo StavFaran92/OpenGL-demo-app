@@ -54,6 +54,19 @@ public:
 		return EMPTY_UUID;
 	}
 
+	std::string getName(UUID uuid) const
+	{
+		// Todo optimize
+		for (auto& assc : m_associations)
+		{
+			if (assc.second == uuid)
+			{
+				return assc.first;
+			}
+		}
+		return "N/A";
+	}
+
 	void clear();
 private:
 	std::unordered_map<std::string, UUID> m_associations;

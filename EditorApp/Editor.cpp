@@ -164,6 +164,8 @@ static void displayTransformation(Transformation& transform, bool& isChanged)
 
 static void displayAssetTextureSelectWindow()
 {
+	auto assets = Engine::get()->getSubSystem<Assets>();
+
 	if (showAssetTextureSelectWindow)
 	{
 		ImGui::Begin("Select Texture", &showAssetTextureSelectWindow, ImGuiWindowFlags_AlwaysAutoResize);
@@ -176,7 +178,7 @@ static void displayAssetTextureSelectWindow()
 
 		
 
-		auto& textureList = Engine::get()->getSubSystem<Assets>()->getAllTextures();
+		auto& textureList = assets->getAllTextures();
 
 		if (selectedTextureIndex != -1)
 		{
@@ -199,7 +201,7 @@ static void displayAssetTextureSelectWindow()
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Default color
 			}
 
-			if (ImGui::Selectable(textureList[i].c_str()))
+			if (ImGui::Selectable(assets->getAlias(textureList[i]).c_str()))
 			{
 				selectedTextureIndex = i;
 			}
@@ -254,7 +256,7 @@ static void displaySelectMeshWindow(std::string& uuid)
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Default color
 			}
 
-			if (ImGui::Selectable(meshList[i].c_str())) 
+			if (ImGui::Selectable(Engine::get()->getSubSystem<Assets>()->getAlias(meshList[i]).c_str()))
 			{
 				selectedMeshIndex = i;
 			}
@@ -1211,6 +1213,8 @@ static void addSkyboxTextureEditWidget(SkyboxComponent& skybox)
 
 void RenderInspectorWindow(float width, float height) 
 {
+	auto assets = Engine::get()->getSubSystem<Assets>();
+
 	float windowWidth = width * 0.15f - 5;
 	float startX = width * 0.85f + 5; // Add a gap of 5 pixels
 	ImGui::SetNextWindowPos(ImVec2(startX, 25)); // Adjust vertical position to make space for the menu bar
@@ -1291,7 +1295,7 @@ void RenderInspectorWindow(float width, float height)
 			ImGui::SameLine();
 
 			// Text display field
-			ImGui::Text(meshComponent.mesh.getUID().c_str());
+			ImGui::Text(Engine::get()->getSubSystem<Assets>()->getAlias(meshComponent.mesh.getUID()).c_str());
 			});
 
 		displayComponent<RenderableComponent>("Renderer", [](RenderableComponent& renderComponent) {
@@ -1557,6 +1561,7 @@ void RenderInspectorWindow(float width, float height)
 }
 
 void RenderAssetViewWindow(float width, float height) {
+	auto assets = Engine::get()->getSubSystem<Assets>();
 	float windowWidth = width - 10;
 	float startX = 5; // Add a gap of 5 pixels
 	float startY = height * 0.7f + 30; // Adjust vertical position to place it below the "Scene Hierarchy" window
@@ -1569,18 +1574,18 @@ void RenderAssetViewWindow(float width, float height) {
 
 	if (ImGui::TreeNode("Meshes")) {
 		for (int i = 0; i < meshList.size(); i++) {
-			if (ImGui::Selectable(meshList[i].c_str())) {
+			if (ImGui::Selectable(Engine::get()->getSubSystem<Assets>()->getAlias(meshList[i]).c_str())) {
 				// Do something when a mesh is selected
 			}
 		}
 		ImGui::TreePop();
 	}
 
-	auto& textureList = Engine::get()->getMemoryPool<Texture>()->getAll();
+	auto& textureList = assets->getAllTextures();
 
 	if (ImGui::TreeNode("Textures")) {
 		for (int i = 0; i < textureList.size(); i++) {
-			if (ImGui::Selectable(textureList[i].c_str())) {
+			if (ImGui::Selectable(assets->getAlias(textureList[i]).c_str())) {
 				// Do something when a mesh is selected
 			}
 		}

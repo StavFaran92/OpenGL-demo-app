@@ -19,6 +19,8 @@ public:
 	Resource<Animation> loadAnimation(UUID uid, const std::string& path);
 	std::vector<std::string> getAllAnimations() const;
 
+	std::string getAlias(UUID uid) const;
+
 private:
 	Texture::TextureData extractTextureDataFromFile(const std::string& fileLocation);
 
