@@ -121,7 +121,7 @@ ModelImporter::ModelInfo ModelImporter::import(const std::string& path)
 
 	load(savedFilePath, mInfo);
 
-#if 0 // todo remove
+#if 0 // display AABB for models
 	for (auto& mesh : mInfo.mesh.get()->getMeshes())
 	{
 
@@ -403,7 +403,7 @@ Resource<Texture> ModelImporter::importAiMaterialTexture(aiMaterial* mat, aiText
 		return Resource<Texture>::empty;
 	}
 
-	auto texture = Engine::get()->getSubSystem<Assets>()->importTexture2D(path, true);
+	auto texture = Engine::get()->getSubSystem<Assets>()->importTexture2D(path, false);
 	return texture;
 }
 

@@ -640,7 +640,7 @@ void ShowModelCreatorWindow()
 	const char* filepath = tinyfd_openFileDialog(
 		"Select an asset to load",
 		"",
-		4,
+		5,
 		g_supportedFormats,
 		"",
 		0);

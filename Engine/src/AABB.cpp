@@ -36,15 +36,16 @@ void AABB::adjustToTransform(const Transformation& transform)
 {
 	auto& scale = transform.getWorldScale();
 
-	auto& right = transform.getRight() * extents.x;
-	auto& up = transform.getUp() * extents.y;
-	auto& front = transform.getForward() * extents.z;
+	auto& right = transform.getRight() * extents.x * scale.x;
+	auto& up = transform.getUp() * extents.y * scale.y;
+	auto& front = transform.getForward() * extents.z * scale.z;
 
 	float extentX = std::abs(right[0]) + std::abs(up[0]) + std::abs(front[0]);
 	float extentY = std::abs(right[1]) + std::abs(up[1]) + std::abs(front[1]);
 	float extentZ = std::abs(right[2]) + std::abs(up[2]) + std::abs(front[2]);
 
-	center += transform.getWorldPosition();
+	glm::vec4 calcCenter = transform.getWorldTransformation() * glm::vec4(center, 1.0f);
+	center = { calcCenter.x, calcCenter.y, calcCenter.z };
 	extents = { extentX, extentY, extentZ };
 }
 
