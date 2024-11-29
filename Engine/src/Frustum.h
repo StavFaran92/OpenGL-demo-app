@@ -10,11 +10,11 @@ struct Frustum
 		// calculate HalfVSide and HalfHSide
 		float halfVSide = zfar * tanf(fovy * .5f);
 		float halfHSide = halfVSide * aspect;
-		glm::vec3 frontMultFar = pos + zfar * front;
+		glm::vec3 frontMultFar = zfar * front;
 
 		// calculate planes
 		m_znear = { pos + znear * front, front };
-		m_zfar = { frontMultFar,  -front };
+		m_zfar = { pos + frontMultFar,  -front };
 		m_right = { pos, glm::cross(up, frontMultFar + halfHSide * right) };
 		m_left = { pos, -glm::cross(up, frontMultFar - halfHSide * right) };
 		m_up = { pos, -glm::cross(right, frontMultFar + halfVSide * up) };

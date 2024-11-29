@@ -38,7 +38,7 @@ void DebugHelper::drawPoint(const glm::vec3& pos, const glm::vec3& color/* = { 1
 	glDrawArrays(GL_POINTS, 0, 1);
 }
 
-void DebugHelper::drawLine(const glm::vec3& p1, const glm::vec3& p2)
+void DebugHelper::drawLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& color/* = { 1,0,0 }*/)
 {
 	auto graphics = Engine::get()->getSubSystem<Graphics>();
 
@@ -46,7 +46,7 @@ void DebugHelper::drawLine(const glm::vec3& p1, const glm::vec3& p2)
 	glLineWidth(10); // Size in pixels
 
 	m_lineShader->use();
-	m_lineShader->setUniformValue("color", glm::vec3{ 1,0,0 });
+	m_lineShader->setUniformValue("color", color);
 	m_lineShader->setUniformValue("p1", p1);
 	m_lineShader->setUniformValue("p2", p2);
 	m_lineShader->setViewMatrix(*graphics->view);

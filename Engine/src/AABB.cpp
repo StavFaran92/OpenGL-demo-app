@@ -44,7 +44,7 @@ void AABB::adjustToTransform(const Transformation& transform)
 	float extentY = std::abs(right[1]) + std::abs(up[1]) + std::abs(front[1]);
 	float extentZ = std::abs(right[2]) + std::abs(up[2]) + std::abs(front[2]);
 
-	center = transform.getWorldPosition();
+	center += transform.getWorldPosition();
 	extents = { extentX, extentY, extentZ };
 }
 

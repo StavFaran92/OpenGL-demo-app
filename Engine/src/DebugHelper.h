@@ -28,7 +28,7 @@ public:
 
     void drawPoint(const glm::vec3& pos, const glm::vec3& color = {1.f,0.f,0.f}, float size = 10.f);
 
-	void drawLine(const glm::vec3& p1, const glm::vec3& p2);
+	void drawLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& color = { 1,0,0 });
 
 	void drawTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3);
 
