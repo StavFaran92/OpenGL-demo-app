@@ -67,6 +67,11 @@ public:
 		return "N/A";
 	}
 
+	void addAssociation(const std::string& name, UUID uid)
+	{
+		m_associations[name] = uid;
+	}
+
 	void clear();
 private:
 	std::unordered_map<std::string, UUID> m_associations;

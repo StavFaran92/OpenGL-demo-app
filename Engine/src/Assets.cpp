@@ -7,6 +7,7 @@
 #include "Animation.h"
 #include "AnimationLoader.h"
 #include "CacheSystem.h"
+#include "ModelImporter.h"
 
 //#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -19,6 +20,32 @@
 Assets::Assets()
 {
 	Engine::get()->registerSubSystem<Assets>(this);
+}
+
+ModelImporter::ModelInfo Assets::importMesh(const std::string& fileLocation)
+{
+	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
+	std::filesystem::path path(fileLocation);
+	
+	auto modelInfo = Engine::get()->getSubSystem<ModelImporter>()->import(fileLocation);
+
+	Engine::get()->getContext()->getProjectAssetRegistry()->addMesh(modelInfo.mesh.getUID());
+
+	m_meshes[modelInfo.mesh.getUID()] = modelInfo.mesh;
+
+	memoryManagementSystem->addAssociation(path.filename().string(), modelInfo.mesh.getUID());
+
+	return modelInfo;
+}
+
+std::vector<std::string> Assets::getAllMeshes() const
+{
+	std::vector<std::string> result;
+	for (auto [uuid, _] : m_meshes)
+	{
+		result.push_back(uuid);
+	}
+	return result;
 }
 
 Texture::TextureData Assets::extractTextureDataFromFile(const std::string& fileLocation)

@@ -69,10 +69,6 @@ ModelImporter::ModelImporter()
 
 ModelImporter::ModelInfo ModelImporter::import(const std::string& path)
 {
-	ModelImporter::ModelInfo mInfo;
-
-	mInfo.mesh = Factory<MeshCollection>::create();
-
 	if (!std::filesystem::exists(path))
 	{
 		logError("File doesn't exists: " + path);
@@ -97,6 +93,8 @@ ModelImporter::ModelInfo ModelImporter::import(const std::string& path)
 		return {};
 	}
 
+	ModelImporter::ModelInfo mInfo;
+	mInfo.mesh = Factory<MeshCollection>::create();
 	auto savedFilePath = MeshExporter::exportMesh(mInfo.mesh, scene);
 
 	if (scene->HasMaterials())

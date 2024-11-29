@@ -4,12 +4,17 @@
 #include "Resource.h"
 #include "Texture.h"
 #include "Animation.h"
+#include "ModelImporter.h"
 #include "Core.h"
 
 class EngineAPI Assets
 {
 public:
 	Assets();
+
+	ModelImporter::ModelInfo importMesh(const std::string& path);
+	Resource<MeshCollection> loadMesh(UUID uid, const std::string& path);
+	std::vector<std::string> getAllMeshes() const;
 
 	Resource<Texture> importTexture2D(const std::string& path, bool flip = false);
 	Resource<Texture> loadTexture2D(UUID uid, const std::string& path);
@@ -25,6 +30,7 @@ private:
 	Texture::TextureData extractTextureDataFromFile(const std::string& fileLocation);
 
 private:
+	std::unordered_map<UUID, Resource<MeshCollection>> m_meshes;
 	std::unordered_map<UUID, Resource<Texture>> m_textures;
 	std::unordered_map<UUID, Resource<Animation>> m_animations;
 };
