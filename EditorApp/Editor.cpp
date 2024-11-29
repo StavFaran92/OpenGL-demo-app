@@ -814,74 +814,43 @@ void displayEntity(Entity& e)
 	}
 }
 
-void displaySceneObjects(int& selected)
+void displaySceneObjects()
 {
+	// todo fix this shitty hack
+	ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x, 15));
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_ITEM"))
+		{
+			Entity sourceEntity = *(const Entity*)payload->Data;
+			sourceEntity.getComponent<Transformation>().removeParent();
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::BeginChild("##items", ImGui::GetContentRegionAvail(), true, ImGuiWindowFlags_NoScrollbar);
+
 	for (int i = 0; i < sceneObjects.size(); ++i)
 	{
 		auto& sceneObject = sceneObjects[i];
-		auto& objectComponent = sceneObject.e.getComponent<ObjectComponent>();
 		auto& transform = sceneObject.e.getComponent<Transformation>();
 
 		// if has parent it will be rendered in the recursive call (can be optimized if needed)
 		if (transform.getParent().valid()) continue;
 
 		ImGui::PushID(i); // Push a unique ID to avoid ImGui ID conflicts
-
 		
 		displayEntity(sceneObject.e);
 
 		ImGui::PopID();
 	}
+
+	ImGui::EndChild(); // End background drop zone
 }
 
 void RenderSceneHierarchyWindow(float width, float height)
 {
-	//if (ImGui::Begin("Example"))
-	//{
-	//	// Custom function to create a tree node with selectable text
-	//	static bool selected = false;
-	//	static bool open = false;
-
-	//	// Adjust the width for the small arrow button
-	//	float arrowWidth = ImGui::GetFontSize();
-	//	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Adjust spacing for the arrow
-
-	//	// Create a small arrow button
-	//	if (!open)
-	//	{
-	//		if (ImGui::ArrowButton("##arrow", ImGuiDir_Right))
-	//		{
-	//			open = true;
-	//		}
-	//	}
-	//	else{
-	//		if (ImGui::ArrowButton("##arrow", ImGuiDir_Down))
-	//		{
-	//			open = false;
-	//		}
-	//	}
-	//	ImGui::SameLine();
-
-	//	// Create selectable text
-	//	if (ImGui::Selectable("Selectable Node", &selected))
-	//	{
-	//		// Handle selection logic
-	//	}
-
-	//	// Pop style adjustment
-	//	ImGui::PopStyleVar();
-
-	//	// Handle tree node opening
-	//	if (open)
-	//	{
-	//		ImGui::TreePush("##tree");
-	//		ImGui::Text("Child Node 1");
-	//		ImGui::Text("Child Node 2");
-	//		ImGui::TreePop();
-	//	}
-	//}
-	//ImGui::End();
-
 	float windowWidth = width * 0.15f;
 	ImVec2 windowPos(5, 25); // Adjust vertical position to make space for the menu bar
 	ImVec2 windowSize(windowWidth, height * 0.7f);
@@ -930,15 +899,16 @@ void RenderSceneHierarchyWindow(float width, float height)
 		{ // Begin the submenu
 			if (ImGui::MenuItem("Directional Light"))
 			{
-				auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
+				static int createdDLightCount = 0;
+				auto e = Engine::get()->getContext()->getActiveScene()->createEntity("Directional_Light_" + std::to_string(createdDLightCount++));
 				e.addComponent<DirectionalLight>(glm::vec3{ 0,0,0 }, glm::vec3{0,-1,0}, 1.f, 1.f);
 				updateScene();
 				selectedEntity = sceneObjects[0].e;
 			}
 			if (ImGui::MenuItem("Point Light"))
 			{
-
-				auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
+				static int createdPLightCount = 0;
+				auto e = Engine::get()->getContext()->getActiveScene()->createEntity("Point_Light_" + std::to_string(createdPLightCount++));
 				e.addComponent<PointLight>(glm::vec3{ 0,0,0 }, 1.f, 1.f, Attenuation());
 				updateScene();
 				selectedEntity = sceneObjects[0].e;
@@ -952,14 +922,15 @@ void RenderSceneHierarchyWindow(float width, float height)
 	}
 
 	// Calculate the size of the list box accounting for padding
-	ImVec2 listBoxSize(windowSize.x - 10, windowSize.y - 10);
+	ImVec2 listBoxSize(windowSize.x - 20, windowSize.y - 70);
+
+	ImGui::SetNextWindowSize(listBoxSize);
 
 	// Render list view
-	if (ImGui::BeginListBox("Objects", listBoxSize)) 
+	if (ImGui::BeginListBox("##Objects", listBoxSize)) 
 	{
 		// Iterate through each scene object and render it as a selectable item in the list
-		static int selected = -1;
-		displaySceneObjects(selected);
+		displaySceneObjects();
 		ImGui::EndListBox();
 	}
 
