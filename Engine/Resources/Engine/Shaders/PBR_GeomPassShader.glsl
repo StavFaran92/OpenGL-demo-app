@@ -126,13 +126,38 @@ uniform PBR_Material material;
 // ----- Forward Declerations ----- //
 
 // ----- Methods ----- //
+
+#define CHANNEL_R 1   // 0001
+#define CHANNEL_G 2   // 0010
+#define CHANNEL_B 4   // 0100
+#define CHANNEL_A 8   // 1000
+
+vec4 extractChannels(vec4 inputColor, int channelMask) 
+{
+	// Default result is a black vec4
+    vec4 result = vec4(0.0);  
+
+    int currentIndex = 0;
+
+    if ((channelMask & CHANNEL_R) != 0) result[currentIndex++] = inputColor.r;
+    if ((channelMask & CHANNEL_G) != 0) result[currentIndex++] = inputColor.g;
+    if ((channelMask & CHANNEL_B) != 0) result[currentIndex++] = inputColor.b;
+    if ((channelMask & CHANNEL_A) != 0) result[currentIndex++] = inputColor.a;
+
+    return result;
+}
+
+vec4 getPBRTexture(PBR_Sampler s)
+{
+	return extractChannels(texture(s.texture, fs_in.texCoord * vec2(s.xScale, s.yScale) + vec2(s.xOffset, s.yOffset)).rgba, s.mask);
+}
  
 void main() 
 { 	
 	gPosition = fs_in.fragPos;
-	gNormal = normalize(fs_in.normal) * texture(material.texture_normal, fs_in.texCoord).rgb;
-	gAlbedo = texture(material.texture_albedo, fs_in.texCoord).rgb;
-	gMRA.r = texture(material.texture_metallic, fs_in.texCoord).r;
-	gMRA.g = texture(material.texture_roughness, fs_in.texCoord).r;
-	gMRA.b = texture(material.texture_ao, fs_in.texCoord).r;
+	gNormal = normalize(fs_in.normal) * getPBRTexture(material.samplerNormal).rgb;
+	gAlbedo = getPBRTexture(material.samplerAlbedo).rgb;
+	gMRA.r = getPBRTexture(material.samplerMetallic).r;
+	gMRA.g = getPBRTexture(material.samplerRoughness).r;
+	gMRA.b = getPBRTexture(material.samplerAO).r;
 } 

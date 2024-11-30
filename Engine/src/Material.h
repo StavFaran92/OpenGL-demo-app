@@ -7,6 +7,7 @@
 #include "Resource.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "TextureSampler.h"
 
 class EngineAPI Material
 {
@@ -23,7 +24,7 @@ public:
 	 *
 	 * \param colors
 	 */
-	Resource<Texture> getTexture(Texture::Type textureType) const;
+	TextureSampler getSampler(Texture::Type textureType) const;
 	bool hasTexture(Texture::Type textureType) const;
 
 	void setTexture(Texture::Type textureType, Resource<Texture> textureHandler);
@@ -32,7 +33,7 @@ public:
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(m_textures);
+		archive(m_samplers);
 	}
 
 protected:
@@ -40,5 +41,5 @@ protected:
 	void setTextureInShader(Shader& shader, Texture::Type ttype, int slot);
 
 protected:
-	std::map<Texture::Type, Resource<Texture>> m_textures;
+	std::map<Texture::Type, TextureSampler> m_samplers;
 };

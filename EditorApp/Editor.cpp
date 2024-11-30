@@ -1175,7 +1175,7 @@ static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::strin
 	Resource<Texture> tex = Resource<Texture>::empty;
 	if (mat->hasTexture(ttype))
 	{
-		tex = mat->getTexture(ttype);
+		tex = mat->getSampler(ttype).texture;
 	}
 
 	addTextureEditWidget(tex, { 20, 20 }, [=](std::string uuid) {
