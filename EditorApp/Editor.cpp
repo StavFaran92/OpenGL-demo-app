@@ -819,7 +819,8 @@ void displayEntity(Entity& e)
 void displaySceneObjects()
 {
 	// todo fix this shitty hack
-	ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x, 15));
+	auto sceneName = "Scene " + std::to_string(Engine::get()->getContext()->getActiveSceneID());
+	ImGui::Text(sceneName.c_str());
 
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -830,6 +831,8 @@ void displaySceneObjects()
 		}
 		ImGui::EndDragDropTarget();
 	}
+
+	ImGui::Separator();
 
 	ImGui::BeginChild("##items", ImGui::GetContentRegionAvail(), true, ImGuiWindowFlags_NoScrollbar);
 
