@@ -179,16 +179,6 @@ void Texture::unbind() const
 	glBindTexture(m_target, 0);
 }
 
-void Texture::flip()
-{
-	m_flipped = !m_flipped;
-}
-
-bool Texture::isFlipped() const
-{
-	return m_flipped;
-}
-
 unsigned int Texture::getID() const
 {
 	return m_id;

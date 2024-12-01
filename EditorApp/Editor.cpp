@@ -24,6 +24,7 @@ static bool showMeshSelector = false;
 static bool showAnimationSelector = false;
 static bool selectedEntityRename = false;
 static bool showScriptSelector = false;
+static bool showSamplerEditWindow = false;
 
 static bool startButtonPressed = false;
 
@@ -32,6 +33,8 @@ Entity g_editorCamera;
 
 std::function<void(std::string uuid)> assetTextureSelectCB;
 Resource<Texture> selectedAssetTexture;
+
+static std::shared_ptr<TextureSampler> g_selectedSampler;
 
 static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype);
 void AddColoredLabel(const char* label);
@@ -159,6 +162,50 @@ static void displayTransformation(Transformation& transform, bool& isChanged)
 	{
 		transform.setLocalScale(scale);
 		isChanged = true;
+	}
+}
+
+static void displaySamplerEditWindow()
+{
+	if (showSamplerEditWindow)
+	{
+		if (!g_selectedSampler)
+		{
+			logError("Selected sampler cannot be null.");
+			showSamplerEditWindow = false;
+			return;
+		}
+		auto assets = Engine::get()->getSubSystem<Assets>();
+
+		ImGui::Begin("Edit Sampler", &showSamplerEditWindow, ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::Text("Texture");
+		//addTextureEditWidget(g_selectedSampler->texture, ImVec2{150, 150}, [](std::string uuid) {
+
+		//	});
+
+		ImGui::Spacing();
+
+		ImGui::DragFloat("xoffset", &g_selectedSampler->xOffset);
+		ImGui::DragFloat("yoffset", &g_selectedSampler->yOffset);
+
+		ImGui::Spacing();
+
+		ImGui::DragFloat("xScale", &g_selectedSampler->xScale);
+		ImGui::DragFloat("yScale", &g_selectedSampler->yScale);
+
+		ImGui::Separator();
+
+		if (ImGui::Button("OK")) {
+			showSamplerEditWindow = false;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel")) {
+			showSamplerEditWindow = false;
+		}
+
+		ImGui::End();
 	}
 }
 
@@ -1175,7 +1222,7 @@ static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::strin
 	Resource<Texture> tex = Resource<Texture>::empty;
 	if (mat->hasTexture(ttype))
 	{
-		tex = mat->getSampler(ttype).texture;
+		tex = mat->getSampler(ttype)->texture;
 	}
 
 	addTextureEditWidget(tex, { 20, 20 }, [=](std::string uuid) {
@@ -1185,6 +1232,32 @@ static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::strin
 	ImGui::SameLine();
 
 	ImGui::Text(name.c_str());
+}
+
+static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, const std::string& name, Texture::Type ttype)
+{
+	std::shared_ptr<TextureSampler> sampler;
+
+	int texID = 0;
+	if (mat->hasTexture(ttype))
+	{
+		sampler = mat->getSampler(ttype);
+
+		int texID = 0;
+		if (!sampler->texture.isEmpty())
+		{
+			texID = sampler->texture.get()->getID();
+		}
+	}	
+
+	ImGui::Image(reinterpret_cast<ImTextureID>(texID), size, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+
+	if (ImGui::IsItemClicked())
+	{
+		showSamplerEditWindow = true;
+		g_selectedSampler = sampler;
+		g_selectedMaterial = mat;
+	}
 }
 
 static void addSkyboxTextureEditWidget(SkyboxComponent& skybox)
@@ -1341,6 +1414,8 @@ void RenderInspectorWindow(float width, float height)
 				// Start a new collapsible header for each material
 				if (ImGui::CollapsingHeader(("Material " + std::to_string(index)).c_str()))
 				{
+					addSamplerEditWidget(mat, { 50,50 }, "Albedo", Texture::Type::Albedo);
+
 					// Add texture edit widgets for the material
 					addTextureEditWidget(mat, "Albedo", Texture::Type::Albedo);
 					addTextureEditWidget(mat, "Normal", Texture::Type::Normal);
@@ -1710,6 +1785,7 @@ class GUI_Helper : public GuiMenu {
 		RenderInspectorWindow(screenWidth, screenHeight);
 		RenderAssetViewWindow(screenWidth, screenHeight); // Add the Asset View window
 
+		displaySamplerEditWindow();
 		displayAssetTextureSelectWindow();
 		DisplayDebugInfoWindow();
 		

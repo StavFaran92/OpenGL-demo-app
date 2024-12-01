@@ -139,8 +139,6 @@ bool Engine::init(const InitParams& initParams)
         m_resourceManager->setRootDir("./");
     }
 
-    m_defaultMaterial = std::make_shared<Material>();
-
     m_window = std::make_shared<Window>();
     if (!m_window->init())
     {
@@ -187,6 +185,8 @@ bool Engine::init(const InitParams& initParams)
     m_commonShaders = std::make_shared<CommonShaders>();
 
     m_commonTextures = std::make_shared<CommonTextures>();
+
+    m_defaultMaterial = std::make_shared<Material>();
 
     m_randomSystem = std::make_shared<RandomNumberGenerator>();
 

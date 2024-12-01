@@ -24,7 +24,7 @@ public:
 	 *
 	 * \param colors
 	 */
-	TextureSampler getSampler(Texture::Type textureType) const;
+	std::shared_ptr<TextureSampler> getSampler(Texture::Type textureType) const;
 	bool hasTexture(Texture::Type textureType) const;
 
 	void setTexture(Texture::Type textureType, Resource<Texture> textureHandler);
@@ -41,5 +41,7 @@ protected:
 	void setTextureInShader(Shader& shader, Texture::Type ttype, int slot);
 
 protected:
-	std::map<Texture::Type, TextureSampler> m_samplers;
+	std::map<Texture::Type, std::shared_ptr<TextureSampler>> m_samplers;
+
+	std::shared_ptr<TextureSampler> m_defaultSampler;
 };

@@ -109,8 +109,6 @@ public:
 	/** Unbinds this texture from the GPU */
 	void unbind() const;
 
-	void flip();
-	bool isFlipped() const;
 	unsigned int getID() const;
 
 	inline void setSlot(int slot) { m_slot = slot; }
@@ -125,7 +123,5 @@ private:
 	uint32_t m_id;
 	int m_width, m_height, m_bitDepth;
 	int m_slot = 0;
-	Type m_type;
 	uint32_t m_target = 0;
-	bool m_flipped = false;
 };

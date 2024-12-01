@@ -2,10 +2,13 @@
 
 #include "Texture.h"
 #include "Resource.h"
+#include "Core.h"
 
-class TextureSampler
+class EngineAPI TextureSampler
 {
 public:
+	TextureSampler();
+
 	Resource<Texture> texture;
 
 	enum Color {
