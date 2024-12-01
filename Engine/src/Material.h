@@ -25,6 +25,8 @@ public:
 	 * \param colors
 	 */
 	std::shared_ptr<TextureSampler> getSampler(Texture::Type textureType) const;
+	void setSampler(Texture::Type textureType, std::shared_ptr<TextureSampler> sampler);
+
 	bool hasTexture(Texture::Type textureType) const;
 
 	void setTexture(Texture::Type textureType, Resource<Texture> textureHandler);

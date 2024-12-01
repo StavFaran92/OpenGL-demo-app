@@ -32,6 +32,11 @@ std::shared_ptr<TextureSampler> Material::getSampler(Texture::Type textureType) 
 	return m_samplers.at(textureType);
 }
 
+void Material::setSampler(Texture::Type textureType, std::shared_ptr<TextureSampler> sampler)
+{
+	m_samplers[textureType] = sampler;
+}
+
 bool Material::hasTexture(Texture::Type textureType) const
 {
 	auto iter = m_samplers.find(textureType);

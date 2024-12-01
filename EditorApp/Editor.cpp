@@ -167,46 +167,7 @@ static void displayTransformation(Transformation& transform, bool& isChanged)
 
 static void displaySamplerEditWindow()
 {
-	if (showSamplerEditWindow)
-	{
-		if (!g_selectedSampler)
-		{
-			logError("Selected sampler cannot be null.");
-			showSamplerEditWindow = false;
-			return;
-		}
-		auto assets = Engine::get()->getSubSystem<Assets>();
-
-		ImGui::Begin("Edit Sampler", &showSamplerEditWindow, ImGuiWindowFlags_AlwaysAutoResize);
-		ImGui::Text("Texture");
-		//addTextureEditWidget(g_selectedSampler->texture, ImVec2{150, 150}, [](std::string uuid) {
-
-		//	});
-
-		ImGui::Spacing();
-
-		ImGui::DragFloat("xoffset", &g_selectedSampler->xOffset);
-		ImGui::DragFloat("yoffset", &g_selectedSampler->yOffset);
-
-		ImGui::Spacing();
-
-		ImGui::DragFloat("xScale", &g_selectedSampler->xScale);
-		ImGui::DragFloat("yScale", &g_selectedSampler->yScale);
-
-		ImGui::Separator();
-
-		if (ImGui::Button("OK")) {
-			showSamplerEditWindow = false;
-		}
-
-		ImGui::SameLine();
-
-		if (ImGui::Button("Cancel")) {
-			showSamplerEditWindow = false;
-		}
-
-		ImGui::End();
-	}
+	
 }
 
 static void displayAssetTextureSelectWindow()
@@ -1248,16 +1209,65 @@ static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, con
 		{
 			texID = sampler->texture.get()->getID();
 		}
-	}	
-
-	ImGui::Image(reinterpret_cast<ImTextureID>(texID), size, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
-
-	if (ImGui::IsItemClicked())
-	{
-		showSamplerEditWindow = true;
-		g_selectedSampler = sampler;
-		g_selectedMaterial = mat;
 	}
+
+	if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(texID), size)) 
+	{
+		ImGui::OpenPopup("EditSamplerPopup");
+
+		if (!sampler)
+		{
+			sampler = std::make_shared<TextureSampler>();
+			
+		}
+		g_selectedSampler = sampler;
+		
+	}
+
+	if (ImGui::BeginPopup("EditSamplerPopup"))
+	{
+		if (!g_selectedSampler)
+		{
+			logError("Selected sampler cannot be null.");
+			showSamplerEditWindow = false;
+			ImGui::EndPopup();
+			return;
+		}
+		auto assets = Engine::get()->getSubSystem<Assets>();
+
+		ImGui::Text("Texture");
+		addTextureEditWidget(g_selectedSampler->texture, ImVec2{150, 150}, [](std::string uuid) {
+
+			});
+
+		ImGui::Spacing();
+
+		ImGui::DragFloat("xoffset", &g_selectedSampler->xOffset);
+		ImGui::DragFloat("yoffset", &g_selectedSampler->yOffset);
+
+		ImGui::Spacing();
+
+		ImGui::DragFloat("xScale", &g_selectedSampler->xScale);
+		ImGui::DragFloat("yScale", &g_selectedSampler->yScale);
+
+		ImGui::Separator();
+
+		if (ImGui::Button("OK")) 
+		{
+			mat->setSampler(ttype, g_selectedSampler);
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel")) 
+		{
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+	
 }
 
 static void addSkyboxTextureEditWidget(SkyboxComponent& skybox)
