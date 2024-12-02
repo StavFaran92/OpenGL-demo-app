@@ -17,7 +17,6 @@
 namespace fs = std::filesystem;
 
 static bool ShowLightCreatorWindow = false;
-static bool showAssetTextureSelectWindow = false;
 static bool showModelInspectorWindow = false;
 static bool showPrimitiveCreatorWindow = false;
 static bool showMeshSelector = false;
@@ -165,26 +164,16 @@ static void displayTransformation(Transformation& transform, bool& isChanged)
 	}
 }
 
-static void displaySamplerEditWindow()
+static void displayAssetTextureSelectPopup()
 {
-	
-}
+	if (ImGui::BeginPopup("EditTexturePopup")) {
 
-static void displayAssetTextureSelectWindow()
-{
-	auto assets = Engine::get()->getSubSystem<Assets>();
+		auto assets = Engine::get()->getSubSystem<Assets>();
 
-	if (showAssetTextureSelectWindow)
-	{
-		ImGui::Begin("Select Texture", &showAssetTextureSelectWindow, ImGuiWindowFlags_AlwaysAutoResize);
 		ImGui::Text("Available Textures:");
 		ImGui::Separator();
 
-		
-
 		static int selectedTextureIndex = -1;
-
-		
 
 		auto& textureList = assets->getAllTextures();
 
@@ -225,19 +214,20 @@ static void displayAssetTextureSelectWindow()
 				assetTextureSelectCB(textureList[selectedTextureIndex]);
 
 			}
-			showAssetTextureSelectWindow = false;
+			ImGui::CloseCurrentPopup();
 			selectedTextureIndex = -1;
 		}
 
 		ImGui::SameLine();
 
 		if (ImGui::Button("Cancel")) {
-			showAssetTextureSelectWindow = false;
+			ImGui::CloseCurrentPopup();
 			selectedTextureIndex = -1;
 		}
 
-		ImGui::End();
+		ImGui::EndPopup();
 	}
+
 }
 
 static void displaySelectMeshWindow(std::string& uuid)
@@ -1169,13 +1159,13 @@ static void addTextureEditWidget(Resource<Texture> texture, ImVec2 size, std::fu
 		texID = texture.get()->getID();
 	}
 
-	ImGui::Image(reinterpret_cast<ImTextureID>(texID), size, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
-
-	if (ImGui::IsItemClicked())
+	if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(texID), size))
 	{
-		showAssetTextureSelectWindow = true;
+		ImGui::OpenPopup("EditTexturePopup");
 		assetTextureSelectCB = callback;
 	}
+
+	displayAssetTextureSelectPopup();
 }
 
 static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype)
@@ -1795,8 +1785,6 @@ class GUI_Helper : public GuiMenu {
 		RenderInspectorWindow(screenWidth, screenHeight);
 		RenderAssetViewWindow(screenWidth, screenHeight); // Add the Asset View window
 
-		displaySamplerEditWindow();
-		displayAssetTextureSelectWindow();
 		DisplayDebugInfoWindow();
 		
 	}
