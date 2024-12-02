@@ -17,8 +17,8 @@ target_include_directories(Engine PUBLIC
 	ImGuizmo
 	nativefiledialog/include
 	tinyfiledialogs
-	"$ENV{PHYSX}/physx/include"
-	"$ENV{PHYSX}/pxshared/include"
+	physx/PhysX/include
+	physx/PxShared/include
 )
 
 target_link_directories(Engine PUBLIC 
@@ -27,8 +27,7 @@ target_link_directories(Engine PUBLIC
 	SDL2/lib
 	spdlog/lib
 	nativefiledialog/lib
-	
-	"$ENV{PHYSX}/physx/bin/win.x86_64.vc142.mt/checked"
+	physx/PhysX/bin/win.x86_64.vc142.mt/checked
 )
 
 target_link_libraries(Engine PUBLIC 

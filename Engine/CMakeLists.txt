@@ -10,8 +10,11 @@ file(GLOB_RECURSE SOURCES src/*.cpp src/*.h)
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE ENGINE_BUILD_DLL)
-target_compile_options(${PROJECT_NAME} PRIVATE /MP)
+target_compile_options(${PROJECT_NAME} PUBLIC /MP)
 target_compile_options(${PROJECT_NAME} PRIVATE "/Od") #todo fix
+target_compile_options(${PROJECT_NAME} PUBLIC /MT)
+
+
  
 add_subdirectory(extern)
 
