@@ -13,13 +13,8 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE ENGINE_BUILD_DLL)
 target_compile_options(${PROJECT_NAME} PUBLIC /MP)
 target_compile_options(${PROJECT_NAME} PRIVATE "/Od") #todo fix
 target_compile_options(${PROJECT_NAME} PUBLIC /MT)
-
-
  
 add_subdirectory(extern)
-
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 
 

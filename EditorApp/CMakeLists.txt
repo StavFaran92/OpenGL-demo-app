@@ -24,9 +24,4 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	NativeScripts
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE /MP)
-
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-
-
 
