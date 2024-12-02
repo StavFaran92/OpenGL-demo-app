@@ -18,7 +18,7 @@ mono_crash.*
 
 # Build results
 
-x64/
+
 x86/
 [Ww][Ii][Nn]32/
 [Aa][Rr][Mm]/
@@ -395,5 +395,9 @@ FodyWeavers.xsd
 *.ipdb
 *.iobj
 
-**/build/**
-!./Engine/extern/physx/PhysX/bin/win.x86_64.vc142.mt/checked/**  
+**/build/** 
+
+*.idb
+*.recipe
+*.txt
+x64/**
