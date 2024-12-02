@@ -198,7 +198,7 @@ static void displayAssetTextureSelectPopup()
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Default color
 			}
 
-			if (ImGui::Selectable(assets->getAlias(textureList[i]).c_str()))
+			if (ImGui::Selectable(assets->getAlias(textureList[i]).c_str(), false, ImGuiSelectableFlags_DontClosePopups))
 			{
 				selectedTextureIndex = i;
 			}
@@ -224,6 +224,8 @@ static void displayAssetTextureSelectPopup()
 			ImGui::CloseCurrentPopup();
 			selectedTextureIndex = -1;
 		}
+
+		
 
 		ImGui::EndPopup();
 	}
@@ -1194,7 +1196,6 @@ static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, con
 	{
 		sampler = mat->getSampler(ttype);
 
-		int texID = 0;
 		if (!sampler->texture.isEmpty())
 		{
 			texID = sampler->texture.get()->getID();
@@ -1226,19 +1227,19 @@ static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, con
 		auto assets = Engine::get()->getSubSystem<Assets>();
 
 		ImGui::Text("Texture");
-		addTextureEditWidget(g_selectedSampler->texture, ImVec2{150, 150}, [](std::string uuid) {
-
+		addTextureEditWidget(g_selectedSampler->texture, ImVec2{150, 150}, [=](std::string uuid) {
+			mat->setTexture(ttype, Resource<Texture>(uuid));
 			});
 
 		ImGui::Spacing();
 
-		ImGui::DragFloat("xoffset", &g_selectedSampler->xOffset);
-		ImGui::DragFloat("yoffset", &g_selectedSampler->yOffset);
+		ImGui::DragFloat("xoffset", &g_selectedSampler->xOffset, .1f);
+		ImGui::DragFloat("yoffset", &g_selectedSampler->yOffset, .1f);
 
 		ImGui::Spacing();
 
-		ImGui::DragFloat("xScale", &g_selectedSampler->xScale);
-		ImGui::DragFloat("yScale", &g_selectedSampler->yScale);
+		ImGui::DragFloat("xScale", &g_selectedSampler->xScale, .1f);
+		ImGui::DragFloat("yScale", &g_selectedSampler->yScale, .1f);
 
 		ImGui::Separator();
 
@@ -1417,7 +1418,7 @@ void RenderInspectorWindow(float width, float height)
 					addSamplerEditWidget(mat, { 50,50 }, "Albedo", Texture::Type::Albedo);
 
 					// Add texture edit widgets for the material
-					addTextureEditWidget(mat, "Albedo", Texture::Type::Albedo);
+					//addTextureEditWidget(mat, "Albedo", Texture::Type::Albedo);
 					addTextureEditWidget(mat, "Normal", Texture::Type::Normal);
 					addTextureEditWidget(mat, "Metallic", Texture::Type::Metallic);
 					addTextureEditWidget(mat, "Roughness", Texture::Type::Roughness);
