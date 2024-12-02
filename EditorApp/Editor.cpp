@@ -1189,6 +1189,8 @@ static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::strin
 
 static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, const std::string& name, Texture::Type ttype)
 {
+	ImGui::PushID(name.c_str());
+
 	std::shared_ptr<TextureSampler> sampler;
 
 	int texID = 0;
@@ -1258,6 +1260,11 @@ static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, con
 
 		ImGui::EndPopup();
 	}
+
+	ImGui::SameLine();
+	ImGui::Text(name.c_str());
+
+	ImGui::PopID();
 	
 }
 
@@ -1415,14 +1422,11 @@ void RenderInspectorWindow(float width, float height)
 				// Start a new collapsible header for each material
 				if (ImGui::CollapsingHeader(("Material " + std::to_string(index)).c_str()))
 				{
-					addSamplerEditWidget(mat, { 50,50 }, "Albedo", Texture::Type::Albedo);
-
-					// Add texture edit widgets for the material
-					//addTextureEditWidget(mat, "Albedo", Texture::Type::Albedo);
-					addTextureEditWidget(mat, "Normal", Texture::Type::Normal);
-					addTextureEditWidget(mat, "Metallic", Texture::Type::Metallic);
-					addTextureEditWidget(mat, "Roughness", Texture::Type::Roughness);
-					addTextureEditWidget(mat, "Occlusion", Texture::Type::AmbientOcclusion);
+					addSamplerEditWidget(mat, { 20,20 }, "Albedo", Texture::Type::Albedo);
+					addSamplerEditWidget(mat, { 20,20 }, "Normal", Texture::Type::Normal);
+					addSamplerEditWidget(mat, { 20,20 }, "Metallic", Texture::Type::Metallic);
+					addSamplerEditWidget(mat, { 20,20 }, "Roughness", Texture::Type::Roughness);
+					addSamplerEditWidget(mat, { 20,20 }, "Occlusion", Texture::Type::AmbientOcclusion);
 				}
 				++index;
 			}
