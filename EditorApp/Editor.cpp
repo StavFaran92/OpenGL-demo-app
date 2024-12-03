@@ -34,6 +34,7 @@ std::function<void(std::string uuid)> assetTextureSelectCB;
 Resource<Texture> selectedAssetTexture;
 
 static std::shared_ptr<TextureSampler> g_selectedSampler;
+static std::shared_ptr<TextureSampler> g_previousSampler;
 
 static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype);
 void AddColoredLabel(const char* label);
@@ -1214,6 +1215,8 @@ static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, con
 			
 		}
 		g_selectedSampler = sampler;
+		g_previousSampler = std::make_shared<TextureSampler>(*sampler.get());
+		mat->setSampler(ttype, g_selectedSampler);
 		
 	}
 
@@ -1230,7 +1233,7 @@ static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, con
 
 		ImGui::Text("Texture");
 		addTextureEditWidget(g_selectedSampler->texture, ImVec2{150, 150}, [=](std::string uuid) {
-			mat->setTexture(ttype, Resource<Texture>(uuid));
+			g_selectedSampler->texture = Resource<Texture>(uuid);
 			});
 
 		ImGui::Spacing();
@@ -1247,7 +1250,6 @@ static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, con
 
 		if (ImGui::Button("OK")) 
 		{
-			mat->setSampler(ttype, g_selectedSampler);
 			ImGui::CloseCurrentPopup();
 		}
 
@@ -1255,6 +1257,7 @@ static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, con
 
 		if (ImGui::Button("Cancel")) 
 		{
+			mat->setSampler(ttype, g_previousSampler);
 			ImGui::CloseCurrentPopup();
 		}
 
