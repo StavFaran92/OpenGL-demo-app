@@ -11,7 +11,10 @@ struct Material
 struct PBR_Sampler
 {
 	sampler2D texture;
-	int mask;
+	int maskR;
+	int maskG;
+	int maskB;
+	int maskA;
 	float xOffset;
 	float yOffset;
 	float xScale;

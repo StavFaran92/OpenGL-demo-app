@@ -21,7 +21,10 @@ public:
 		RGBA = R | G | B | A
 	};
 
-	int colorMask = Color::RGB;
+	int channelMaskR = Color::R;
+	int channelMaskG = Color::G;
+	int channelMaskB = Color::B;
+	int channelMaskA = Color::A;
 
 	float xOffset = 0;
 	float yOffset = 0;

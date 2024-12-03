@@ -132,6 +132,16 @@ uniform PBR_Material material;
 #define CHANNEL_B 4   // 0100
 #define CHANNEL_A 8   // 1000
 
+float extractChannel(vec4 inputColor, int channelMask) 
+{
+    if ((channelMask & CHANNEL_R) != 0) return inputColor.r;
+    if ((channelMask & CHANNEL_G) != 0) return inputColor.g;
+    if ((channelMask & CHANNEL_B) != 0) return inputColor.b;
+    if ((channelMask & CHANNEL_A) != 0) return inputColor.a;
+
+    return 0;
+}
+
 vec4 extractChannels(vec4 inputColor, int channelMask) 
 {
 	// Default result is a black vec4
@@ -147,9 +157,18 @@ vec4 extractChannels(vec4 inputColor, int channelMask)
     return result;
 }
 
+// vec4 getPBRTexture(PBR_Sampler s)
+// {
+// 	return extractChannels(texture(s.texture, fs_in.texCoord * vec2(s.xScale, s.yScale) + vec2(s.xOffset, s.yOffset)).rgba, s.mask);
+// }
+
 vec4 getPBRTexture(PBR_Sampler s)
 {
-	return extractChannels(texture(s.texture, fs_in.texCoord * vec2(s.xScale, s.yScale) + vec2(s.xOffset, s.yOffset)).rgba, s.mask);
+	vec4 color = texture(s.texture, fs_in.texCoord * vec2(s.xScale, s.yScale) + vec2(s.xOffset, s.yOffset)).rgba;
+	return vec4(extractChannel(color, s.maskR), 
+				extractChannel(color, s.maskG), 
+				extractChannel(color, s.maskB), 
+				extractChannel(color, s.maskA));
 }
  
 void main() 
