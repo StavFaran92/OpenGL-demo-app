@@ -1237,28 +1237,35 @@ static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, con
 
 		ImGui::Spacing();
 
-		static int R,G,B,A = 0;
+		static bool R,G,B,A = true;
+
+		R = (g_selectedSampler->colorMask & TextureSampler::Color::R) > 0;
+		G = (g_selectedSampler->colorMask & TextureSampler::Color::G) > 0;
+		B = (g_selectedSampler->colorMask & TextureSampler::Color::B) > 0;
+		A = (g_selectedSampler->colorMask & TextureSampler::Color::A) > 0;
+
 		ImGui::PushID("R");
-		ImGui::Checkbox("R", (bool*) & R);
+		ImGui::Checkbox("R", & R);
 		ImGui::PopID();
 		ImGui::SameLine();
 		ImGui::PushID("G");
-		ImGui::Checkbox("G", (bool*)&G);
+		ImGui::Checkbox("G", &G);
 		ImGui::PopID();
 		ImGui::SameLine();
 		ImGui::PushID("B");
-		ImGui::Checkbox("B", (bool*)&B);
+		ImGui::Checkbox("B", &B);
 		ImGui::PopID();
 		ImGui::SameLine();
 		ImGui::PushID("A");
-		ImGui::Checkbox("A", (bool*)&A);
+		ImGui::Checkbox("A", &A);
 		ImGui::PopID();
 		ImGui::SameLine();
 
-		g_selectedSampler->colorMask |= R;
-		g_selectedSampler->colorMask |= G;
-		g_selectedSampler->colorMask |= B;
-		g_selectedSampler->colorMask |= A;
+		g_selectedSampler->colorMask = 0;
+		g_selectedSampler->colorMask |= R ? TextureSampler::Color::R : 0;
+		g_selectedSampler->colorMask |= G ? TextureSampler::Color::G : 0;
+		g_selectedSampler->colorMask |= B ? TextureSampler::Color::B : 0;
+		g_selectedSampler->colorMask |= A ? TextureSampler::Color::A : 0;
 
 		ImGui::Spacing();
 
@@ -1415,6 +1422,33 @@ void RenderInspectorWindow(float width, float height)
 
 		displayComponent<CameraComponent>("Camera", [](CameraComponent& cameraComponent) {
 			// TBD
+			
+			static const char* projectionMode[] = { "Perspective", "Orthographic" };
+			static int currentProjection = 0; // Index of the selected item
+			currentProjection = cameraComponent.type;
+
+			ImGui::PushItemWidth(150.0f); // Set dropdown width to 150
+			if (ImGui::BeginCombo("##ProjectionMode", projectionMode[currentProjection])) // Label for the combo box
+			{
+				for (int i = 0; i < IM_ARRAYSIZE(projectionMode); i++)
+				{
+					bool isSelected = (currentProjection == i);
+					if (ImGui::Selectable(projectionMode[i], isSelected))
+					{
+						currentProjection = i; // Update selected index
+						cameraComponent.type = (CameraComponent::CamType)currentProjection;
+					}
+
+					if (isSelected)
+						ImGui::SetItemDefaultFocus(); // Set focus to the current item
+				}
+				ImGui::EndCombo();
+			}
+
+			ImGui::DragFloat("FOVY", &cameraComponent.fovy);
+			ImGui::DragFloat("aspect", &cameraComponent.aspect);
+			ImGui::DragFloat("z near", &cameraComponent.znear);
+			ImGui::DragFloat("z far", &cameraComponent.zfar);
 			});
 
 		displayComponent<NativeScriptComponent>("Script", [](NativeScriptComponent& nsc) {
