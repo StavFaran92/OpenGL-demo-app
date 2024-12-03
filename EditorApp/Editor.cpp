@@ -1225,7 +1225,6 @@ static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, con
 		if (!g_selectedSampler)
 		{
 			logError("Selected sampler cannot be null.");
-			showSamplerEditWindow = false;
 			ImGui::EndPopup();
 			return;
 		}
@@ -1235,6 +1234,31 @@ static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, con
 		addTextureEditWidget(g_selectedSampler->texture, ImVec2{150, 150}, [=](std::string uuid) {
 			g_selectedSampler->texture = Resource<Texture>(uuid);
 			});
+
+		ImGui::Spacing();
+
+		static int R,G,B,A = 0;
+		ImGui::PushID("R");
+		ImGui::Checkbox("R", (bool*) & R);
+		ImGui::PopID();
+		ImGui::SameLine();
+		ImGui::PushID("G");
+		ImGui::Checkbox("G", (bool*)&G);
+		ImGui::PopID();
+		ImGui::SameLine();
+		ImGui::PushID("B");
+		ImGui::Checkbox("B", (bool*)&B);
+		ImGui::PopID();
+		ImGui::SameLine();
+		ImGui::PushID("A");
+		ImGui::Checkbox("A", (bool*)&A);
+		ImGui::PopID();
+		ImGui::SameLine();
+
+		g_selectedSampler->colorMask |= R;
+		g_selectedSampler->colorMask |= G;
+		g_selectedSampler->colorMask |= B;
+		g_selectedSampler->colorMask |= A;
 
 		ImGui::Spacing();
 
