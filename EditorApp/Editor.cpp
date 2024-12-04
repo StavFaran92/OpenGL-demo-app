@@ -1407,10 +1407,6 @@ void RenderInspectorWindow(float width, float height)
 			ImGui::Text(Engine::get()->getSubSystem<Assets>()->getAlias(meshComponent.mesh.getUID()).c_str());
 			});
 
-		displayComponent<RenderableComponent>("Renderer", [](RenderableComponent& renderComponent) {
-			ImGui::Combo("##Technique", (int*)&renderComponent.renderTechnique, renderTechniqueStrList, IM_ARRAYSIZE(renderTechniqueStrList));
-			});
-
 		displayComponent<CameraComponent>("Camera", [](CameraComponent& cameraComponent) {
 			// TBD
 			
