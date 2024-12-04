@@ -67,7 +67,10 @@ void Material::setTextureInShader(Shader& shader, Texture::Type ttype, int slot)
 	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".yOffset", sampler->yOffset);
 	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".xScale", sampler->xScale);
 	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".yScale", sampler->yScale);
-	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".mask", sampler->colorMask);
+	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".channelMaskR", sampler->channelMaskR);
+	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".channelMaskG", sampler->channelMaskG);
+	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".channelMaskB", sampler->channelMaskB);
+	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".channelMaskA", sampler->channelMaskA);
 }
 
 void Material::setTexturesInShader(Shader& shader)

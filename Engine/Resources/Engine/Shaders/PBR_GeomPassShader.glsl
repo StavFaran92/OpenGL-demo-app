@@ -127,48 +127,30 @@ uniform PBR_Material material;
 
 // ----- Methods ----- //
 
-#define CHANNEL_R 1   // 0001
-#define CHANNEL_G 2   // 0010
-#define CHANNEL_B 4   // 0100
-#define CHANNEL_A 8   // 1000
+#define CHANNEL_NONE 0
+#define CHANNEL_R 1
+#define CHANNEL_G 2
+#define CHANNEL_B 3
+#define CHANNEL_A 4
 
 float extractChannel(vec4 inputColor, int channelMask) 
 {
-    if ((channelMask & CHANNEL_R) != 0) return inputColor.r;
-    if ((channelMask & CHANNEL_G) != 0) return inputColor.g;
-    if ((channelMask & CHANNEL_B) != 0) return inputColor.b;
-    if ((channelMask & CHANNEL_A) != 0) return inputColor.a;
+    if (channelMask == CHANNEL_NONE) return 0.f;
+    if (channelMask == CHANNEL_R) return inputColor.r;
+    if (channelMask == CHANNEL_G) return inputColor.g;
+    if (channelMask == CHANNEL_B) return inputColor.b;
+    if (channelMask == CHANNEL_A) return inputColor.a;
 
     return 0;
 }
 
-vec4 extractChannels(vec4 inputColor, int channelMask) 
-{
-	// Default result is a black vec4
-    vec4 result = vec4(0.0);  
-
-    int currentIndex = 0;
-
-    if ((channelMask & CHANNEL_R) != 0) result[currentIndex++] = inputColor.r;
-    if ((channelMask & CHANNEL_G) != 0) result[currentIndex++] = inputColor.g;
-    if ((channelMask & CHANNEL_B) != 0) result[currentIndex++] = inputColor.b;
-    if ((channelMask & CHANNEL_A) != 0) result[currentIndex++] = inputColor.a;
-
-    return result;
-}
-
-// vec4 getPBRTexture(PBR_Sampler s)
-// {
-// 	return extractChannels(texture(s.texture, fs_in.texCoord * vec2(s.xScale, s.yScale) + vec2(s.xOffset, s.yOffset)).rgba, s.mask);
-// }
-
 vec4 getPBRTexture(PBR_Sampler s)
 {
 	vec4 color = texture(s.texture, fs_in.texCoord * vec2(s.xScale, s.yScale) + vec2(s.xOffset, s.yOffset)).rgba;
-	return vec4(extractChannel(color, s.maskR), 
-				extractChannel(color, s.maskG), 
-				extractChannel(color, s.maskB), 
-				extractChannel(color, s.maskA));
+	return vec4(extractChannel(color, s.channelMaskR), 
+				extractChannel(color, s.channelMaskG), 
+				extractChannel(color, s.channelMaskB), 
+				extractChannel(color, s.channelMaskA));
 }
  
 void main() 

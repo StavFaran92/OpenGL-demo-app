@@ -1154,6 +1154,26 @@ static const char* layerMaskList[]{
 	"Layer Mask 15",
 };
 
+static void displayChannelSelectWidget(int*& currentChannel)
+{
+	static const char* channelMaskOptions[] = { "None", "R", "G", "B", "A" };
+	if (ImGui::BeginCombo("##channelMask", channelMaskOptions[*currentChannel])) // Label for the combo box
+	{
+		for (int i = 0; i < IM_ARRAYSIZE(channelMaskOptions); i++)
+		{
+			bool isSelected = (*currentChannel == i);
+			if (ImGui::Selectable(channelMaskOptions[i], isSelected))
+			{
+				*currentChannel = i; // Update selected index
+			}
+
+			if (isSelected)
+				ImGui::SetItemDefaultFocus(); // Set focus to the current item
+		}
+		ImGui::EndCombo();
+	}
+}
+
 static void addTextureEditWidget(Resource<Texture> texture, ImVec2 size, std::function<void(std::string uuid)> callback)
 {
 	int texID = 0;
@@ -1237,35 +1257,19 @@ static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, con
 
 		ImGui::Spacing();
 
-		static bool R,G,B,A = true;
+		static int* currentChannelMask[4];
+		
+		currentChannelMask[0] = &g_selectedSampler->channelMaskR;
+		currentChannelMask[1] = &g_selectedSampler->channelMaskG;
+		currentChannelMask[2] = &g_selectedSampler->channelMaskB;
+		currentChannelMask[3] = &g_selectedSampler->channelMaskA;
 
-		R = (g_selectedSampler->colorMask & TextureSampler::Color::R) > 0;
-		G = (g_selectedSampler->colorMask & TextureSampler::Color::G) > 0;
-		B = (g_selectedSampler->colorMask & TextureSampler::Color::B) > 0;
-		A = (g_selectedSampler->colorMask & TextureSampler::Color::A) > 0;
-
-		ImGui::PushID("R");
-		ImGui::Checkbox("R", & R);
-		ImGui::PopID();
-		ImGui::SameLine();
-		ImGui::PushID("G");
-		ImGui::Checkbox("G", &G);
-		ImGui::PopID();
-		ImGui::SameLine();
-		ImGui::PushID("B");
-		ImGui::Checkbox("B", &B);
-		ImGui::PopID();
-		ImGui::SameLine();
-		ImGui::PushID("A");
-		ImGui::Checkbox("A", &A);
-		ImGui::PopID();
-		ImGui::SameLine();
-
-		g_selectedSampler->colorMask = 0;
-		g_selectedSampler->colorMask |= R ? TextureSampler::Color::R : 0;
-		g_selectedSampler->colorMask |= G ? TextureSampler::Color::G : 0;
-		g_selectedSampler->colorMask |= B ? TextureSampler::Color::B : 0;
-		g_selectedSampler->colorMask |= A ? TextureSampler::Color::A : 0;
+		for (int i = 0; i < 4; i++)
+		{
+			ImGui::PushID(&currentChannelMask[i]);
+			displayChannelSelectWidget(currentChannelMask[i]);
+			ImGui::PopID();
+		}
 
 		ImGui::Spacing();
 
