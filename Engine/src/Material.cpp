@@ -9,8 +9,11 @@
 
 Material::Material()
 {
-	m_defaultSampler = std::make_shared<TextureSampler>();
-	m_defaultSampler->texture = Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1);
+	m_samplers[Texture::Type::Albedo] = std::make_shared<TextureSampler>(3);
+	m_samplers[Texture::Type::Normal] = std::make_shared<TextureSampler>(3);
+	m_samplers[Texture::Type::Metallic] = std::make_shared<TextureSampler>(1);
+	m_samplers[Texture::Type::Roughness] = std::make_shared<TextureSampler>(1);
+	m_samplers[Texture::Type::AmbientOcclusion] = std::make_shared<TextureSampler>(1);
 }
 
 void Material::use(Shader& shader)
@@ -45,15 +48,7 @@ bool Material::hasTexture(Texture::Type textureType) const
 
 void Material::setTextureInShader(Shader& shader, Texture::Type ttype, int slot)
 {
-	std::shared_ptr<TextureSampler> sampler;
-	if (hasTexture(ttype))
-	{
-		sampler = getSampler(ttype);
-	}
-	else
-	{
-		sampler = m_defaultSampler;
-	}
+	auto sampler = getSampler(ttype);
 
 	// Activate texture unit i
 	glActiveTexture(GL_TEXTURE0 + slot);
@@ -68,9 +63,9 @@ void Material::setTextureInShader(Shader& shader, Texture::Type ttype, int slot)
 	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".xScale", sampler->xScale);
 	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".yScale", sampler->yScale);
 	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".channelMaskR", sampler->channelMaskR);
-	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".channelMaskG", sampler->channelMaskG);
-	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".channelMaskB", sampler->channelMaskB);
-	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".channelMaskA", sampler->channelMaskA);
+	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".channelMaskG", sampler->channelCount > 1 ? sampler->channelMaskG : 0);
+	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".channelMaskB", sampler->channelCount > 2 ? sampler->channelMaskB : 0);
+	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".channelMaskA", sampler->channelCount > 3 ? sampler->channelMaskA : 0);
 }
 
 void Material::setTexturesInShader(Shader& shader)

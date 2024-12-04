@@ -7,7 +7,7 @@
 class EngineAPI TextureSampler
 {
 public:
-	TextureSampler();
+	TextureSampler(int channelCount = 3);
 
 	Resource<Texture> texture;
 
@@ -23,6 +23,8 @@ public:
 	int channelMaskG = Color::G;
 	int channelMaskB = Color::B;
 	int channelMaskA = Color::A;
+
+	const int channelCount = 3;
 
 	float xOffset = 0;
 	float yOffset = 0;

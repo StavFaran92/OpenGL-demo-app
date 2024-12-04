@@ -1212,32 +1212,19 @@ static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, con
 {
 	ImGui::PushID(name.c_str());
 
-	std::shared_ptr<TextureSampler> sampler;
-
 	int texID = 0;
-	if (mat->hasTexture(ttype))
-	{
-		sampler = mat->getSampler(ttype);
+	auto sampler = mat->getSampler(ttype);
 
-		if (!sampler->texture.isEmpty())
-		{
-			texID = sampler->texture.get()->getID();
-		}
+	if (!sampler->texture.isEmpty())
+	{
+		texID = sampler->texture.get()->getID();
 	}
 
 	if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(texID), size)) 
 	{
 		ImGui::OpenPopup("EditSamplerPopup");
-
-		if (!sampler)
-		{
-			sampler = std::make_shared<TextureSampler>();
-			
-		}
 		g_selectedSampler = sampler;
-		g_previousSampler = std::make_shared<TextureSampler>(*sampler.get());
-		mat->setSampler(ttype, g_selectedSampler);
-		
+		g_previousSampler = std::make_shared<TextureSampler>(*sampler.get());		
 	}
 
 	if (ImGui::BeginPopup("EditSamplerPopup"))
@@ -1264,7 +1251,7 @@ static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, con
 		currentChannelMask[2] = &g_selectedSampler->channelMaskB;
 		currentChannelMask[3] = &g_selectedSampler->channelMaskA;
 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < g_selectedSampler->channelCount; i++)
 		{
 			ImGui::PushID(&currentChannelMask[i]);
 			displayChannelSelectWidget(currentChannelMask[i]);
