@@ -82,6 +82,8 @@ int ObjectPicker::pickObject(int x, int y)
 	for (auto& [entity, meshComponent, transform] : activeScene->getRegistry().getRegistry().view<MeshComponent, Transformation>().each())
 	{
 		Entity entityhandler{ entity, &activeScene->getRegistry() };
+		if (entityhandler.HasComponent<SkyboxComponent>())
+			continue;
 		m_pickingShader->setUniformValue("objectIndex", (unsigned int)entityhandler.handlerID());
 		m_pickingShader->setUniformValue("model", transform.getWorldTransformation());
 

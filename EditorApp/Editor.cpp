@@ -951,12 +951,13 @@ void RenderViewWindow(float width, float height)
 	ImGui::SetNextWindowPos(ImVec2(startX, 65)); // Adjust vertical position to make space for the menu bar
 	ImGui::SetNextWindowSize(ImVec2(windowWidth, windowHeight - 40));
 	ImGui::Begin("View", nullptr, style | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoDecoration);
-
+	
 	// Display the texture
 	ImVec2 imageSize(windowWidth, windowHeight);
 	ImGui::Image(reinterpret_cast<ImTextureID>(Engine::get()->getContext()->getActiveScene()->getRenderTarget()), imageSize, ImVec2(0, 1), ImVec2(1, 0));
 
-	if (!Engine::get()->getContext()->getActiveScene()->isSimulationActive())
+	if (!Engine::get()->getContext()->getActiveScene()->isSimulationActive() && 
+		!ImGui::IsPopupOpen(1, ImGuiPopupFlags_AnyPopupId | ImGuiPopupFlags_AnyPopupLevel))
 	{
 
 		if (!ImGuizmo::IsUsing() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
@@ -974,16 +975,23 @@ void RenderViewWindow(float width, float height)
 				int alteredY = (mousePos.y - 65) / windowHeight * Engine::get()->getWindow()->getHeight();
 				int selectedID = Engine::get()->getSubSystem<ObjectPicker>()->pickObject(alteredX, alteredY);
 
-				for (auto& sceneObj : sceneObjects)
+				if (selectedID == -1)
 				{
-					if (sceneObj.e.handlerID() == selectedID)
+					selectedEntity = Entity::EmptyEntity;
+
+				}
+				else
+				{
+
+					for (auto& sceneObj : sceneObjects)
 					{
-						selectedEntity = sceneObj.e;
-						break;
+						if (sceneObj.e.handlerID() == selectedID)
+						{
+							selectedEntity = sceneObj.e;
+							break;
+						}
 					}
 				}
-
-				logDebug(std::to_string(selectedID));
 			}
 		}
 
