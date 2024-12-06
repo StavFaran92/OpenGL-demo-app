@@ -78,7 +78,7 @@ private:
 	void processNode(aiNode* node, const aiScene* scene, ModelImportSession& session);
 	void processMesh(aiMesh* mesh, const aiScene* scene, ModelImportSession& session);
 	Resource<Texture> importAiMaterialTexture(aiMaterial* mat, aiTextureType type, const std::string& dir);
-	static Texture::Type getTextureType(aiTextureType type);
+	static Texture::TextureType getTextureType(aiTextureType type);
 private:
 	//std::unordered_map<std::string, std::weak_ptr<Texture>> m_texturesCache;
 	std::map<uint32_t, ModelImportSession> m_sessions;

@@ -48,12 +48,32 @@ std::vector<std::string> Assets::getAllMeshes() const
 	return result;
 }
 
+// Function to determine if the file is HDR based on its extension
+bool isHDRImage(const std::string& filename) {
+	return stbi_is_hdr(filename.c_str());
+}
+
 Texture::TextureData Assets::extractTextureDataFromFile(const std::string& fileLocation)
 {
 	Texture::TextureData textureData;
 	textureData.target = GL_TEXTURE_2D;
 
-	textureData.data = stbi_load(fileLocation.c_str(), &textureData.width, &textureData.height, &textureData.bpp, 0);
+	// Determine if the image is HDR
+	if (isHDRImage(fileLocation))
+	{
+		textureData.isHDR = true;
+	}
+
+	if (textureData.isHDR)
+	{
+		textureData.data = stbi_loadf(fileLocation.c_str(), &textureData.width, &textureData.height, &textureData.bpp, 0);
+	}
+	else
+	{
+		textureData.data = stbi_load(fileLocation.c_str(), &textureData.width, &textureData.height, &textureData.bpp, 0);
+	}
+
+	
 
 	// load validation
 	if (!textureData.data)
@@ -62,17 +82,35 @@ Texture::TextureData Assets::extractTextureDataFromFile(const std::string& fileL
 		return {};
 	}
 
-	GLenum format = GL_RGB;
+	// Determine format based on bits per pixel (bpp)
 	if (textureData.bpp == 1)
-		textureData.format = GL_RED;
-	else if (textureData.bpp == 3)
-		textureData.format = GL_RGB;
-	else if (textureData.bpp == 4)
-		textureData.format = GL_RGBA;
+	{
+		textureData.format = (Texture::Format)GL_RED;
+		textureData.internalFormat = (Texture::InternalFormat)((textureData.isHDR) ? GL_R16F : GL_R8); // HDR: 16-bit float, Non-HDR: 8-bit
+	}
+	else if (textureData.bpp == 3) 
+	{
+		textureData.format = (Texture::Format)GL_RGB;
+		textureData.internalFormat = (Texture::InternalFormat)((textureData.isHDR) ? GL_RGB16F : GL_RGB8); // HDR: 16-bit float, Non-HDR: 8-bit
+	}
+	else if (textureData.bpp == 4) 
+	{
+		textureData.format = (Texture::Format)GL_RGBA;
+		textureData.internalFormat = (Texture::InternalFormat)((textureData.isHDR) ? GL_RGBA16F : GL_RGBA8); // HDR: 16-bit float, Non-HDR: 8-bit
+	}
+	else {
+		throw std::runtime_error("Unsupported texture format!");
+	}
 
-	textureData.internalFormat = textureData.format;
+	// Determine if the image is HDR
+	if (isHDRImage(fileLocation)) 
+	{
+		textureData.type = (Texture::Type)GL_FLOAT;
+	}
+	else {
+		textureData.type = (Texture::Type)GL_UNSIGNED_BYTE; // LDR uses 8-bit integer data
+	}
 
-	textureData.type = GL_UNSIGNED_BYTE;
 	textureData.params = {
 		{ GL_TEXTURE_WRAP_S, GL_REPEAT},
 		{ GL_TEXTURE_WRAP_T, GL_REPEAT},

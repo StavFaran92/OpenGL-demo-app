@@ -1199,7 +1199,7 @@ static void addTextureEditWidget(Resource<Texture> texture, ImVec2 size, std::fu
 	displayAssetTextureSelectPopup();
 }
 
-static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype)
+static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::TextureType ttype)
 {
 	Resource<Texture> tex = Resource<Texture>::empty;
 	if (mat->hasTexture(ttype))
@@ -1216,7 +1216,7 @@ static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::strin
 	ImGui::Text(name.c_str());
 }
 
-static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, const std::string& name, Texture::Type ttype)
+static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, const std::string& name, Texture::TextureType ttype)
 {
 	ImGui::PushID(name.c_str());
 
@@ -1479,11 +1479,11 @@ void RenderInspectorWindow(float width, float height)
 				// Start a new collapsible header for each material
 				if (ImGui::CollapsingHeader(("Material " + std::to_string(index)).c_str()))
 				{
-					addSamplerEditWidget(mat, { 20,20 }, "Albedo", Texture::Type::Albedo);
-					addSamplerEditWidget(mat, { 20,20 }, "Normal", Texture::Type::Normal);
-					addSamplerEditWidget(mat, { 20,20 }, "Metallic", Texture::Type::Metallic);
-					addSamplerEditWidget(mat, { 20,20 }, "Roughness", Texture::Type::Roughness);
-					addSamplerEditWidget(mat, { 20,20 }, "Occlusion", Texture::Type::AmbientOcclusion);
+					addSamplerEditWidget(mat, { 20,20 }, "Albedo", Texture::TextureType::Albedo);
+					addSamplerEditWidget(mat, { 20,20 }, "Normal", Texture::TextureType::Normal);
+					addSamplerEditWidget(mat, { 20,20 }, "Metallic", Texture::TextureType::Metallic);
+					addSamplerEditWidget(mat, { 20,20 }, "Roughness", Texture::TextureType::Roughness);
+					addSamplerEditWidget(mat, { 20,20 }, "Occlusion", Texture::TextureType::AmbientOcclusion);
 				}
 				++index;
 				ImGui::PopID();

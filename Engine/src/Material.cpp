@@ -9,11 +9,11 @@
 
 Material::Material()
 {
-	m_samplers[Texture::Type::Albedo] = std::make_shared<TextureSampler>(3);
-	m_samplers[Texture::Type::Normal] = std::make_shared<TextureSampler>(3);
-	m_samplers[Texture::Type::Metallic] = std::make_shared<TextureSampler>(1);
-	m_samplers[Texture::Type::Roughness] = std::make_shared<TextureSampler>(1);
-	m_samplers[Texture::Type::AmbientOcclusion] = std::make_shared<TextureSampler>(1);
+	m_samplers[Texture::TextureType::Albedo] = std::make_shared<TextureSampler>(3);
+	m_samplers[Texture::TextureType::Normal] = std::make_shared<TextureSampler>(3);
+	m_samplers[Texture::TextureType::Metallic] = std::make_shared<TextureSampler>(1);
+	m_samplers[Texture::TextureType::Roughness] = std::make_shared<TextureSampler>(1);
+	m_samplers[Texture::TextureType::AmbientOcclusion] = std::make_shared<TextureSampler>(1);
 }
 
 void Material::use(Shader& shader)
@@ -30,23 +30,23 @@ void Material::release()
 	}
 }
 
-std::shared_ptr<TextureSampler> Material::getSampler(Texture::Type textureType) const
+std::shared_ptr<TextureSampler> Material::getSampler(Texture::TextureType textureType) const
 {
 	return m_samplers.at(textureType);
 }
 
-void Material::setSampler(Texture::Type textureType, std::shared_ptr<TextureSampler> sampler)
+void Material::setSampler(Texture::TextureType textureType, std::shared_ptr<TextureSampler> sampler)
 {
 	m_samplers[textureType] = sampler;
 }
 
-bool Material::hasTexture(Texture::Type textureType) const
+bool Material::hasTexture(Texture::TextureType textureType) const
 {
 	auto iter = m_samplers.find(textureType);
 	return iter != m_samplers.end() && iter->second->texture.get();
 }
 
-void Material::setTextureInShader(Shader& shader, Texture::Type ttype, int slot)
+void Material::setTextureInShader(Shader& shader, Texture::TextureType ttype, int slot)
 {
 	auto sampler = getSampler(ttype);
 
@@ -72,14 +72,14 @@ void Material::setTexturesInShader(Shader& shader)
 {
 	// It either has diffuse or albedo
 	//setTextureInShader(shader, Texture::Type::Diffuse, 0);
-	setTextureInShader(shader, Texture::Type::Albedo, 0);
-	setTextureInShader(shader, Texture::Type::Normal, 1);
-	setTextureInShader(shader, Texture::Type::Metallic, 2);
-	setTextureInShader(shader, Texture::Type::Roughness, 3);
-	setTextureInShader(shader, Texture::Type::AmbientOcclusion, 4);
+	setTextureInShader(shader, Texture::TextureType::Albedo, 0);
+	setTextureInShader(shader, Texture::TextureType::Normal, 1);
+	setTextureInShader(shader, Texture::TextureType::Metallic, 2);
+	setTextureInShader(shader, Texture::TextureType::Roughness, 3);
+	setTextureInShader(shader, Texture::TextureType::AmbientOcclusion, 4);
 }
 
-void Material::setTexture(Texture::Type textureType, Resource<Texture> textureHandler)
+void Material::setTexture(Texture::TextureType textureType, Resource<Texture> textureHandler)
 {
 	auto iter = m_samplers.find(textureType);
 	if (iter == m_samplers.end())

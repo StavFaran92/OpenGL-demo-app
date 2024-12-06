@@ -494,12 +494,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
 
     if (initParams.templateScene)
     {
-        Skybox::CreateSkyboxFromCubemap({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
-            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
-            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
-            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",
-            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
-            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" }, context->getActiveScene().get());
+        Skybox::CreateSkyboxFromEquirectangularMap( "C:/dev/repos/LearnOpenGL/resources/textures/hdr/newport_loft.hdr", context->getActiveScene().get());
 
         // todo revert
         //{
@@ -530,7 +525,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
 
             auto& mat = sphere.addComponent<MaterialComponent>();
             auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
-            mat.at(0)->setTexture(Texture::Type::Diffuse, tex);
+            mat.at(0)->setTexture(Texture::TextureType::Diffuse, tex);
 
             auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
             auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);

@@ -197,7 +197,7 @@ ModelImporter::ModelInfo ModelImporter::load(const std::string & path, ModelImpo
 				std::string name = std::filesystem::path(diffuseStr.C_Str()).filename().string();
 				UUID uuid = Engine::get()->getMemoryManagementSystem()->getAssociation(name);
 				Resource<Texture> texture = Resource<Texture>(uuid);
-				material->setTexture(Texture::Type::Albedo, texture);
+				material->setTexture(Texture::TextureType::Albedo, texture);
 			}
 
 			aiString normalStr;
@@ -206,7 +206,7 @@ ModelImporter::ModelInfo ModelImporter::load(const std::string & path, ModelImpo
 				std::string name = std::filesystem::path(normalStr.C_Str()).filename().string();
 				UUID uuid = Engine::get()->getMemoryManagementSystem()->getAssociation(name);
 				Resource<Texture> texture = Resource<Texture>(uuid);
-				material->setTexture(Texture::Type::Normal, texture);
+				material->setTexture(Texture::TextureType::Normal, texture);
 
 				
 			}
@@ -405,18 +405,18 @@ Resource<Texture> ModelImporter::importAiMaterialTexture(aiMaterial* mat, aiText
 	return texture;
 }
 
-Texture::Type ModelImporter::getTextureType(aiTextureType type)
+Texture::TextureType ModelImporter::getTextureType(aiTextureType type)
 {
 	switch (type)
 	{
 	case aiTextureType::aiTextureType_DIFFUSE:
-		return Texture::Type::Diffuse;
+		return Texture::TextureType::Diffuse;
 	case aiTextureType::aiTextureType_SPECULAR:
-		return Texture::Type::Specular;
+		return Texture::TextureType::Specular;
 	case aiTextureType::aiTextureType_HEIGHT:
-		return Texture::Type::Normal;
+		return Texture::TextureType::Normal;
 	default:
 		logError("Unsupported type: " + type);
-		return Texture::Type::None;
+		return Texture::TextureType::None;
 	}
 }

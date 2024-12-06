@@ -13,6 +13,8 @@
 
 #include "EquirectangularToCubemapConverter.h" // todo remove
 
+
+
 Texture::Texture()
 	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_slot(0)
 {
@@ -34,9 +36,9 @@ Resource<Texture> Texture::createEmptyTexture(int width, int height, int interna
 	textureData.target = GL_TEXTURE_2D;
 	textureData.width = width;
 	textureData.height = height;
-	textureData.internalFormat = internalFormat;
-	textureData.format = format;
-	textureData.type = type;
+	textureData.internalFormat = (InternalFormat)internalFormat;
+	textureData.format = (Format)format;
+	textureData.type = (Type)type;
 	textureData.params = {
 		{GL_TEXTURE_MIN_FILTER, GL_NEAREST },
 		{GL_TEXTURE_MAG_FILTER, GL_NEAREST },
@@ -61,9 +63,9 @@ Resource<Texture> Texture::create2DTextureFromBuffer(int width, int height, int 
 	textureData.width = width;
 	textureData.height = height;
 	textureData.bpp = 4;
-	textureData.internalFormat = internalFormat;
-	textureData.format = format;
-	textureData.type = type;
+	textureData.internalFormat = (InternalFormat)internalFormat;
+	textureData.format = (Format)format;
+	textureData.type = (Type)type;
 	textureData.params = params;
 	textureData.data = data;
 
@@ -110,7 +112,7 @@ void Texture::build(const TextureData& textureData)
 		glTexParameteri(GL_TEXTURE_2D, paramKey, paramValue);
 	}
 
-	glTexImage2D(GL_TEXTURE_2D, 0, textureData.internalFormat, m_width, m_height, 0, textureData.format, textureData.type, textureData.data);
+	glTexImage2D(GL_TEXTURE_2D, 0, textureData.internalFormat, m_width, m_height, 0, textureData.format, (int)textureData.type, textureData.data);
 
 	if (textureData.genMipMap)
 	{
@@ -142,23 +144,23 @@ void Texture::setData(int xoffset, int yoffset, int width, int height, const voi
 	glTexSubImage2D(GL_TEXTURE_2D, 0, xoffset, yoffset, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 }
 
-std::string Texture::textureTypeToString(Type type)
+std::string Texture::textureTypeToString(TextureType type)
 {
 	switch (type)
 	{
-		case Texture::Type::Diffuse:
+		case Texture::TextureType::Diffuse:
 			return Constants::g_textureAlbedo;
-		case Texture::Type::Specular:
+		case Texture::TextureType::Specular:
 			return Constants::g_textureSpecular;
-		case Texture::Type::Albedo:
+		case Texture::TextureType::Albedo:
 			return Constants::g_textureAlbedo;
-		case Texture::Type::Normal:
+		case Texture::TextureType::Normal:
 			return Constants::g_textureNormal;
-		case Texture::Type::Metallic:
+		case Texture::TextureType::Metallic:
 			return Constants::g_textureMetallic;
-		case Texture::Type::Roughness:
+		case Texture::TextureType::Roughness:
 			return Constants::g_textureRoughness;
-		case Texture::Type::AmbientOcclusion:
+		case Texture::TextureType::AmbientOcclusion:
 			return Constants::g_textureAO;
 
 		default:

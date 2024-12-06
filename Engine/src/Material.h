@@ -24,12 +24,12 @@ public:
 	 *
 	 * \param colors
 	 */
-	std::shared_ptr<TextureSampler> getSampler(Texture::Type textureType) const;
-	void setSampler(Texture::Type textureType, std::shared_ptr<TextureSampler> sampler);
+	std::shared_ptr<TextureSampler> getSampler(Texture::TextureType textureType) const;
+	void setSampler(Texture::TextureType textureType, std::shared_ptr<TextureSampler> sampler);
 
-	bool hasTexture(Texture::Type textureType) const;
+	bool hasTexture(Texture::TextureType textureType) const;
 
-	void setTexture(Texture::Type textureType, Resource<Texture> textureHandler);
+	void setTexture(Texture::TextureType textureType, Resource<Texture> textureHandler);
 
 	std::vector<Resource<Texture>> getAllTextures() const;
 
@@ -40,10 +40,10 @@ public:
 
 protected:
 	void setTexturesInShader(Shader& shader);
-	void setTextureInShader(Shader& shader, Texture::Type ttype, int slot);
+	void setTextureInShader(Shader& shader, Texture::TextureType ttype, int slot);
 
 protected:
-	std::map<Texture::Type, std::shared_ptr<TextureSampler>> m_samplers;
+	std::map<Texture::TextureType, std::shared_ptr<TextureSampler>> m_samplers;
 
 	std::shared_ptr<TextureSampler> m_defaultSampler;
 };
