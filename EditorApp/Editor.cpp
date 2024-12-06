@@ -1475,6 +1475,7 @@ void RenderInspectorWindow(float width, float height)
 			int index = 0;
 			for (auto& [id, mat] : materials)
 			{
+				ImGui::PushID(&mat);
 				// Start a new collapsible header for each material
 				if (ImGui::CollapsingHeader(("Material " + std::to_string(index)).c_str()))
 				{
@@ -1485,6 +1486,7 @@ void RenderInspectorWindow(float width, float height)
 					addSamplerEditWidget(mat, { 20,20 }, "Occlusion", Texture::Type::AmbientOcclusion);
 				}
 				++index;
+				ImGui::PopID();
 			}
 			});
 
