@@ -61,7 +61,7 @@ public:
 		RGBA16F = 0x881A,
 		RGB16F = 0x881B,
 
-		RGB2 = 0x1907
+		RGB2 = 0x1907 // TODO fix
 	};
 
 	enum Format : int {
