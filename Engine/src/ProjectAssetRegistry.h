@@ -5,6 +5,9 @@
 #include <nlohmann/json.hpp>
 #include "UUID.h"
 
+#include "Resource.h"
+#include "Texture.h"
+
 class ProjectAssetRegistry
 {
 public:
@@ -17,7 +20,7 @@ public:
 	void load(); //????
 	void save();
 	void addMesh(UUID uuid);
-	void addTexture(UUID uuid);
+	void addTexture(Resource<Texture> texture);
 	void addAnimation(UUID uuid);
 	void addAssociation(std::string name, UUID uuid);
 	std::vector<UUID> getMeshList() const;

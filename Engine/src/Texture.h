@@ -100,6 +100,8 @@ public:
 		bool genMipMap = false;
 		void* data = nullptr;
 		bool isHDR = false;
+
+		void* facesData[6]{ nullptr }; //only apply to Cubemap
 	};
 
 	/** Constructor */
@@ -174,6 +176,11 @@ public:
 
 	inline void setSlot(int slot) { m_slot = slot; }
 
+	const TextureData& getData() const
+	{
+		return m_data;
+	}
+
 	/**  Destructor */
 	~Texture();
 private:
@@ -182,7 +189,7 @@ private:
 
 private:
 	uint32_t m_id;
-	int m_width, m_height, m_bitDepth;
 	int m_slot = 0;
-	uint32_t m_target = 0;
+	
+	TextureData m_data;
 };

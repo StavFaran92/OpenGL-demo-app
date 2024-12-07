@@ -31,7 +31,7 @@ Resource<Texture> Cubemap::createCubemapFromCubemapFiles(const std::vector<std::
 	return memoryManagementSystem->createOrGetCached<Texture>(path.filename().string(), [&]() {
 
 		// todo use RAII
-		CubemapData cubemapData = extractCubemapDataFromCubemapFiles(faces);
+		Texture::TextureData cubemapData = extractCubemapDataFromCubemapFiles(faces);
 
 		Resource<Texture> cubemap = createCubemapFromBuffer(cubemapData);
 
@@ -55,23 +55,22 @@ Resource<Texture> Cubemap::createCubemapFromCubemapFiles(const std::vector<std::
 	});
 }
 
-Cubemap::CubemapData Cubemap::extractCubemapDataFromEquirectangularFile(const std::string& fileLocation)
+Texture::TextureData Cubemap::extractCubemapDataFromEquirectangularFile(const std::string& fileLocation)
 {
 
 
 	auto equirectangularMap = Engine::get()->getSubSystem<Assets>()->importTexture2D(fileLocation);
 	
 
-	CubemapData cubemapData;
+	Texture::TextureData cubemapData;
 	cubemapData.target = GL_TEXTURE_CUBE_MAP;
 
 	int width, height, nrChannels;
-	cubemapData.data[0] = stbi_load(fileLocation.c_str(), &cubemapData.width, &cubemapData.height, &cubemapData.bpp, 0);
+	cubemapData.facesData[0] = stbi_load(fileLocation.c_str(), &cubemapData.width, &cubemapData.height, &cubemapData.bpp, 0);
 
-	cubemapData.format = GL_RGB;
-	cubemapData.internalFormat = GL_RGB;
-
-	cubemapData.type = GL_UNSIGNED_BYTE;
+	cubemapData.format = (Texture::Format)GL_RGB;
+	cubemapData.internalFormat = (Texture::InternalFormat)GL_RGB;
+	cubemapData.type = (Texture::Type)GL_UNSIGNED_BYTE;
 	cubemapData.params = {
 		{ GL_TEXTURE_MIN_FILTER, GL_LINEAR},
 		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
@@ -122,20 +121,20 @@ Resource<Texture> Cubemap::createCubemapFromEquirectangularFile(const std::strin
 	});
 }
 
-Resource<Texture> Cubemap::createCubemapFromBuffer(const CubemapData& cubemapData)
+Resource<Texture> Cubemap::createCubemapFromBuffer(const Texture::TextureData& cubemapData)
 {
 	return build(cubemapData);
 }
 
 Resource<Texture> Cubemap::createEmptyCubemap(int width, int height, int internalFormat, int format, int type)
 {
-	CubemapData cubemapData;
+	Texture::TextureData cubemapData;
 	cubemapData.target = GL_TEXTURE_CUBE_MAP;
 	cubemapData.width = width;
 	cubemapData.height = height;
-	cubemapData.internalFormat = internalFormat;
-	cubemapData.format = format;
-	cubemapData.type = type;
+	cubemapData.internalFormat = (Texture::InternalFormat)internalFormat;
+	cubemapData.format = (Texture::Format)format;
+	cubemapData.type = (Texture::Type)type;
 	cubemapData.params = {
 		{ GL_TEXTURE_MIN_FILTER, GL_LINEAR},
 		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
@@ -150,34 +149,34 @@ Resource<Texture> Cubemap::createEmptyCubemap(int width, int height, int interna
 
 Resource<Texture> Cubemap::createEmptyCubemap(int width, int height, int internalFormat, int format, int type, std::map<int, int> params, bool createMipMaps)
 {
-	CubemapData cubemapData;
+	Texture::TextureData cubemapData;
 	cubemapData.target = GL_TEXTURE_CUBE_MAP;
 	cubemapData.width = width;
 	cubemapData.height = height;
-	cubemapData.internalFormat = internalFormat;
-	cubemapData.format = format;
-	cubemapData.type = type;
+	cubemapData.internalFormat = (Texture::InternalFormat)internalFormat;
+	cubemapData.format = (Texture::Format)format;
+	cubemapData.type = (Texture::Type)type;
 	cubemapData.params = params;
 	cubemapData.genMipMap = createMipMaps;
 
 	return createCubemapFromBuffer(cubemapData);
 }
 
-Cubemap::CubemapData Cubemap::extractCubemapDataFromCubemapFiles(const std::vector<std::string>& files)
+Texture::TextureData Cubemap::extractCubemapDataFromCubemapFiles(const std::vector<std::string>& files)
 {
-	CubemapData cubemapData;
+	Texture::TextureData cubemapData;
 	cubemapData.target = GL_TEXTURE_CUBE_MAP;
 
 	int width, height, nrChannels;
 	for (unsigned int i = 0; i < files.size(); i++)
 	{
-		cubemapData.data[i] = stbi_load(files[i].c_str(), &cubemapData.width, &cubemapData.height, &cubemapData.bpp, 0);
+		cubemapData.facesData[i] = stbi_load(files[i].c_str(), &cubemapData.width, &cubemapData.height, &cubemapData.bpp, 0);
 	}
 
-	cubemapData.format = GL_RGB;
-	cubemapData.internalFormat = GL_RGB;
+	cubemapData.format = (Texture::Format)GL_RGB;
+	cubemapData.internalFormat = (Texture::InternalFormat)GL_RGB;
+	cubemapData.type = (Texture::Type)GL_UNSIGNED_BYTE;
 
-	cubemapData.type = GL_UNSIGNED_BYTE;
 	cubemapData.params = {
 		{ GL_TEXTURE_MIN_FILTER, GL_LINEAR},
 		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
@@ -191,13 +190,11 @@ Cubemap::CubemapData Cubemap::extractCubemapDataFromCubemapFiles(const std::vect
 	return cubemapData;
 }
 
-Resource<Texture> Cubemap::build(const CubemapData& textureData)
+Resource<Texture> Cubemap::build(const Texture::TextureData& textureData)
 {
 	Resource<Texture> texture = Factory<Texture>::create();
 
-	texture.get()->m_target = textureData.target;
-	texture.get()->m_width = textureData.width;
-	texture.get()->m_height = textureData.height;
+	texture.get()->m_data = textureData;
 
 	// generate texture
 	glGenTextures(1, &texture.get()->m_id);
@@ -210,8 +207,8 @@ Resource<Texture> Cubemap::build(const CubemapData& textureData)
 
 	for (int i = 0; i < 6; i++)
 	{
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, textureData.internalFormat, texture.get()->m_width, texture.get()->m_height, 0, textureData.format, textureData.type, textureData.data[i]);
-		stbi_image_free(textureData.data[i]);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, textureData.internalFormat, texture.get()->m_data.width, texture.get()->m_data.height, 0, textureData.format, textureData.type, textureData.facesData[i]);
+		stbi_image_free(textureData.facesData[i]);
 	}
 	if (textureData.genMipMap)
 	{

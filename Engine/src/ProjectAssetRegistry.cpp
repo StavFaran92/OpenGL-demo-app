@@ -6,6 +6,8 @@
 #include <filesystem>
 #include <fstream>
 
+
+
 using json = nlohmann::json;
 
 ProjectAssetRegistry::ProjectAssetRegistry(const std::string& filename)
@@ -91,9 +93,18 @@ void ProjectAssetRegistry::addMesh(UUID uuid)
     sync();
 }
 
-void ProjectAssetRegistry::addTexture(UUID uuid)
+void ProjectAssetRegistry::addTexture(Resource<Texture> texture)
 {
-    m_assetRegistry["textures"].push_back(uuid);
+    // Create a JSON object with UUID and format fields
+    nlohmann::json tMetadata = {
+        {"UUID", texture.getUID()},
+        {"format", texture.get()->getData().isHDR ? "hdr" : "png"}
+    };
+
+    // Add the metadata to the textures array
+    m_assetRegistry["textures"].push_back(tMetadata);
+
+    // Sync the registry
     sync();
 }
 

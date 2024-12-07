@@ -138,7 +138,7 @@ Resource<Texture> Assets::importTexture2D(const std::string& fileLocation, bool 
 		{
 			stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), textureData.width, textureData.height, textureData.bpp, textureData.data, textureData.width * textureData.bpp);
 		}
-		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
+		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture);
 
 		m_textures[texture.getUID()] = texture;
 
