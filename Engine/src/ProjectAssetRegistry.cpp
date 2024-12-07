@@ -96,9 +96,9 @@ void ProjectAssetRegistry::addMesh(UUID uuid)
 void ProjectAssetRegistry::addTexture(Resource<Texture> texture)
 {
     // Create a JSON object with UUID and format fields
-    nlohmann::json tMetadata = {
-        {"UUID", texture.getUID()},
-        {"format", texture.get()->getData().isHDR ? "hdr" : "png"}
+    TextureAsset tMetadata = { 
+        texture.getUID(), 
+        texture.get()->getData().isHDR ? "hdr" : "png"
     };
 
     // Add the metadata to the textures array
@@ -129,13 +129,13 @@ std::vector<UUID> ProjectAssetRegistry::getMeshList() const
     return m_assetRegistry["meshes"].get<const std::vector<UUID>>();
 }
 
-std::vector<UUID> ProjectAssetRegistry::getTextureList() const
+std::vector<ProjectAssetRegistry::TextureAsset> ProjectAssetRegistry::getTextureList() const
 {
     if (!m_assetRegistry.contains("textures"))
     {
         return {};
     }
-	return m_assetRegistry["textures"].get<std::vector<std::string>>();
+	return m_assetRegistry["textures"].get<std::vector<ProjectAssetRegistry::TextureAsset>>();
 }
 
 std::vector<UUID> ProjectAssetRegistry::getAnimationList() const

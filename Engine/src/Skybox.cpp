@@ -48,7 +48,7 @@ Entity Skybox::CreateSkyboxFromEquirectangularMap(Resource<Texture> equirectnagu
         scene = Engine::get()->getContext()->getActiveScene().get();
     }
 
-    equirectnagularMap = TextureTransformer::flipVertical(equirectnagularMap);
+    //equirectnagularMap = TextureTransformer::flipVertical(equirectnagularMap);
 
     auto cubemap = EquirectangularToCubemapConverter::fromEquirectangularToCubemap(equirectnagularMap);
 
