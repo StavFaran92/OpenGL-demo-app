@@ -102,14 +102,7 @@ Texture::TextureData Assets::extractTextureDataFromFile(const std::string& fileL
 		throw std::runtime_error("Unsupported texture format!");
 	}
 
-	// Determine if the image is HDR
-	if (isHDRImage(fileLocation)) 
-	{
-		textureData.type = (Texture::Type)GL_FLOAT;
-	}
-	else {
-		textureData.type = (Texture::Type)GL_UNSIGNED_BYTE; // LDR uses 8-bit integer data
-	}
+	textureData.type = (textureData.isHDR) ? (Texture::Type)GL_FLOAT : (Texture::Type)GL_UNSIGNED_BYTE;
 
 	textureData.params = {
 		{ GL_TEXTURE_WRAP_S, GL_REPEAT},
@@ -137,7 +130,14 @@ Resource<Texture> Assets::importTexture2D(const std::string& fileLocation, bool 
 		Resource<Texture> texture = Texture::create2DTextureFromBuffer(textureData);
 
 		auto& projectDir = Engine::get()->getProjectDirectory();
-		stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), textureData.width, textureData.height, textureData.bpp, textureData.data, textureData.width * textureData.bpp);
+		if (textureData.isHDR)
+		{
+			stbi_write_hdr((projectDir + "/" + texture.getUID() + ".hdr").c_str(), textureData.width, textureData.height, textureData.bpp, (float*)textureData.data);
+		}
+		else
+		{
+			stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), textureData.width, textureData.height, textureData.bpp, textureData.data, textureData.width * textureData.bpp);
+		}
 		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
 
 		m_textures[texture.getUID()] = texture;
