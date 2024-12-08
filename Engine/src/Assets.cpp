@@ -116,6 +116,11 @@ Texture::TextureData Assets::extractTextureDataFromFile(const std::string& fileL
 	return textureData;
 }
 
+Resource<Texture> Assets::importTexture2D(const std::string& assetName, std::function<Resource<Texture>()> func)
+{
+	return Engine::get()->getMemoryManagementSystem()->createOrGetCached<Texture>(assetName, func);
+}
+
 Resource<Texture> Assets::importTexture2D(const std::string& fileLocation, bool flip)
 {
 	// Check if texture is already cached to optimize the load process

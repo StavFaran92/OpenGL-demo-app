@@ -182,11 +182,15 @@ bool Engine::init(const InitParams& initParams)
         return false;
     }
 
+    m_memoryManagementSystem = std::make_shared<CacheSystem>();
+
     m_commonShaders = std::make_shared<CommonShaders>();
 
     m_commonTextures = std::make_shared<CommonTextures>();
 
     m_defaultMaterial = std::make_shared<Material>();
+
+    
 
     m_randomSystem = std::make_shared<RandomNumberGenerator>();
 
@@ -197,7 +201,7 @@ bool Engine::init(const InitParams& initParams)
     else
     {
         // Create a new Project
-        m_memoryManagementSystem = std::make_shared<CacheSystem>();
+        
         auto& par = ProjectAssetRegistry::create(initParams.projectDir);;
         m_context = std::make_shared<Context>(par);
         
@@ -205,6 +209,8 @@ bool Engine::init(const InitParams& initParams)
 
         saveProject();
     }
+
+   
 
     auto objectPicker = new ObjectPicker();
     if (!objectPicker->init())

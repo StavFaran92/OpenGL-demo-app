@@ -7,6 +7,8 @@
 #include "ModelImporter.h"
 #include "Core.h"
 
+#include <functional>
+
 class EngineAPI Assets
 {
 public:
@@ -16,6 +18,7 @@ public:
 	Resource<MeshCollection> loadMesh(UUID uid, const std::string& path);
 	std::vector<std::string> getAllMeshes() const;
 
+	Resource<Texture> importTexture2D(const std::string& assetName, std::function<Resource<Texture>()> func);
 	Resource<Texture> importTexture2D(const std::string& path, bool flip = false);
 	Resource<Texture> loadTexture2D(UUID uid, const std::string& path);
 	std::vector<std::string> getAllTextures() const;
