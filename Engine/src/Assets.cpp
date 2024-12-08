@@ -118,7 +118,12 @@ Texture::TextureData Assets::extractTextureDataFromFile(const std::string& fileL
 
 Resource<Texture> Assets::importTexture2D(const std::string& assetName, std::function<Resource<Texture>()> func)
 {
-	return Engine::get()->getMemoryManagementSystem()->createOrGetCached<Texture>(assetName, func);
+	return Engine::get()->getMemoryManagementSystem()->createOrGetCached<Texture>(assetName, [&]() {
+			Resource<Texture> res = func();
+			Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(res);
+			m_textures[res.getUID()] = res;
+			return res;
+		} );
 }
 
 Resource<Texture> Assets::importTexture2D(const std::string& fileLocation, bool flip)

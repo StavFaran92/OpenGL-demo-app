@@ -14,12 +14,19 @@ public:
 		WHITE_1X1
 	};
 
-	CommonTextures();
+
+
+	
+
+	static CommonTextures* create();
+	static CommonTextures* load();
 	void close();
 	Resource<Texture> getTexture(TextureType texType);
 
 	CommonTextures(const CommonTextures&) = delete;
 	CommonTextures& operator=(const CommonTextures&) = delete;
 private:
+	CommonTextures();
+
 	std::map<TextureType, Resource<Texture>> m_textures;
 };

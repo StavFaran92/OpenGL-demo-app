@@ -79,7 +79,7 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     {
         UUID uid = textureAsset.uuid;
         // Open bin file
-        fs::path imageFilePath = (projectDir / uid).string() + textureAsset.ext;
+        fs::path imageFilePath = (projectDir / uid).string() + "." + textureAsset.ext;
         Engine::get()->getSubSystem<Assets>()->loadTexture2D(uid, imageFilePath.string());
     }
 

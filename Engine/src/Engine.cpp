@@ -184,14 +184,6 @@ bool Engine::init(const InitParams& initParams)
 
     m_memoryManagementSystem = std::make_shared<CacheSystem>();
 
-    m_commonShaders = std::make_shared<CommonShaders>();
-
-    m_commonTextures = std::make_shared<CommonTextures>();
-
-    m_defaultMaterial = std::make_shared<Material>();
-
-    
-
     m_randomSystem = std::make_shared<RandomNumberGenerator>();
 
     if (initParams.loadExistingProject)
@@ -200,10 +192,13 @@ bool Engine::init(const InitParams& initParams)
     }
     else
     {
-        // Create a new Project
-        
+        // Create a new Project       
         auto& par = ProjectAssetRegistry::create(initParams.projectDir);;
         m_context = std::make_shared<Context>(par);
+
+        m_commonTextures = std::shared_ptr<CommonTextures>(CommonTextures::create());
+        m_commonShaders = std::make_shared<CommonShaders>();
+        m_defaultMaterial = std::make_shared<Material>();
         
         createStartupScene(m_context, initParams);
 
@@ -432,13 +427,14 @@ void Engine::loadProject(const std::string& dirPath)
 {
     m_projectDirectory = dirPath;
 
-    
 
     auto& par = ProjectAssetRegistry::parse(dirPath);
     auto& filePath = par->getFilepath();
     m_context = std::make_shared<Context>(par);
 
     m_memoryManagementSystem = std::make_shared<CacheSystem>(par->getAssociations());
+    m_commonTextures = std::shared_ptr<CommonTextures>(CommonTextures::load());
+    m_defaultMaterial = std::make_shared<Material>();
 
     m_projectManager->loadProject(filePath, m_context);
 }
@@ -500,7 +496,13 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
 
     if (initParams.templateScene)
     {
-        Skybox::CreateSkyboxFromEquirectangularMap( "C:/dev/repos/LearnOpenGL/resources/textures/hdr/newport_loft.hdr", context->getActiveScene().get());
+        //Skybox::CreateSkyboxFromEquirectangularMap( "C:/dev/repos/LearnOpenGL/resources/textures/hdr/newport_loft.hdr", context->getActiveScene().get());
+        Skybox::CreateSkyboxFromCubemap({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
+        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
+        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
+        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",
+        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
+        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" }, context->getActiveScene().get());
 
         // todo revert
         //{
