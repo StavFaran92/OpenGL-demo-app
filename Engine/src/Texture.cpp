@@ -78,6 +78,10 @@ Resource<Texture> Texture::createDummyTexture(unsigned char data[3])
 	tData.target = GL_TEXTURE_2D;
 	tData.width = 1;
 	tData.height = 1;
+	tData.data = data;
+	tData.internalFormat = InternalFormat::RGB2;
+	tData.format = Format::RGB;
+	tData.type = Type::UNSIGNED_BYTE;
 	tData.params = { {GL_TEXTURE_MIN_FILTER, GL_LINEAR},
 					{GL_TEXTURE_MAG_FILTER, GL_LINEAR},
 					{GL_TEXTURE_WRAP_S, GL_REPEAT},
