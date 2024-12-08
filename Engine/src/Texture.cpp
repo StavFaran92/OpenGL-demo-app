@@ -78,6 +78,7 @@ Resource<Texture> Texture::createDummyTexture(unsigned char data[3])
 	tData.target = GL_TEXTURE_2D;
 	tData.width = 1;
 	tData.height = 1;
+	tData.bpp = 3;
 	tData.data = data;
 	tData.internalFormat = InternalFormat::RGB2;
 	tData.format = Format::RGB;

@@ -121,6 +121,13 @@ Resource<Texture> Assets::importTexture2D(const std::string& assetName, std::fun
 	return Engine::get()->getMemoryManagementSystem()->createOrGetCached<Texture>(assetName, [&]() {
 			Resource<Texture> res = func();
 			Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(res);
+			auto& projectDir = Engine::get()->getProjectDirectory();
+			stbi_write_png((projectDir + "/" + res.getUID() + ".png").c_str(), 
+				res.get()->getWidth(), 
+				res.get()->getHeight(), 
+				res.get()->getBitDepth(), 
+				res.get()->getData().data, 
+				res.get()->getBitDepth());
 			m_textures[res.getUID()] = res;
 			return res;
 		} );
