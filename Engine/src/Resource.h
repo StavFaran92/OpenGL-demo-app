@@ -65,7 +65,8 @@ public:
 
 	inline T* get() const
 	{
-		return Engine::get()->getMemoryPool<T>()->get(m_uid);
+		m_cache = Engine::get()->getMemoryPool<T>()->get(m_uid);
+		return m_cache;
 	}
 
 	inline UUID getUID() const 
@@ -118,7 +119,8 @@ private:
 		}
 	}
 private:
-	UUID m_uid;
+	UUID m_uid = EMPTY_UUID;
+	mutable T* m_cache = nullptr;
 };
 
 template<typename T>

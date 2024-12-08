@@ -225,7 +225,7 @@ void Cubemap::saveEquirectangularMap(Resource<Texture> equirectangularMap)
 	equirectangularMap.get()->bind();
 
 	// Allocate memory for the pixels
-	void* pixels = malloc(equirectangularMap.get()->getWidth() * equirectangularMap.get()->getHeight() * equirectangularMap.get()->getBitDepth());
+	void* pixels = malloc(equirectangularMap.get()->getWidth() * equirectangularMap.get()->getHeight() * 3);
 
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 

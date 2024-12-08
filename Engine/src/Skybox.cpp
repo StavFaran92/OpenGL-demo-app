@@ -70,6 +70,8 @@ Entity Skybox::CreateSkyboxFromCubemap(const SkyboxFaces& faces, Scene* scene)
 
     Resource<Texture> equirectangularMap = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(cubemap);
 
+    equirectangularMap = TextureTransformer::flipVertical(equirectangularMap);
+
     Cubemap::saveEquirectangularMap(equirectangularMap);
 
     auto entity = ShapeFactory::createBox(&scene->getRegistry());
