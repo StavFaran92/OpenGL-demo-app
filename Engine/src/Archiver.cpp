@@ -44,6 +44,8 @@ void Archiver::deserializeEntity(SerializedEntity serializedEnt, Scene& scene)
 			Entity eChild(entity.handler(), &scene.getRegistry());
 			transform.addChild(eChild);
 		}
+
+		transform.forceUpdate();
 	}
 	if (serializedEnt.dLight)
 	{
