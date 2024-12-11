@@ -23,14 +23,14 @@ CommonTextures* CommonTextures::create()
 	auto instance = new CommonTextures();
 
 	Engine::get()->getSubSystem<Assets>()->importTexture2D("SGE_TEXTURE_WHITE", [&]() {
-		unsigned char whiteColor[3] = { 255, 255, 255 };
+		static unsigned char* whiteColor = new unsigned char[3]{ 255, 255, 255 }; // todo rethink this
 		auto texture = Texture::createDummyTexture(whiteColor);
 		instance->m_textures[TextureType::WHITE_1X1] = texture;
 		return texture;
 		});
 
 	Engine::get()->getSubSystem<Assets>()->importTexture2D("SGE_TEXTURE_BLACK", [&]() {
-		unsigned char blackColor[3] = { 0, 0, 0};
+		static unsigned char* blackColor = new unsigned char[3]{ 0, 0, 0};
 		auto texture = Texture::createDummyTexture(blackColor);
 		instance->m_textures[TextureType::BLACK_1X1] = texture;
 		return texture;

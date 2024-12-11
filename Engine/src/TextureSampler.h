@@ -24,7 +24,7 @@ public:
 	int channelMaskB = Color::B;
 	int channelMaskA = Color::A;
 
-	const int channelCount = 3;
+	int channelCount = 3;
 
 	float xOffset = 0;
 	float yOffset = 0;
@@ -34,6 +34,6 @@ public:
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(texture/*, colorMask*/, xOffset, yOffset, xScale, yScale);
+		archive(texture, channelMaskR, channelMaskG, channelMaskB, channelMaskA, channelCount, xOffset, yOffset, xScale, yScale);
 	}
 };
