@@ -44,6 +44,19 @@ public:
 		return resource;
 	}
 
+	template<typename T>
+	Resource<T> get(const std::string& resourceName)
+	{
+		auto it = m_associations.find(resourceName);
+		if (it != m_associations.end())
+		{
+			UUID uid = it->second;
+			return Resource<T>(uid);
+		}
+
+		return Resource<T>::empty;
+	}
+
 	UUID getAssociation(const std::string& name) const
 	{
 		auto it = m_associations.find(name);

@@ -3,6 +3,7 @@
 #include "Assets.h"
 #include "Context.h"
 #include "ProjectAssetRegistry.h"
+#include "CacheSystem.h"
 
 CommonTextures::CommonTextures()
 {
@@ -42,6 +43,9 @@ CommonTextures* CommonTextures::create()
 CommonTextures* CommonTextures::load()
 {
 	auto instance = new CommonTextures();
+
+	instance->m_textures[TextureType::WHITE_1X1] = Engine::get()->getMemoryManagementSystem()->get<Texture>("SGE_TEXTURE_WHITE");
+	instance->m_textures[TextureType::BLACK_1X1] = Engine::get()->getMemoryManagementSystem()->get<Texture>("SGE_TEXTURE_BLACK");
 
 	// TODO fix
 	//Engine::get()->getContext()->getProjectAssetRegistry()->

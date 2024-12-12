@@ -27,7 +27,7 @@ public:
 public:
     static Entity CreateSkyboxFromEquirectangularMap(const std::string& equirectnagularMap, Scene* scene = nullptr);
 
-    static Entity CreateSkyboxFromCubemap(const SkyboxFaces& faces, Scene* scene = nullptr);
+    static Entity CreateSkyboxFromCubemap_DEPRECATED(const SkyboxFaces& faces, Scene* scene = nullptr);
 
     static Entity CreateSkyboxFromEquirectangularMap(Resource<Texture> equirectnagularMap, Scene* scene = nullptr);
     static Entity CreateSkyboxFromEquirectangularMap(Resource<Texture> texture, Entity& entity, Scene* scene = nullptr);

@@ -200,26 +200,7 @@ void Scene::init(Context* context)
 	m_quadUI.RemoveComponent<ObjectComponent>();
 
 	m_UIShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/UIShader.glsl");
-
 	m_terrainShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/TerrainShader.glsl"); // todo consider move to context (or even Engine)
-
-	
-	//dLight.getComponent<Transformation>().setLocalPosition({ 0 , 2, 0 });;
-	
-
-	//for (int i = 0; i < 32; i++)
-	//{
-	//	auto rand_x = Engine::get()->getRandomSystem()->rand() * 12 - 6;
-	//	auto rand_y = Engine::get()->getRandomSystem()->rand() * 12 - 6;
-	//	auto pLight = createEntity();
-	//	//auto pLight = ShapeFactory::createSphere(this);
-	//	pLight.addComponent<Material>();
-	//	pLight.addComponent<RenderableComponent>();
-	//	pLight.addComponent<PointLight>();
-	//	pLight.getComponent<Transformation>().setLocalPosition({ rand_x , 0, rand_y });
-	//	pLight.getComponent<RenderableComponent>().renderTechnique = RenderableComponent::Forward;
-	//}
-
 	m_tempOutlineShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/OutlineShader.glsl");
 
 	m_uboTime = std::make_shared<UniformBufferObject>(sizeof(float));

@@ -25,34 +25,9 @@
 
 Resource<Texture> Cubemap::createCubemapFromCubemapFiles(const std::vector<std::string>& faces)
 {
-	// Check if texture is already cached to optimize the load process
-	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
-	std::filesystem::path path(faces[0]);
-	return memoryManagementSystem->createOrGetCached<Texture>(path.filename().string(), [&]() {
-
-		// todo use RAII
-		Texture::TextureData cubemapData = extractCubemapDataFromCubemapFiles(faces);
-
-		Resource<Texture> cubemap = createCubemapFromBuffer(cubemapData);
-
-		//Resource<Texture> equirectangularMap = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(cubemap);
-
-		//equirectangularMap.get()->bind();
-
-		//// Allocate memory for the pixels
-		//void* pixels = malloc(equirectangularMap.get()->getWidth() * equirectangularMap.get()->getHeight() * equirectangularMap.get()->getBitDepth());
-
-		//glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
-
-		//auto& projectDir = Engine::get()->getProjectDirectory();
-		//stbi_write_png((projectDir + "/" + cubemap.getUID() + ".png").c_str(), equirectangularMap.get()->getWidth(), equirectangularMap.get()->getHeight(), equirectangularMap.get()->getBitDepth(), pixels, 
-		//	equirectangularMap.get()->getWidth() * equirectangularMap.get()->getBitDepth());
-		//Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(cubemap.getUID());
-
-		//free(cubemapData.data);
-
-		return cubemap;
-	});
+	Texture::TextureData cubemapData = extractCubemapDataFromCubemapFiles(faces);
+	Resource<Texture> cubemap = createCubemapFromBuffer(cubemapData);
+	return cubemap;
 }
 
 Texture::TextureData Cubemap::extractCubemapDataFromEquirectangularFile(const std::string& fileLocation)
