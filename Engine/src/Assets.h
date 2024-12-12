@@ -21,6 +21,7 @@ public:
 	Resource<Texture> importTexture2D(const std::string& assetName, std::function<Resource<Texture>()> func);
 	Resource<Texture> importTexture2D(const std::string& path, bool flip = false);
 	Resource<Texture> loadTexture2D(UUID uid, const std::string& path);
+	void addTexture2D(Resource<Texture> texture);
 	std::vector<std::string> getAllTextures() const;
 
 	Resource<Animation> importAnimation(const std::string& path);

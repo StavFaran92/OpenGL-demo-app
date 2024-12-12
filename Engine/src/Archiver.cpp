@@ -87,7 +87,7 @@ void Archiver::deserializeEntity(SerializedEntity serializedEnt, Scene& scene)
 
 	if (serializedEnt.skybox)
 	{
-		auto skybox = Skybox::CreateSkyboxFromEquirectangularMap(serializedEnt.skybox->originalImage, entityHandler, &scene);
+		auto skybox = Skybox::loadSkybox(serializedEnt.skybox->originalImage, entityHandler, &scene);
 		skybox.getComponent<SkyboxComponent>().originalImage = serializedEnt.skybox->originalImage;
 	}
 

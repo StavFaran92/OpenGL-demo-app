@@ -83,6 +83,8 @@ public:
 	void addAssociation(const std::string& name, UUID uid)
 	{
 		m_associations[name] = uid;
+		Engine::get()->getContext()->getProjectAssetRegistry()->addAssociation(name, uid);
+
 	}
 
 	void clear();

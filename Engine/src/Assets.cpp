@@ -181,6 +181,13 @@ Resource<Texture> Assets::loadTexture2D(UUID uid, const std::string& path)
 	return res;
 }
 
+void Assets::addTexture2D(Resource<Texture> texture)
+{
+	Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture);
+
+	m_textures[texture.getUID()] = texture;
+}
+
 std::vector<std::string> Assets::getAllTextures() const
 {
 	std::vector<std::string> result;
