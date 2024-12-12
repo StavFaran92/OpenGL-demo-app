@@ -63,19 +63,15 @@ Entity Skybox::CreateSkyboxFromEquirectangularMap(Resource<Texture> equirectnagu
     return CreateSkyboxFromEquirectangularMap(equirectnagularMap, entity, scene);
 }
 
-Entity Skybox::CreateSkyboxFromCubemap_DEPRECATED(const SkyboxFaces& faces, Scene* scene)
+Entity Skybox::CreateSkyboxFromCubemap(const SkyboxFaces& faces, Scene* scene)
 {
-    auto outputTexture = Texture::createEmptyTexture(2048, 1024, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
-
     std::vector<std::string> facesVec{ faces.right, faces.left, faces.top, faces.bottom, faces.front, faces.back };
     auto cubemap = Cubemap::createCubemapFromCubemapFiles(facesVec);
     Resource<Texture> equirectangularMap = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(cubemap);
-    TextureTransformer::flipVertical(equirectangularMap, outputTexture);
+    equirectangularMap = TextureTransformer::flipVertical(equirectangularMap);
     Cubemap::saveEquirectangularMap(equirectangularMap);
 
-    auto entity = ShapeFactory::createBox(&scene->getRegistry());
-    
-    return createSkyboxHelper(cubemap, outputTexture, entity, scene);
+    return CreateSkyboxFromEquirectangularMap(equirectangularMap, scene);
 }
 
 Entity Skybox::createSkyboxHelper(Resource<Texture> cubemap, Resource<Texture> equirectangularMap, Entity& entity, Scene* scene)

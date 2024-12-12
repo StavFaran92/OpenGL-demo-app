@@ -497,7 +497,12 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
     if (initParams.templateScene)
     {
         //Skybox::CreateSkyboxFromEquirectangularMap( "C:/dev/repos/LearnOpenGL/resources/textures/hdr/newport_loft.hdr", context->getActiveScene().get());
-        //Skybox::CreateSkyboxFromEquirectangularMap(/*SGE_ROOT_DIR + */"C:/Users/adidk/Downloads/799-hdri-skies-com/799-hdri-skies-com.hdr", context->getActiveScene().get());
+        Skybox::CreateSkyboxFromCubemap({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
+        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
+        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
+        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",
+        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
+        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" }, context->getActiveScene().get());
 
         // todo revert
         //{
