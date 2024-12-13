@@ -37,7 +37,7 @@ Entity Skybox::CreateSkyboxFromEquirectangularMap(const std::string& equirectnag
 
     auto cubemap = EquirectangularToCubemapConverter::fromEquirectangularToCubemap(equirectnagularMap);
 
-    auto entity = ShapeFactory::createBox(&scene->getRegistry());
+    auto entity = scene->createEntity();
 
     return createSkyboxHelper(cubemap, equirectnagularMap, entity, scene);
 }
@@ -69,7 +69,7 @@ Entity Skybox::CreateSkyboxFromCubemap(const SkyboxFaces& faces, Scene* scene)
     static int skyboxCount = 0; // TODO fix - will not work with load
     Engine::get()->getMemoryManagementSystem()->addAssociation("SKYBOX_" + std::to_string(skyboxCount++), equirectangularMap.getUID());
 
-    auto entity = ShapeFactory::createBox(&scene->getRegistry());
+    auto entity = scene->createEntity();
 
     return loadSkybox(equirectangularMap, entity, scene);
 }
@@ -91,7 +91,8 @@ Entity Skybox::createSkyboxHelper(Resource<Texture> cubemap, Resource<Texture> e
 
     entity.RemoveComponent<RenderableComponent>();
     entity.RemoveComponent<MaterialComponent>();
-    entity.addComponent<SkyboxComponent>(cubemap).originalImage = equirectangularMap;
+    auto& skyboxComponent = entity.addComponent<SkyboxComponent>(cubemap);
+    skyboxComponent.originalImage = equirectangularMap;
 
     entity.getComponent<ObjectComponent>().name = "Skybox";
 

@@ -881,7 +881,7 @@ void RenderSceneHierarchyWindow(float width, float height)
 		{ // Begin the submenu
 			if (ImGui::MenuItem("Cube")) 
 			{
-				ShapeFactory::createBox(&Engine::get()->getContext()->getActiveScene()->getRegistry());
+				ShapeFactory::createBoxEntity(&Engine::get()->getContext()->getActiveScene()->getRegistry());
 				updateScene();
 				selectedEntity = sceneObjects[0].e;
 			}
@@ -1537,10 +1537,11 @@ void RenderInspectorWindow(float width, float height)
 
 		displayComponent<SkyboxComponent>("Skybox", [](SkyboxComponent& skybox) {
 			addTextureEditWidget(skybox.originalImage, { 50, 50 }, [](std::string uuid) {
+				Resource<Texture> tex(uuid);
+				Skybox::loadSkybox(tex, selectedEntity, Engine::get()->getContext()->getActiveScene().get());
 					
-					
-				});
 			});
+		});
 
 		displayComponent<ImageComponent>("Image", [](ImageComponent& image) {
 			addTextureEditWidget(image.image, { 50, 50 }, [&](std::string uuid) {
@@ -1690,6 +1691,11 @@ void RenderInspectorWindow(float width, float height)
 			if (ImGui::MenuItem("Terrain"))
 			{
 				auto& terrain = selectedEntity.addComponent<Terrain>();
+			}
+
+			if (ImGui::MenuItem("Skybox"))
+			{
+				auto& skybox = selectedEntity.addComponent<SkyboxComponent>();
 			}
 
 			ImGui::EndPopup();

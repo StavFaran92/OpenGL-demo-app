@@ -187,6 +187,8 @@ private:
 	std::shared_ptr<Shader> m_UIShader;
 	std::shared_ptr<Shader> m_terrainShader;
 
+	Resource<MeshCollection> m_basicBox;
+
 	Entity m_primaryCamera = Entity::EmptyEntity;
 
 	Entity m_quadUI;

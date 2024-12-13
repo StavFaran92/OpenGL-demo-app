@@ -23,7 +23,7 @@ public:
 
 protected:
 	/** API */
-	Box* createBox();
+	Box* createBoxEntity();
 	Quad* createQuad();
 	void postProcess(Shader*);
 	void skybox(std::shared_ptr<Skybox> skybox);

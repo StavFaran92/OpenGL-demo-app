@@ -65,7 +65,7 @@ Resource<Texture> IBL::generateIrradianceMap(Resource<Texture> environmentMap, S
 	environmentMap.get()->bind();
 
 
-	auto box = ShapeFactory::createBox(&Engine::get()->getContext()->getRegistry());
+	auto box = ShapeFactory::createBoxEntity(&Engine::get()->getContext()->getRegistry());
 	box.RemoveComponent<RenderableComponent>();
 	box.RemoveComponent<ObjectComponent>();
 	auto vao = box.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh()->getVAO();
@@ -139,7 +139,7 @@ Resource<Texture> IBL::generatePrefilterEnvMap(Resource<Texture> environmentMap,
 	environmentMap.get()->bind();
 
 
-	auto box = ShapeFactory::createBox(&Engine::get()->getContext()->getRegistry());
+	auto box = ShapeFactory::createBoxEntity(&Engine::get()->getContext()->getRegistry());
 	box.RemoveComponent<RenderableComponent>();
 	box.RemoveComponent<ObjectComponent>();
 	auto vao = box.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh()->getVAO();

@@ -27,7 +27,7 @@ Entity ShapeFactory::createEntity(SGE_Regsitry* registry, const std::string& nam
 	return entity;
 }
 
-Entity ShapeFactory::createBox(SGE_Regsitry* registry)
+Entity ShapeFactory::createBoxEntity(SGE_Regsitry* registry)
 {
 	
 	auto entity = createEntity(registry, "Box_" + std::to_string(createdBoxCount++));
@@ -37,11 +37,17 @@ Entity ShapeFactory::createBox(SGE_Regsitry* registry)
 	return entity;
 }
 
-void ShapeFactory::createBox(Entity& e, SGE_Regsitry* registry)
+void ShapeFactory::createBoxEntity(Entity& e, SGE_Regsitry* registry)
 {
 	auto memoryManager = Engine::get()->getMemoryManagementSystem();
 	Resource<MeshCollection> mesh = memoryManager->createOrGetCached<MeshCollection>("SGE_BOX_MESH", []() {return Box::createMesh(); });
 	e.getComponent<MeshComponent>().mesh = mesh;
+}
+
+Resource<MeshCollection> ShapeFactory::createBox()
+{
+	auto memoryManager = Engine::get()->getMemoryManagementSystem();
+	return memoryManager->createOrGetCached<MeshCollection>("SGE_BOX_MESH", []() { return Box::createMesh(); });
 }
 
 Entity ShapeFactory::createQuad(SGE_Regsitry* registry)

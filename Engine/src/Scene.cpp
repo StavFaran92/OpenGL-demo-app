@@ -218,6 +218,8 @@ void Scene::init(Context* context)
 
 	m_skyboxShader = Shader::createShared<Shader>(SGE_ROOT_DIR +"Resources/Engine/Shaders/SkyboxShader.glsl");
 
+	m_basicBox = ShapeFactory::createBox();
+
 	//m_registry->get().on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
 	//m_registry->get().on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
 	//m_registry->get().on_construct<CollisionSphereComponent>().connect<&Scene::onCollisionConstruct>(this);
@@ -479,13 +481,16 @@ void Scene::draw(float deltaTime)
 	m_skyboxShader->setViewMatrix(*graphics->view);
 	m_skyboxShader->setProjectionMatrix(*graphics->projection);
 
-	for (auto&& [entity, skybox, mesh, transform] : 
-		m_registry->get().view<SkyboxComponent, MeshComponent, Transformation>().each())
+	for (auto&& [entity, skybox, transform] : 
+		m_registry->get().view<SkyboxComponent, Transformation>().each())
 	{
 		Entity entityhandler{ entity, m_registry.get()};
 		graphics->entity = &entityhandler;
-		graphics->mesh = mesh.mesh.get()->getPrimaryMesh().get();
+		graphics->mesh = m_basicBox.get()->getPrimaryMesh().get(); // todo can be optimized using a single mesh
 		graphics->model = &transform.getWorldTransformation();
+
+		if (skybox.skyboxImage.isEmpty()) continue;
+
 		skybox.skyboxImage.get()->bind();
 		skybox.skyboxImage.get()->setSlot(0);
 
