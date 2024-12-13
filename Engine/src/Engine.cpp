@@ -497,12 +497,12 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
     if (initParams.templateScene)
     {
         //Skybox::CreateSkyboxFromEquirectangularMap( "C:/dev/repos/LearnOpenGL/resources/textures/hdr/newport_loft.hdr", context->getActiveScene().get());
-        Skybox::CreateSkyboxFromCubemap({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
-        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
-        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
-        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",
-        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
-        SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" }, context->getActiveScene().get());
+        //Skybox::CreateSkyboxFromCubemap({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
+        //SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
+        //SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
+        //SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",
+        //SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
+        //SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" }, context->getActiveScene().get());
 
         // todo revert
         //{
@@ -521,23 +521,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
             //editorCamera->setPosition(25, 225, 35);
         }
 
-        auto sphere = ShapeFactory::createSphere(&context->getActiveScene()->getRegistry());
-        {
-            auto random = Engine::get()->getRandomSystem();
-            auto x = random->rand() * 10 - 5;
-            auto z = random->rand() * 10 - 5;
-
-            auto& sphereTransform = sphere.getComponent<Transformation>();
-            sphereTransform.setLocalPosition({ x, 10, z });
-
-
-            auto& mat = sphere.addComponent<MaterialComponent>();
-            auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
-            mat.at(0)->setTexture(Texture::TextureType::Diffuse, tex);
-
-            auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
-            auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);
-        }
+        ShapeFactory::createSphere(&context->getActiveScene()->getRegistry());
     }
 }
 

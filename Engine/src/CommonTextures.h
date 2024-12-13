@@ -11,7 +11,8 @@ public:
 	enum class TextureType
 	{
 		BLACK_1X1,
-		WHITE_1X1
+		WHITE_1X1,
+		CUBEMAP_WHITE_1X1
 	};
 
 

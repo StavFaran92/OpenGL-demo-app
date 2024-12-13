@@ -1,6 +1,7 @@
 #include "CommonTextures.h"
 
 #include "Assets.h"
+#include "Cubemap.h"
 #include "Context.h"
 #include "ProjectAssetRegistry.h"
 #include "CacheSystem.h"
@@ -37,6 +38,12 @@ CommonTextures* CommonTextures::create()
 		return texture;
 		});
 
+	Engine::get()->getSubSystem<Assets>()->importTexture2D("SGE_CUBEMAP_WHITE", [&]() {
+		auto cubemap = Cubemap::createDefaultCubemap();
+		instance->m_textures[TextureType::CUBEMAP_WHITE_1X1] = cubemap;
+		return cubemap;
+		});
+
 	return instance;
 }
 
@@ -46,6 +53,7 @@ CommonTextures* CommonTextures::load()
 
 	instance->m_textures[TextureType::WHITE_1X1] = Engine::get()->getMemoryManagementSystem()->get<Texture>("SGE_TEXTURE_WHITE");
 	instance->m_textures[TextureType::BLACK_1X1] = Engine::get()->getMemoryManagementSystem()->get<Texture>("SGE_TEXTURE_BLACK");
+	instance->m_textures[TextureType::CUBEMAP_WHITE_1X1] = Engine::get()->getMemoryManagementSystem()->get<Texture>("SGE_CUBEMAP_WHITE");
 
 	// TODO fix
 	//Engine::get()->getContext()->getProjectAssetRegistry()->

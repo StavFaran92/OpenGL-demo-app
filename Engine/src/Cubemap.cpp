@@ -27,6 +27,10 @@ Resource<Texture> Cubemap::createCubemapFromCubemapFiles(const std::vector<std::
 {
 	Texture::TextureData cubemapData = extractCubemapDataFromCubemapFiles(faces);
 	Resource<Texture> cubemap = createCubemapFromBuffer(cubemapData);
+	for (int i = 0; i < 6; i++)
+	{
+		stbi_image_free(cubemapData.facesData[i]);
+	}
 	return cubemap;
 }
 
@@ -99,6 +103,32 @@ Resource<Texture> Cubemap::createCubemapFromEquirectangularFile(const std::strin
 Resource<Texture> Cubemap::createCubemapFromBuffer(const Texture::TextureData& cubemapData)
 {
 	return build(cubemapData);
+}
+
+Resource<Texture> Cubemap::createDefaultCubemap()
+{
+	Texture::TextureData cubemapData;
+	static unsigned char* FULL_WHITE = new unsigned char[3]{ 255, 255, 255 }; // todo fix
+	for (int i = 0; i < 6; i++)
+	{
+		cubemapData.facesData[i] = FULL_WHITE;
+	}
+	cubemapData.target = GL_TEXTURE_CUBE_MAP;
+	cubemapData.width = 1;
+	cubemapData.height = 1;
+	cubemapData.internalFormat = Texture::InternalFormat::RGB2;
+	cubemapData.format = Texture::Format::RGB;
+	cubemapData.type = Texture::Type::UNSIGNED_BYTE;
+	cubemapData.params = {
+		{ GL_TEXTURE_MIN_FILTER, GL_LINEAR},
+		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
+		{ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE},
+		{ GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE},
+		{ GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE},
+	};
+	cubemapData.genMipMap = false;
+
+	return createCubemapFromBuffer(cubemapData);
 }
 
 Resource<Texture> Cubemap::createEmptyCubemap(int width, int height, int internalFormat, int format, int type)
@@ -183,7 +213,6 @@ Resource<Texture> Cubemap::build(const Texture::TextureData& textureData)
 	for (int i = 0; i < 6; i++)
 	{
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, textureData.internalFormat, texture.get()->m_data.width, texture.get()->m_data.height, 0, textureData.format, textureData.type, textureData.facesData[i]);
-		stbi_image_free(textureData.facesData[i]);
 	}
 	if (textureData.genMipMap)
 	{

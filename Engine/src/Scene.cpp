@@ -207,10 +207,10 @@ void Scene::init(Context* context)
 	m_uboTime->attachToBindPoint(0);
 
 	// Create irradiance map using created cubemap
-	m_irradianceMap = Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1);;
+	m_irradianceMap = Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::CUBEMAP_WHITE_1X1);;
 
 	// Create prefilter env map using created cubemap
-	m_prefilterEnvMap = Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1);;
+	m_prefilterEnvMap = Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::CUBEMAP_WHITE_1X1);;
 
 	// Create BRDF look up texture
 	m_BRDFIntegrationLUT = IBL::generateBRDFIntegrationLUT(this);
