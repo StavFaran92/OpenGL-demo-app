@@ -52,6 +52,7 @@
 #include "MeshCollection.h"
 #include "Graphics.h"
 #include "DebugHelper.h"
+#include "Cubemap.h"
 
 void Scene::displayWireframeMesh(Entity e)
 {
@@ -207,10 +208,10 @@ void Scene::init(Context* context)
 	m_uboTime->attachToBindPoint(0);
 
 	// Create irradiance map using created cubemap
-	m_irradianceMap = Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::CUBEMAP_WHITE_1X1);;
+	m_irradianceMap = Cubemap::createDefaultCubemap();
 
 	// Create prefilter env map using created cubemap
-	m_prefilterEnvMap = Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::CUBEMAP_WHITE_1X1);;
+	m_prefilterEnvMap = Cubemap::createDefaultCubemap();
 
 	// Create BRDF look up texture
 	m_BRDFIntegrationLUT = IBL::generateBRDFIntegrationLUT(this);
