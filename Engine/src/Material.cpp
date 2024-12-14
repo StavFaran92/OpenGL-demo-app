@@ -53,8 +53,15 @@ void Material::setTextureInShader(Shader& shader, Texture::TextureType ttype, in
 	// Activate texture unit i
 	glActiveTexture(GL_TEXTURE0 + slot);
 
+	// if texture is empty use dummy texture
+	Resource<Texture> texture = sampler->texture;
+	if (sampler->texture.isEmpty())
+	{
+		texture = Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1);
+	}
+
 	// Binds iterated texture to target GL_TEXTURE_2D on texture unit i
-	glBindTexture(GL_TEXTURE_2D, sampler->texture.get()->getID());
+	glBindTexture(GL_TEXTURE_2D, texture.get()->getID());
 
 	// set sampler2D (e.g. material.diffuse3 to the currently active texture unit)
 	shader.setUniformValue("material." + Texture::textureTypeToString(ttype) + ".texture", slot);
