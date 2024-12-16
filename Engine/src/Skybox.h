@@ -29,8 +29,7 @@ public:
 
     static Entity CreateSkyboxFromCubemap(const SkyboxFaces& faces, Scene* scene = nullptr);
 
-    static Entity CreateSkyboxFromEquirectangularMap(Resource<Texture> equirectnagularMap, Scene* scene = nullptr);
-    static Entity CreateSkyboxFromEquirectangularMap(Resource<Texture> texture, Entity& entity, Scene* scene = nullptr);
+    static Entity loadSkybox(Resource<Texture> texture, Entity& entity, Scene* scene = nullptr);
 
 private:
     static Entity createSkyboxHelper(Resource<Texture> cubemap, Resource<Texture> equirectangularMap, Entity& entity, Scene* scene);

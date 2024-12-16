@@ -8,8 +8,27 @@ struct Material
 	sampler2D texture_normal;
 }; 
 
+struct PBR_Sampler
+{
+	sampler2D texture;
+	int channelMaskR;
+	int channelMaskG;
+	int channelMaskB;
+	int channelMaskA;
+	float xOffset;
+	float yOffset;
+	float xScale;
+	float yScale;
+};
+
 struct PBR_Material 
 { 
+	PBR_Sampler samplerAlbedo;
+	PBR_Sampler samplerNormal;
+	PBR_Sampler samplerMetallic;
+	PBR_Sampler samplerRoughness;
+	PBR_Sampler samplerAO;
+
 	// textures 
 	sampler2D texture_albedo; 
 	sampler2D texture_normal; 

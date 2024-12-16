@@ -5,6 +5,8 @@
 #include "MeshBuilder.h"
 #include "Factory.h"
 #include "MeshExporter.h"
+#include "Logger.h"
+#include "CommonTextures.h"
 
 aiScene* generateScene(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
 {
@@ -17,7 +19,7 @@ aiScene* generateScene(const std::vector<float>& vertices, const std::vector<uns
 	mesh->mNumUVComponents[0] = 2;
 
 	// Set vertices
-	for (unsigned int i = 0; i < mesh->mNumVertices; ++i) 
+	for (unsigned int i = 0; i < mesh->mNumVertices / 5; ++i) 
 	{
 		mesh->mVertices[i] = aiVector3D(vertices[i * 5 + 0], vertices[i * 5 + 1], vertices[i * 5 + 2]);
 		mesh->mTextureCoords[0][i] = aiVector3D(vertices[i * 5 + 3], vertices[i * 5 + 4], 0.0f);
@@ -109,7 +111,9 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Te
 	}
 
 
-	Resource<Mesh> mesh = Factory<Mesh>::create();
+	Resource<MeshCollection> meshCollection = Factory<MeshCollection>::create();
+
+	auto mesh = std::make_shared<Mesh>();
 
 	VertexLayout layout;
 	layout.attribs.push_back(LayoutAttribute::Positions);
@@ -120,23 +124,33 @@ Terrain Terrain::generateTerrain(int width, int height, float scale, Resource<Te
 	MeshBuilder::builder()
 		.addRawVertices(vertices.data(), layout)
 		.addIndices(indices)
-		.build(mesh);
+		.build(*mesh.get());
+
+	meshCollection.get()->addMesh(mesh);
 
 	aiScene* scene = generateScene(vertices, indices);
 
-	MeshExporter::exportMesh(mesh, scene);
+	MeshExporter::exportMesh(meshCollection, scene);
 
 	Terrain terrain;
 	terrain.m_heightmap = heightMap;
 	terrain.m_scale = scale;
 	terrain.m_width = width;
 	terrain.m_height = height;
-	terrain.m_mesh = mesh;
+	terrain.m_mesh = meshCollection;
+
+	for (int i = 0; i < MAX_TEXTURE_COUNT; i++)
+	{
+		TextureBlend blend;
+		blend.texture = Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1);
+		blend.blend = i * .2f + .2f;
+		terrain.m_textureBlends.push_back(blend);
+	}
 
 	return terrain; // todo fix
 }
 
-Resource<Mesh> Terrain::getMesh() const
+Resource<MeshCollection> Terrain::getMesh() const
 {
 	return m_mesh;
 }
@@ -159,4 +173,87 @@ int Terrain::getWidth() const
 int Terrain::getHeight() const
 {
 	return m_height;
+}
+
+void Terrain::setTexture(int index, Resource<Texture> texture)
+{
+	if (index > m_textureBlends.size() - 1)
+	{
+		logWarning("Invalid texture specified: " + std::to_string(index));
+		return;
+	}
+
+	m_textureBlends[index].texture = texture;
+}
+
+void Terrain::setTextureScaleX(int index, float scaleX)
+{
+	if (index > m_textureBlends.size() - 1)
+	{
+		logWarning("Invalid texture index specified: " + std::to_string(index));
+		return;
+	}
+
+	m_textureBlends.at(index).scaleX = scaleX;
+}
+
+void Terrain::setTextureScaleY(int index, float scaleY)
+{
+	if (index > m_textureBlends.size() - 1)
+	{
+		logWarning("Invalid texture index specified: " + std::to_string(index));
+		return;
+	}
+
+	m_textureBlends.at(index).scaleY = scaleY;
+}
+
+void Terrain::setTextureBlend(int index, float val)
+{
+	if (index > m_textureBlends.size() - 1)
+	{
+		logWarning("Invalid texture blend specified: " + std::to_string(index));
+		return;
+	}
+
+	m_textureBlends[index].blend = val;
+}
+
+Resource<Texture>& Terrain::getTexture(int index)
+{
+	if (index > m_textureBlends.size() - 1)
+	{
+		logWarning("Invalid texture index specified: " + std::to_string(index));
+		return Resource<Texture>::empty;
+	}
+
+	return m_textureBlends.at(index).texture;
+}
+
+float Terrain::getTextureBlend(int index) const
+{
+	if (index > m_textureBlends.size() - 1)
+	{
+		logWarning("Invalid texture blend specified: " + std::to_string(index));
+		return 0;
+	}
+
+	return m_textureBlends.at(index).blend;
+}
+
+glm::vec2 Terrain::getTextureScale(int index) const
+{
+	if (index > m_textureBlends.size() - 1)
+	{
+		logWarning("Invalid texture blend specified: " + std::to_string(index));
+		return {};
+	}
+
+	auto& textureBlend = m_textureBlends.at(index);
+	return { textureBlend.scaleX, textureBlend.scaleY };
+}
+
+int Terrain::getTextureCount() const
+{
+	return m_textureCount;
 }

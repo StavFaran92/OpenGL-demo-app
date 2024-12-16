@@ -4,6 +4,7 @@
 
 #include "FrameBufferObject.h"
 #include "IRenderer.h"
+#include "Entity.h"
 
 class Shader;
 class Scene;
@@ -23,7 +24,7 @@ public:
 
 	bool init();
 
-	void renderToDepthMap(const IRenderer::DrawQueueRenderParams* params);
+	void renderToDepthMap();
 
 	Resource<Texture> getShadowMap() const;
 	glm::mat4 getLightSpaceMat() const;

@@ -9,7 +9,7 @@
 MaterialComponent::MaterialComponent()
 {
 	auto mat = std::make_shared<Material>(*Engine::get()->getDefaultMaterial().get());
-	materials.push_back(mat);
+	materials[0] = mat;
 }
 
 InstanceBatch::InstanceBatch()
@@ -101,4 +101,10 @@ void RigidBodyComponent::move(glm::vec3 position)
 {
 	m_targetPisition = position;
 	isChanged = true;
+}
+
+glm::mat4 CameraComponent::getProjection() const
+{
+	if (type == CamType::PERSPECTIVE) return glm::perspective(fovy, aspect, znear, zfar);
+	if (type == CamType::ORTHOGRAPHIC) return glm::ortho(-100, 100, -100, 100);
 }

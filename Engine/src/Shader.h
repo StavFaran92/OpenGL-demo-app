@@ -13,6 +13,8 @@
 #include "glm/glm.hpp"
 
 struct ShadersInfo;
+template<typename> class Resource;
+class Texture;
 
 using Value = std::variant<float, glm::vec2, glm::vec3, glm::vec4, int, unsigned int, glm::mat3, glm::mat4>;
 
@@ -45,6 +47,8 @@ public:
 
 	int getUniformLocation(const std::string& name);
 
+	int getUniformBlockLocation(const std::string& name);
+
 	void setModelMatrix(glm::mat4 model);
 	void setViewMatrix(glm::mat4 view);
 	void setProjectionMatrix(glm::mat4 projection);
@@ -52,6 +56,8 @@ public:
 	void init();
 
 	void bindUniformBlockToBindPoint(const std::string& uniformBlockName, int bindPointIndex);
+
+	void setTextureInShader(Resource<Texture> texture, const std::string& uniform, int slot);
 
 	bool build();
 
@@ -94,6 +100,8 @@ private:
 protected:
 	unsigned int m_id;
 	std::unordered_map<std::string, int> m_uniformLocationCache;
+
+	std::unordered_map<std::string, int> m_uniformBlockLocationCache;
 
 	std::string m_glslFilePath;
 

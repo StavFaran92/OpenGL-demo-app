@@ -177,10 +177,25 @@ bool Mesh::build(MeshData& mData)
 
 	m_vao->AttachBuffer(*m_vbo, m_ibo.get(), m_layout);
 
-	m_bonesOffsets = mData.bonesOffsets;
-	m_bonesNameToIDMap = mData.bonesNameToIDMap;
-
 	m_positions = mData.m_positions;
+
+	glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
+	glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
+
+	// TODO this can be optimized using assimp premade aabb structure
+	for (auto&& pos : m_positions)
+	{
+		minAABB.x = std::min(minAABB.x, pos.x);
+		minAABB.y = std::min(minAABB.y, pos.y);
+		minAABB.z = std::min(minAABB.z, pos.z);
+
+		maxAABB.x = std::max(maxAABB.x, pos.x);
+		maxAABB.y = std::max(maxAABB.y, pos.y);
+		maxAABB.z = std::max(maxAABB.z, pos.z);
+	}
+
+	m_aabb = AABB::createFromMinMax(minAABB, maxAABB);
+	materialIndex = mData.materialIndex;
 	//m_normals = std::move(mData.m_normals);
 
 	return true;
@@ -246,19 +261,14 @@ VertexArrayObject* Mesh::getVAO() const
 	return m_vao.get();
 }
 
-std::vector<glm::mat4> Mesh::getBoneOffsets() const
+AABB Mesh::getAABB() const
 {
-	return m_bonesOffsets;
+	return m_aabb;
 }
 
-int Mesh::getBoneID(const std::string& boneName) const
+int Mesh::getMaterialIndex() const
 {
-	if (m_bonesNameToIDMap.find(boneName) == m_bonesNameToIDMap.end())
-	{
-		return -1;
-	}
-
-	return m_bonesNameToIDMap.at(boneName);
+	return materialIndex;
 }
 
 Mesh::~Mesh()

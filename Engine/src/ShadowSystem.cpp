@@ -16,6 +16,11 @@
 #include "Context.h"
 #include "Texture.h"
 #include "Animator.h"
+#include "MeshCollection.h"
+#include "Graphics.h"
+#include "RenderCommand.h"
+#include "ShapeFactory.h"
+
 
 const unsigned int SHADOW_WIDTH = 1024;
 const unsigned int SHADOW_HEIGHT = 1024;
@@ -63,8 +68,10 @@ bool ShadowSystem::init()
 	return true;
 }
 
-void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* params)
+void ShadowSystem::renderToDepthMap()
 {
+	auto graphics = Engine::get()->getSubSystem<Graphics>();
+
 	glEnable(GL_DEPTH_TEST);
 	glCullFace(GL_FRONT);
 
@@ -78,8 +85,8 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	// Configure Shadow pass matrices
-	auto entt = params->registry->view<DirectionalLight>().front();
-	Entity e{ entt, &params->scene->getRegistry()};
+	auto entt = m_scene->getRegistry().getRegistry().view<DirectionalLight>().front();
+	Entity e{ entt, &m_scene->getRegistry() };
 	auto& dirLight = e.getComponent<DirectionalLight>();
 
 	//todo verify exists
@@ -102,48 +109,52 @@ void ShadowSystem::renderToDepthMap(const IRenderer::DrawQueueRenderParams* para
 
 	m_lightSpaceMatrix = lightProjection * dirLightView;
 
-	auto drawQueueRenderParams = *params;
-
-	drawQueueRenderParams.shader = m_simpleDepthShader.get();
-	drawQueueRenderParams.shader->setUniformValue("lightSpaceMatrix", m_lightSpaceMatrix);
+	m_simpleDepthShader->use();
+	m_simpleDepthShader->setUniformValue("lightSpaceMatrix", m_lightSpaceMatrix);
 
 	// Render Scene 
 	for (auto&& [entity, mesh, transform, renderable] : 
-		params->registry->view<MeshComponent, Transformation, RenderableComponent>().each())
+		m_scene->getRegistry().getRegistry().view<MeshComponent, Transformation, RenderableComponent>().each())
 	{
 		
 
 		Entity entityhandler{ entity, &m_scene->getRegistry()};
-		drawQueueRenderParams.entity = &entityhandler;
-		drawQueueRenderParams.mesh = mesh.mesh.get();
-		drawQueueRenderParams.shader->setUniformValue("model", transform.getWorldTransformation());
+		graphics->entity = &entityhandler;
+
+		auto meshCollection = mesh.mesh;
 
 		auto animator = entityhandler.tryGetComponent<Animator>();
 		if (animator)
 		{
 			std::vector<glm::mat4> finalBoneMatrices;
-			animator->getFinalBoneMatrices(mesh.mesh.get(), finalBoneMatrices);
+			animator->getFinalBoneMatrices(meshCollection.get(), finalBoneMatrices);
 			for (int i = 0; i < finalBoneMatrices.size(); ++i)
 			{
-				drawQueueRenderParams.shader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
+				m_simpleDepthShader->setUniformValue("finalBonesMatrices[" + std::to_string(i) + "]", finalBoneMatrices[i]);
 			}
 
-			drawQueueRenderParams.shader->setUniformValue("isAnimated", true);
+			m_simpleDepthShader->setUniformValue("isAnimated", true);
 		}
 		else
 		{
-			drawQueueRenderParams.shader->setUniformValue("isAnimated", false);
+			m_simpleDepthShader->setUniformValue("isAnimated", false);
 		}
 
+		
+		for (auto& mesh : mesh.mesh.get()->getMeshes())
+		{
+			graphics->mesh = mesh.get();
+			m_simpleDepthShader->setUniformValue("model", transform.getWorldTransformation());
 
+			
 
-		//auto tempModel = transform.getWorldTransformation();
-		drawQueueRenderParams.model = nullptr;
-		drawQueueRenderParams.view = nullptr;
-		drawQueueRenderParams.projection = nullptr;
+			// draw model
+			auto vao = mesh->getVAO();
 
-		// draw model
-		params->renderer->render(drawQueueRenderParams);
+			// render to quad
+			RenderCommand::draw(vao);
+
+		}
 	};
 
 	// Unbind FBO

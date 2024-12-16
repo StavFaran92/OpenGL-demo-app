@@ -13,13 +13,15 @@
 
 #include "EquirectangularToCubemapConverter.h" // todo remove
 
+
+
 Texture::Texture()
-	:m_id(0), m_width(0), m_height(0), m_bitDepth(0), m_slot(0)
+	:m_id(0), m_slot(0)
 {
 }
 
 Texture::Texture(const Texture& other)
-	: m_id(other.m_id), m_width(other.m_width), m_height(other.m_height), m_bitDepth(other.m_bitDepth), m_slot(other.m_slot)
+	: m_id(other.m_id), m_slot(other.m_slot), m_data(other.m_data)
 {
 }
 
@@ -34,9 +36,9 @@ Resource<Texture> Texture::createEmptyTexture(int width, int height, int interna
 	textureData.target = GL_TEXTURE_2D;
 	textureData.width = width;
 	textureData.height = height;
-	textureData.internalFormat = internalFormat;
-	textureData.format = format;
-	textureData.type = type;
+	textureData.internalFormat = (InternalFormat)internalFormat;
+	textureData.format = (Format)format;
+	textureData.type = (Type)type;
 	textureData.params = {
 		{GL_TEXTURE_MIN_FILTER, GL_NEAREST },
 		{GL_TEXTURE_MAG_FILTER, GL_NEAREST },
@@ -61,9 +63,9 @@ Resource<Texture> Texture::create2DTextureFromBuffer(int width, int height, int 
 	textureData.width = width;
 	textureData.height = height;
 	textureData.bpp = 4;
-	textureData.internalFormat = internalFormat;
-	textureData.format = format;
-	textureData.type = type;
+	textureData.internalFormat = (InternalFormat)internalFormat;
+	textureData.format = (Format)format;
+	textureData.type = (Type)type;
 	textureData.params = params;
 	textureData.data = data;
 
@@ -72,34 +74,26 @@ Resource<Texture> Texture::create2DTextureFromBuffer(int width, int height, int 
 
 Resource<Texture> Texture::createDummyTexture(unsigned char data[3])
 {
-	Resource<Texture> texture = Factory<Texture>::create();
+	TextureData tData;
+	tData.target = GL_TEXTURE_2D;
+	tData.width = 1;
+	tData.height = 1;
+	tData.bpp = 3;
+	tData.data = data;
+	tData.internalFormat = InternalFormat::RGB2;
+	tData.format = Format::RGB;
+	tData.type = Type::UNSIGNED_BYTE;
+	tData.params = { {GL_TEXTURE_MIN_FILTER, GL_LINEAR},
+					{GL_TEXTURE_MAG_FILTER, GL_LINEAR},
+					{GL_TEXTURE_WRAP_S, GL_REPEAT},
+					{GL_TEXTURE_WRAP_T, GL_REPEAT } };
 
-	texture.get()->m_target = GL_TEXTURE_2D;
-	texture.get()->m_width = 1;
-	texture.get()->m_height = 1;
-
-	// generate texture
-	glGenTextures(1, &texture.get()->m_id);
-	texture.get()->bind();
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	texture.get()->unbind();
-
-	return texture;
+	return create2DTextureFromBuffer(tData);
 }
 
 void Texture::build(const TextureData& textureData)
 {
-	m_target = textureData.target;
-	m_width = textureData.width;
-	m_height = textureData.height;
-	m_bitDepth = textureData.bpp;
+	m_data = textureData;
 
 	// generate texture
 	glGenTextures(1, &m_id);
@@ -110,7 +104,7 @@ void Texture::build(const TextureData& textureData)
 		glTexParameteri(GL_TEXTURE_2D, paramKey, paramValue);
 	}
 
-	glTexImage2D(GL_TEXTURE_2D, 0, textureData.internalFormat, m_width, m_height, 0, textureData.format, textureData.type, textureData.data);
+	glTexImage2D(GL_TEXTURE_2D, 0, textureData.internalFormat, m_data.width, m_data.height, 0, textureData.format, (int)textureData.type, textureData.data);
 
 	if (textureData.genMipMap)
 	{
@@ -122,17 +116,17 @@ void Texture::build(const TextureData& textureData)
 
 int Texture::getWidth() const
 {
-	return m_width;
+	return m_data.width;
 }
 
 int Texture::getHeight() const
 {
-	return m_height;
+	return m_data.height;
 }
 
 int Texture::getBitDepth() const
 {
-	return m_bitDepth;
+	return m_data.bpp;
 }
 
 void Texture::setData(int xoffset, int yoffset, int width, int height, const void* data)
@@ -142,23 +136,23 @@ void Texture::setData(int xoffset, int yoffset, int width, int height, const voi
 	glTexSubImage2D(GL_TEXTURE_2D, 0, xoffset, yoffset, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 }
 
-std::string Texture::textureTypeToString(Type type)
+std::string Texture::textureTypeToString(TextureType type)
 {
 	switch (type)
 	{
-		case Texture::Type::Diffuse:
-			return Constants::g_textureDiffuse;
-		case Texture::Type::Specular:
-			return Constants::g_textureSpecular;
-		case Texture::Type::Albedo:
+		case Texture::TextureType::Diffuse:
 			return Constants::g_textureAlbedo;
-		case Texture::Type::Normal:
+		case Texture::TextureType::Specular:
+			return Constants::g_textureSpecular;
+		case Texture::TextureType::Albedo:
+			return Constants::g_textureAlbedo;
+		case Texture::TextureType::Normal:
 			return Constants::g_textureNormal;
-		case Texture::Type::Metallic:
+		case Texture::TextureType::Metallic:
 			return Constants::g_textureMetallic;
-		case Texture::Type::Roughness:
+		case Texture::TextureType::Roughness:
 			return Constants::g_textureRoughness;
-		case Texture::Type::AmbientOcclusion:
+		case Texture::TextureType::AmbientOcclusion:
 			return Constants::g_textureAO;
 
 		default:
@@ -170,23 +164,13 @@ std::string Texture::textureTypeToString(Type type)
 void Texture::bind() const
 {
 	glActiveTexture(GL_TEXTURE0 + m_slot);
-	glBindTexture(m_target, m_id);
+	glBindTexture(m_data.target, m_id);
 }
 
 void Texture::unbind() const
 {
 	glActiveTexture(GL_TEXTURE0 + m_slot);
-	glBindTexture(m_target, 0);
-}
-
-void Texture::flip()
-{
-	m_flipped = !m_flipped;
-}
-
-bool Texture::isFlipped() const
-{
-	return m_flipped;
+	glBindTexture(m_data.target, 0);
 }
 
 unsigned int Texture::getID() const

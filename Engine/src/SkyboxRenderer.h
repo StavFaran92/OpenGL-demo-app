@@ -9,6 +9,6 @@ class SkyboxRenderer : public Renderer
 public:
 	SkyboxRenderer() = default;
 
-	void render(const DrawQueueRenderParams& renderParams);
+	void render();
 };
 

@@ -7,6 +7,7 @@
 #include "Animation.h"
 #include "AnimationLoader.h"
 #include "CacheSystem.h"
+#include "ModelImporter.h"
 
 //#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -21,12 +22,58 @@ Assets::Assets()
 	Engine::get()->registerSubSystem<Assets>(this);
 }
 
+ModelImporter::ModelInfo Assets::importMesh(const std::string& fileLocation)
+{
+	auto memoryManagementSystem = Engine::get()->getMemoryManagementSystem();
+	std::filesystem::path path(fileLocation);
+	
+	auto modelInfo = Engine::get()->getSubSystem<ModelImporter>()->import(fileLocation);
+
+	Engine::get()->getContext()->getProjectAssetRegistry()->addMesh(modelInfo.mesh.getUID());
+
+	m_meshes[modelInfo.mesh.getUID()] = modelInfo.mesh;
+
+	memoryManagementSystem->addAssociation(path.filename().string(), modelInfo.mesh.getUID());
+
+	return modelInfo;
+}
+
+std::vector<std::string> Assets::getAllMeshes() const
+{
+	std::vector<std::string> result;
+	for (auto [uuid, _] : m_meshes)
+	{
+		result.push_back(uuid);
+	}
+	return result;
+}
+
+// Function to determine if the file is HDR based on its extension
+bool isHDRImage(const std::string& filename) {
+	return stbi_is_hdr(filename.c_str());
+}
+
 Texture::TextureData Assets::extractTextureDataFromFile(const std::string& fileLocation)
 {
 	Texture::TextureData textureData;
 	textureData.target = GL_TEXTURE_2D;
 
-	textureData.data = stbi_load(fileLocation.c_str(), &textureData.width, &textureData.height, &textureData.bpp, 0);
+	// Determine if the image is HDR
+	if (isHDRImage(fileLocation))
+	{
+		textureData.isHDR = true;
+	}
+
+	if (textureData.isHDR)
+	{
+		textureData.data = stbi_loadf(fileLocation.c_str(), &textureData.width, &textureData.height, &textureData.bpp, 0);
+	}
+	else
+	{
+		textureData.data = stbi_load(fileLocation.c_str(), &textureData.width, &textureData.height, &textureData.bpp, 0);
+	}
+
+	
 
 	// load validation
 	if (!textureData.data)
@@ -35,27 +82,55 @@ Texture::TextureData Assets::extractTextureDataFromFile(const std::string& fileL
 		return {};
 	}
 
-	GLenum format = GL_RGB;
+	// Determine format based on bits per pixel (bpp)
 	if (textureData.bpp == 1)
-		textureData.format = GL_RED;
-	else if (textureData.bpp == 3)
-		textureData.format = GL_RGB;
-	else if (textureData.bpp == 4)
-		textureData.format = GL_RGBA;
+	{
+		textureData.format = (Texture::Format)GL_RED;
+		textureData.internalFormat = (Texture::InternalFormat)((textureData.isHDR) ? GL_R16F : GL_R8); // HDR: 16-bit float, Non-HDR: 8-bit
+	}
+	else if (textureData.bpp == 3) 
+	{
+		textureData.format = (Texture::Format)GL_RGB;
+		textureData.internalFormat = (Texture::InternalFormat)((textureData.isHDR) ? GL_RGB16F : GL_RGB8); // HDR: 16-bit float, Non-HDR: 8-bit
+	}
+	else if (textureData.bpp == 4) 
+	{
+		textureData.format = (Texture::Format)GL_RGBA;
+		textureData.internalFormat = (Texture::InternalFormat)((textureData.isHDR) ? GL_RGBA16F : GL_RGBA8); // HDR: 16-bit float, Non-HDR: 8-bit
+	}
+	else {
+		throw std::runtime_error("Unsupported texture format!");
+	}
 
-	textureData.internalFormat = textureData.format;
+	textureData.type = (textureData.isHDR) ? (Texture::Type)GL_FLOAT : (Texture::Type)GL_UNSIGNED_BYTE;
 
-	textureData.type = GL_UNSIGNED_BYTE;
 	textureData.params = {
 		{ GL_TEXTURE_WRAP_S, GL_REPEAT},
 		{ GL_TEXTURE_WRAP_T, GL_REPEAT},
-		{ GL_TEXTURE_MIN_FILTER, GL_LINEAR},
-		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR},
+		{ GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR},
+		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR},
 	};
 
 	textureData.genMipMap = true;
 
 	return textureData;
+}
+
+Resource<Texture> Assets::importTexture2D(const std::string& assetName, std::function<Resource<Texture>()> func)
+{
+	return Engine::get()->getMemoryManagementSystem()->createOrGetCached<Texture>(assetName, [&]() {
+			Resource<Texture> res = func();
+			Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(res);
+			auto& projectDir = Engine::get()->getProjectDirectory();
+			stbi_write_png((projectDir + "/" + res.getUID() + ".png").c_str(), 
+				res.get()->getWidth(), 
+				res.get()->getHeight(), 
+				res.get()->getBitDepth(), 
+				res.get()->getData().data, 
+				res.get()->getBitDepth());
+			m_textures[res.getUID()] = res;
+			return res;
+		} );
 }
 
 Resource<Texture> Assets::importTexture2D(const std::string& fileLocation, bool flip)
@@ -72,8 +147,15 @@ Resource<Texture> Assets::importTexture2D(const std::string& fileLocation, bool 
 		Resource<Texture> texture = Texture::create2DTextureFromBuffer(textureData);
 
 		auto& projectDir = Engine::get()->getProjectDirectory();
-		stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), textureData.width, textureData.height, textureData.bpp, textureData.data, textureData.width * textureData.bpp);
-		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture.getUID());
+		if (textureData.isHDR)
+		{
+			stbi_write_hdr((projectDir + "/" + texture.getUID() + ".hdr").c_str(), textureData.width, textureData.height, textureData.bpp, (float*)textureData.data);
+		}
+		else
+		{
+			stbi_write_png((projectDir + "/" + texture.getUID() + ".png").c_str(), textureData.width, textureData.height, textureData.bpp, textureData.data, textureData.width * textureData.bpp);
+		}
+		Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture);
 
 		m_textures[texture.getUID()] = texture;
 
@@ -97,6 +179,13 @@ Resource<Texture> Assets::loadTexture2D(UUID uid, const std::string& path)
 	m_textures[uid] = res;
 
 	return res;
+}
+
+void Assets::addTexture2D(Resource<Texture> texture)
+{
+	Engine::get()->getContext()->getProjectAssetRegistry()->addTexture(texture);
+
+	m_textures[texture.getUID()] = texture;
 }
 
 std::vector<std::string> Assets::getAllTextures() const
@@ -138,4 +227,9 @@ std::vector<std::string> Assets::getAllAnimations() const
 		result.push_back(uuid);
 	}
 	return result;
+}
+
+std::string Assets::getAlias(UUID uid) const
+{
+	return Engine::get()->getMemoryManagementSystem()->getName(uid);
 }

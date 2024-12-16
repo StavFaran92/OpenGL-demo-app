@@ -14,7 +14,7 @@
 #include "RenderCommand.h"
 #include "Entity.h"
 #include "Component.h"
-#include "Mesh.h"
+#include "MeshCollection.h"
 #include "Context.h"
 #include "Cubemap.h"
 
@@ -65,10 +65,10 @@ Resource<Texture> EquirectangularToCubemapConverter::fromEquirectangularToCubema
 	equirectangularTexture.get()->bind();
 	
 
-	auto box = ShapeFactory::createBox(&Engine::get()->getContext()->getRegistry());
+	auto box = ShapeFactory::createBoxEntity(&Engine::get()->getContext()->getRegistry());
 	box.RemoveComponent<RenderableComponent>();
 	box.RemoveComponent<ObjectComponent>();
-	auto vao = box.getComponent<MeshComponent>().mesh.get()->getVAO();
+	auto vao = box.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh()->getVAO();
 
 	// render to cube
 	// Attach cube map to frame buffer
@@ -101,8 +101,14 @@ Resource<Texture> EquirectangularToCubemapConverter::fromCubemapToEquirectangula
 
 	fbo.bind();
 
+	int outputWidth = cubemapTexture.get()->getWidth() * 3;
+	int outputHeight = cubemapTexture.get()->getHeight() * 2;
+
 	// Generate cubemap
-	auto equirectnagular = Texture::create2DTextureFromBuffer(2048, 1024, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE,
+	auto equirectnagular = Texture::create2DTextureFromBuffer(
+		outputWidth,
+		outputHeight,
+		GL_RGB, GL_RGB, GL_UNSIGNED_BYTE,
 		{
 			{ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE },
 			{ GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE },
@@ -111,7 +117,7 @@ Resource<Texture> EquirectangularToCubemapConverter::fromCubemapToEquirectangula
 		}
 	, nullptr);
 
-	RenderBufferObject rbo{ 2048, 1024 };
+	RenderBufferObject rbo{ outputWidth, outputHeight };
 	fbo.attachRenderBuffer(rbo.GetID(), FrameBufferObject::AttachmentType::Depth);
 
 	if (!fbo.isComplete())
@@ -123,7 +129,7 @@ Resource<Texture> EquirectangularToCubemapConverter::fromCubemapToEquirectangula
 	fbo.attachTexture(equirectnagular.get()->getID());
 
 	// set viewport
-	glViewport(0, 0, 2048, 1024);
+	glViewport(0, 0, outputWidth, outputHeight);
 
 	cubemapToEquirectangularShader->use();
 	cubemapToEquirectangularShader->setUniformValue("cubemap", 0);
@@ -135,7 +141,7 @@ Resource<Texture> EquirectangularToCubemapConverter::fromCubemapToEquirectangula
 	auto quad = ShapeFactory::createQuad(&Engine::get()->getContext()->getRegistry());
 	quad.RemoveComponent<RenderableComponent>();
 	quad.RemoveComponent<ObjectComponent>();
-	auto vao = quad.getComponent<MeshComponent>().mesh.get()->getVAO();
+	auto vao = quad.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh()->getVAO();
 
 	// render to quad
 	// attach cubemap face to fbo

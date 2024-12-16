@@ -16,6 +16,7 @@
 #include "Engine.h"
 #include "Scene.h"
 #include "Cubemap.h"
+#include "CacheSystem.h"
 
 #include "EditorCamera.h"
 #include "cube.h"
@@ -30,51 +31,47 @@ Entity Skybox::CreateSkyboxFromEquirectangularMap(const std::string& equirectnag
         scene = Engine::get()->getContext()->getActiveScene().get();
     }
 
-    auto equirectnagularMap = Engine::get()->getSubSystem<Assets>()->importTexture2D(equirectnagularMapPath);
+    auto equirectnagularMap = Engine::get()->getSubSystem<Assets>()->importTexture2D(equirectnagularMapPath, true);
 
     //texture = TextureTransformer::flipVertical(texture);
 
     auto cubemap = EquirectangularToCubemapConverter::fromEquirectangularToCubemap(equirectnagularMap);
 
-    auto entity = ShapeFactory::createBox(&scene->getRegistry());
+    auto entity = scene->createEntity();
 
     return createSkyboxHelper(cubemap, equirectnagularMap, entity, scene);
 }
 
-Entity Skybox::CreateSkyboxFromEquirectangularMap(Resource<Texture> equirectnagularMap, Entity& entity, Scene* scene)
+Entity Skybox::loadSkybox(Resource<Texture> equirectnagularMap, Entity& entity, Scene* scene)
 {
     if (!scene)
     {
         scene = Engine::get()->getContext()->getActiveScene().get();
     }
 
-    equirectnagularMap = TextureTransformer::flipVertical(equirectnagularMap);
+    //equirectnagularMap = TextureTransformer::flipVertical(equirectnagularMap);
 
     auto cubemap = EquirectangularToCubemapConverter::fromEquirectangularToCubemap(equirectnagularMap);
 
     return createSkyboxHelper(cubemap, equirectnagularMap, entity, scene);
 }
 
-Entity Skybox::CreateSkyboxFromEquirectangularMap(Resource<Texture> equirectnagularMap, Scene* scene)
-{
-    auto entity = ShapeFactory::createBox(&scene->getRegistry());
-
-    return CreateSkyboxFromEquirectangularMap(equirectnagularMap, entity, scene);
-}
-
 Entity Skybox::CreateSkyboxFromCubemap(const SkyboxFaces& faces, Scene* scene)
 {
-    std::vector<std::string> facesVec{faces.right, faces.left, faces.top, faces.bottom, faces.front, faces.back};
-
+    std::vector<std::string> facesVec{ faces.right, faces.left, faces.top, faces.bottom, faces.front, faces.back };
     auto cubemap = Cubemap::createCubemapFromCubemapFiles(facesVec);
 
     Resource<Texture> equirectangularMap = EquirectangularToCubemapConverter::fromCubemapToEquirectangular(cubemap);
-
+    equirectangularMap = TextureTransformer::flipVertical(equirectangularMap);
     Cubemap::saveEquirectangularMap(equirectangularMap);
+    Engine::get()->getSubSystem<Assets>()->addTexture2D(equirectangularMap);
 
-    auto entity = ShapeFactory::createBox(&scene->getRegistry());
-    
-    return createSkyboxHelper(cubemap, equirectangularMap, entity, scene);
+    static int skyboxCount = 0; // TODO fix - will not work with load
+    Engine::get()->getMemoryManagementSystem()->addAssociation("SKYBOX_" + std::to_string(skyboxCount++), equirectangularMap.getUID());
+
+    auto entity = scene->createEntity();
+
+    return loadSkybox(equirectangularMap, entity, scene);
 }
 
 Entity Skybox::createSkyboxHelper(Resource<Texture> cubemap, Resource<Texture> equirectangularMap, Entity& entity, Scene* scene)
@@ -94,7 +91,8 @@ Entity Skybox::createSkyboxHelper(Resource<Texture> cubemap, Resource<Texture> e
 
     entity.RemoveComponent<RenderableComponent>();
     entity.RemoveComponent<MaterialComponent>();
-    entity.addComponent<SkyboxComponent>(cubemap).originalImage = equirectangularMap;
+    auto& skyboxComponent = entity.addComponent<SkyboxComponent>(cubemap);
+    skyboxComponent.originalImage = equirectangularMap;
 
     entity.getComponent<ObjectComponent>().name = "Skybox";
 

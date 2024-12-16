@@ -18,11 +18,12 @@ class EngineAPI Application
 {
 public:
 	virtual void start() = 0;
+	virtual void update() {};
 	virtual void close() {};
 
 protected:
 	/** API */
-	Box* createBox();
+	Box* createBoxEntity();
 	Quad* createQuad();
 	void postProcess(Shader*);
 	void skybox(std::shared_ptr<Skybox> skybox);

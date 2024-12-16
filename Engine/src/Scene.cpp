@@ -47,35 +47,26 @@
 #include "Archiver.h"
 #include "Animator.h"
 #include "Terrain.h"
+#include "AABB.h"
+#include "Frustum.h"
+#include "MeshCollection.h"
+#include "Graphics.h"
+#include "DebugHelper.h"
+#include "Cubemap.h"
 
-
-void Scene::displayWireframeMesh(Entity e, IRenderer::DrawQueueRenderParams params)
+void Scene::displayWireframeMesh(Entity e)
 {
-	auto mesh = e.tryGetComponent<MeshComponent>();
+	auto graphics = Engine::get()->getSubSystem<Graphics>();
 
-	if (mesh)
+	for (auto& mesh : e.tryGetComponent<MeshComponent>()->mesh.get()->getMeshes())
 	{
-		params.entity = &e;
-		params.shader = m_tempOutlineShader;
-		params.mesh = mesh->mesh.get();
+		graphics->entity = &e;
+		graphics->shader = m_tempOutlineShader;
+		graphics->mesh = mesh.get();
 		auto tempModel = e.getComponent<Transformation>().getWorldTransformation();
-		params.model = &tempModel;
+		graphics->model = &tempModel;
 
-		m_deferredRenderer->render(params);
-
-		params.entity = nullptr;
-		params.shader = nullptr;
-		params.mesh = nullptr;
-		params.model = nullptr;
-	}
-
-	auto children = e.getChildren();
-	if (children.size() > 0)
-	{
-		for (auto& [e, childEnt] : children)
-		{
-			displayWireframeMesh(childEnt, params);
-		}
+		m_deferredRenderer->render();
 	}
 }
 
@@ -210,41 +201,24 @@ void Scene::init(Context* context)
 	m_quadUI.RemoveComponent<ObjectComponent>();
 
 	m_UIShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/UIShader.glsl");
-
 	m_terrainShader = Shader::createShared<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/TerrainShader.glsl"); // todo consider move to context (or even Engine)
-
-	
-	//dLight.getComponent<Transformation>().setLocalPosition({ 0 , 2, 0 });;
-	
-
-	//for (int i = 0; i < 32; i++)
-	//{
-	//	auto rand_x = Engine::get()->getRandomSystem()->rand() * 12 - 6;
-	//	auto rand_y = Engine::get()->getRandomSystem()->rand() * 12 - 6;
-	//	auto pLight = createEntity();
-	//	//auto pLight = ShapeFactory::createSphere(this);
-	//	pLight.addComponent<Material>();
-	//	pLight.addComponent<RenderableComponent>();
-	//	pLight.addComponent<PointLight>();
-	//	pLight.getComponent<Transformation>().setLocalPosition({ rand_x , 0, rand_y });
-	//	pLight.getComponent<RenderableComponent>().renderTechnique = RenderableComponent::Forward;
-	//}
-
 	m_tempOutlineShader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/OutlineShader.glsl");
 
 	m_uboTime = std::make_shared<UniformBufferObject>(sizeof(float));
 	m_uboTime->attachToBindPoint(0);
 
 	// Create irradiance map using created cubemap
-	m_irradianceMap = Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1);;
+	m_irradianceMap = Cubemap::createDefaultCubemap();
 
 	// Create prefilter env map using created cubemap
-	m_prefilterEnvMap = Engine::get()->getCommonTextures()->getTexture(CommonTextures::TextureType::WHITE_1X1);;
+	m_prefilterEnvMap = Cubemap::createDefaultCubemap();
 
 	// Create BRDF look up texture
 	m_BRDFIntegrationLUT = IBL::generateBRDFIntegrationLUT(this);
 
 	m_skyboxShader = Shader::createShared<Shader>(SGE_ROOT_DIR +"Resources/Engine/Shaders/SkyboxShader.glsl");
+
+	m_basicBox = ShapeFactory::createBox();
 
 	//m_registry->get().on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
 	//m_registry->get().on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
@@ -256,6 +230,13 @@ void Scene::init(Context* context)
 
 void Scene::update(float deltaTime)
 {
+	for (auto&& [entity, transform] : m_registry->get().view<Transformation>().each())
+	{
+		transform.update();
+	}
+
+	m_primaryCamera.getComponent<Transformation>().update();
+
 	if (m_isSimulationActive)
 	{
 
@@ -357,6 +338,8 @@ void Scene::update(float deltaTime)
 
 void Scene::draw(float deltaTime)
 {
+	auto graphics = Engine::get()->getSubSystem<Graphics>();
+
 	glViewport(0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
 	m_deferredRenderer->clear();
 
@@ -364,32 +347,30 @@ void Scene::draw(float deltaTime)
 	auto& primaryCameraTransform = m_primaryCamera.getComponent<Transformation>();
 
 
-	IRenderer::DrawQueueRenderParams params;
-	params.scene = this;
-	params.context = m_context;
-	params.registry = &m_registry->get();
-	params.renderer = m_forwardRenderer.get();
-	params.view = &glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCameraTransform.getWorldPosition() + primaryCamera.front, primaryCamera.up);
-	params.projection = &m_defaultPerspectiveProjection;
-	params.cameraPos = primaryCameraTransform.getWorldPosition();
-	params.irradianceMap = m_irradianceMap;
-	params.prefilterEnvMap = m_prefilterEnvMap;
-	params.brdfLUT = m_BRDFIntegrationLUT;
+	graphics->scene = this;
+	graphics->context = m_context;
+	graphics->renderer = m_forwardRenderer.get();
+	graphics->view = &glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCameraTransform.getWorldPosition() + primaryCamera.front, primaryCamera.up);
+	graphics->projection = &m_defaultPerspectiveProjection;
+	graphics->cameraPos = primaryCameraTransform.getWorldPosition();
+	graphics->irradianceMap = m_irradianceMap;
+	graphics->prefilterEnvMap = m_prefilterEnvMap;
+	graphics->brdfLUT = m_BRDFIntegrationLUT;
 
-	m_shadowSystem->renderToDepthMap(&params);
+	m_shadowSystem->renderToDepthMap();
 
-	params.lightSpaceMatrix = m_shadowSystem->getLightSpaceMat();
-	params.shadowMap = m_shadowSystem->getShadowMap();
+	graphics->lightSpaceMatrix = m_shadowSystem->getLightSpaceMat();
+	graphics->shadowMap = m_shadowSystem->getShadowMap();
 
 	// PRE Render Phase
 	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])
 	{
-		cb(&params);
+		cb();
 	}
 
 	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_END])
 	{
-		cb(&params);
+		cb();
 	}
 
 	// Set time elapsed
@@ -399,6 +380,16 @@ void Scene::draw(float deltaTime)
 	m_uboTime->setData(0, sizeof(float), &elapsed);
 	m_uboTime->unbind();
 
+	Frustum frustum(primaryCameraTransform.getWorldPosition(), 
+		primaryCamera.front, 
+		primaryCamera.up, 
+		primaryCamera.right, 
+		primaryCamera.aspect, 
+		primaryCamera.fovy, 
+		primaryCamera.znear, 
+		primaryCamera.zfar);
+
+	graphics->frustum = &frustum;
 
 	auto view = m_registry->get().view<MeshComponent, Transformation, RenderableComponent>();
 
@@ -413,6 +404,9 @@ void Scene::draw(float deltaTime)
 		auto& renderable = entityhandler.getComponent<RenderableComponent>();
 		if (renderable.renderTechnique == RenderableComponent::RenderTechnique::Deferred)
 		{
+			auto& transform = entityhandler.getComponent<Transformation>();
+			auto& mesh = entityhandler.getComponent<MeshComponent>();
+
 			deferredRendererEntityGroup.push_back(entityhandler);
 		}
 		else if (renderable.renderTechnique == RenderableComponent::RenderTechnique::Forward)
@@ -444,16 +438,16 @@ void Scene::draw(float deltaTime)
 	m_deferredRenderer->clear();
 
 	// Render entities with built-in shader
-	params.entityGroup = &builtInShaderEntityGroup;
-	m_deferredRenderer->renderScene(params);
+	graphics->entityGroup = &builtInShaderEntityGroup;
+	m_deferredRenderer->renderScene(this);
 
 	//glBindFramebuffer(GL_FRAMEBUFFER, m_deferredRenderer->getGBuffer().getID());
 
 	// Render entities with custom shader
 	for (auto& e : customShaderEntityGroup)
 	{
-		params.entity = &e;
-		m_deferredRenderer->renderSceneUsingCustomShader(params);
+		graphics->entity = &e;
+		m_deferredRenderer->renderSceneUsingCustomShader();
 	}
 
 	const FrameBufferObject& gBuffer = m_deferredRenderer->getGBuffer();
@@ -474,9 +468,9 @@ void Scene::draw(float deltaTime)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, rTarget);
 
-	params.entityGroup = &forwardRendererEntityGroup;
+	graphics->entityGroup = &forwardRendererEntityGroup;
 
-	m_forwardRenderer->renderScene(params);
+	m_forwardRenderer->renderScene(this);
 
 	// Render skybox
 	glDepthMask(GL_FALSE);
@@ -484,20 +478,23 @@ void Scene::draw(float deltaTime)
 	m_skyboxShader->use();
 	m_renderTargetFBO->bind();
 
-	m_skyboxShader->setViewMatrix(*params.view);
-	m_skyboxShader->setProjectionMatrix(*params.projection);
+	m_skyboxShader->setViewMatrix(*graphics->view);
+	m_skyboxShader->setProjectionMatrix(*graphics->projection);
 
-	for (auto&& [entity, skybox, mesh, transform] : 
-		m_registry->get().view<SkyboxComponent, MeshComponent, Transformation>().each())
+	for (auto&& [entity, skybox, transform] : 
+		m_registry->get().view<SkyboxComponent, Transformation>().each())
 	{
 		Entity entityhandler{ entity, m_registry.get()};
-		params.entity = &entityhandler;
-		params.mesh = mesh.mesh.get();
-		params.model = &transform.getWorldTransformation();
+		graphics->entity = &entityhandler;
+		graphics->mesh = m_basicBox.get()->getPrimaryMesh().get(); // todo can be optimized using a single mesh
+		graphics->model = &transform.getWorldTransformation();
+
+		if (skybox.skyboxImage.isEmpty()) continue;
+
 		skybox.skyboxImage.get()->bind();
 		skybox.skyboxImage.get()->setSlot(0);
 
-		auto vao = params.mesh->getVAO();
+		auto vao = graphics->mesh->getVAO();
 		RenderCommand::draw(vao);
 	}
 	glDepthMask(GL_TRUE);
@@ -505,12 +502,12 @@ void Scene::draw(float deltaTime)
 
 	m_terrainShader->use();
 	
-	m_terrainShader->setUniformValue("view", *params.view);
-	m_terrainShader->setUniformValue("projection", *params.projection);
+	m_terrainShader->setUniformValue("view", *graphics->view);
+	m_terrainShader->setUniformValue("projection", *graphics->projection);
 	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glEnable(GL_POLYGON_OFFSET_LINE);
-	glPolygonOffset(-1.0, -1.0);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glEnable(GL_POLYGON_OFFSET_LINE);
+	//glPolygonOffset(-1.0, -1.0);
 
 	// Render terrain
 	for (auto&& [entity, terrain, transform] : m_registry->get().view<Terrain, Transformation>().each())
@@ -528,12 +525,29 @@ void Scene::draw(float deltaTime)
 		heightmap.get()->setSlot(0);
 		m_terrainShader->setUniformValue("heightMap", 0);
 
-		auto vao = terrain.getMesh().get()->getVAO();
+		int textureCount = terrain.getTextureCount();
+		m_terrainShader->setUniformValue("textureCount", textureCount);
+
+		for (int i = 0; i < textureCount; i++)
+		{
+			auto texture = terrain.getTexture(i);
+			texture.get()->setSlot(i + 1);
+			texture.get()->bind();
+			m_terrainShader->setUniformValue("texture_" + std::to_string(i), i + 1);
+
+			auto textureBlend = terrain.getTextureBlend(i);
+			m_terrainShader->setUniformValue("textureBlend[" + std::to_string(i) + "]", textureBlend);
+
+			glm::vec2 textureScale = terrain.getTextureScale(i);
+			m_terrainShader->setUniformValue("textureScale[" + std::to_string(i) + "]", textureScale);
+		}
+
+		auto vao = terrain.getMesh().get()->getPrimaryMesh()->getVAO();
 		RenderCommand::drawPatches(vao);
 	}
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glDisable(GL_POLYGON_OFFSET_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glDisable(GL_POLYGON_OFFSET_LINE);
 	
 
 	// Render UI
@@ -541,12 +555,12 @@ void Scene::draw(float deltaTime)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	m_UIShader->use();
 	m_UIShader->setProjectionMatrix(m_defaultUIProjection);
-	auto vao = m_quadUI.getComponent<MeshComponent>().mesh.get()->getVAO();
+	auto vao = m_quadUI.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh()->getVAO();
 
 	for (auto&& [entity, image] : m_registry->get().view<ImageComponent>().each())
 	{
 		Entity entityhandler{ entity, m_registry.get() };
-		params.entity = &entityhandler;
+		graphics->entity = &entityhandler;
 		image.image.get()->bind();
 		image.image.get()->setSlot(0);
 
@@ -566,13 +580,12 @@ void Scene::draw(float deltaTime)
 
 	glDisable(GL_BLEND);
 
-
 #if 1
 
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_renderTargetFBO->getID());
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_READ_FRAMEBUFFER, m_renderTargetFBO->getID());
+	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	//glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 #endif 
 
@@ -606,12 +619,12 @@ void Scene::draw(float deltaTime)
 
 	for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_BEGIN])
 	{
-		cb(&params);
+		cb();
 	}
 
 	for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_END])
 	{
-		cb(&params);
+		cb();
 	}
 }
 

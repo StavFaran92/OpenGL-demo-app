@@ -17,8 +17,8 @@ target_include_directories(Engine PUBLIC
 	ImGuizmo
 	nativefiledialog/include
 	tinyfiledialogs
-	"$ENV{PHYSX}/physx/include"
-	"$ENV{PHYSX}/pxshared/include"
+	physx/PhysX/include
+	physx/PxShared/include
 )
 
 target_link_directories(Engine PUBLIC 
@@ -27,8 +27,7 @@ target_link_directories(Engine PUBLIC
 	SDL2/lib
 	spdlog/lib
 	nativefiledialog/lib
-	
-	"$ENV{PHYSX}/physx/bin/win.x86_64.vc142.mt/checked"
+	physx/PhysX/bin/win.x86_64.vc142.mt/checked
 )
 
 target_link_libraries(Engine PUBLIC 
@@ -51,5 +50,25 @@ target_link_libraries(Engine PUBLIC
 	ImGuizmo
 	tinyfiledialogs
 )
+
+set(OUTPUT_DIR ${CMAKE_BINARY_DIR})
+
+set(PHYSX_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/physx/PhysX/bin/win.x86_64.vc142.mt/checked")
+file(COPY "${PHYSX_BIN_DIR}/" DESTINATION ${OUTPUT_DIR}/bin/Release)
+file(COPY "${PHYSX_BIN_DIR}/" DESTINATION ${OUTPUT_DIR}/bin/RelWithDebInfo)
+
+set(SDL_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SDL2/bin")
+file(COPY "${SDL_BIN_DIR}/" DESTINATION ${OUTPUT_DIR}/bin/Release)
+file(COPY "${SDL_BIN_DIR}/" DESTINATION ${OUTPUT_DIR}/bin/RelWithDebInfo)
+
+set(ASSIMP_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/assimp/bin")
+file(COPY "${ASSIMP_BIN_DIR}/" DESTINATION ${OUTPUT_DIR}/bin/Release)
+file(COPY "${ASSIMP_BIN_DIR}/" DESTINATION ${OUTPUT_DIR}/bin/RelWithDebInfo)
+
+set(GLEW_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/glew/bin")
+file(COPY "${GLEW_BIN_DIR}/" DESTINATION ${OUTPUT_DIR}/bin/Release)
+file(COPY "${GLEW_BIN_DIR}/" DESTINATION ${OUTPUT_DIR}/bin/RelWithDebInfo)
+
+
 
 

@@ -7,6 +7,7 @@ file(GLOB_RECURSE SOURCES *.cpp *.h)
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE GUI)
+target_compile_definitions(${PROJECT_NAME} PRIVATE SGE_EDITOR)
 
 target_include_directories(${PROJECT_NAME} PRIVATE 
 	${CMAKE_SOURCE_DIR}/Engine/src
@@ -22,10 +23,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	ImGui
 	NativeScripts
 )
-
-target_compile_options(${PROJECT_NAME} PRIVATE /MP)
-
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-
 
 

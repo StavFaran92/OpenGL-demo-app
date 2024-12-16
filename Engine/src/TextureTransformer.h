@@ -7,4 +7,5 @@ class TextureTransformer
 {
 public:
 	static Resource<Texture> flipVertical(Resource<Texture> texture);
+	static void flipVertical(Resource<Texture> srcTexture, Resource<Texture>& dstTexture);
 };

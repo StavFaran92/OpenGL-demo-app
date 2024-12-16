@@ -74,6 +74,7 @@ physx::PxMaterial* PhysicsSystem::getDefaultMaterial() const
 
 physx::PxRigidActor* PhysicsSystem::createRigidBody(Transformation& transform, RigidBodyComponent& rb)
 {
+    transform.forceUpdate();
     auto scale = transform.getLocalScale();
     physx::PxTransform pxTransform = PhysXUtils::toPhysXTransform(transform);
     physx::PxRigidActor* body = nullptr;

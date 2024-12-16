@@ -29,14 +29,28 @@ public:
 	{
 		// set Editor camera as active camera
 		auto editorCamera = Engine::get()->getContext()->getActiveScene()->createEntity("Editor Camera");
-		editorCamera.addComponent<CameraComponent>();
+		editorCamera.addComponent<CameraComponent>(CameraComponent::createPerspectiveCamera(45.0f, (float)4 / 3, 0.1f, 1000.0f));
 		editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
 		Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(editorCamera);
 
-		Entity terrainEnt = Engine::get()->getContext()->getActiveScene()->createEntity("Terrain");
-		auto terrain = Terrain::generateTerrain(200, 200, 12, "C:/Users/Stav/Downloads/test_heightmap.png");
-		//auto terrain = Terrain::generateTerrain(100, 100, 64, "C:/Users/Stav/Downloads/HeightMap.png");
-		terrainEnt.addComponent<Terrain>(terrain);
+		
+
+		//Entity zombieGirl = Engine::get()->getContext()->getActiveScene()->createEntity("Zombie girl");
+		//auto modelInfo = Engine::get()->getSubSystem<ModelImporter>()->import("C:/Users/Stav/Downloads/backpack/backpack.obj");
+		////auto modelInfo = Engine::get()->getSubSystem<ModelImporter>()->import("C:/dev/repos/glTF-Sample-Models/2.0/Sponza/glTF/Sponza.gltf");
+		//zombieGirl.addComponent<RenderableComponent>();
+		//auto& matComponent = zombieGirl.addComponent<MaterialComponent>();
+		//for (auto& mat : modelInfo.materials)
+		//{
+		//	matComponent.addMaterial(mat);
+		//}
+		//zombieGirl.addComponent<MeshComponent>().mesh = modelInfo.mesh;
+
+		//auto textureSnow = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Snow008A_1K-JPG_Color.jpg");
+		//terrain.setTexture(3, textureSnow);
+		//terrain.setTextureBlend(3, .80f);
+
+
 
 
 		//Entity zombieGirl = Engine::get()->getContext()->getActiveScene()->createEntity("Zombie girl");

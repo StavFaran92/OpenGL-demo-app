@@ -7,6 +7,7 @@
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "Transformation.h"
+#include "Graphics.h"
 
 #define NR_POINT_LIGHTS 32
 #define NR_DIR_LIGHTS 8
@@ -67,21 +68,23 @@ bool LightSystem::init()
 	m_uboLights = std::make_shared<UniformBufferObject>(bufferSize);
 	m_uboLights->attachToBindPoint(1);
 
-	m_scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=](const IRenderer::DrawQueueRenderParams* params) {
+	m_scene->addRenderCallback(Scene::RenderPhase::PRE_RENDER_BEGIN, [=]() {
 
-		setLightsInUBO(params);
+		setLightsInUBO();
 		});
 
     return true;
 }
 
-void LightSystem::setLightsInUBO(const IRenderer::DrawQueueRenderParams* params)
+void LightSystem::setLightsInUBO()
 {
+	auto graphics = Engine::get()->getSubSystem<Graphics>();
+
 	m_uboLights->bind();
 
 	{
 		// Use all point lights
-		auto view = params->registry->view<PointLight, Transformation>();
+		auto view = m_scene->getRegistry().getRegistry().view<PointLight, Transformation>();
 
 		int i = 0;
 		for (auto it = view.begin(); it != view.end(); ++it, ++i)
@@ -102,13 +105,13 @@ void LightSystem::setLightsInUBO(const IRenderer::DrawQueueRenderParams* params)
 
 	{
 		// Use all Directional lights
-		auto view = params->registry->view<DirectionalLight>();
+		auto view = m_scene->getRegistry().getRegistry().view<DirectionalLight>();
 
 		int i = 0;
 		for (auto it = view.begin(); it != view.end(); ++it, ++i)
 		{
 			auto& dLight = view.get<DirectionalLight>(*it);
-			Entity e(*it, &params->scene->getRegistry());
+			Entity e(*it, &m_scene->getRegistry());
 			auto& dir = e.getComponent<Transformation>().getLocalRotationVec3();
 
 			DirLightUBORep dirLightUBO;

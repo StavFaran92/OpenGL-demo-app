@@ -10,6 +10,8 @@
 #include "Texture.h"
 #include "Entity.h"
 #include "MeshBuilder.h"
+#include "Material.h"
+#include "MeshCollection.h"
 
 // Forward declerations
 struct aiNode;
@@ -38,9 +40,16 @@ public:
 		int nodeIndex = 0;
 		int childIndex = 0;
 		Entity root;
-		MeshBuilder* builder = nullptr;
 		std::unordered_map<std::string, unsigned int> boneNameToIDMap;
 		unsigned int boneCount = 0;
+		Resource<MeshCollection> mesh;
+	};
+
+	struct ModelInfo
+	{
+		Resource<MeshCollection> mesh;
+		std::map<int, std::shared_ptr<Material>> materials;
+		std::vector<Resource<Texture>> textures;
 	};
 
 	/** Constructor */
@@ -53,7 +62,7 @@ public:
 	 * \param flipTexture	should flip loaded texture
 	 * \return A poitner to the newly created model
 	 */
-	Resource<Mesh> import(const std::string& path);
+	ModelImporter::ModelInfo import(const std::string& path);
 
 	/**
 	 * Import a model from a file.
@@ -62,15 +71,14 @@ public:
 	 * \param flipTexture	should flip loaded texture
 	 * \return A poitner to the newly created model
 	 */
-	Resource<Mesh> load(const std::string& path, Resource<Mesh> mesh);
+	ModelInfo load(const std::string& path, ModelInfo& modelInfo);
 private:
 	friend class Engine;
-	/** Init the model loader module */
-	void init();
+
 	void processNode(aiNode* node, const aiScene* scene, ModelImportSession& session);
 	void processMesh(aiMesh* mesh, const aiScene* scene, ModelImportSession& session);
-	std::vector<Resource<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, ModelImportSession& session);
-	static Texture::Type getTextureType(aiTextureType type);
+	Resource<Texture> importAiMaterialTexture(aiMaterial* mat, aiTextureType type, const std::string& dir);
+	static Texture::TextureType getTextureType(aiTextureType type);
 private:
 	//std::unordered_map<std::string, std::weak_ptr<Texture>> m_texturesCache;
 	std::map<uint32_t, ModelImportSession> m_sessions;

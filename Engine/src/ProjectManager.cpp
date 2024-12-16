@@ -13,6 +13,7 @@
 #include "Archiver.h"
 #include "ModelImporter.h"
 #include "AnimationLoader.h"
+#include "MeshCollection.h"
 //#include "TextureSerializer.h"
 #include <nlohmann/json.hpp>
 
@@ -56,26 +57,30 @@ void ProjectManager::loadProject(const std::string& filePath, std::shared_ptr<Co
     auto par = context->getProjectAssetRegistry();
 
     std::vector<std::string> meshNameList = par->getMeshList();
-    std::vector<std::string> textureNameList = par->getTextureList();
+    auto textureAssetList = par->getTextureList();
     std::vector<std::string> animationNameList = par->getAnimationList();
 
     // Create meshes
     for (const auto& meshUID : meshNameList) 
     {
+        // TODO fix
+        ModelImporter::ModelInfo mInfo;
         std::string binFilePath = (projectDir / meshUID).string() + ".dae";
-        Mesh* meshPtr = new Mesh();
-        Resource<Mesh> mesh(meshUID);
-        Engine::get()->getMemoryPool<Mesh>()->add(meshUID, meshPtr);
+        MeshCollection* meshPtr = new MeshCollection();
+        Resource<MeshCollection> mesh(meshUID);
+        mInfo.mesh = mesh;
+        Engine::get()->getMemoryPool<MeshCollection>()->add(meshUID, meshPtr);
         Engine::get()->getResourceManager()->incRef(meshUID);
-        Engine::get()->getSubSystem<ModelImporter>()->load(binFilePath, mesh);        
+        Engine::get()->getSubSystem<ModelImporter>()->load(binFilePath, mInfo);
     }
 
     // Create textures
-    for (const auto& textureUID : textureNameList) 
+    for (const auto& textureAsset : textureAssetList)
     {
+        UUID uid = textureAsset.uuid;
         // Open bin file
-        fs::path imageFilePath = (projectDir / textureUID).string() + ".png";
-        Engine::get()->getSubSystem<Assets>()->loadTexture2D(textureUID, imageFilePath.string());
+        fs::path imageFilePath = (projectDir / uid).string() + "." + textureAsset.ext;
+        Engine::get()->getSubSystem<Assets>()->loadTexture2D(uid, imageFilePath.string());
     }
 
     // Create animations

@@ -13,7 +13,7 @@
 class EngineAPI MeshBuilder
 {
 public:
-	
+	MeshBuilder();
 
 	MeshBuilder& addPosition(const glm::vec3& position);
 	MeshBuilder& addPositions(const std::vector<glm::vec3>& positions);
@@ -49,9 +49,11 @@ public:
 
 	MeshBuilder& addBonesInfo(const std::vector<glm::mat4>& bonesOffsets, const std::unordered_map<std::string, unsigned int>& bonesNameToIDMap);
 
+	MeshBuilder& setMaterialIndex(int index);
+
 	MeshBuilder& merge(const MeshBuilder& other);
 
-	Resource<Mesh> build(const Resource<Mesh>& mesh);
+	void build(Mesh& mesh);
 
 	static MeshBuilder& builder();
 	
@@ -60,7 +62,7 @@ public:
 private:
 	friend class ModelBuilder;
 	/** Constructor */
-	MeshBuilder();
+	
 	void enableAttribute(LayoutAttribute attribute);
 	void disableAttribute(LayoutAttribute attribute);
 

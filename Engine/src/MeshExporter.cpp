@@ -4,7 +4,7 @@
 #include "Context.h"
 #include "ProjectAssetRegistry.h"
 
-std::string MeshExporter::exportMesh(Resource<Mesh> mesh, const aiScene* scene)
+std::string MeshExporter::exportMesh(Resource<MeshCollection> mesh, const aiScene* scene)
 {
 	auto& projectDir = Engine::get()->getProjectDirectory();
 	Assimp::Exporter exporter;
@@ -12,4 +12,9 @@ std::string MeshExporter::exportMesh(Resource<Mesh> mesh, const aiScene* scene)
 	exporter.Export(scene, "collada", savedFilePath);
 	Engine::get()->getContext()->getProjectAssetRegistry()->addMesh(mesh.getUID());
 	return savedFilePath;
+}
+
+std::string MeshExporter::exportMaterial(std::vector<std::shared_ptr<Material>> materials, const aiScene* scene)
+{
+	return "";
 }

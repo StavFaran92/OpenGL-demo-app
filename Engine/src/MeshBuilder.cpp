@@ -312,23 +312,16 @@ MeshBuilder& MeshBuilder::addRawVertices(const float* vertices, VertexLayout lay
 	return *this;
 }
 
-MeshBuilder& MeshBuilder::addBonesInfo(const std::vector<glm::mat4>& bonesOffsets, const std::unordered_map<std::string, unsigned int>& bonesNameToIDMap)
+MeshBuilder& MeshBuilder::setMaterialIndex(int index)
 {
-	for (const glm::mat4& offset : bonesOffsets)
-	{
-		m_data.bonesOffsets.push_back(offset);
-	}
-	for (auto nameToID : bonesNameToIDMap)
-	{
-		m_data.bonesNameToIDMap.emplace(nameToID);
-	}
+	m_data.materialIndex = index;
 
 	return *this;
 }
 
 
 
-Resource<Mesh> MeshBuilder::build(const Resource<Mesh>& mesh)
+void MeshBuilder::build(Mesh& mesh)
 {
 	if (m_data.m_positions.size() > 0)
 	{
@@ -373,18 +366,10 @@ Resource<Mesh> MeshBuilder::build(const Resource<Mesh>& mesh)
 	//MeshData newMeshData;
 	//MeshSerializer::readDataFromBinaryFile(mesh.getUID() + ".bin", newMeshData);
 
-	if (!mesh.get()->build(m_data))
+	if (!mesh.build(m_data))
 	{
 		logError("Mesh Builder failed to build mesh.");
-
-		delete this;
-
-		return nullptr;
 	}
-
-	delete this;
-
-	return mesh;
 }
 
 MeshBuilder& MeshBuilder::builder()

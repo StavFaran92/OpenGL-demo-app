@@ -17,6 +17,7 @@
 #include "Texture.h"
 #include "Material.h"
 #include "ProjectAssetRegistry.h"
+#include "Graphics.h"
 
 Context::Context(const std::shared_ptr<ProjectAssetRegistry>& par)
 {
@@ -133,6 +134,16 @@ void Context::save() const
 	m_projectAssetRegistry->save();
 
 	logInfo("Successfully serialized Context.");
+}
+
+void Context::setRenderMode(RenderMode mode)
+{
+	Engine::get()->getSubSystem<Graphics>()->renderMode = mode;
+}
+
+RenderMode Context::getRenderMode() const
+{
+	return Engine::get()->getSubSystem<Graphics>()->renderMode;
 }
 
 void Context::update(float deltaTime)

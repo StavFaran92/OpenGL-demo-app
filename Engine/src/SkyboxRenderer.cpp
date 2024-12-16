@@ -11,7 +11,7 @@
 #include "Component.h"
 #include "Engine.h"
 
-void SkyboxRenderer::render(const DrawQueueRenderParams& renderParams)
+void SkyboxRenderer::render()
 {
 	glDepthMask(GL_FALSE);
     glDepthFunc(GL_LEQUAL);

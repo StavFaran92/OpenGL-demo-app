@@ -6,12 +6,15 @@
 #include "VertexArrayObject.h"
 #include "ICamera.h"
 #include "Mesh.h"
+#include "Graphics.h"
 
-void Renderer2D::render(const DrawQueueRenderParams& renderParams)
+void Renderer2D::render()
 {
-	draw(*renderParams.mesh->getVAO());
+	auto graphics = Engine::get()->getSubSystem<Graphics>();
+	
+	draw(*graphics->mesh->getVAO());
 }
 
-void Renderer2D::renderScene(DrawQueueRenderParams& renderParams)
+void Renderer2D::renderScene(Scene*)
 {
 }

@@ -171,15 +171,41 @@ struct EngineAPI CameraComponent : public Component
 		archive(center, up);
 	}
 
-	glm::vec3 front{1,0,0};
+	static CameraComponent createPerspectiveCamera(float fovy, float aspect, float znear, float zfar)
+	{
+		CameraComponent cam;
+		cam.fovy = fovy;
+		cam.aspect = aspect;
+		cam.znear = znear;
+		cam.zfar = zfar;
+		cam.type = CamType::PERSPECTIVE;
+		return cam;
+	}
+
+	glm::mat4 getProjection() const;
+
+	float fovy = 0;
+	float aspect = 0;
+	float znear = 0;
+	float zfar = 0;
+
+	enum CamType
+	{
+		PERSPECTIVE,
+		ORTHOGRAPHIC
+	};
+
+	CamType type;
+
+	glm::vec3 front{0,0,-1};
 	glm::vec3 right;
-	glm::vec3 center;
-	glm::vec3 up;
+	glm::vec3 center{ 0,0,0 };
+	glm::vec3 up{ 0,1,0 };
 };
 
 struct EngineAPI MeshComponent : public Component
 {
-	MeshComponent(const Resource<Mesh>& mesh) : mesh(mesh) {};
+	MeshComponent(const Resource<MeshCollection>& mesh) : mesh(mesh) {};
 	MeshComponent() = default;
 
 	template <class Archive>
@@ -188,7 +214,7 @@ struct EngineAPI MeshComponent : public Component
 	}
 
 	float materialSlot = 0; // todo this will be used (probably as a list) to support multi material models
-	Resource<Mesh> mesh = Resource<Mesh>::empty;
+	Resource<MeshCollection> mesh = Resource<MeshCollection>::empty;
 };
 
 //struct EngineAPI MeshArrayRendererComponent : public Component
@@ -225,21 +251,26 @@ struct EngineAPI MaterialComponent : public Component
 
 	void addMaterial(const std::shared_ptr<Material>& mat)
 	{
-		if (isUsingDefault)
-		{
-			materials.clear();
-			isUsingDefault = false;
-		}
-		materials.push_back(mat);
+		materials[count++] = mat;
+	}
+
+	void setMaterial(int index, const std::shared_ptr<Material>& mat)
+	{
+		materials[index] = mat;
+	}
+
+	std::shared_ptr<Material> at(int index)
+	{
+		return materials.at(index);
 	}
 
 	template <class Archive>
 	void serialize(Archive& archive) {
-		archive(materials, isUsingDefault);
+		archive(materials);
 	}
 
-	bool isUsingDefault = true;
-	std::vector<std::shared_ptr<Material>> materials;
+	std::map<int, std::shared_ptr<Material>> materials;
+	int count = 0;
 };
 
 struct EngineAPI ObjectComponent : public Component

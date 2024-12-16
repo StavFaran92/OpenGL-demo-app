@@ -89,6 +89,8 @@ uniform float scale;
 
 in vec2 outTexCoords[];
 
+out vec2 texCoord;
+
 // Send to fragment shader for coloring
 out float height;
 
@@ -106,10 +108,10 @@ void main()
     // bilinearly interpolate texture coordinate across patch
     vec2 t0 = (t01 - t00) * u + t00;
     vec2 t1 = (t11 - t10) * u + t10;
-    vec2 texCoord = (t1 - t0) * v + t0;
+    texCoord = (t1 - t0) * v + t0;
 
     // lookup texel at patch coordinate for height and scale
-    height = texture(heightMap, texCoord).y * scale;
+    height = texture(heightMap, texCoord).r;
 
     // get point position
     vec4 p00 = gl_in[0].gl_Position;
@@ -128,7 +130,7 @@ void main()
     vec4 p = (p1 - p0) * v + p0;
 
     // displace point along normal
-    p += normal * height;
+    p += normal * height * scale;
 
     gl_Position = projection * view * model * p;
 }
@@ -137,14 +139,57 @@ void main()
 
 #version 410 core
 
+uniform int textureCount;
+
+uniform sampler2D texture_0;
+uniform sampler2D texture_1;
+uniform sampler2D texture_2;
+uniform sampler2D texture_3;
+
+uniform float textureBlend[4];
+uniform vec2 textureScale[4];
+
 uniform float scale;
 
 in float height;
+in vec2 texCoord;
 
 out vec4 color;
 
+vec4 sampleFromTexture(int textureIndex, vec2 uv)
+{
+    uv *= textureScale[textureIndex];
+
+    if (textureIndex == 0)  return texture(texture_0, uv);
+    else if (textureIndex == 1) return texture(texture_1, uv);
+    else if (textureIndex == 2) return texture(texture_2, uv);
+    else if (textureIndex == 3) return texture(texture_3, uv);
+
+    return vec4(0.0); // Return black if index is out of bounds
+}
+
 void main()
 {
-    float h = (height)/scale;
-    color = vec4(h, h, h, 1.0);
+    if(height < textureBlend[0])
+    {
+        color = sampleFromTexture(0, texCoord);
+    }
+    else if(height >= textureBlend[textureCount - 1])
+    {
+        color = sampleFromTexture(textureCount - 1, texCoord);
+    }
+    else
+    {
+        for(int i=0; i < textureCount - 1; i++)
+        {
+            if(height >= textureBlend[i] && height < textureBlend[i + 1])
+            {
+                float b1 = height - textureBlend[i];
+                float b2  = textureBlend[i + 1] - height;
+                float blend = b1 / (b1 + b2);
+                color = mix(sampleFromTexture(i, texCoord), sampleFromTexture(i + 1, texCoord), blend);
+                break;
+            }
+        }
+    }
 }

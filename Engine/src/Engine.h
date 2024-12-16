@@ -32,6 +32,7 @@ class ShaderLoader;
 class ResourceManager;
 class Texture;
 class Mesh;
+class MeshCollection;
 class ProjectManager;
 class Material;
 class Texture;
@@ -53,6 +54,8 @@ struct InitParams
     bool overwriteExisting = false;
     bool templateScene = false;
     bool startSimulationOnStartup = false;
+    bool fullScreen = false;
+    bool shipping = false;
 };
 
 class EngineAPI Engine
@@ -80,9 +83,9 @@ public:
     CommonShaders* getCommonShaders() const;
     CommonTextures* getCommonTextures() const;
     const InitParams& getInitParams() const;
-    template<typename T>MemoryPool<T>* getMemoryPool() const {};
+    template<typename T>MemoryPool<T>* getMemoryPool() const { return 0; };
     template<>MemoryPool<Texture>* getMemoryPool() const { return m_memoryPoolTexture.get(); }
-    template<>MemoryPool<Mesh>* getMemoryPool() const { return m_memoryPoolMesh.get(); }
+    template<>MemoryPool<MeshCollection>* getMemoryPool() const { return m_memoryPoolMeshCollection.get(); }
     template<>MemoryPool<Animation>* getMemoryPool() const { return m_memoryPoolAnimation.get(); }
 
     
@@ -163,7 +166,7 @@ protected:
     std::shared_ptr<ShaderLoader> m_shaderLoader;
     std::shared_ptr<ResourceManager> m_resourceManager;
     std::shared_ptr<MemoryPool<Texture>> m_memoryPoolTexture;
-    std::shared_ptr<MemoryPool<Mesh>> m_memoryPoolMesh;
+    std::shared_ptr<MemoryPool<MeshCollection>> m_memoryPoolMeshCollection;
     std::shared_ptr<MemoryPool<Animation>> m_memoryPoolAnimation;
     std::shared_ptr<ProjectManager> m_projectManager;
     std::shared_ptr<CommonShaders> m_commonShaders;

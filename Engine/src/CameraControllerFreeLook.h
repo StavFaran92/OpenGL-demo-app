@@ -27,9 +27,9 @@ private:
 	glm::vec3 m_right;
 	glm::vec3 m_front;
 
-	float m_turnSpeed = 0.5f;
+	float m_turnSpeed = 10.f;
 	float m_distance = 0;
-	float m_movementSpeed = 1.f;
+	float m_movementSpeed = 10.f;
 
 	ControllerState m_state = ControllerState::IDLE;
 

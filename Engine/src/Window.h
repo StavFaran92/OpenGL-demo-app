@@ -12,7 +12,7 @@ class EngineAPI Window
 {
 public:
 
-	Window(int width = SCREEN_WIDTH, int height = SCREEN_HEIGHT);
+	Window();
 
 	int init();
 
@@ -21,8 +21,8 @@ public:
 
 	void close();
 
-	void SwapBuffer() { SDL_GL_SwapWindow(m_mainWindow); }
-	void update() { if(m_isMouseLocked)SDL_WarpMouseInWindow(m_mainWindow, m_halfWidth, m_halfHeight); }
+	void SwapBuffer();
+	void update();
 	void lockMouse() { m_isMouseLocked = true; }
 	void unlockMouse() { m_isMouseLocked = false; }
 

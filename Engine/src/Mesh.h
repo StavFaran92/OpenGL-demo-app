@@ -15,6 +15,7 @@
 
 #include "Configurations.h"
 #include "VertexLayout.h"
+#include "AABB.h"
 
 struct MeshData
 {
@@ -26,8 +27,7 @@ struct MeshData
 	std::vector<unsigned int> m_indices;
 	std::vector<glm::ivec3> bonesIDs;
 	std::vector<glm::vec3> bonesWeights;
-	std::vector<glm::mat4> bonesOffsets;
-	std::unordered_map<std::string, unsigned int> bonesNameToIDMap;
+	int materialIndex{};
 	VertexLayout m_layout;
 };
 
@@ -90,9 +90,9 @@ public:
 
 	VertexArrayObject* getVAO() const;
 
-	std::vector<glm::mat4> getBoneOffsets() const;
+	AABB getAABB() const;
 
-	int getBoneID(const std::string& boneName) const;
+	int getMaterialIndex() const;
 
 	/**
 	 * Build the mesh using the specified vertices data.
@@ -126,6 +126,6 @@ private:
 	VertexLayout m_layout;
 	bool m_useColors = false;
 
-	std::vector<glm::mat4> m_bonesOffsets;
-	std::unordered_map<std::string, unsigned int> m_bonesNameToIDMap;
+	AABB m_aabb;
+	int materialIndex{};
 };

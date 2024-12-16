@@ -17,16 +17,13 @@
 namespace fs = std::filesystem;
 
 static bool ShowLightCreatorWindow = false;
-static bool showModelCreatorWindow = false;
-static bool showTextureImportWindow = false;
-static bool showAnimationImportWindow = false;
-static bool showAssetTextureSelectWindow = false;
 static bool showModelInspectorWindow = false;
 static bool showPrimitiveCreatorWindow = false;
 static bool showMeshSelector = false;
 static bool showAnimationSelector = false;
 static bool selectedEntityRename = false;
 static bool showScriptSelector = false;
+static bool showSamplerEditWindow = false;
 
 static bool startButtonPressed = false;
 
@@ -35,6 +32,9 @@ Entity g_editorCamera;
 
 std::function<void(std::string uuid)> assetTextureSelectCB;
 Resource<Texture> selectedAssetTexture;
+
+static std::shared_ptr<TextureSampler> g_selectedSampler;
+static std::shared_ptr<TextureSampler> g_previousSampler;
 
 static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype);
 void AddColoredLabel(const char* label);
@@ -104,9 +104,9 @@ static void displayComponent(const std::string& componentName, std::function<voi
 
 void RenderSimulationControlView(float width, float height)
 {
-	float windowWidth = width * 0.6f - 10;
+	float windowWidth = width * 0.7f - 10;
 	float windowHeight = 35;
-	float startX = width * 0.2f + 10; // Add a gap of 10 pixels
+	float startX = width * 0.15f + 10; // Add a gap of 10 pixels
 	ImGui::SetNextWindowPos(ImVec2(startX, 25)); // Adjust vertical position to make space for the menu bar
 	ImGui::SetNextWindowSize(ImVec2(windowWidth, windowHeight));
 
@@ -165,21 +165,18 @@ static void displayTransformation(Transformation& transform, bool& isChanged)
 	}
 }
 
-static void displayAssetTextureSelectWindow()
+static void displayAssetTextureSelectPopup()
 {
-	if (showAssetTextureSelectWindow)
-	{
-		ImGui::Begin("Select Texture", &showAssetTextureSelectWindow, ImGuiWindowFlags_AlwaysAutoResize);
+	if (ImGui::BeginPopup("EditTexturePopup")) {
+
+		auto assets = Engine::get()->getSubSystem<Assets>();
+
 		ImGui::Text("Available Textures:");
 		ImGui::Separator();
 
-		
-
 		static int selectedTextureIndex = -1;
 
-		
-
-		auto& textureList = Engine::get()->getSubSystem<Assets>()->getAllTextures();
+		auto& textureList = assets->getAllTextures();
 
 		if (selectedTextureIndex != -1)
 		{
@@ -202,7 +199,7 @@ static void displayAssetTextureSelectWindow()
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Default color
 			}
 
-			if (ImGui::Selectable(textureList[i].c_str()))
+			if (ImGui::Selectable(assets->getAlias(textureList[i]).c_str(), false, ImGuiSelectableFlags_DontClosePopups))
 			{
 				selectedTextureIndex = i;
 			}
@@ -218,17 +215,22 @@ static void displayAssetTextureSelectWindow()
 				assetTextureSelectCB(textureList[selectedTextureIndex]);
 
 			}
-			showAssetTextureSelectWindow = false;
+			ImGui::CloseCurrentPopup();
+			selectedTextureIndex = -1;
 		}
 
 		ImGui::SameLine();
 
 		if (ImGui::Button("Cancel")) {
-			showAssetTextureSelectWindow = false;
+			ImGui::CloseCurrentPopup();
+			selectedTextureIndex = -1;
 		}
 
-		ImGui::End();
+		
+
+		ImGui::EndPopup();
 	}
+
 }
 
 static void displaySelectMeshWindow(std::string& uuid)
@@ -241,7 +243,7 @@ static void displaySelectMeshWindow(std::string& uuid)
 
 		static int selectedMeshIndex = -1;
 
-		auto& meshList = Engine::get()->getMemoryPool<Mesh>()->getAll(); // todo fix
+		auto& meshList = Engine::get()->getMemoryPool<MeshCollection>()->getAll(); // todo fix
 
 		for (int i = 0; i < meshList.size(); i++) 
 		{
@@ -255,7 +257,7 @@ static void displaySelectMeshWindow(std::string& uuid)
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Default color
 			}
 
-			if (ImGui::Selectable(meshList[i].c_str())) 
+			if (ImGui::Selectable(Engine::get()->getSubSystem<Assets>()->getAlias(meshList[i]).c_str()))
 			{
 				selectedMeshIndex = i;
 			}
@@ -574,170 +576,109 @@ static void addAssetLoadWidget(const std::string& name, ImGuiTextBuffer& textBuf
 
 void ShowTextureImportWindow()
 {
-	if (showTextureImportWindow)
+	static ImGuiTextBuffer texturePathBuffer;
+
+	const char* filepath = tinyfd_openFileDialog(
+		"Select an asset to load",
+		"",
+		4,
+		Constants::g_textureSupportedFormats,
+		"",
+		0);
+
+	if (filepath)
 	{
-		ImGui::SetNextWindowSize({ 200, 300 }, ImGuiCond_Appearing);
-		ImGui::Begin("Import Texture", false);
-
-		static ImGuiTextBuffer texturePathBuffer;
-
-		addAssetLoadWidget("Texture", texturePathBuffer, Constants::g_textureSupportedFormats, 4);
-
-		static bool flip = false;
-		ImGui::Checkbox("Flip", &flip);
-
-		ImGui::Separator();
-
-		if (ImGui::Button("Ok"))
-		{
-			if (texturePathBuffer.empty())
-			{
-				logError("Texture Path not specified.");
-				showTextureImportWindow = false;
-				return;
-			}
-
-			//todo validate input
-
-			Engine::get()->getSubSystem<Assets>()->importTexture2D(texturePathBuffer.c_str(), flip);
-
-			texturePathBuffer.clear();
-
-			showTextureImportWindow = false;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel"))
-		{
-			showTextureImportWindow = false;
-		}
-
-		ImGui::End();
+		texturePathBuffer.clear();
+		texturePathBuffer.append(filepath);
 	}
+
+	std::filesystem::path path(texturePathBuffer.c_str());
+
+	if (!std::filesystem::exists(path))
+	{
+		logError("Texture Path not found: " + path.string());
+		return;
+	}
+
+	Engine::get()->getSubSystem<Assets>()->importTexture2D(texturePathBuffer.c_str(), true);
+
+	texturePathBuffer.clear();
 }
 
 void ShowAnimationImportWindow()
 {
-	if (showAnimationImportWindow)
+	static ImGuiTextBuffer animationPathBuffer;
+
+	const char* filepath = tinyfd_openFileDialog(
+		"Select an asset to load",
+		"",
+		1,
+		Constants::g_animationSupportedFormats,
+		"",
+		0);
+
+	if (filepath)
 	{
-		ImGui::SetNextWindowSize({ 400, 150 }, ImGuiCond_Appearing);
-		ImGui::Begin("Import Animation", false);
-
-		static ImGuiTextBuffer animationPathBuffer;
-
-		addAssetLoadWidget("Animation", animationPathBuffer, Constants::g_animationSupportedFormats, 1);
-
-		ImGui::Separator();
-
-		if (ImGui::Button("Ok"))
-		{
-			if (animationPathBuffer.empty())
-			{
-				logError("Animation Path not specified.");
-				showAnimationImportWindow = false;
-				return;
-			}
-
-			//todo validate input
-
-			Engine::get()->getSubSystem<Assets>()->importAnimation(animationPathBuffer.c_str());
-
-			animationPathBuffer.clear();
-
-			showAnimationImportWindow = false;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel"))
-		{
-			showAnimationImportWindow = false;
-		}
-
-		ImGui::End();
+		animationPathBuffer.clear();
+		animationPathBuffer.append(filepath);
 	}
+
+	std::filesystem::path path(animationPathBuffer.c_str());
+
+	if (!std::filesystem::exists(path))
+	{
+		logError("Animation Path not found: " + path.string());
+		return;
+	}
+
+	Engine::get()->getSubSystem<Assets>()->importAnimation(animationPathBuffer.c_str());
+
+	animationPathBuffer.clear();
 }
 
 void ShowModelCreatorWindow()
 {
-	if (showModelCreatorWindow)
+	static ImGuiTextBuffer modelPathBuffer;
+
+	const char* filepath = tinyfd_openFileDialog(
+		"Select an asset to load",
+		"",
+		5,
+		g_supportedFormats,
+		"",
+		0);
+
+	if (filepath)
 	{
-		ImGui::SetNextWindowSize({ 400, 300 }, ImGuiCond_Appearing);
-		ImGui::Begin("Import model", false, ImGuiWindowFlags_AlwaysAutoResize);
-
-		static ImGuiTextBuffer modelPathBuffer;
-
-		static glm::vec3 pos(0.f, 0.f, 0.f);
-		static glm::vec3 rotation(0.f, 0.f, 0.f);
-		static glm::vec3 scale(1.f, 1.f, 1.f);
-
-		// Model
-		addAssetLoadWidget("Model", modelPathBuffer, g_supportedFormats, 4);
-
-		ImGui::Separator();
-		ImGui::LabelText("", "Texture");
-
-		// Textures
-		static std::shared_ptr<Material> mat;
-		if(!mat) mat = std::make_shared<Material>(*Engine::get()->getDefaultMaterial().get());
-
-		addTextureEditWidget(mat, "Albedo", Texture::Type::Albedo);
-		addTextureEditWidget(mat, "Normal", Texture::Type::Normal);
-		addTextureEditWidget(mat, "Metallic", Texture::Type::Metallic);
-		addTextureEditWidget(mat, "Roughness", Texture::Type::Roughness);
-		addTextureEditWidget(mat, "Occlusion", Texture::Type::AmbientOcclusion);
-
-		ImGui::Separator();
-
-		if (ImGui::Button("Ok"))
-		{
-			if (modelPathBuffer.empty())
-			{
-				logError("Model Path not specified.")
-				showModelCreatorWindow = false;
-				return;
-			}
-
-			//todo validate input
-
-			//extract model name
-			std::string modelName = modelPathBuffer.c_str();
-
-			// Find the last occurrence of either '/' or '\\'
-			size_t lastSlash = modelName.find_last_of("/\\");
-
-			// Extract the model name after the last slash (if found)
-			if (lastSlash != std::string::npos) 
-			{
-				modelName = modelName.substr(lastSlash + 1);
-			}
-
-			// Remove the file extension by finding the first occurrence of '.'
-			size_t dotPosition = modelName.find_first_of('.');
-			if (dotPosition != std::string::npos) 
-			{
-				modelName = modelName.substr(0, dotPosition);
-			}
-
-			auto entity = Engine::get()->getContext()->getActiveScene()->createEntity(modelName);
-			entity.addComponent<RenderableComponent>();
-
-			auto mesh = Engine::get()->getSubSystem<ModelImporter>()->import(modelPathBuffer.c_str());
-			entity.addComponent<MeshComponent>().mesh = mesh;
-
-			entity.addComponent<MaterialComponent>().addMaterial(mat);
-			mat = nullptr;
-			modelPathBuffer.clear();
-
-			showModelCreatorWindow = false;
-
-			updateScene();
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel"))
-		{
-			showModelCreatorWindow = false;
-		}
-
-		ImGui::End();
+		modelPathBuffer.clear();
+		modelPathBuffer.append(filepath);
 	}
+
+	std::filesystem::path path(modelPathBuffer.c_str());
+
+	if (!std::filesystem::exists(path))
+	{
+		logError("Model Path not found: " + path.string());
+		return;
+	}
+
+	auto modelName = path.filename().replace_extension().string();
+
+	auto entity = Engine::get()->getContext()->getActiveScene()->createEntity(modelName);
+	entity.addComponent<RenderableComponent>();
+
+	auto modelInfo = Engine::get()->getSubSystem<Assets>()->importMesh(modelPathBuffer.c_str());
+	entity.addComponent<MeshComponent>().mesh = modelInfo.mesh;
+
+	auto& materialComponent = entity.addComponent<MaterialComponent>();
+	for(auto& [idx, m] : modelInfo.materials)
+	{
+		materialComponent.setMaterial(idx, m);
+	}
+
+	modelPathBuffer.clear();
+
+	updateScene();
 }
 
 void displayentityName(const Entity& e)
@@ -876,77 +817,49 @@ void displayEntity(Entity& e)
 	}
 }
 
-void displaySceneObjects(int& selected)
+void displaySceneObjects()
 {
+	// todo fix this shitty hack
+	auto sceneName = "Scene " + std::to_string(Engine::get()->getContext()->getActiveSceneID());
+	ImGui::Text(sceneName.c_str());
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_ITEM"))
+		{
+			Entity sourceEntity = *(const Entity*)payload->Data;
+			sourceEntity.getComponent<Transformation>().removeParent();
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::Separator();
+
+	ImGui::BeginChild("##items", ImGui::GetContentRegionAvail(), true, ImGuiWindowFlags_NoScrollbar);
+
 	for (int i = 0; i < sceneObjects.size(); ++i)
 	{
 		auto& sceneObject = sceneObjects[i];
-		auto& objectComponent = sceneObject.e.getComponent<ObjectComponent>();
 		auto& transform = sceneObject.e.getComponent<Transformation>();
 
 		// if has parent it will be rendered in the recursive call (can be optimized if needed)
 		if (transform.getParent().valid()) continue;
 
 		ImGui::PushID(i); // Push a unique ID to avoid ImGui ID conflicts
-
 		
 		displayEntity(sceneObject.e);
 
 		ImGui::PopID();
 	}
+
+	ImGui::EndChild(); // End background drop zone
 }
 
 void RenderSceneHierarchyWindow(float width, float height)
 {
-	//if (ImGui::Begin("Example"))
-	//{
-	//	// Custom function to create a tree node with selectable text
-	//	static bool selected = false;
-	//	static bool open = false;
-
-	//	// Adjust the width for the small arrow button
-	//	float arrowWidth = ImGui::GetFontSize();
-	//	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Adjust spacing for the arrow
-
-	//	// Create a small arrow button
-	//	if (!open)
-	//	{
-	//		if (ImGui::ArrowButton("##arrow", ImGuiDir_Right))
-	//		{
-	//			open = true;
-	//		}
-	//	}
-	//	else{
-	//		if (ImGui::ArrowButton("##arrow", ImGuiDir_Down))
-	//		{
-	//			open = false;
-	//		}
-	//	}
-	//	ImGui::SameLine();
-
-	//	// Create selectable text
-	//	if (ImGui::Selectable("Selectable Node", &selected))
-	//	{
-	//		// Handle selection logic
-	//	}
-
-	//	// Pop style adjustment
-	//	ImGui::PopStyleVar();
-
-	//	// Handle tree node opening
-	//	if (open)
-	//	{
-	//		ImGui::TreePush("##tree");
-	//		ImGui::Text("Child Node 1");
-	//		ImGui::Text("Child Node 2");
-	//		ImGui::TreePop();
-	//	}
-	//}
-	//ImGui::End();
-
-	float windowWidth = width * 0.2f;
+	float windowWidth = width * 0.15f;
 	ImVec2 windowPos(5, 25); // Adjust vertical position to make space for the menu bar
-	ImVec2 windowSize(windowWidth, height * 0.8f);
+	ImVec2 windowSize(windowWidth, height * 0.7f);
 	ImGui::SetNextWindowPos(windowPos);
 	ImGui::SetNextWindowSize(windowSize);
 	ImGui::Begin("Scene Hierarchy", nullptr, style);
@@ -968,7 +881,7 @@ void RenderSceneHierarchyWindow(float width, float height)
 		{ // Begin the submenu
 			if (ImGui::MenuItem("Cube")) 
 			{
-				ShapeFactory::createBox(&Engine::get()->getContext()->getActiveScene()->getRegistry());
+				ShapeFactory::createBoxEntity(&Engine::get()->getContext()->getActiveScene()->getRegistry());
 				updateScene();
 				selectedEntity = sceneObjects[0].e;
 			}
@@ -992,15 +905,16 @@ void RenderSceneHierarchyWindow(float width, float height)
 		{ // Begin the submenu
 			if (ImGui::MenuItem("Directional Light"))
 			{
-				auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
+				static int createdDLightCount = 0;
+				auto e = Engine::get()->getContext()->getActiveScene()->createEntity("Directional_Light_" + std::to_string(createdDLightCount++));
 				e.addComponent<DirectionalLight>(glm::vec3{ 0,0,0 }, glm::vec3{0,-1,0}, 1.f, 1.f);
 				updateScene();
 				selectedEntity = sceneObjects[0].e;
 			}
 			if (ImGui::MenuItem("Point Light"))
 			{
-
-				auto e = Engine::get()->getContext()->getActiveScene()->createEntity();
+				static int createdPLightCount = 0;
+				auto e = Engine::get()->getContext()->getActiveScene()->createEntity("Point_Light_" + std::to_string(createdPLightCount++));
 				e.addComponent<PointLight>(glm::vec3{ 0,0,0 }, 1.f, 1.f, Attenuation());
 				updateScene();
 				selectedEntity = sceneObjects[0].e;
@@ -1014,14 +928,15 @@ void RenderSceneHierarchyWindow(float width, float height)
 	}
 
 	// Calculate the size of the list box accounting for padding
-	ImVec2 listBoxSize(windowSize.x - 10, windowSize.y - 10);
+	ImVec2 listBoxSize(windowSize.x - 20, windowSize.y - 70);
+
+	ImGui::SetNextWindowSize(listBoxSize);
 
 	// Render list view
-	if (ImGui::BeginListBox("Objects", listBoxSize)) 
+	if (ImGui::BeginListBox("##Objects", listBoxSize)) 
 	{
 		// Iterate through each scene object and render it as a selectable item in the list
-		static int selected = -1;
-		displaySceneObjects(selected);
+		displaySceneObjects();
 		ImGui::EndListBox();
 	}
 
@@ -1030,18 +945,19 @@ void RenderSceneHierarchyWindow(float width, float height)
 
 void RenderViewWindow(float width, float height) 
 {
-	float windowWidth = width * 0.6f - 10;
-	float windowHeight = height * 0.8f;
-	float startX = width * 0.2f + 10; // Add a gap of 10 pixels
+	float windowWidth = width * 0.7f - 10;
+	float windowHeight = height * 0.7f;
+	float startX = width * 0.15f + 10; // Add a gap of 10 pixels
 	ImGui::SetNextWindowPos(ImVec2(startX, 65)); // Adjust vertical position to make space for the menu bar
 	ImGui::SetNextWindowSize(ImVec2(windowWidth, windowHeight - 40));
 	ImGui::Begin("View", nullptr, style | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoDecoration);
-
+	
 	// Display the texture
 	ImVec2 imageSize(windowWidth, windowHeight);
 	ImGui::Image(reinterpret_cast<ImTextureID>(Engine::get()->getContext()->getActiveScene()->getRenderTarget()), imageSize, ImVec2(0, 1), ImVec2(1, 0));
 
-	if (!Engine::get()->getContext()->getActiveScene()->isSimulationActive())
+	if (!Engine::get()->getContext()->getActiveScene()->isSimulationActive() && 
+		!ImGui::IsPopupOpen(1, ImGuiPopupFlags_AnyPopupId | ImGuiPopupFlags_AnyPopupLevel))
 	{
 
 		if (!ImGuizmo::IsUsing() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
@@ -1059,85 +975,117 @@ void RenderViewWindow(float width, float height)
 				int alteredY = (mousePos.y - 65) / windowHeight * Engine::get()->getWindow()->getHeight();
 				int selectedID = Engine::get()->getSubSystem<ObjectPicker>()->pickObject(alteredX, alteredY);
 
-				for (auto& sceneObj : sceneObjects)
+				if (selectedID == -1)
 				{
-					if (sceneObj.e.handlerID() == selectedID)
+					selectedEntity = Entity::EmptyEntity;
+
+				}
+				else
+				{
+
+					for (auto& sceneObj : sceneObjects)
 					{
-						selectedEntity = sceneObj.e;
-						break;
+						if (sceneObj.e.handlerID() == selectedID)
+						{
+							selectedEntity = sceneObj.e;
+							break;
+						}
 					}
 				}
-
-				logDebug(std::to_string(selectedID));
 			}
+		}
+
+		
+		// Define the size and position of the inner window
+		float innerWindowWidth = windowWidth - 10;
+		float innerWindowHeight = 35.0f;
+		ImGui::SetNextWindowPos(ImVec2(startX + 7, 72)); // Adjust position as needed
+		ImGui::SetNextWindowSize(ImVec2(innerWindowWidth, innerWindowHeight)); // Adjust size as needed
+
+		// Transformation mode enum and current mode variable
+		enum TransformMode { TRANSLATE, ROTATE, SCALE, UNIVERSAL };
+		static TransformMode currentMode = TRANSLATE;
+
+		// Gizmo mode variable
+		static ImGuizmo::MODE currentGizmoMode = ImGuizmo::LOCAL;
+
+		// Snap options
+		static bool useSnap = false;
+		static float snapValues[3] = { 1.0f, 1.0f, 1.0f };
+
+		
+
+		if (ImGui::BeginChild("TransformWindow", ImVec2(innerWindowWidth, innerWindowHeight), true))
+		{
+			// Radio buttons for transformation mode
+			ImGui::RadioButton("Translate", (int*)&currentMode, TRANSLATE);
+			ImGui::SameLine();
+			ImGui::RadioButton("Rotate", (int*)&currentMode, ROTATE);
+			ImGui::SameLine();
+			ImGui::RadioButton("Scale", (int*)&currentMode, SCALE);
+			ImGui::SameLine();
+			ImGui::RadioButton("Universal", (int*)&currentMode, UNIVERSAL);
+
+			// Button to toggle between local and world gizmo modes
+			ImGui::SameLine();
+			if (ImGui::Button(currentGizmoMode == ImGuizmo::LOCAL ? "Local" : "World"))
+			{
+				currentGizmoMode = (currentGizmoMode == ImGuizmo::LOCAL) ? ImGuizmo::WORLD : ImGuizmo::LOCAL;
+			}
+
+			// Checkbox for snap
+			ImGui::SameLine();
+			ImGui::Checkbox("Snap", &useSnap);
+
+			// Input fields for snap values
+			ImGui::SameLine();
+			float snapInputWidth = 80.0f;
+			if (currentMode == TRANSLATE)
+			{
+				ImGui::SetNextItemWidth(snapInputWidth * 3);
+				ImGui::InputFloat3("Snap Translate", snapValues);
+			}
+			else if (currentMode == ROTATE)
+			{
+				ImGui::SetNextItemWidth(snapInputWidth);
+				ImGui::InputFloat("Snap Angle", &snapValues[0]);
+			}
+			else if (currentMode == SCALE)
+			{
+				ImGui::SetNextItemWidth(snapInputWidth);
+				ImGui::InputFloat("Snap Scale", &snapValues[0]);
+			}
+
+			ImGui::SameLine();
+
+			static const char* renderModeOptions[] = { "Shaded", "Wireframe"};
+			static int currentItem = 0; // Index of the selected item
+
+			ImGui::SetCursorPosX(windowWidth - 170); // Adjust 200 to match the width of the dropdown
+			ImGui::PushItemWidth(150.0f); // Set dropdown width to 150
+			if (ImGui::BeginCombo("##RenderMode", renderModeOptions[currentItem])) // Label for the combo box
+			{
+				for (int i = 0; i < IM_ARRAYSIZE(renderModeOptions); i++)
+				{
+					bool isSelected = (currentItem == i);
+					if (ImGui::Selectable(renderModeOptions[i], isSelected))
+					{
+						currentItem = i; // Update selected index
+						Engine::get()->getContext()->setRenderMode((RenderMode)currentItem);
+					}
+
+					if (isSelected)
+						ImGui::SetItemDefaultFocus(); // Set focus to the current item
+				}
+				ImGui::EndCombo();
+			}
+			ImGui::PopItemWidth(); // Restore default width
+			ImGui::EndChild(); // End the inner window
 		}
 
 		if (selectedEntity != Entity::EmptyEntity)
 		{
-			// Define the size and position of the inner window
-			float innerWindowWidth = windowWidth - 10;
-			float innerWindowHeight = 35.0f;
-			ImGui::SetNextWindowPos(ImVec2(startX + 7, 72)); // Adjust position as needed
-			ImGui::SetNextWindowSize(ImVec2(innerWindowWidth, innerWindowHeight)); // Adjust size as needed
-
-			// Transformation mode enum and current mode variable
-			enum TransformMode { TRANSLATE, ROTATE, SCALE, UNIVERSAL };
-			static TransformMode currentMode = TRANSLATE;
-
-			// Gizmo mode variable
-			static ImGuizmo::MODE currentGizmoMode = ImGuizmo::LOCAL;
-
-			// Snap options
-			static bool useSnap = false;
-			static float snapValues[3] = { 1.0f, 1.0f, 1.0f };
-
 			auto& transform = selectedEntity.getComponent<Transformation>();
-
-			if (ImGui::BeginChild("TransformWindow", ImVec2(innerWindowWidth, innerWindowHeight), true))
-			{
-				// Radio buttons for transformation mode
-				ImGui::RadioButton("Translate", (int*)&currentMode, TRANSLATE);
-				ImGui::SameLine();
-				ImGui::RadioButton("Rotate", (int*)&currentMode, ROTATE);
-				ImGui::SameLine();
-				ImGui::RadioButton("Scale", (int*)&currentMode, SCALE);
-				ImGui::SameLine();
-				ImGui::RadioButton("Universal", (int*)&currentMode, UNIVERSAL);
-
-				// Button to toggle between local and world gizmo modes
-				ImGui::SameLine();
-				if (ImGui::Button(currentGizmoMode == ImGuizmo::LOCAL ? "Local" : "World"))
-				{
-					currentGizmoMode = (currentGizmoMode == ImGuizmo::LOCAL) ? ImGuizmo::WORLD : ImGuizmo::LOCAL;
-				}
-
-				// Checkbox for snap
-				ImGui::SameLine();
-				ImGui::Checkbox("Snap", &useSnap);
-
-				// Input fields for snap values
-				ImGui::SameLine();
-				float snapInputWidth = 80.0f;
-				if (currentMode == TRANSLATE)
-				{
-					ImGui::SetNextItemWidth(snapInputWidth * 3);
-					ImGui::InputFloat3("Snap Translate", snapValues);
-				}
-				else if (currentMode == ROTATE)
-				{
-					ImGui::SetNextItemWidth(snapInputWidth);
-					ImGui::InputFloat("Snap Angle", &snapValues[0]);
-				}
-				else if (currentMode == SCALE)
-				{
-					ImGui::SetNextItemWidth(snapInputWidth);
-					ImGui::InputFloat("Snap Scale", &snapValues[0]);
-				}
-
-
-
-				ImGui::EndChild(); // End the inner window
-			}
 
 			glm::mat4 glmMat = transform.getLocalTransformation();
 			float* matrixPtr = glm::value_ptr(glmMat);
@@ -1214,6 +1162,26 @@ static const char* layerMaskList[]{
 	"Layer Mask 15",
 };
 
+static void displayChannelSelectWidget(int*& currentChannel)
+{
+	static const char* channelMaskOptions[] = { "None", "R", "G", "B", "A" };
+	if (ImGui::BeginCombo("##channelMask", channelMaskOptions[*currentChannel])) // Label for the combo box
+	{
+		for (int i = 0; i < IM_ARRAYSIZE(channelMaskOptions); i++)
+		{
+			bool isSelected = (*currentChannel == i);
+			if (ImGui::Selectable(channelMaskOptions[i], isSelected))
+			{
+				*currentChannel = i; // Update selected index
+			}
+
+			if (isSelected)
+				ImGui::SetItemDefaultFocus(); // Set focus to the current item
+		}
+		ImGui::EndCombo();
+	}
+}
+
 static void addTextureEditWidget(Resource<Texture> texture, ImVec2 size, std::function<void(std::string uuid)> callback)
 {
 	int texID = 0;
@@ -1222,21 +1190,21 @@ static void addTextureEditWidget(Resource<Texture> texture, ImVec2 size, std::fu
 		texID = texture.get()->getID();
 	}
 
-	ImGui::Image(reinterpret_cast<ImTextureID>(texID), size, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
-
-	if (ImGui::IsItemClicked())
+	if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(texID), size))
 	{
-		showAssetTextureSelectWindow = true;
+		ImGui::OpenPopup("EditTexturePopup");
 		assetTextureSelectCB = callback;
 	}
+
+	displayAssetTextureSelectPopup();
 }
 
-static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::Type ttype)
+static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::string& name, Texture::TextureType ttype)
 {
 	Resource<Texture> tex = Resource<Texture>::empty;
 	if (mat->hasTexture(ttype))
 	{
-		tex = mat->getTexture(ttype);
+		tex = mat->getSampler(ttype)->texture;
 	}
 
 	addTextureEditWidget(tex, { 20, 20 }, [=](std::string uuid) {
@@ -1246,6 +1214,91 @@ static void addTextureEditWidget(std::shared_ptr<Material> mat, const std::strin
 	ImGui::SameLine();
 
 	ImGui::Text(name.c_str());
+}
+
+static void addSamplerEditWidget(std::shared_ptr<Material> mat, ImVec2 size, const std::string& name, Texture::TextureType ttype)
+{
+	ImGui::PushID(name.c_str());
+
+	int texID = 0;
+	auto sampler = mat->getSampler(ttype);
+
+	if (!sampler->texture.isEmpty())
+	{
+		texID = sampler->texture.get()->getID();
+	}
+
+	if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(texID), size)) 
+	{
+		ImGui::OpenPopup("EditSamplerPopup");
+		g_selectedSampler = sampler;
+		g_previousSampler = std::make_shared<TextureSampler>(*sampler.get());		
+	}
+
+	if (ImGui::BeginPopup("EditSamplerPopup"))
+	{
+		if (!g_selectedSampler)
+		{
+			logError("Selected sampler cannot be null.");
+			ImGui::EndPopup();
+			return;
+		}
+		auto assets = Engine::get()->getSubSystem<Assets>();
+
+		ImGui::Text("Texture");
+		addTextureEditWidget(g_selectedSampler->texture, ImVec2{150, 150}, [=](std::string uuid) {
+			g_selectedSampler->texture = Resource<Texture>(uuid);
+			});
+
+		ImGui::Spacing();
+
+		static int* currentChannelMask[4];
+		
+		currentChannelMask[0] = &g_selectedSampler->channelMaskR;
+		currentChannelMask[1] = &g_selectedSampler->channelMaskG;
+		currentChannelMask[2] = &g_selectedSampler->channelMaskB;
+		currentChannelMask[3] = &g_selectedSampler->channelMaskA;
+
+		for (int i = 0; i < g_selectedSampler->channelCount; i++)
+		{
+			ImGui::PushID(&currentChannelMask[i]);
+			displayChannelSelectWidget(currentChannelMask[i]);
+			ImGui::PopID();
+		}
+
+		ImGui::Spacing();
+
+		ImGui::DragFloat("xoffset", &g_selectedSampler->xOffset, .1f);
+		ImGui::DragFloat("yoffset", &g_selectedSampler->yOffset, .1f);
+
+		ImGui::Spacing();
+
+		ImGui::DragFloat("xScale", &g_selectedSampler->xScale, .1f);
+		ImGui::DragFloat("yScale", &g_selectedSampler->yScale, .1f);
+
+		ImGui::Separator();
+
+		if (ImGui::Button("OK")) 
+		{
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel")) 
+		{
+			mat->setSampler(ttype, g_previousSampler);
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+
+	ImGui::SameLine();
+	ImGui::Text(name.c_str());
+
+	ImGui::PopID();
+	
 }
 
 static void addSkyboxTextureEditWidget(SkyboxComponent& skybox)
@@ -1277,10 +1330,12 @@ static void addSkyboxTextureEditWidget(SkyboxComponent& skybox)
 
 void RenderInspectorWindow(float width, float height) 
 {
-	float windowWidth = width * 0.2f - 5;
-	float startX = width * 0.8f + 5; // Add a gap of 5 pixels
+	auto assets = Engine::get()->getSubSystem<Assets>();
+
+	float windowWidth = width * 0.15f - 5;
+	float startX = width * 0.85f + 5; // Add a gap of 5 pixels
 	ImGui::SetNextWindowPos(ImVec2(startX, 25)); // Adjust vertical position to make space for the menu bar
-	ImGui::SetNextWindowSize(ImVec2(windowWidth - 5, height * 0.8f));
+	ImGui::SetNextWindowSize(ImVec2(windowWidth - 5, height * 0.7f));
 	ImGui::Begin("Inspector", nullptr, style | ImGuiWindowFlags_NoScrollbar);
 
 	if (selectedEntity != Entity::EmptyEntity)
@@ -1340,7 +1395,7 @@ void RenderInspectorWindow(float width, float height)
 
 			ImGui::Text("Number of vertices: %d", (int)meshComponent.mesh.get()->getNumOfVertices());
 
-			// Button to trigger some action
+			 //Button to trigger some action
 			if (ImGui::Button("Select Mesh")) 
 			{
 				showMeshSelector = true;
@@ -1351,21 +1406,44 @@ void RenderInspectorWindow(float width, float height)
 
 			if (!selectedMeshUID.empty())
 			{
-				meshComponent.mesh = Resource<Mesh>(selectedMeshUID);
+				meshComponent.mesh = Resource<MeshCollection>(selectedMeshUID);
 			}
 
 			ImGui::SameLine();
 
 			// Text display field
-			ImGui::Text(meshComponent.mesh.getUID().c_str());
-			});
-
-		displayComponent<RenderableComponent>("Renderer", [](RenderableComponent& renderComponent) {
-			ImGui::Combo("##Technique", (int*)&renderComponent.renderTechnique, renderTechniqueStrList, IM_ARRAYSIZE(renderTechniqueStrList));
+			ImGui::Text(Engine::get()->getSubSystem<Assets>()->getAlias(meshComponent.mesh.getUID()).c_str());
 			});
 
 		displayComponent<CameraComponent>("Camera", [](CameraComponent& cameraComponent) {
 			// TBD
+			
+			static const char* projectionMode[] = { "Perspective", "Orthographic" };
+			static int currentProjection = 0; // Index of the selected item
+			currentProjection = cameraComponent.type;
+
+			ImGui::PushItemWidth(150.0f); // Set dropdown width to 150
+			if (ImGui::BeginCombo("##ProjectionMode", projectionMode[currentProjection])) // Label for the combo box
+			{
+				for (int i = 0; i < IM_ARRAYSIZE(projectionMode); i++)
+				{
+					bool isSelected = (currentProjection == i);
+					if (ImGui::Selectable(projectionMode[i], isSelected))
+					{
+						currentProjection = i; // Update selected index
+						cameraComponent.type = (CameraComponent::CamType)currentProjection;
+					}
+
+					if (isSelected)
+						ImGui::SetItemDefaultFocus(); // Set focus to the current item
+				}
+				ImGui::EndCombo();
+			}
+
+			ImGui::DragFloat("FOVY", &cameraComponent.fovy);
+			ImGui::DragFloat("aspect", &cameraComponent.aspect);
+			ImGui::DragFloat("z near", &cameraComponent.znear);
+			ImGui::DragFloat("z far", &cameraComponent.zfar);
 			});
 
 		displayComponent<NativeScriptComponent>("Script", [](NativeScriptComponent& nsc) {
@@ -1395,19 +1473,20 @@ void RenderInspectorWindow(float width, float height)
 
 		displayComponent<MaterialComponent>("Materials", [](MaterialComponent& materials) {
 			int index = 0;
-			for (auto& mat : materials)
+			for (auto& [id, mat] : materials)
 			{
+				ImGui::PushID(&mat);
 				// Start a new collapsible header for each material
 				if (ImGui::CollapsingHeader(("Material " + std::to_string(index)).c_str()))
 				{
-					// Add texture edit widgets for the material
-					addTextureEditWidget(mat, "Albedo", Texture::Type::Albedo);
-					addTextureEditWidget(mat, "Normal", Texture::Type::Normal);
-					addTextureEditWidget(mat, "Metallic", Texture::Type::Metallic);
-					addTextureEditWidget(mat, "Roughness", Texture::Type::Roughness);
-					addTextureEditWidget(mat, "Occlusion", Texture::Type::AmbientOcclusion);
+					addSamplerEditWidget(mat, { 20,20 }, "Albedo", Texture::TextureType::Albedo);
+					addSamplerEditWidget(mat, { 20,20 }, "Normal", Texture::TextureType::Normal);
+					addSamplerEditWidget(mat, { 20,20 }, "Metallic", Texture::TextureType::Metallic);
+					addSamplerEditWidget(mat, { 20,20 }, "Roughness", Texture::TextureType::Roughness);
+					addSamplerEditWidget(mat, { 20,20 }, "Occlusion", Texture::TextureType::AmbientOcclusion);
 				}
 				++index;
+				ImGui::PopID();
 			}
 			});
 
@@ -1458,10 +1537,11 @@ void RenderInspectorWindow(float width, float height)
 
 		displayComponent<SkyboxComponent>("Skybox", [](SkyboxComponent& skybox) {
 			addTextureEditWidget(skybox.originalImage, { 50, 50 }, [](std::string uuid) {
+				Resource<Texture> tex(uuid);
+				Skybox::loadSkybox(tex, selectedEntity, Engine::get()->getContext()->getActiveScene().get());
 					
-					
-				});
 			});
+		});
 
 		displayComponent<ImageComponent>("Image", [](ImageComponent& image) {
 			addTextureEditWidget(image.image, { 50, 50 }, [&](std::string uuid) {
@@ -1505,6 +1585,31 @@ void RenderInspectorWindow(float width, float height)
 			ImGui::DragInt("height", &terrain.m_height);
 			ImGui::DragInt("width", &terrain.m_width);
 			ImGui::DragInt("scale", &terrain.m_scale);
+
+
+			ImGui::Separator();
+			ImGui::LabelText("Textures", "");
+
+			ImGui::SliderInt("Textures", &terrain.m_textureCount, 0, MAX_TEXTURE_COUNT);
+			for (int i = 0; i < terrain.m_textureCount; i++)
+			{
+				ImGui::PushID(i);
+				auto texture = terrain.getTexture(i);
+				addTextureEditWidget(texture, { 50, 50 }, [i, &terrain](std::string uuid) {
+					terrain.setTexture(i, Resource<Texture>(uuid));
+				});
+				ImGui::DragFloat("Height blend", &terrain.m_textureBlends[i].blend, .01f);
+				auto scale = terrain.getTextureScale(i);
+				if (ImGui::DragFloat("scaleX", &scale.r, .01f))
+				{
+					terrain.setTextureScaleX(i, scale.r);
+				}
+				if (ImGui::DragFloat("scaleY", &scale.g, .01f))
+				{
+					terrain.setTextureScaleY(i, scale.g);
+				}
+				ImGui::PopID();
+			}
 		});
 
 		if (ImGui::Button("Add Component", ImVec2(windowWidth, 0)))
@@ -1536,12 +1641,14 @@ void RenderInspectorWindow(float width, float height)
 
 			if (ImGui::MenuItem("Collision Mesh"))
 			{
-				auto meshComponent = selectedEntity.tryGetComponent<MeshComponent>();
-				if (meshComponent)
-				{
-					auto& meshCollisions = selectedEntity.addComponent<CollisionMeshComponent>();
-					meshCollisions.mesh = meshComponent->mesh;
-				}
+				throw std::runtime_error("Not implemented");
+				// TODO fix
+				//auto meshComponent = selectedEntity.tryGetComponent<MeshComponent>();
+				//if (meshComponent)
+				//{
+				//	auto& meshCollisions = selectedEntity.addComponent<CollisionMeshComponent>();
+				//	meshCollisions.mesh = meshComponent->mesh;
+				//}
 			}
 
 			if (ImGui::MenuItem("Mesh"))
@@ -1564,7 +1671,9 @@ void RenderInspectorWindow(float width, float height)
 				auto meshComponent = selectedEntity.tryGetComponent<MeshComponent>();
 				if (meshComponent)
 				{
-					selectedEntity.addComponent<InstanceBatch>(std::vector<std::shared_ptr<Transformation>>{}, meshComponent->mesh);
+					throw std::runtime_error("Not implemented");
+					// TODO fix
+					//selectedEntity.addComponent<InstanceBatch>(std::vector<std::shared_ptr<Transformation>>{}, meshComponent->mesh);
 				}
 			}
 
@@ -1584,6 +1693,11 @@ void RenderInspectorWindow(float width, float height)
 				auto& terrain = selectedEntity.addComponent<Terrain>();
 			}
 
+			if (ImGui::MenuItem("Skybox"))
+			{
+				auto& skybox = selectedEntity.addComponent<SkyboxComponent>();
+			}
+
 			ImGui::EndPopup();
 		}
 		
@@ -1594,30 +1708,31 @@ void RenderInspectorWindow(float width, float height)
 }
 
 void RenderAssetViewWindow(float width, float height) {
+	auto assets = Engine::get()->getSubSystem<Assets>();
 	float windowWidth = width - 10;
 	float startX = 5; // Add a gap of 5 pixels
-	float startY = height * 0.8f + 30; // Adjust vertical position to place it below the "Scene Hierarchy" window
+	float startY = height * 0.7f + 30; // Adjust vertical position to place it below the "Scene Hierarchy" window
 	ImGui::SetNextWindowPos(ImVec2(startX, startY));
-	ImGui::SetNextWindowSize(ImVec2(windowWidth, height * 0.2f - 35)); // Adjust height as needed
+	ImGui::SetNextWindowSize(ImVec2(windowWidth, height * 0.3f - 35)); // Adjust height as needed
 	ImGui::Begin("Asset View", nullptr, style);
-	ImVec2 listBoxSize(windowWidth, height * 0.2f - 35);
+	ImVec2 listBoxSize(windowWidth, height * 0.3f - 35);
 
-	auto& meshList = Engine::get()->getMemoryPool<Mesh>()->getAll();
+	auto& meshList = Engine::get()->getMemoryPool<MeshCollection>()->getAll();
 
 	if (ImGui::TreeNode("Meshes")) {
 		for (int i = 0; i < meshList.size(); i++) {
-			if (ImGui::Selectable(meshList[i].c_str())) {
+			if (ImGui::Selectable(Engine::get()->getSubSystem<Assets>()->getAlias(meshList[i]).c_str())) {
 				// Do something when a mesh is selected
 			}
 		}
 		ImGui::TreePop();
 	}
 
-	auto& textureList = Engine::get()->getMemoryPool<Texture>()->getAll();
+	auto& textureList = assets->getAllTextures();
 
 	if (ImGui::TreeNode("Textures")) {
 		for (int i = 0; i < textureList.size(); i++) {
-			if (ImGui::Selectable(textureList[i].c_str())) {
+			if (ImGui::Selectable(assets->getAlias(textureList[i]).c_str())) {
 				// Do something when a mesh is selected
 			}
 		}
@@ -1625,6 +1740,27 @@ void RenderAssetViewWindow(float width, float height) {
 	}
 	// Render asset view content here
 	ImGui::End();
+}
+
+void DisplayDebugInfoWindow()
+{
+	//if (displayDebugInfoWindow)
+	{
+		ImVec2 windowSize(200.f, 150.f);
+		ImGui::SetNextWindowSize(windowSize);
+		ImGui::Begin("Debug Info", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
+		auto fps = Engine::get()->getSubSystem<System>()->getFPS();
+		ImGui::Text("FPS: %.1f", fps);
+
+		auto deltaTime = Engine::get()->getSubSystem<System>()->getDeltaTime() * 1000;
+		ImGui::Text("Delta time: %.1f ms", deltaTime);
+
+		auto triangleCount = Engine::get()->getSubSystem<System>()->getTriangleCount();
+		ImGui::Text("Triangle count: %u", triangleCount);
+
+		ImGui::End();
+	}
 }
 
 
@@ -1668,16 +1804,28 @@ class GUI_Helper : public GuiMenu {
 					}
 					if (ImGui::BeginMenu("Import")) {
 						if (ImGui::MenuItem("Model")) {
-							showModelCreatorWindow = true;
+							ShowModelCreatorWindow();
 						}
 						if (ImGui::MenuItem("Texture")) {
-							showTextureImportWindow = true;
+							ShowTextureImportWindow();
 						}
 						if (ImGui::MenuItem("Animation")) {
 							// Action for importing animation
-							showAnimationImportWindow = true;
+							ShowAnimationImportWindow();
 						}
 						ImGui::EndMenu();
+					}
+					if (ImGui::MenuItem("Build", "")) {
+						// Path to the Python script
+						std::string pythonScriptPath = "../../scripts/build_shipping.py";
+
+						// Command to execute the Python script with folderPath as an argument
+						std::string command = "python \"" + pythonScriptPath + "\" \"" + Engine::get()->getInitParams().projectDir + "\"";
+
+						// Run the command
+						std::system(command.c_str());
+
+						//std::filesystem::create_directories("../Game/data");
 					}
 					ImGui::Separator(); // Optional: Add a separator
 					if (ImGui::MenuItem("Quit", "Alt+F4")) {
@@ -1706,10 +1854,7 @@ class GUI_Helper : public GuiMenu {
 		RenderInspectorWindow(screenWidth, screenHeight);
 		RenderAssetViewWindow(screenWidth, screenHeight); // Add the Asset View window
 
-		ShowTextureImportWindow();
-		ShowAnimationImportWindow();
-		ShowModelCreatorWindow();
-		displayAssetTextureSelectWindow();
+		DisplayDebugInfoWindow();
 		
 	}
 };
@@ -1740,18 +1885,25 @@ public:
 
 		// set Editor camera as active camera
 		auto editorCamera = m_editorRegistry->createEntity("Editor Camera");
-		editorCamera.addComponent<CameraComponent>();
+		editorCamera.addComponent<CameraComponent>(CameraComponent::createPerspectiveCamera(45.0f, (float)4 / 3, 0.1f, 3000.0f));
 		editorCamera.addComponent<NativeScriptComponent>().bind<EditorCamera>();
-		scene->setPrimaryCamera(editorCamera);
+		Engine::get()->getContext()->getActiveScene()->setPrimaryCamera(editorCamera);
 
 		g_editorCamera = editorCamera;
 
 		
 
+
+
 		updateScene();
 
 		auto gui = new GUI_Helper();
 		Engine::get()->getImguiHandler()->addGUI(gui);
+	}
+
+	void update() override
+	{
+	
 	}
 
 	std::shared_ptr<SGE_Regsitry> m_editorRegistry;

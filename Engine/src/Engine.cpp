@@ -32,6 +32,8 @@
 #include "ObjectPicker.h"
 #include "AnimationLoader.h"
 #include "Assets.h"
+#include "Graphics.h"
+#include "System.h"
 
 #include "Application.h"
 #include "SDL2/SDL.h"
@@ -99,7 +101,7 @@ bool Engine::init(const InitParams& initParams)
     m_eventSystem = std::make_shared<EventSystem>();
 
     m_memoryPoolTexture = std::make_shared<MemoryPool<Texture>>();
-    m_memoryPoolMesh = std::make_shared<MemoryPool<Mesh>>();
+    m_memoryPoolMeshCollection = std::make_shared<MemoryPool<MeshCollection>>();
     m_memoryPoolAnimation = std::make_shared<MemoryPool<Animation>>();
 
     m_resourceManager = std::make_shared<ResourceManager>();
@@ -137,9 +139,7 @@ bool Engine::init(const InitParams& initParams)
         m_resourceManager->setRootDir("./");
     }
 
-    m_defaultMaterial = std::make_shared<Material>();
-
-    m_window = std::make_shared<Window>(SCREEN_WIDTH, SCREEN_HEIGHT);
+    m_window = std::make_shared<Window>();
     if (!m_window->init())
     {
         logError("Window init failed!");
@@ -170,6 +170,8 @@ bool Engine::init(const InitParams& initParams)
 
     auto modelImporter = new ModelImporter();
     auto animationLoader = new AnimationLoader();
+    auto graphics = new Graphics();
+    auto system = new System();
     m_assets = std::make_shared<Assets>();
 
     m_timeManager = std::make_shared<TimeManager>();
@@ -180,9 +182,7 @@ bool Engine::init(const InitParams& initParams)
         return false;
     }
 
-    m_commonShaders = std::make_shared<CommonShaders>();
-
-    m_commonTextures = std::make_shared<CommonTextures>();
+    m_memoryManagementSystem = std::make_shared<CacheSystem>();
 
     m_randomSystem = std::make_shared<RandomNumberGenerator>();
 
@@ -192,15 +192,20 @@ bool Engine::init(const InitParams& initParams)
     }
     else
     {
-        // Create a new Project
-        m_memoryManagementSystem = std::make_shared<CacheSystem>();
+        // Create a new Project       
         auto& par = ProjectAssetRegistry::create(initParams.projectDir);;
         m_context = std::make_shared<Context>(par);
+
+        m_commonTextures = std::shared_ptr<CommonTextures>(CommonTextures::create());
+        m_commonShaders = std::make_shared<CommonShaders>();
+        m_defaultMaterial = std::make_shared<Material>();
         
         createStartupScene(m_context, initParams);
 
         saveProject();
     }
+
+   
 
     auto objectPicker = new ObjectPicker();
     if (!objectPicker->init())
@@ -267,10 +272,6 @@ Context* Engine::getContext() const
 void Engine::draw(float deltaTime)
 {
     m_context->draw(deltaTime);
-
-    m_imguiHandler->render();
-
-    m_window->SwapBuffer();
 }
 
 
@@ -283,6 +284,8 @@ void Engine::run(Application* app)
 {
     //Main loop flag
     bool quit = false;
+
+    auto system = getSubSystem<System>();
 
     //Event handler
     SDL_Event e;
@@ -298,7 +301,9 @@ void Engine::run(Application* app)
 
         if (NOW == LAST) continue;
 
-        deltaTime = (double)SDL_GetPerformanceFrequency() / ((NOW - LAST) * 1000);
+        deltaTime = ((NOW - LAST) / (double)SDL_GetPerformanceFrequency());
+
+        system->setDeltaTime(deltaTime);
 
         //Handle events on queue
         handleEvents(e, quit);
@@ -310,6 +315,18 @@ void Engine::run(Application* app)
 
         update(deltaTime);
         draw(deltaTime);
+        app->update();
+
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_context->getActiveScene()->getRenderTarget());
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glBlitFramebuffer(0, 0, m_window->getWidth(), m_window->getHeight(), 0, 0, m_window->getWidth(), m_window->getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        m_imguiHandler->render();
+
+        m_window->SwapBuffer();
+
+        system->reset();
 
     }
 }
@@ -410,13 +427,14 @@ void Engine::loadProject(const std::string& dirPath)
 {
     m_projectDirectory = dirPath;
 
-    
 
     auto& par = ProjectAssetRegistry::parse(dirPath);
     auto& filePath = par->getFilepath();
     m_context = std::make_shared<Context>(par);
 
     m_memoryManagementSystem = std::make_shared<CacheSystem>(par->getAssociations());
+    m_commonTextures = std::shared_ptr<CommonTextures>(CommonTextures::load());
+    m_defaultMaterial = std::make_shared<Material>();
 
     m_projectManager->loadProject(filePath, m_context);
 }
@@ -470,7 +488,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
     dLight.getComponent<Transformation>().setLocalRotation(glm::vec3(0, -1, 0));
 
     auto mainCamera = startupScene->createEntity("Main Camera");
-    mainCamera.addComponent<CameraComponent>();
+    mainCamera.addComponent<CameraComponent>(CameraComponent::createPerspectiveCamera(45.0f, (float)4 / 3, 0.1f, 1000.0f));
     startupScene->setPrimaryCamera(mainCamera);
     mainCamera.getComponent<Transformation>().setLocalPosition({10,1,10});
     mainCamera.getComponent<CameraComponent>().center = {0,0,0};
@@ -478,12 +496,13 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
 
     if (initParams.templateScene)
     {
-        Skybox::CreateSkyboxFromCubemap({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
-            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
-            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
-            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",
-            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
-            SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" }, context->getActiveScene().get());
+        //Skybox::CreateSkyboxFromEquirectangularMap( "C:/dev/repos/LearnOpenGL/resources/textures/hdr/newport_loft.hdr", context->getActiveScene().get());
+        //Skybox::CreateSkyboxFromCubemap({ SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/right.jpg",
+        //SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/left.jpg",
+        //SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/top.jpg",
+        //SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/bottom.jpg",
+        //SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/front.jpg",
+        //SGE_ROOT_DIR + "Resources/Engine/Textures/Skybox/back.jpg" }, context->getActiveScene().get());
 
         // todo revert
         //{
@@ -502,23 +521,7 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
             //editorCamera->setPosition(25, 225, 35);
         }
 
-        auto sphere = ShapeFactory::createSphere(&context->getActiveScene()->getRegistry());
-        {
-            auto random = Engine::get()->getRandomSystem();
-            auto x = random->rand() * 10 - 5;
-            auto z = random->rand() * 10 - 5;
-
-            auto& sphereTransform = sphere.getComponent<Transformation>();
-            sphereTransform.setLocalPosition({ x, 10, z });
-
-
-            auto& mat = sphere.addComponent<MaterialComponent>();
-            auto tex = Engine::get()->getSubSystem<Assets>()->importTexture2D(SGE_ROOT_DIR + "Resources/Engine/Textures/floor.jpg");
-            mat.begin()->get()->setTexture(Texture::Type::Diffuse, tex);
-
-            auto& rb = sphere.addComponent<RigidBodyComponent>(RigidbodyType::Dynamic, 1.f);
-            auto& collisionBox = sphere.addComponent<CollisionSphereComponent>(1.f);
-        }
+        ShapeFactory::createSphere(&context->getActiveScene()->getRegistry());
     }
 }
 

@@ -12,8 +12,16 @@
 #include "Component.h"
 #include "RenderCommand.h"
 #include <GL/glew.h>
+#include "MeshCollection.h"
 
 Resource<Texture> TextureTransformer::flipVertical(Resource<Texture> srcTexture)
+{
+	auto dstTexture = Texture::createEmptyTexture(srcTexture.get()->getWidth(), srcTexture.get()->getHeight(), GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
+	flipVertical(srcTexture, dstTexture);
+	return dstTexture;
+}
+
+void TextureTransformer::flipVertical(Resource<Texture> srcTexture, Resource<Texture>& dstTexture)
 {
 	auto shader = Shader::create<Shader>(SGE_ROOT_DIR + "Resources/Engine/Shaders/TextureTransformShader.glsl");
 
@@ -22,16 +30,13 @@ Resource<Texture> TextureTransformer::flipVertical(Resource<Texture> srcTexture)
 
 	fbo.bind();
 
-	// Generate cubemap
-	auto dstTexture = Texture::createEmptyTexture(srcTexture.get()->getWidth(), srcTexture.get()->getHeight(), GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
-
 	RenderBufferObject rbo{ srcTexture.get()->getWidth(), srcTexture.get()->getHeight() };
 	fbo.attachRenderBuffer(rbo.GetID(), FrameBufferObject::AttachmentType::Depth);
 
 	if (!fbo.isComplete())
 	{
 		logError("FBO is not complete!");
-		return Resource<Texture>::empty;
+		return;
 	}
 
 	// set viewport
@@ -48,13 +53,10 @@ Resource<Texture> TextureTransformer::flipVertical(Resource<Texture> srcTexture)
 	auto quad = ShapeFactory::createQuad(&Engine::get()->getContext()->getRegistry());
 	quad.RemoveComponent<RenderableComponent>();
 	quad.RemoveComponent<ObjectComponent>();
-	auto vao = quad.getComponent<MeshComponent>().mesh.get()->getVAO();
+	auto vao = quad.getComponent<MeshComponent>().mesh.get()->getPrimaryMesh()->getVAO();
 
 	RenderCommand::clear();
 
 	// render to quad
 	RenderCommand::draw(vao);
-
-	return dstTexture;
-
 }
