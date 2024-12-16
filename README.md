@@ -24,6 +24,8 @@ Welcome to **SGE (Simple Game Engine)**, a lightweight and easy-to-use game engi
 
 ![3](Images/vid1.gif)
 
+![4](Images/vid2.gif)
+
 ---
 
 ## 🛠️ Getting Started
