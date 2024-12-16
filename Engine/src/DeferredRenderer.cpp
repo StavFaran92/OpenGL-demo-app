@@ -353,7 +353,7 @@ void DeferredRenderer::renderScene(Scene* scene)
 
 			if (!aabb.isOnFrustum(*graphics->frustum))
 			{
-				continue;
+				//continue; todo fix
 			}
 
 			auto matIndex = mesh->getMaterialIndex();

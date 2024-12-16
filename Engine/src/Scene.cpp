@@ -357,7 +357,7 @@ void Scene::draw(float deltaTime)
 	graphics->prefilterEnvMap = m_prefilterEnvMap;
 	graphics->brdfLUT = m_BRDFIntegrationLUT;
 
-	//m_shadowSystem->renderToDepthMap();
+	m_shadowSystem->renderToDepthMap();
 
 	graphics->lightSpaceMatrix = m_shadowSystem->getLightSpaceMat();
 	graphics->shadowMap = m_shadowSystem->getShadowMap();
