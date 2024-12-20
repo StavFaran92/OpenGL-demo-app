@@ -33,7 +33,7 @@ public:
 
 		Entity terrainEnt = Engine::get()->getContext()->getActiveScene()->createEntity("Terrain");
 		//auto terrain = Terrain::generateTerrain(100, 100, 64, "C:/Users/Stav/Downloads/HeightMap.png");
-		auto& terrain = terrainEnt.addComponent<Terrain>(Terrain::generateTerrain(500, 500, 10, "C:/Users/Stav/Downloads/tex/iceland_heightmap.png"));
+		auto& terrain = terrainEnt.addComponent<Terrain>(Terrain::generateTerrain(2, 2, 1, "C:/Users/Stav/Pictures/white_black_pattern.png"));
 
 		terrain.m_textureCount = 3;
 
@@ -60,6 +60,8 @@ public:
 			terrain.setTextureScaleX(2, 13.f);
 			terrain.setTextureScaleY(2, 13.f);
 		}
+
+		terrain.getHeightAtPoint(0.25, 0.25);
 
 		//auto textureSnow = Engine::get()->getSubSystem<Assets>()->importTexture2D("C:/Users/Stav/Downloads/tex/Snow008A_1K-JPG_Color.jpg");
 		//terrain.setTexture(3, textureSnow);

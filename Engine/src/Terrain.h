@@ -35,6 +35,7 @@ public:
 
 	Resource<MeshCollection> getMesh() const;
 	Resource<Texture> getHeightmap() const;
+	float getHeightAtPoint(float x, float y) const;
 
 	float getScale() const;
 	int getWidth() const;

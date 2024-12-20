@@ -8,6 +8,8 @@
 #include "Logger.h"
 #include "CommonTextures.h"
 
+#include "GL/glew.h"
+
 aiScene* generateScene(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
 {
 	// Create a new mesh
@@ -256,4 +258,73 @@ glm::vec2 Terrain::getTextureScale(int index) const
 int Terrain::getTextureCount() const
 {
 	return m_textureCount;
+}
+
+float Terrain::getHeightAtPoint(float x, float y) const
+{
+	if (x < 0 || x >= m_width - 1 || y < 0 || y >= m_height - 1)
+	{
+		return 0.0f;
+	}
+
+	// X and Y are bottom->up, while texture data is up->bottom
+	float flippedY = m_height - y;
+
+	// normalize point by terrain extents
+	float normalizedX = x / m_width;
+	float normalizedY = y / m_height;
+
+	//     P1  +--------+  P2
+	//         |      / |
+	//         | T1  /  |
+	//         |    /   |
+	//         |   /    |
+	//         |  /     |
+	//         | /   T2 |
+	//     P0  |/_______|  P3
+
+	// TODO optimize
+	m_heightmap.get()->bind();
+	void* pixels = malloc(m_heightmap.get()->getWidth() * m_heightmap.get()->getHeight() * 4);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+
+	if (!pixels)
+	{
+		logError("Fetched Pixel is NULL");
+		return 0.0f;
+	}
+
+	int stride = m_width * 4;
+
+	float floorX = floor(x);
+	float floorY = floor(flippedY);
+
+	float offsetX = x - floor(x);
+	float offsetY = flippedY - floor(flippedY);
+
+	float P0 = static_cast<unsigned char*>(pixels)[static_cast<int>(floorY * stride + floorX)];
+	float P2 = static_cast<unsigned char*>(pixels)[static_cast<int>((floorY - 1) * stride + floorX + 4)];
+
+	//float P1 = static_cast<float*>(pixels)[static_cast<int>((y - 1) * m_width + x)];
+	//float P3 = static_cast<float*>(pixels)[static_cast<int>(y * m_width + x + 1)];
+
+	float Pn = 0.0f;
+	if(y > x) 
+		Pn = static_cast<unsigned char*>(pixels)[static_cast<int>((floorY - 1) * stride + floorX)]; // T1
+	else
+		Pn = static_cast<unsigned char*>(pixels)[static_cast<int>(floorY * stride + floorX + 4)]; // T2
+
+	// calculate offset inside pixel
+	float t2hX = m_width / m_heightmap.get()->getWidth();
+	float t2hY = m_height / m_heightmap.get()->getHeight();
+	
+
+	// lerp results using neighbor pixels
+	float lerpX = P0 * (1.0f - offsetX) + offsetX * Pn - P0;
+	float lerpY = Pn * (1.0f - offsetY) + offsetY * P2 - Pn;
+
+	// sum results
+	float output = (P0 + lerpX + lerpY) / 255.f * m_scale;
+
+	return output;
 }
