@@ -284,15 +284,18 @@ float Terrain::getHeightAtPoint(float x, float y) const
 	//     P0  |/_______|  P3
 
 	// TODO optimize
-	m_heightmap.get()->bind();
-	void* pixels = malloc(m_heightmap.get()->getWidth() * m_heightmap.get()->getHeight() * m_heightmap.get()->getData().bpp);
-	glGetTexImage(GL_TEXTURE_2D, 0, m_heightmap.get()->getData().format, m_heightmap.get()->getData().type, pixels);
+	//m_heightmap.get()->bind();
+	//int allocSize = m_heightmap.get()->getWidth() * m_heightmap.get()->getHeight() * 4;
+	//unsigned char* pixels = new unsigned char[allocSize];
+	//glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 
-	if (!pixels)
-	{
-		logError("Fetched Pixel is NULL");
-		return 0.0f;
-	}
+	unsigned char* pixels = static_cast<unsigned char*>(m_heightmap.get()->getData().data);
+
+	//if (!pixels)
+	//{
+	//	logError("Fetched Pixel is NULL");
+	//	return 0.0f;
+	//}
 
 	int stride = m_heightmap.get()->getWidth() * m_heightmap.get()->getData().bpp;
 
@@ -302,16 +305,14 @@ float Terrain::getHeightAtPoint(float x, float y) const
 	float offsetX = normalizedX - floor(normalizedX);
 	float offsetY = flippedY - floor(flippedY);
 
-	float P0 = static_cast<unsigned char*>(pixels)[static_cast<int>(floorY * stride + floorX)];
-	float P2 = static_cast<unsigned char*>(pixels)[static_cast<int>((floorY - 1) * stride + floorX + m_heightmap.get()->getData().bpp)];
+	float P0 = pixels[static_cast<int>(floorY * stride + floorX)];
+	float P2 = pixels[static_cast<int>((floorY - 1) * stride + floorX + m_heightmap.get()->getData().bpp)];
 
 	float Pn = 0.0f;
 	if(normalizedY > normalizedX)
-		Pn = static_cast<unsigned char*>(pixels)[static_cast<int>((floorY - 1) * stride + floorX)]; // T1
+		Pn = pixels[static_cast<int>((floorY - 1) * stride + floorX)]; // T1
 	else
-		Pn = static_cast<unsigned char*>(pixels)[static_cast<int>(floorY * stride + floorX + m_heightmap.get()->getData().bpp)]; // T2
-
-	free( pixels);
+		Pn = pixels[static_cast<int>(floorY * stride + floorX + m_heightmap.get()->getData().bpp)]; // T2
 
 	// calculate offset inside pixel
 	float t2hX = m_width / m_heightmap.get()->getWidth();

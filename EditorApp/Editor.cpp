@@ -1903,7 +1903,7 @@ public:
 				//	for (int j = 0; j < terrain.getHeight(); j++)
 				//	{
 				float height = terrain.getHeightAtPoint(5, 5);
-				p = { 5, 5, height };
+				p = { 5, 5, height + 1 };
 				//	}
 				//}
 
