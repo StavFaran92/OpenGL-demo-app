@@ -554,12 +554,12 @@ void Scene::draw(float deltaTime)
 	for (auto& [e, terrain] : Engine::get()->getContext()->getActiveScene()->getRegistry().getRegistry().view<Terrain>().each())
 	{
 
-		for (int i = 0; i < terrain.getWidth(); i++)
+		for (int i = -terrain.getWidth() / 2; i < terrain.getWidth() / 2; i++)
 		{
-			for (int j = 0; j < terrain.getHeight(); j++)
+			for (int j = -terrain.getHeight() / 2; j < terrain.getHeight() / 2; j++)
 			{
 				float height = terrain.getHeightAtPoint(i, j);
-				debug.drawPoint({ i - terrain.getWidth() / 2, height, j - terrain.getHeight() / 2 });
+				debug.drawPoint({ i, height, j });
 			}
 		}
 	}

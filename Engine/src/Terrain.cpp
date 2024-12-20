@@ -262,6 +262,11 @@ int Terrain::getTextureCount() const
 
 float Terrain::getHeightAtPoint(float x, float y) const
 {
+	
+	// offset to match heightmap
+	x += m_width / 2;
+	y += m_height / 2;
+
 	if (x < 0 || x >= m_width || y < 0 || y >= m_height) {
 		return 0.0f;
 	}
