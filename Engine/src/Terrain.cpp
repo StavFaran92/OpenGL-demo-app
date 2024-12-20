@@ -311,6 +311,8 @@ float Terrain::getHeightAtPoint(float x, float y) const
 	else
 		Pn = static_cast<unsigned char*>(pixels)[static_cast<int>(floorY * stride + floorX + m_heightmap.get()->getData().bpp)]; // T2
 
+	free( pixels);
+
 	// calculate offset inside pixel
 	float t2hX = m_width / m_heightmap.get()->getWidth();
 	float t2hY = m_height / m_heightmap.get()->getHeight();
