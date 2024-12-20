@@ -267,12 +267,12 @@ float Terrain::getHeightAtPoint(float x, float y) const
 		return 0.0f;
 	}
 
-	// X and Y are bottom->up, while texture data is up->bottom
-	float flippedY = m_height - y;
+	// convert from world space to heightmap space
+	float normalizedX = x / m_width * m_heightmap.get()->getWidth();
+	float normalizedY = y / m_height * m_heightmap.get()->getHeight();
 
-	// normalize point by terrain extents
-	float normalizedX = x / m_width;
-	float normalizedY = y / m_height;
+	// X and Y are bottom->up, while texture data is up->bottom
+	float flippedY = m_heightmap.get()->getHeight() - normalizedY;
 
 	//     P1  +--------+  P2
 	//         |      / |
@@ -285,8 +285,8 @@ float Terrain::getHeightAtPoint(float x, float y) const
 
 	// TODO optimize
 	m_heightmap.get()->bind();
-	void* pixels = malloc(m_heightmap.get()->getWidth() * m_heightmap.get()->getHeight() * 4);
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	void* pixels = malloc(m_heightmap.get()->getWidth() * m_heightmap.get()->getHeight() * m_heightmap.get()->getData().bpp);
+	glGetTexImage(GL_TEXTURE_2D, 0, m_heightmap.get()->getData().format, m_heightmap.get()->getData().type, pixels);
 
 	if (!pixels)
 	{
@@ -294,25 +294,22 @@ float Terrain::getHeightAtPoint(float x, float y) const
 		return 0.0f;
 	}
 
-	int stride = m_width * 4;
+	int stride = m_heightmap.get()->getWidth() * m_heightmap.get()->getData().bpp;
 
-	float floorX = floor(x);
+	float floorX = floor(normalizedX);
 	float floorY = floor(flippedY);
 
-	float offsetX = x - floor(x);
+	float offsetX = normalizedX - floor(normalizedX);
 	float offsetY = flippedY - floor(flippedY);
 
 	float P0 = static_cast<unsigned char*>(pixels)[static_cast<int>(floorY * stride + floorX)];
-	float P2 = static_cast<unsigned char*>(pixels)[static_cast<int>((floorY - 1) * stride + floorX + 4)];
-
-	//float P1 = static_cast<float*>(pixels)[static_cast<int>((y - 1) * m_width + x)];
-	//float P3 = static_cast<float*>(pixels)[static_cast<int>(y * m_width + x + 1)];
+	float P2 = static_cast<unsigned char*>(pixels)[static_cast<int>((floorY - 1) * stride + floorX + m_heightmap.get()->getData().bpp)];
 
 	float Pn = 0.0f;
-	if(y > x) 
+	if(normalizedY > normalizedX)
 		Pn = static_cast<unsigned char*>(pixels)[static_cast<int>((floorY - 1) * stride + floorX)]; // T1
 	else
-		Pn = static_cast<unsigned char*>(pixels)[static_cast<int>(floorY * stride + floorX + 4)]; // T2
+		Pn = static_cast<unsigned char*>(pixels)[static_cast<int>(floorY * stride + floorX + m_heightmap.get()->getData().bpp)]; // T2
 
 	// calculate offset inside pixel
 	float t2hX = m_width / m_heightmap.get()->getWidth();
