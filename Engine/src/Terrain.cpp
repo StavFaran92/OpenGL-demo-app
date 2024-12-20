@@ -291,18 +291,37 @@ float Terrain::getHeightAtPoint(float x, float y) const
 	int indexP2 = (floorY - 1) * stride + floorX * m_heightmap.get()->getData().bpp;
 	int indexP3 = (floorY - 1) * stride + (floorX + 1) * m_heightmap.get()->getData().bpp;
 
+	//     P2  +--------+  P3
+	//         |      / |
+	//         | T1  /  |
+	//         |    /   |
+	//         |   /    |
+	//         |  /     |
+	//         | /   T2 |
+	//     P0  |/_______|  P1
+
 	float P0 = pixels[indexP0];
 	float P1 = pixels[indexP1];
 	float P2 = pixels[indexP2];
 	float P3 = pixels[indexP3];
 
-	// Interpolate horizontally
-	float lerpX0 = P0 * (1.0f - offsetX) + P1 * offsetX; // Bottom edge
-	float lerpX1 = P2 * (1.0f - offsetX) + P3 * offsetX; // Top edge
+	float lerpX = 0.0f;
+	float lerpY = 0.0f;
 
-	// Interpolate vertically
-	float height = lerpX0 * (1.0f - offsetY) + lerpX1 * offsetY;
+	// lerp results using neighbor pixels
+	if (offsetY > offsetX) // T1
+	{
+		lerpX = (P3 - P2) * offsetX;
+		lerpY = (P2 - P0) * offsetY;
+	}
+	else // T2
+	{
+		lerpX = (P1 - P0) * offsetX;
+		lerpY = (P3 - P1) * offsetY;
+	}
 
-	// Normalize and apply scale
-	return (height / 255.0f) * m_scale;
+	// sum results
+	float height = (P0 + lerpX + lerpY) / 255.f * m_scale;
+
+	return height;
 }
