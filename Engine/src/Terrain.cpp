@@ -262,69 +262,47 @@ int Terrain::getTextureCount() const
 
 float Terrain::getHeightAtPoint(float x, float y) const
 {
-	if (x < 0 || x >= m_width - 1 || y < 0 || y >= m_height - 1)
-	{
+	if (x < 0 || x >= m_width || y < 0 || y >= m_height) {
 		return 0.0f;
 	}
 
-	// convert from world space to heightmap space
+	// Convert from world space to heightmap space
 	float normalizedX = x / m_width * m_heightmap.get()->getWidth();
 	float normalizedY = y / m_height * m_heightmap.get()->getHeight();
 
-	// X and Y are bottom->up, while texture data is up->bottom
-	float flippedY = m_heightmap.get()->getHeight() - normalizedY;
+	// Flip Y axis
+	float flippedY = normalizedY;// m_heightmap.get()->getHeight() - 1 - normalizedY;
 
-	//     P1  +--------+  P2
-	//         |      / |
-	//         | T1  /  |
-	//         |    /   |
-	//         |   /    |
-	//         |  /     |
-	//         | /   T2 |
-	//     P0  |/_______|  P3
-
-	// TODO optimize
-	//m_heightmap.get()->bind();
-	//int allocSize = m_heightmap.get()->getWidth() * m_heightmap.get()->getHeight() * 4;
-	//unsigned char* pixels = new unsigned char[allocSize];
-	//glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
-
+	// Access heightmap data
 	unsigned char* pixels = static_cast<unsigned char*>(m_heightmap.get()->getData().data);
-
-	//if (!pixels)
-	//{
-	//	logError("Fetched Pixel is NULL");
-	//	return 0.0f;
-	//}
-
 	int stride = m_heightmap.get()->getWidth() * m_heightmap.get()->getData().bpp;
 
-	float floorX = floor(normalizedX);
-	float floorY = floor(flippedY);
+	// Compute floor values
+	int floorX = static_cast<int>(floor(normalizedX));
+	int floorY = static_cast<int>(floor(flippedY));
 
-	float offsetX = normalizedX - floor(normalizedX);
-	float offsetY = flippedY - floor(flippedY);
+	// Offsets within the cell
+	float offsetX = normalizedX - floorX;
+	float offsetY = flippedY - floorY;
 
-	float P0 = pixels[static_cast<int>(floorY * stride + floorX)];
-	float P2 = pixels[static_cast<int>((floorY - 1) * stride + floorX + m_heightmap.get()->getData().bpp)];
+	// Get pixel values
+	int indexP0 = floorY * stride + floorX * m_heightmap.get()->getData().bpp;
+	int indexP1 = floorY * stride + (floorX + 1) * m_heightmap.get()->getData().bpp;
+	int indexP2 = (floorY - 1) * stride + floorX * m_heightmap.get()->getData().bpp;
+	int indexP3 = (floorY - 1) * stride + (floorX + 1) * m_heightmap.get()->getData().bpp;
 
-	float Pn = 0.0f;
-	if(normalizedY > normalizedX)
-		Pn = pixels[static_cast<int>((floorY - 1) * stride + floorX)]; // T1
-	else
-		Pn = pixels[static_cast<int>(floorY * stride + floorX + m_heightmap.get()->getData().bpp)]; // T2
+	float P0 = pixels[indexP0];
+	float P1 = pixels[indexP1];
+	float P2 = pixels[indexP2];
+	float P3 = pixels[indexP3];
 
-	// calculate offset inside pixel
-	float t2hX = m_width / m_heightmap.get()->getWidth();
-	float t2hY = m_height / m_heightmap.get()->getHeight();
-	
+	// Interpolate horizontally
+	float lerpX0 = P0 * (1.0f - offsetX) + P1 * offsetX; // Bottom edge
+	float lerpX1 = P2 * (1.0f - offsetX) + P3 * offsetX; // Top edge
 
-	// lerp results using neighbor pixels
-	float lerpX = P0 * (1.0f - offsetX) + offsetX * Pn - P0;
-	float lerpY = Pn * (1.0f - offsetY) + offsetY * P2 - Pn;
+	// Interpolate vertically
+	float height = lerpX0 * (1.0f - offsetY) + lerpX1 * offsetY;
 
-	// sum results
-	float output = (P0 + lerpX + lerpY) / 255.f * m_scale;
-
-	return output;
+	// Normalize and apply scale
+	return (height / 255.0f) * m_scale;
 }

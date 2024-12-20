@@ -1862,7 +1862,6 @@ class GUI_Helper : public GuiMenu {
 
 
 static bool debugTerrainFlag = false;
-static glm::vec3 p{0,0,0};
 
 class EditorApp : public Application
 {
@@ -1895,20 +1894,6 @@ public:
 		
 		Engine::get()->getInput()->getKeyboard()->onKeyReleased(SDL_SCANCODE_X, [](SDL_Event e) {
 			debugTerrainFlag = true;
-			for (auto& [e, terrain] : Engine::get()->getContext()->getActiveScene()->getRegistry().getRegistry().view<Terrain>().each())
-			{
-
-				//for (int i = 0; i < terrain.getWidth(); i++)
-				//{
-				//	for (int j = 0; j < terrain.getHeight(); j++)
-				//	{
-				float height = terrain.getHeightAtPoint(5, 5);
-				p = { 5, 5, height + 1 };
-				//	}
-				//}
-
-
-			}
 			});
 
 
@@ -1920,28 +1905,7 @@ public:
 
 	void update() override
 	{
-		auto& debug = DebugHelper::getInstance();
-
-		if (debugTerrainFlag)
-		{
-			debug.drawPoint(p);
-
-				
-				//for (int i = 0; i < terrain.getWidth(); i++)
-				//{
-				//	for (int j = 0; j < terrain.getHeight(); j++)
-				//	{
-						
-				//	}
-				//}
-
-				
-
-
-			
-		}
 	}
-
 	std::shared_ptr<SGE_Regsitry> m_editorRegistry;
 };
 
