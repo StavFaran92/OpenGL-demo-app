@@ -549,20 +549,26 @@ void Scene::draw(float deltaTime)
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	//glDisable(GL_POLYGON_OFFSET_LINE);
 
-	auto& debug = DebugHelper::getInstance();
+	//auto& debug = DebugHelper::getInstance();
 
-	for (auto& [e, terrain] : Engine::get()->getContext()->getActiveScene()->getRegistry().getRegistry().view<Terrain>().each())
-	{
+	//static float offsetX = 0.0;
+	//static float offsetY = 0.0;
 
-		for (int i = -terrain.getWidth() / 2; i < terrain.getWidth() / 2; i++)
-		{
-			for (int j = -terrain.getHeight() / 2; j < terrain.getHeight() / 2; j++)
-			{
-				float height = terrain.getHeightAtPoint(i, j);
-				debug.drawPoint({ i, height, j });
-			}
-		}
-	}
+	//offsetX = fmod(offsetX + .01f, 1.0f);
+	//offsetY = fmod(offsetY + .01f, 1.0f);
+
+	//for (auto& [e, terrain] : Engine::get()->getContext()->getActiveScene()->getRegistry().getRegistry().view<Terrain>().each())
+	//{
+
+	//	for (float i = -terrain.getWidth() / 2 + offsetX; i < terrain.getWidth() / 2; i++)
+	//	{
+	//		for (float j = -terrain.getHeight() / 2 + offsetY; j < terrain.getHeight() / 2; j++)
+	//		{
+	//			float height = terrain.getHeightAtPoint(i, j);
+	//			debug.drawPoint({ i, height, j });
+	//		}
+	//	}
+	//}
 	
 
 	// Render UI
