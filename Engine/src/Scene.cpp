@@ -219,13 +219,6 @@ void Scene::init(Context* context)
 	m_skyboxShader = Shader::createShared<Shader>(SGE_ROOT_DIR +"Resources/Engine/Shaders/SkyboxShader.glsl");
 
 	m_basicBox = ShapeFactory::createBox();
-
-	//m_registry->get().on_construct<RigidBodyComponent>().connect<&Scene::onRigidBodyConstruct>(this);
-	//m_registry->get().on_construct<CollisionBoxComponent>().connect<&Scene::onCollisionConstruct>(this);
-	//m_registry->get().on_construct<CollisionSphereComponent>().connect<&Scene::onCollisionConstruct>(this);
-	//m_registry->get().on_construct<CollisionMeshComponent>().connect<&Scene::onCollisionConstruct>(this);
-	//
-	//m_registry->get().on_destroy<RigidBodyComponent>().connect<&Scene::onRigidBodyDestroy>(this);
 }
 
 void Scene::update(float deltaTime)
@@ -263,71 +256,7 @@ void Scene::update(float deltaTime)
 		}
 
 		// Physics
-		m_PhysicsScene->simulate(1 / 120.f);
-		m_PhysicsScene->fetchResults(true);
-
-		// Update kinematics
-		physx::PxU32 nbDynamicActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC);
-		if (nbDynamicActors)
-		{
-			std::vector<physx::PxRigidActor*> actors(nbDynamicActors);
-			m_PhysicsScene->getActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC, reinterpret_cast<physx::PxActor**>(&actors[0]), nbDynamicActors);
-
-			for (physx::PxRigidActor* actor : actors)
-			{
-				auto dynamicBody = static_cast<physx::PxRigidDynamic*>(actor);
-				auto& flags = dynamicBody->getRigidBodyFlags();
-				if (flags.isSet(physx::PxRigidBodyFlag::eKINEMATIC))
-				{
-					entity_id id = *(entity_id*)actor->userData;
-					Entity e{ entt::entity(id), m_registry.get() };
-					auto& rb = e.getComponent<RigidBodyComponent>();
-
-					physx::PxTransform targetPose = actor->getGlobalPose();
-					targetPose.p += physx::PxVec3(rb.m_targetPisition.x, rb.m_targetPisition.y, rb.m_targetPisition.z);
-					targetPose.q = physx::PxQuat(physx::PxIdentity);
-
-					if (rb.isChanged)
-					{
-						dynamicBody->setKinematicTarget(targetPose);
-						rb.isChanged = false;
-					}
-				}
-				else // Dynamic
-				{
-					entity_id id = *(entity_id*)actor->userData;
-					Entity e{ entt::entity(id), m_registry.get() };
-					auto& rb = e.getComponent<RigidBodyComponent>();
-
-					if (rb.isChanged)
-					{
-						
-						physx::PxVec3 force(rb.m_force.x, rb.m_force.y, rb.m_force.z);
-						dynamicBody->addForce(force);
-						rb.isChanged = false;
-						rb.m_force = glm::vec3(0);
-					}
-				}
-			}
-		}
-
-		// Retrieve Graphics transform from Physics transform
-		physx::PxU32 nbActors = m_PhysicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
-		if (nbActors)
-		{
-			std::vector<physx::PxRigidActor*> actors(nbActors);
-			m_PhysicsScene->getActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC, reinterpret_cast<physx::PxActor**>(&actors[0]), nbActors);
-
-			for (physx::PxRigidActor* actor : actors)
-			{
-				entity_id id = *(entity_id*)actor->userData;
-				Entity e{ entt::entity(id), m_registry.get() };
-				auto& transform = e.getComponent<Transformation>();
-
-				physx::PxTransform pxTransform = actor->getGlobalPose();
-				PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
-			}
-		}
+		Engine::get()->getPhysicsSystem()->update(this, deltaTime);
 
 		for (auto&& [entity, animator, mesh] : m_registry->get().view<Animator, MeshComponent>().each())
 		{

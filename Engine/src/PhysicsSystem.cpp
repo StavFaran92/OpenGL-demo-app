@@ -272,3 +272,74 @@ void PhysicsSystem::createShape(physx::PxRigidActor* body, Entity e, bool recurs
         }
     }
 }
+
+void PhysicsSystem::update(Scene* scene, float deltaTime)
+{
+    auto physicsScene = scene->getPhysicsScene();
+
+    physicsScene->simulate(1 / 120.f);
+    physicsScene->fetchResults(true);
+
+    // Update kinematics
+    physx::PxU32 nbDynamicActors = physicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC);
+    if (nbDynamicActors)
+    {
+        std::vector<physx::PxRigidActor*> actors(nbDynamicActors);
+        physicsScene->getActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC, reinterpret_cast<physx::PxActor**>(&actors[0]), nbDynamicActors);
+
+        for (physx::PxRigidActor* actor : actors)
+        {
+            auto dynamicBody = static_cast<physx::PxRigidDynamic*>(actor);
+            auto& flags = dynamicBody->getRigidBodyFlags();
+            if (flags.isSet(physx::PxRigidBodyFlag::eKINEMATIC))
+            {
+                entity_id id = *(entity_id*)actor->userData;
+                Entity e{ entt::entity(id), &scene->getRegistry()};
+                auto& rb = e.getComponent<RigidBodyComponent>();
+
+                physx::PxTransform targetPose = actor->getGlobalPose();
+                targetPose.p += physx::PxVec3(rb.m_targetPisition.x, rb.m_targetPisition.y, rb.m_targetPisition.z);
+                targetPose.q = physx::PxQuat(physx::PxIdentity);
+
+                if (rb.isChanged)
+                {
+                    dynamicBody->setKinematicTarget(targetPose);
+                    rb.isChanged = false;
+                }
+            }
+            else // Dynamic
+            {
+                entity_id id = *(entity_id*)actor->userData;
+                Entity e{ entt::entity(id),  &scene->getRegistry() };
+                auto& rb = e.getComponent<RigidBodyComponent>();
+
+                if (rb.isChanged)
+                {
+
+                    physx::PxVec3 force(rb.m_force.x, rb.m_force.y, rb.m_force.z);
+                    dynamicBody->addForce(force);
+                    rb.isChanged = false;
+                    rb.m_force = glm::vec3(0);
+                }
+            }
+        }
+    }
+
+    // Retrieve Graphics transform from Physics transform
+    physx::PxU32 nbActors = physicsScene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
+    if (nbActors)
+    {
+        std::vector<physx::PxRigidActor*> actors(nbActors);
+        physicsScene->getActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC, reinterpret_cast<physx::PxActor**>(&actors[0]), nbActors);
+
+        for (physx::PxRigidActor* actor : actors)
+        {
+            entity_id id = *(entity_id*)actor->userData;
+            Entity e{ entt::entity(id),  &scene->getRegistry() };
+            auto& transform = e.getComponent<Transformation>();
+
+            physx::PxTransform pxTransform = actor->getGlobalPose();
+            PhysXUtils::fromPhysXTransform(e, pxTransform, transform);
+        }
+    }
+}
