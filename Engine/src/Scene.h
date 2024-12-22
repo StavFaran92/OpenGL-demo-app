@@ -51,8 +51,6 @@ class Entity;
 struct RigidBodyComponent;
 namespace physx {
 	class PxScene;
-	class PxShape;
-	class PxRigidActor;
 }
 template<typename T> class ObjectHandler;
 
@@ -124,19 +122,7 @@ private:
 	void update(float deltaTime);
 	inline void SetID(uint32_t id) { m_id = id; }
 	void draw(float deltaTime);
-
 	
-	void createActor(entt::entity entity, RigidBodyComponent& rb);
-	void removeActor(entt::entity entity, RigidBodyComponent& rb);
-	
-	
-	void createShape(PhysicsSystem* physicsSystem, physx::PxRigidActor* body, Entity e, bool recursive);
-
-	void onRigidBodyConstruct(entt::registry& registry, entt::entity entity);
-	void onRigidBodyDestroy(entt::registry& registry, entt::entity entity);
-
-	void onCollisionConstruct(entt::registry& registry, entt::entity entity);
-
 	void init(Context* context);
 	void clear();
 	void close();

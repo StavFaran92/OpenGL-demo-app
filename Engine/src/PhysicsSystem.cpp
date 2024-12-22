@@ -5,6 +5,8 @@
 #include "PhysXUtils.h"
 #include "Component.h"
 #include "Physics.h"
+#include "Scene.h"
+#include "Registry.h"
 
 #define PX_RELEASE(x)	if(x)	{ x->release(); x = nullptr; }
 
@@ -138,6 +140,45 @@ physx::PxShape* PhysicsSystem::createConvexMeshShape(const std::vector<glm::vec3
     return convexShape;
 }
 
+void PhysicsSystem::removeActor(Scene* scene, entt::entity entity, RigidBodyComponent& rb)
+{
+    Entity e{ entity, &scene->getRegistry()};
+
+    auto& rBody = e.getComponent<RigidBodyComponent>();
+    scene->getPhysicsScene()->removeActor(*(physx::PxRigidActor*)rBody.simulatedBody);
+}
+
+void PhysicsSystem::createActor(Scene* scene, entt::entity entity, RigidBodyComponent& rb)
+{
+    Entity e{ entity, &scene->getRegistry()};
+
+    auto& transform = e.getComponent<Transformation>();
+    auto body = Engine::get()->getPhysicsSystem()->createRigidBody(transform, rb);
+
+    createShape(body, e, true);
+
+    scene->getPhysicsScene()->addActor(*body);
+    entity_id* id = new entity_id(e.handlerID());
+    body->userData = (void*)id;
+    rb.simulatedBody = (void*)body;
+}
+
+void PhysicsSystem::startScenePhysics(Scene* scene)
+{
+    for (auto&& [entity, rb] : scene->getRegistry().getRegistry().view<RigidBodyComponent>().each())
+    {
+        createActor(scene, entity, rb);
+    }
+}
+
+void PhysicsSystem::stopScenePhysics(Scene* scene)
+{
+    for (auto&& [entity, rb] : scene->getRegistry().getRegistry().view<RigidBodyComponent>().each())
+    {
+        removeActor(scene, entity, rb);
+    }
+}
+
 void PhysicsSystem::renderWireframeDebug()
 {
 
@@ -158,4 +199,76 @@ void PhysicsSystem::close()
         PX_RELEASE(transport);
     }
     PX_RELEASE(m_foundation);
+}
+
+void PhysicsSystem::createShape(physx::PxRigidActor* body, Entity e, bool recursive)
+{
+    physx::PxShape* shape = nullptr;
+    auto& transform = e.getComponent<Transformation>();
+    auto scale = transform.getWorldScale();
+
+    if (e.HasComponent<CollisionBoxComponent>())
+    {
+        auto& collider = e.getComponent<CollisionBoxComponent>();
+        shape = createBoxShape(collider.halfExtent * scale.x, collider.halfExtent * scale.y, collider.halfExtent * scale.z);
+
+        Physics::LayerMask mask = collider.layerMask;
+
+        physx::PxFilterData filterData;
+        filterData.word0 = mask;
+
+        shape->setQueryFilterData(filterData);
+    }
+    else if (e.HasComponent<CollisionSphereComponent>())
+    {
+        auto& collider = e.getComponent<CollisionSphereComponent>();
+        shape = createSphereShape(collider.radius * std::max(std::max(scale.x, scale.y), scale.z));
+
+        Physics::LayerMask mask = collider.layerMask;
+
+        physx::PxFilterData filterData;
+        filterData.word0 = mask;
+
+        shape->setQueryFilterData(filterData);
+    }
+    else if (e.HasComponent<CollisionMeshComponent>())
+    {
+        auto collisionMeshComponent = e.getComponent<CollisionMeshComponent>();
+        const std::vector<glm::vec3>& apos = collisionMeshComponent.mesh.get()->getPositions();
+        shape = createConvexMeshShape(apos);
+
+        Physics::LayerMask mask = collisionMeshComponent.layerMask;
+
+        physx::PxFilterData filterData;
+        filterData.word0 = mask;
+
+        shape->setQueryFilterData(filterData);
+    }
+
+    if (shape)
+    {
+
+        auto translation = transform.getWorldPosition();
+        auto orientation = transform.getWorldRotation();
+
+        physx::PxVec3 pxTranslation(translation.x, translation.y, translation.z);
+        pxTranslation -= body->getGlobalPose().p;
+        physx::PxQuat pxRotation(orientation.x, orientation.y, orientation.z, orientation.w);
+        pxRotation *= body->getGlobalPose().q.getConjugate();
+
+        auto physxTransform = physx::PxTransform(pxTranslation, pxRotation);
+
+        //auto physxTransform = PhysXUtils::toPhysXTransform(transform);
+        shape->setLocalPose(physxTransform);
+        body->attachShape(*shape);
+        shape->release();
+    }
+
+    if (recursive)
+    {
+        for (auto [eid, child] : e.getChildren())
+        {
+            createShape(body, child, true);
+        }
+    }
 }
