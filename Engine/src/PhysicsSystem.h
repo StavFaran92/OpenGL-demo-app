@@ -19,26 +19,23 @@ public:
 
 	physx::PxScene* createScene();
 
-	physx::PxPhysics* getPhysics() const;
-
-	physx::PxMaterial* getDefaultMaterial() const;
-
-	physx::PxRigidActor* createRigidBody(Transformation& trasform, RigidBodyComponent& rb);
-
 	void startScenePhysics(Scene* scene);
 	void stopScenePhysics(Scene* scene);
+	void update(Scene* scene, float deltaTime);
+
+	void renderWireframeDebug();
+
+	void close();
+
+private:
+	physx::PxRigidActor* createRigidBody(Transformation& trasform, RigidBodyComponent& rb);
 	void createActor(Scene* scene, entt::entity entity, RigidBodyComponent& rb);
 	void removeActor(Scene* scene, entt::entity entity, RigidBodyComponent& rb);
 	void createShape(physx::PxRigidActor* body, Entity e, bool recursive);
 	physx::PxShape* createBoxShape(float x, float y, float z);
 	physx::PxShape* createSphereShape(float radius);
 	physx::PxShape* createConvexMeshShape(const std::vector<glm::vec3>& vertices);
-
-	void update(Scene* scene, float deltaTime);
-
-	void renderWireframeDebug();
-
-	void close();
+	physx::PxMaterial* getDefaultMaterial() const;
 
 private:
 	physx::PxDefaultAllocator       m_defaultAllocatorCallback;

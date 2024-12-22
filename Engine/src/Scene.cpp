@@ -22,11 +22,9 @@
 #include "RenderableComponent.h"
 #include "Component.h"
 #include "Shader.h"
-#include "SkyboxRenderer.h"
 #include "Material.h"
 #include "ScriptableEntity.h"
 #include "PhysicsSystem.h"
-#include "PhysXUtils.h"
 #include "Box.h"
 #include "EditorCamera.h"
 #include "ShadowSystem.h"
@@ -165,19 +163,6 @@ void Scene::init(Context* context)
 	m_coroutineManager = std::make_shared<CoroutineSystem>();
 
 	m_PhysicsScene = Engine::get()->getPhysicsSystem()->createScene();
-
-#ifdef SGE_DEBUG
-	physx::PxPvdSceneClient* pvdClient = m_PhysicsScene->getScenePvdClient();
-	if (pvdClient)
-	{
-		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
-	}
-
-	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 1.0f);
-	m_PhysicsScene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LIMITS, 1.0f);
-#endif // SGE_DEBUG
 
 	m_shadowSystem = std::make_shared<ShadowSystem>(m_context, this);
 	if (!m_shadowSystem->init())
@@ -538,34 +523,6 @@ void Scene::draw(float deltaTime)
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 #endif 
-
-#if 0
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glEnable(GL_POLYGON_OFFSET_LINE);
-	glPolygonOffset(-1.0, -1.0);
-	for (auto&& [entity, cb] : m_registry.view<CollisionBoxComponent>().each())
-	{
-		Entity e{ entity, this };
-
-		displayWireframeMesh(e, params);
-	}
-
-	for (auto&& [entity, cb] : m_registry.view<CollisionSphereComponent>().each())
-	{
-		Entity e{ entity, this };
-
-		displayWireframeMesh(e, params);
-	}
-
-	for (auto&& [entity, cb] : m_registry.view<CollisionMeshComponent>().each())
-	{
-		Entity e{ entity, this };
-
-		displayWireframeMesh(e, params);
-	}
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glDisable(GL_POLYGON_OFFSET_LINE);
-#endif
 
 	for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_BEGIN])
 	{

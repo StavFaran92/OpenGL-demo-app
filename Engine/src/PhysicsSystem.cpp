@@ -61,12 +61,21 @@ physx::PxScene* PhysicsSystem::createScene()
     sceneDesc.cpuDispatcher = m_dispatcher;
     sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
     physx::PxScene* scene = m_physics->createScene(sceneDesc);
-    return scene;
-}
 
-physx::PxPhysics* PhysicsSystem::getPhysics() const
-{
-    return m_physics;
+#ifdef SGE_DEBUG
+    physx::PxPvdSceneClient* pvdClient = scene->getScenePvdClient();
+    if (pvdClient)
+    {
+        pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+        pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+        pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+    }
+
+    scene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 1.0f);
+    scene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LIMITS, 1.0f);
+#endif // SGE_DEBUG
+
+    return scene;
 }
 
 physx::PxMaterial* PhysicsSystem::getDefaultMaterial() const
