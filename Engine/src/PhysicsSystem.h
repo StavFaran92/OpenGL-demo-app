@@ -29,8 +29,8 @@ public:
 
 private:
 	physx::PxRigidActor* createRigidBody(Transformation& trasform, RigidBodyComponent& rb);
-	void createActor(Scene* scene, entt::entity entity, RigidBodyComponent& rb);
-	void removeActor(Scene* scene, entt::entity entity, RigidBodyComponent& rb);
+	void createActor(Scene* scene, entt::entity entity);
+	void removeActor(Scene* scene, entt::entity entity);
 	void createShape(physx::PxRigidActor* body, Entity e, bool recursive);
 	physx::PxShape* createBoxShape(float x, float y, float z);
 	physx::PxShape* createSphereShape(float radius);

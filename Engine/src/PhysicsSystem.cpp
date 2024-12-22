@@ -149,7 +149,7 @@ physx::PxShape* PhysicsSystem::createConvexMeshShape(const std::vector<glm::vec3
     return convexShape;
 }
 
-void PhysicsSystem::removeActor(Scene* scene, entt::entity entity, RigidBodyComponent& rb)
+void PhysicsSystem::removeActor(Scene* scene, entt::entity entity)
 {
     Entity e{ entity, &scene->getRegistry()};
 
@@ -157,13 +157,13 @@ void PhysicsSystem::removeActor(Scene* scene, entt::entity entity, RigidBodyComp
     scene->getPhysicsScene()->removeActor(*(physx::PxRigidActor*)rBody.simulatedBody);
 }
 
-void PhysicsSystem::createActor(Scene* scene, entt::entity entity, RigidBodyComponent& rb)
+void PhysicsSystem::createActor(Scene* scene, entt::entity entity)
 {
     Entity e{ entity, &scene->getRegistry()};
-
     auto& transform = e.getComponent<Transformation>();
-    auto body = Engine::get()->getPhysicsSystem()->createRigidBody(transform, rb);
+    auto& rb = e.getComponent<RigidBodyComponent>();
 
+    auto body = createRigidBody(transform, rb);
     createShape(body, e, true);
 
     scene->getPhysicsScene()->addActor(*body);
@@ -176,7 +176,7 @@ void PhysicsSystem::startScenePhysics(Scene* scene)
 {
     for (auto&& [entity, rb] : scene->getRegistry().getRegistry().view<RigidBodyComponent>().each())
     {
-        createActor(scene, entity, rb);
+        createActor(scene, entity);
     }
 }
 
