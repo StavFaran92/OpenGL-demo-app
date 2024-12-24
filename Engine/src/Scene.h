@@ -48,7 +48,7 @@ class RenderBufferObject;
 class TextureHandler;
 class SGE_Regsitry;
 class Entity;
-class View;
+class RenderView;
 struct RigidBodyComponent;
 namespace physx {
 	class PxScene;
@@ -114,6 +114,8 @@ public:
 
 	physx::PxScene* getPhysicsScene() const;
 
+	void addRenderView(std::shared_ptr<RenderView> renderView);
+
 	//void setPrimaryCamera(ICamera* camera);
 
 private:
@@ -176,7 +178,7 @@ private:
 
 	Resource<MeshCollection> m_basicBox;
 
-	Entity m_primaryCamera = Entity::EmptyEntity;
+	//Entity m_primaryCamera = Entity::EmptyEntity;
 
 	Entity m_quadUI;
 

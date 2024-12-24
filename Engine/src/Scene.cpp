@@ -87,7 +87,8 @@ glm::mat4 Scene::getProjection() const
 
 Entity Scene::getActiveCamera() const
 {
-	return m_primaryCamera;
+	assert(m_renderViews.size() > 0);
+	return m_renderViews[0]->getCamera();
 }
 
 //void Scene::setPrimaryEditorCamera(Entity e)
@@ -97,7 +98,8 @@ Entity Scene::getActiveCamera() const
 
 void Scene::setPrimaryCamera(Entity e)
 {
-	m_primaryCamera = e;
+	assert(m_renderViews.size() > 0);
+	m_renderViews[0]->setCamera(e);
 }
 
 //void Scene::setPrimaryCamera(ICamera* camera)
@@ -205,6 +207,12 @@ void Scene::init(Context* context)
 	m_skyboxShader = Shader::createShared<Shader>(SGE_ROOT_DIR +"Resources/Engine/Shaders/SkyboxShader.glsl");
 
 	m_basicBox = ShapeFactory::createBox();
+
+	auto renderView = std::make_shared<RenderView>(
+		RenderView::Viewport{0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight() },
+		Entity::EmptyEntity, 
+		0);
+	addRenderView(renderView);
 }
 
 void Scene::update(float deltaTime)
@@ -214,7 +222,7 @@ void Scene::update(float deltaTime)
 		transform.update();
 	}
 
-	m_primaryCamera.getComponent<Transformation>().update();
+	getActiveCamera().getComponent<Transformation>().update();
 
 	if (m_isSimulationActive)
 	{
@@ -259,10 +267,9 @@ void Scene::draw(float deltaTime)
 	{
 		auto viewport = renderView->getViewport();
 
-		//glViewport(0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
 		RenderCommand::setViewport(viewport.x, viewport.y, viewport.w, viewport.h);
 
-		Entity& camera = view->getCamera();
+		const Entity& camera = renderView->getCamera();
 
 		auto& primaryCamera = camera.getComponent<CameraComponent>();
 		auto& primaryCameraTransform = camera.getComponent<Transformation>();
@@ -526,8 +533,8 @@ void Scene::removeEntity(const Entity& e)
 
 glm::mat4 Scene::getActiveCameraView() const
 {
-	auto& primaryCamera = m_primaryCamera.getComponent<CameraComponent>();
-	auto& primaryCameraTransform = m_primaryCamera.getComponent<Transformation>();
+	auto& primaryCamera = getActiveCamera().getComponent<CameraComponent>();
+	auto& primaryCameraTransform = getActiveCamera().getComponent<Transformation>();
 
 	return glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCameraTransform.getWorldPosition() + primaryCamera.front, primaryCamera.up);
 }
@@ -656,6 +663,11 @@ void Scene::stopSimulation()
 physx::PxScene* Scene::getPhysicsScene() const
 {
 	return m_PhysicsScene;
+}
+
+void Scene::addRenderView(std::shared_ptr<RenderView> renderView)
+{
+	m_renderViews.push_back(renderView);
 }
 
 bool Scene::isSimulationActive() const

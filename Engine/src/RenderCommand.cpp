@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include "System.h"
 #include "Graphics.h"
+#include "RenderView.h"
 
 #include <GL/glew.h>
 
@@ -64,9 +65,13 @@ void RenderCommand::copyFrameBufferData(unsigned int src, unsigned int dst)
 
 	auto renderView = graphics->renderView;
 
+	assert(renderView);
+
+	auto& viewport = renderView->getViewport();
+
 	// Copy src to dest
-	glBlitFramebuffer(0, 0, renderView.width, renderView.height, 
-		0, 0, renderView.width, renderView.height, 
+	glBlitFramebuffer(0, 0, viewport.w, viewport.h,
+		0, 0, viewport.w, viewport.h,
 		GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 
 
