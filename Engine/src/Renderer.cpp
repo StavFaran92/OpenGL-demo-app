@@ -67,13 +67,24 @@ void Renderer::renderScene(Scene* scene)
 {
     auto graphics = Engine::get()->getSubSystem<Graphics>();
 
+    graphics->entityGroup.clear();
+    for (auto&& [entity, mesh, transform, renderable] :
+        scene->getRegistry().getRegistry().view<MeshComponent, Transformation, RenderableComponent>().each())
+    {
+        if (renderable.renderTechnique == RenderableComponent::RenderTechnique::Forward)
+        {
+            Entity entityhandler{ entity, &scene->getRegistry() };
+            graphics->entityGroup.push_back(entityhandler);
+        }
+    }
+
     glEnable(GL_DEPTH_TEST);
     SetDrawType(Renderer::DrawType::Triangles);
 
     m_renderTargetFBO->bind();
 
     // Render Phase
-    for (auto& entityHandler : *graphics->entityGroup)
+    for (auto& entityHandler : graphics->entityGroup)
 	{
         graphics->entity = &entityHandler;
         for (auto& mesh : entityHandler.getComponent<MeshComponent>().mesh.get()->getMeshes())

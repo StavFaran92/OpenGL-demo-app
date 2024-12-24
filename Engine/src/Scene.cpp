@@ -255,7 +255,6 @@ void Scene::draw(float deltaTime)
 	auto graphics = Engine::get()->getSubSystem<Graphics>();
 
 	glViewport(0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
-	m_deferredRenderer->clear();
 
 	auto& primaryCamera = m_primaryCamera.getComponent<CameraComponent>();
 	auto& primaryCameraTransform = m_primaryCamera.getComponent<Transformation>();
@@ -305,64 +304,9 @@ void Scene::draw(float deltaTime)
 
 	graphics->frustum = &frustum;
 
-	auto view = m_registry->get().view<MeshComponent, Transformation, RenderableComponent>();
-
-	// TODO consider optimizing this
-	std::vector<Entity> deferredRendererEntityGroup;
-	std::vector<Entity> forwardRendererEntityGroup;
-	auto iter = view.begin();
-	while (iter != view.end())
-	{
-		Entity entityhandler{ *iter, m_registry.get() };
-
-		auto& renderable = entityhandler.getComponent<RenderableComponent>();
-		if (renderable.renderTechnique == RenderableComponent::RenderTechnique::Deferred)
-		{
-			auto& transform = entityhandler.getComponent<Transformation>();
-			auto& mesh = entityhandler.getComponent<MeshComponent>();
-
-			deferredRendererEntityGroup.push_back(entityhandler);
-		}
-		else if (renderable.renderTechnique == RenderableComponent::RenderTechnique::Forward)
-		{
-			forwardRendererEntityGroup.push_back(entityhandler);
-		}
-
-		iter++;
-	}
-
-	std::vector<Entity> builtInShaderEntityGroup;
-	std::vector<Entity> customShaderEntityGroup;
-	for (const auto& e : deferredRendererEntityGroup)
-	{
-		if (e.HasComponent<ShaderComponent>())
-		{
-			customShaderEntityGroup.push_back(e);
-			
-		}
-		else
-		{
-			builtInShaderEntityGroup.push_back(e);
-		}
-	}
-
-	
-
-	glBindFramebuffer(GL_FRAMEBUFFER, m_deferredRenderer->getGBuffer().getID());
-	m_deferredRenderer->clear();
-
-	// Render entities with built-in shader
-	graphics->entityGroup = &builtInShaderEntityGroup;
 	m_deferredRenderer->renderScene(this);
 
-	//glBindFramebuffer(GL_FRAMEBUFFER, m_deferredRenderer->getGBuffer().getID());
-
-	// Render entities with custom shader
-	for (auto& e : customShaderEntityGroup)
-	{
-		graphics->entity = &e;
-		m_deferredRenderer->renderSceneUsingCustomShader();
-	}
+	m_deferredRenderer->renderSceneUsingCustomShader(this);
 
 	const FrameBufferObject& gBuffer = m_deferredRenderer->getGBuffer();
 	auto rTarget = m_forwardRenderer->getRenderTarget();
@@ -381,8 +325,6 @@ void Scene::draw(float deltaTime)
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, rTarget);
-
-	graphics->entityGroup = &forwardRendererEntityGroup;
 
 	m_forwardRenderer->renderScene(this);
 

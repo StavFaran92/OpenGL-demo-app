@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "Resource.h"
+#include "Entity.h"
 
 class Scene;
 class Context;
@@ -31,7 +32,7 @@ public:
 	IRenderer* renderer = nullptr;
 	glm::vec3 cameraPos;
 
-	std::vector<Entity>* entityGroup;
+	std::vector<Entity> entityGroup;
 
 	Entity* entity = nullptr;
 	Mesh* mesh = nullptr;

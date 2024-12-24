@@ -20,7 +20,7 @@ public:
 	bool init() override;
 	void render() override;
 	void renderScene(Scene* scene) override;
-	void renderSceneUsingCustomShader();
+	void renderSceneUsingCustomShader(Scene* scene);
 	uint32_t getRenderTarget() const override;
 	void setUniforms(Shader* shader);
 

@@ -204,8 +204,10 @@ void DeferredRenderer::render()
 	}
 }
 
-void DeferredRenderer::renderSceneUsingCustomShader()
+void DeferredRenderer::renderSceneUsingCustomShader(Scene* scene)
 {
+	return; // todo fix
+
 	auto graphics = Engine::get()->getSubSystem<Graphics>();
 
 	m_gBuffer.bind();
@@ -305,6 +307,20 @@ void DeferredRenderer::renderScene(Scene* scene)
 {
 	auto graphics = Engine::get()->getSubSystem<Graphics>();
 
+	graphics->entityGroup.clear();
+	for (auto&& [entity, mesh, transform, renderable] :
+		scene->getRegistry().getRegistry().view<MeshComponent, Transformation, RenderableComponent>().each())
+	{
+		if (renderable.renderTechnique == RenderableComponent::RenderTechnique::Deferred)
+		{
+			Entity entityhandler{ entity, &scene->getRegistry() };
+			graphics->entityGroup.push_back(entityhandler);
+		}
+	}
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, getGBuffer().getID());
+	clear();
+
 	glEnable(GL_DEPTH_TEST);
 
 	if (graphics->renderMode == RenderMode::WIREFRAME)
@@ -319,7 +335,7 @@ void DeferredRenderer::renderScene(Scene* scene)
 	graphics->shader->use();
 
 	// Render all objects
-	for (auto& entityHandler : *graphics->entityGroup)
+	for (auto& entityHandler : graphics->entityGroup)
 	{
 		Resource<MeshCollection> meshCollecton = entityHandler.getComponent<MeshComponent>().mesh;
 
