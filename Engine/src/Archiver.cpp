@@ -11,6 +11,7 @@ SerializedEntity Archiver::serializeEntity(Entity e)
 	serializedEntity.camera = getComponentIfExists<CameraComponent>(e);
 	serializedEntity.collisionBox = getComponentIfExists<CollisionBoxComponent>(e);
 	serializedEntity.collisionSphere = getComponentIfExists<CollisionSphereComponent>(e);
+	serializedEntity.collisionTerrain = getComponentIfExists<CollisionTerrainComponent>(e);
 	serializedEntity.dLight = getComponentIfExists<DirectionalLight>(e);
 	serializedEntity.image = getComponentIfExists<ImageComponent>(e);
 	serializedEntity.mat = getComponentIfExists<MaterialComponent>(e);
@@ -99,6 +100,11 @@ void Archiver::deserializeEntity(SerializedEntity serializedEnt, Scene& scene)
 	if (serializedEnt.collisionBox)
 	{
 		entityHandler.addComponent<CollisionBoxComponent>(serializedEnt.collisionBox.value());
+	}
+
+	if (serializedEnt.collisionTerrain)
+	{
+		entityHandler.addComponent<CollisionTerrainComponent>(serializedEnt.collisionTerrain.value());
 	}
 
 	if (serializedEnt.rigidBody)

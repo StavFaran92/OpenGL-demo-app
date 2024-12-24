@@ -65,6 +65,7 @@ struct SerializedEntity
 	std::optional<RigidBodyComponent> rigidBody;
 	std::optional<CollisionBoxComponent> collisionBox;
 	std::optional<CollisionSphereComponent> collisionSphere;
+	std::optional<CollisionTerrainComponent> collisionTerrain;
 	std::optional<MeshComponent> mesh;
 	std::optional<RenderableComponent> renderableComponent;
 	std::optional<CameraComponent> camera;
@@ -85,6 +86,7 @@ struct SerializedEntity
 			rigidBody,
 			collisionBox,
 			collisionSphere,
+			collisionTerrain,
 			mesh,
 			renderableComponent,
 			camera,
