@@ -36,6 +36,7 @@ private:
 	physx::PxShape* createSphereShape(float radius);
 	physx::PxShape* createConvexMeshShape(const std::vector<glm::vec3>& vertices);
 	physx::PxMaterial* getDefaultMaterial() const;
+	void createTerrainActor(Scene* scene, entt::entity entity);
 
 private:
 	physx::PxDefaultAllocator       m_defaultAllocatorCallback;

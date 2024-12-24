@@ -1390,6 +1390,10 @@ void RenderInspectorWindow(float width, float height)
 			ImGui::Combo("##LayerMask", (int*)&collisionMesh.layerMask, layerMaskList, IM_ARRAYSIZE(layerMaskList));
 			});
 
+		displayComponent<CollisionTerrainComponent>("Collision Terrain", [](CollisionTerrainComponent& collision) {
+			//ImGui::Combo("##LayerMask", (int*)&collisionMesh.layerMask, layerMaskList, IM_ARRAYSIZE(layerMaskList));
+			});
+
 		displayComponent<MeshComponent>("Mesh", [](MeshComponent& meshComponent) {
 			if (meshComponent.mesh.isEmpty()) return;
 
@@ -1649,6 +1653,11 @@ void RenderInspectorWindow(float width, float height)
 				//	auto& meshCollisions = selectedEntity.addComponent<CollisionMeshComponent>();
 				//	meshCollisions.mesh = meshComponent->mesh;
 				//}
+			}
+
+			if (ImGui::MenuItem("Collision Terrain"))
+			{
+				selectedEntity.addComponent<CollisionTerrainComponent>();
 			}
 
 			if (ImGui::MenuItem("Mesh"))

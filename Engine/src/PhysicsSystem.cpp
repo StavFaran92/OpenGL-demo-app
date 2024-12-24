@@ -8,6 +8,8 @@
 #include "Scene.h"
 #include "Registry.h"
 
+using namespace physx;
+
 #define PX_RELEASE(x)	if(x)	{ x->release(); x = nullptr; }
 
 bool PhysicsSystem::init()
@@ -172,11 +174,83 @@ void PhysicsSystem::createActor(Scene* scene, entt::entity entity)
     rb.simulatedBody = (void*)body;
 }
 
+void PhysicsSystem::createTerrainActor(Scene* scene, entt::entity entity)
+{
+    Entity e{ entity, &scene->getRegistry() };
+    auto& transform = e.getComponent<Transformation>();
+    auto& collider = e.getComponent<CollisionTerrainComponent>();
+    auto& terrain = e.getComponent<Terrain>();
+
+    // todo verify all components exists
+
+    transform.forceUpdate();
+    auto scale = transform.getLocalScale();
+    physx::PxTransform pxTransform = PhysXUtils::toPhysXTransform(transform);
+    
+    physx::PxHeightFieldDesc heightFieldDesc;
+
+    const auto& heightmapData = terrain.getHeightmap().get()->getData();
+
+    heightFieldDesc.nbColumns = heightmapData.width;
+    heightFieldDesc.nbRows = heightmapData.height;
+    heightFieldDesc.samples.data = new unsigned int[sizeof(unsigned int) * heightFieldDesc.nbColumns * heightFieldDesc.nbRows];
+    heightFieldDesc.samples.stride = sizeof(unsigned int);
+    unsigned char* currentByte = (unsigned char*)heightFieldDesc.samples.data;
+    for (int row = 0; row < heightFieldDesc.nbRows; row++)
+    {
+        for (int column = 0; column < heightFieldDesc.nbColumns; column++)
+        {
+            physx::PxHeightFieldSample* currentSample = (physx::PxHeightFieldSample*)currentByte;
+            currentSample->height = static_cast<int8_t*>(heightmapData.data)[heightmapData.bpp * (row * heightFieldDesc.samples.stride + column)]; // todo fix
+
+            currentSample->clearTessFlag();
+            currentByte += heightFieldDesc.samples.stride;
+        }
+    }
+    PxHeightField* heightField = m_cooking->createHeightField(heightFieldDesc, m_physics->getPhysicsInsertionCallback());
+    if (!heightField)
+    {
+        logError("createHeightField failed!");
+        return;
+    }
+    // create shape for heightfield		
+    PxTransform pose(PxVec3(-(heightFieldDesc.nbRows * terrain.getHeight()) / 2.0f,
+        0.0f,
+        -((PxReal)heightFieldDesc.nbColumns * terrain.getWidth()) / 2.0f),
+        PxQuat(PxIdentity));
+    PxRigidActor* heightFieldActor = m_physics->createRigidStatic(pose); // todo fix
+    if (!heightFieldActor)
+    {
+        logError("createRigidStatic failed!");
+        return;
+    }
+
+    PxShape* shape = PxRigidActorExt::createExclusiveShape(*heightFieldActor, 
+        PxHeightFieldGeometry(heightField, PxMeshGeometryFlags(), 
+            terrain.getScale(), terrain.getHeight(), terrain.getWidth()),
+        *getDefaultMaterial());
+
+    if (!shape)
+    {
+        logError("createShape failed!");
+        return;
+    }
+
+    scene->getPhysicsScene()->addActor(*heightFieldActor);
+    entity_id* id = new entity_id(e.handlerID());
+    heightFieldActor->userData = (void*)id;
+}
+
 void PhysicsSystem::startScenePhysics(Scene* scene)
 {
     for (auto&& [entity, rb] : scene->getRegistry().getRegistry().view<RigidBodyComponent>().each())
     {
         createActor(scene, entity);
+    }
+
+    for (auto&& [entity, rb] : scene->getRegistry().getRegistry().view<CollisionTerrainComponent>().each())
+    {
+        createTerrainActor(scene, entity);
     }
 }
 
@@ -184,7 +258,7 @@ void PhysicsSystem::stopScenePhysics(Scene* scene)
 {
     for (auto&& [entity, rb] : scene->getRegistry().getRegistry().view<RigidBodyComponent>().each())
     {
-        removeActor(scene, entity, rb);
+        removeActor(scene, entity);
     }
 }
 
@@ -345,6 +419,11 @@ void PhysicsSystem::update(Scene* scene, float deltaTime)
         {
             entity_id id = *(entity_id*)actor->userData;
             Entity e{ entt::entity(id),  &scene->getRegistry() };
+
+            // todo fix
+            if (e.HasComponent<CollisionTerrainComponent>())
+                continue;
+
             auto& transform = e.getComponent<Transformation>();
 
             physx::PxTransform pxTransform = actor->getGlobalPose();

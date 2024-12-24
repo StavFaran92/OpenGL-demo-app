@@ -162,6 +162,18 @@ struct EngineAPI CollisionMeshComponent : public Component
 	Physics::LayerMask layerMask = Physics::LayerMask::LAYER_0;
 };
 
+struct EngineAPI CollisionTerrainComponent : Component
+{
+	CollisionTerrainComponent() = default;
+
+	template <class Archive>
+	void serialize(Archive& archive) {
+		archive(layerMask);
+	}
+
+	Physics::LayerMask layerMask = Physics::LayerMask::LAYER_0;
+};
+
 struct EngineAPI CameraComponent : public Component
 {
 	CameraComponent() = default;
