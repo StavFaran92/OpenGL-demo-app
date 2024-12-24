@@ -51,6 +51,7 @@
 #include "Graphics.h"
 #include "DebugHelper.h"
 #include "Cubemap.h"
+#include "RenderView.h"
 
 void Scene::displayWireframeMesh(Entity e)
 {
@@ -254,152 +255,148 @@ void Scene::draw(float deltaTime)
 {
 	auto graphics = Engine::get()->getSubSystem<Graphics>();
 
-	glViewport(0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
-
-	auto& primaryCamera = m_primaryCamera.getComponent<CameraComponent>();
-	auto& primaryCameraTransform = m_primaryCamera.getComponent<Transformation>();
-
-
-	graphics->scene = this;
-	graphics->context = m_context;
-	graphics->renderer = m_forwardRenderer.get();
-	graphics->view = &glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCameraTransform.getWorldPosition() + primaryCamera.front, primaryCamera.up);
-	graphics->projection = &m_defaultPerspectiveProjection;
-	graphics->cameraPos = primaryCameraTransform.getWorldPosition();
-	graphics->irradianceMap = m_irradianceMap;
-	graphics->prefilterEnvMap = m_prefilterEnvMap;
-	graphics->brdfLUT = m_BRDFIntegrationLUT;
-
-	m_shadowSystem->renderToDepthMap();
-
-	graphics->lightSpaceMatrix = m_shadowSystem->getLightSpaceMat();
-	graphics->shadowMap = m_shadowSystem->getShadowMap();
-
-	// PRE Render Phase
-	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])
+	for (auto& renderView : m_renderViews)
 	{
-		cb();
-	}
+		auto viewport = renderView->getViewport();
 
-	for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_END])
-	{
-		cb();
-	}
+		//glViewport(0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight());
+		RenderCommand::setViewport(viewport.x, viewport.y, viewport.w, viewport.h);
 
-	// Set time elapsed
-	auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
+		Entity& camera = view->getCamera();
 
-	m_uboTime->bind();
-	m_uboTime->setData(0, sizeof(float), &elapsed);
-	m_uboTime->unbind();
-
-	Frustum frustum(primaryCameraTransform.getWorldPosition(), 
-		primaryCamera.front, 
-		primaryCamera.up, 
-		primaryCamera.right, 
-		primaryCamera.aspect, 
-		primaryCamera.fovy, 
-		primaryCamera.znear, 
-		primaryCamera.zfar);
-
-	graphics->frustum = &frustum;
-
-	m_deferredRenderer->renderScene(this);
-
-	m_deferredRenderer->renderSceneUsingCustomShader(this);
-
-	const FrameBufferObject& gBuffer = m_deferredRenderer->getGBuffer();
-	auto rTarget = m_forwardRenderer->getRenderTarget();
-
-	// Bind G-Buffer as src
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer.getID());
-
-	// Bind default buffer as dest
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, rTarget);
-
-	auto width = Engine::get()->getWindow()->getWidth();
-	auto height = Engine::get()->getWindow()->getHeight();
-
-	// Copy src to dest
-	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+		auto& primaryCamera = camera.getComponent<CameraComponent>();
+		auto& primaryCameraTransform = camera.getComponent<Transformation>();
 
 
-	glBindFramebuffer(GL_FRAMEBUFFER, rTarget);
+		graphics->scene = this;
+		graphics->context = m_context;
+		graphics->renderer = m_forwardRenderer.get();
+		graphics->view = &glm::lookAt(primaryCameraTransform.getWorldPosition(), primaryCameraTransform.getWorldPosition() + primaryCamera.front, primaryCamera.up);
+		graphics->projection = &m_defaultPerspectiveProjection;
+		graphics->cameraPos = primaryCameraTransform.getWorldPosition();
+		graphics->irradianceMap = m_irradianceMap;
+		graphics->prefilterEnvMap = m_prefilterEnvMap;
+		graphics->brdfLUT = m_BRDFIntegrationLUT;
+		graphics->renderView = renderView;
 
-	m_forwardRenderer->renderScene(this);
+		m_shadowSystem->renderToDepthMap();
 
-	// Render skybox
-	glDepthMask(GL_FALSE);
-	glDepthFunc(GL_LEQUAL);
-	m_skyboxShader->use();
-	m_renderTargetFBO->bind();
+		graphics->lightSpaceMatrix = m_shadowSystem->getLightSpaceMat();
+		graphics->shadowMap = m_shadowSystem->getShadowMap();
 
-	m_skyboxShader->setViewMatrix(*graphics->view);
-	m_skyboxShader->setProjectionMatrix(*graphics->projection);
-
-	for (auto&& [entity, skybox, transform] : 
-		m_registry->get().view<SkyboxComponent, Transformation>().each())
-	{
-		Entity entityhandler{ entity, m_registry.get()};
-		graphics->entity = &entityhandler;
-		graphics->mesh = m_basicBox.get()->getPrimaryMesh().get(); // todo can be optimized using a single mesh
-		graphics->model = &transform.getWorldTransformation();
-
-		if (skybox.skyboxImage.isEmpty()) continue;
-
-		skybox.skyboxImage.get()->bind();
-		skybox.skyboxImage.get()->setSlot(0);
-
-		auto vao = graphics->mesh->getVAO();
-		RenderCommand::draw(vao);
-	}
-	glDepthMask(GL_TRUE);
-	glDepthFunc(GL_LESS);
-
-	m_terrainShader->use();
-	
-	m_terrainShader->setUniformValue("view", *graphics->view);
-	m_terrainShader->setUniformValue("projection", *graphics->projection);
-	
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//glEnable(GL_POLYGON_OFFSET_LINE);
-	//glPolygonOffset(-1.0, -1.0);
-
-	// Render terrain
-	for (auto&& [entity, terrain, transform] : m_registry->get().view<Terrain, Transformation>().each())
-	{
-		m_terrainShader->setUniformValue("scale", terrain.getScale());
-		m_terrainShader->setUniformValue("model", transform.getWorldTransformation());
-		m_terrainShader->setUniformValue("width", terrain.getWidth());
-		m_terrainShader->setUniformValue("height", terrain.getHeight());
-		Resource<Texture> heightmap = terrain.getHeightmap();
-
-		if (heightmap.isEmpty())
-			continue;
-
-		heightmap.get()->bind();
-		heightmap.get()->setSlot(0);
-		m_terrainShader->setUniformValue("heightMap", 0);
-
-		int textureCount = terrain.getTextureCount();
-		m_terrainShader->setUniformValue("textureCount", textureCount);
-
-		for (int i = 0; i < textureCount; i++)
+		// PRE Render Phase
+		for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_BEGIN])
 		{
-			auto texture = terrain.getTexture(i);
-			texture.get()->setSlot(i + 1);
-			texture.get()->bind();
-			m_terrainShader->setUniformValue("texture_" + std::to_string(i), i + 1);
-
-			auto textureBlend = terrain.getTextureBlend(i);
-			m_terrainShader->setUniformValue("textureBlend[" + std::to_string(i) + "]", textureBlend);
-
-			glm::vec2 textureScale = terrain.getTextureScale(i);
-			m_terrainShader->setUniformValue("textureScale[" + std::to_string(i) + "]", textureScale);
+			cb();
 		}
 
-		auto vao = terrain.getMesh().get()->getPrimaryMesh()->getVAO();
-		RenderCommand::drawPatches(vao);
+		for (const auto& cb : m_renderCallbacks[RenderPhase::PRE_RENDER_END])
+		{
+			cb();
+		}
+
+		// Set time elapsed
+		auto elapsed = (float)Engine::get()->getTimeManager()->getElapsedTime(TimeManager::Duration::MilliSeconds) / 1000;
+
+		m_uboTime->bind();
+		m_uboTime->setData(0, sizeof(float), &elapsed);
+		m_uboTime->unbind();
+
+		Frustum frustum(primaryCameraTransform.getWorldPosition(),
+			primaryCamera.front,
+			primaryCamera.up,
+			primaryCamera.right,
+			primaryCamera.aspect,
+			primaryCamera.fovy,
+			primaryCamera.znear,
+			primaryCamera.zfar);
+
+		graphics->frustum = &frustum;
+
+		m_deferredRenderer->renderScene(this);
+
+		m_deferredRenderer->renderSceneUsingCustomShader(this);
+
+		unsigned int srcID = m_deferredRenderer->getGBuffer().getID();
+		unsigned int dstID = m_forwardRenderer->getRenderTarget();
+
+		RenderCommand::copyFrameBufferData(srcID, dstID);
+
+		m_forwardRenderer->renderScene(this);
+
+		// Render skybox
+		glDepthMask(GL_FALSE);
+		glDepthFunc(GL_LEQUAL);
+		m_skyboxShader->use();
+		m_renderTargetFBO->bind();
+
+		m_skyboxShader->setViewMatrix(*graphics->view);
+		m_skyboxShader->setProjectionMatrix(*graphics->projection);
+
+		for (auto&& [entity, skybox, transform] :
+			m_registry->get().view<SkyboxComponent, Transformation>().each())
+		{
+			Entity entityhandler{ entity, m_registry.get() };
+			graphics->entity = &entityhandler;
+			graphics->mesh = m_basicBox.get()->getPrimaryMesh().get(); // todo can be optimized using a single mesh
+			graphics->model = &transform.getWorldTransformation();
+
+			if (skybox.skyboxImage.isEmpty()) continue;
+
+			skybox.skyboxImage.get()->bind();
+			skybox.skyboxImage.get()->setSlot(0);
+
+			auto vao = graphics->mesh->getVAO();
+			RenderCommand::draw(vao);
+		}
+		glDepthMask(GL_TRUE);
+		glDepthFunc(GL_LESS);
+
+		m_terrainShader->use();
+
+		m_terrainShader->setUniformValue("view", *graphics->view);
+		m_terrainShader->setUniformValue("projection", *graphics->projection);
+
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glEnable(GL_POLYGON_OFFSET_LINE);
+		//glPolygonOffset(-1.0, -1.0);
+
+		// Render terrain
+		for (auto&& [entity, terrain, transform] : m_registry->get().view<Terrain, Transformation>().each())
+		{
+			m_terrainShader->setUniformValue("scale", terrain.getScale());
+			m_terrainShader->setUniformValue("model", transform.getWorldTransformation());
+			m_terrainShader->setUniformValue("width", terrain.getWidth());
+			m_terrainShader->setUniformValue("height", terrain.getHeight());
+			Resource<Texture> heightmap = terrain.getHeightmap();
+
+			if (heightmap.isEmpty())
+				continue;
+
+			heightmap.get()->bind();
+			heightmap.get()->setSlot(0);
+			m_terrainShader->setUniformValue("heightMap", 0);
+
+			int textureCount = terrain.getTextureCount();
+			m_terrainShader->setUniformValue("textureCount", textureCount);
+
+			for (int i = 0; i < textureCount; i++)
+			{
+				auto texture = terrain.getTexture(i);
+				texture.get()->setSlot(i + 1);
+				texture.get()->bind();
+				m_terrainShader->setUniformValue("texture_" + std::to_string(i), i + 1);
+
+				auto textureBlend = terrain.getTextureBlend(i);
+				m_terrainShader->setUniformValue("textureBlend[" + std::to_string(i) + "]", textureBlend);
+
+				glm::vec2 textureScale = terrain.getTextureScale(i);
+				m_terrainShader->setUniformValue("textureScale[" + std::to_string(i) + "]", textureScale);
+			}
+
+			auto vao = terrain.getMesh().get()->getPrimaryMesh()->getVAO();
+			RenderCommand::drawPatches(vao);
+		}
 	}
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

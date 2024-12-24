@@ -1,6 +1,7 @@
 #include "RenderCommand.h"
 #include "Engine.h"
 #include "System.h"
+#include "Graphics.h"
 
 #include <GL/glew.h>
 
@@ -44,6 +45,32 @@ void RenderCommand::drawInstanced(const VertexArrayObject* vao, int count)
 	{
 		glDrawElementsInstanced(GL_TRIANGLES, vao->GetIndexCount(), GL_UNSIGNED_INT, 0, count);
 	}
+}
+
+void RenderCommand::setViewport(int x, int y, int w, int h)
+{
+	glViewport(x, y, w, h);
+}
+
+void RenderCommand::copyFrameBufferData(unsigned int src, unsigned int dst)
+{
+	auto graphics = Engine::get()->getSubSystem<Graphics>();
+
+	// Bind G-Buffer as src
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, src);
+
+	// Bind default buffer as dest
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dst);
+
+	auto renderView = graphics->renderView;
+
+	// Copy src to dest
+	glBlitFramebuffer(0, 0, renderView.width, renderView.height, 
+		0, 0, renderView.width, renderView.height, 
+		GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+
+	glBindFramebuffer(GL_FRAMEBUFFER, dst);
 }
 
 //void RenderCommand::drawIndexed(const VertexArrayObject* vao)

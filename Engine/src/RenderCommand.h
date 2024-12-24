@@ -16,4 +16,8 @@ public:
 	static void drawPatches(const VertexArrayObject* vao);
 
 	static void drawInstanced(const VertexArrayObject* vao, int count);
+
+	static void setViewport(int x, int y, int w, int h);
+
+	static void copyFrameBufferData(unsigned int src, unsigned int dst);
 };

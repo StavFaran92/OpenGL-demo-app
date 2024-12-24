@@ -48,6 +48,7 @@ class RenderBufferObject;
 class TextureHandler;
 class SGE_Regsitry;
 class Entity;
+class View;
 struct RigidBodyComponent;
 namespace physx {
 	class PxScene;
@@ -180,4 +181,6 @@ private:
 	Entity m_quadUI;
 
 	SerializedScene m_serializedScene;
+
+	std::vector<std::shared_ptr<RenderView>> m_renderViews;
 };

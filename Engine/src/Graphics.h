@@ -14,6 +14,7 @@ class Shader;
 class Material;
 class Texture;
 class Frustum;
+class RenderView;
 
 enum class RenderMode
 {
@@ -50,6 +51,7 @@ public:
 	Resource<Texture> shadowMap = nullptr;
 	glm::mat4 lightSpaceMatrix;
 	Frustum* frustum = nullptr;
+	std::shared_ptr<RenderView> renderView;
 
 	RenderMode renderMode = RenderMode::SHADED;
 };
