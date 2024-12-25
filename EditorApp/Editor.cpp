@@ -947,15 +947,14 @@ void RenderSceneHierarchyWindow(float width, float height)
 
 void RenderViewWindow(float width, float height) 
 {
-	float windowWidth = width * 0.7f - 10;
-	float windowHeight = height * 0.7f;
+	ImVec2 renderViewWindowSize(width * 0.7f - 10, height * 0.7f - 40);
 	float startX = width * 0.15f + 10; // Add a gap of 10 pixels
 	ImGui::SetNextWindowPos(ImVec2(startX, 65)); // Adjust vertical position to make space for the menu bar
-	ImGui::SetNextWindowSize(ImVec2(windowWidth, windowHeight - 40));
+	ImGui::SetNextWindowSize(ImVec2(renderViewWindowSize.x, renderViewWindowSize.y));
 	ImGui::Begin("View", nullptr, style | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoDecoration);
 	
 	// Display the texture
-	ImVec2 imageSize(windowWidth, windowHeight);
+	ImVec2 imageSize(renderViewWindowSize.x, renderViewWindowSize.y);
 	ImGui::Image(reinterpret_cast<ImTextureID>(Engine::get()->getContext()->getActiveScene()->getRenderTarget(0)), imageSize, ImVec2(0, 1), ImVec2(1, 0));
 
 	if (!Engine::get()->getContext()->getActiveScene()->isSimulationActive() && 
@@ -973,8 +972,8 @@ void RenderViewWindow(float width, float height)
 				mousePos.y >= windowPos.y && mousePos.y <= windowPos.y + windowSize.y)
 			{
 				// We alter the mouse position from small window into full screen (the renderered object pick texture)
-				int alteredX = (mousePos.x - startX) / windowWidth * Engine::get()->getWindow()->getWidth();
-				int alteredY = (mousePos.y - 65) / windowHeight * Engine::get()->getWindow()->getHeight();
+				int alteredX = (mousePos.x - startX) / renderViewWindowSize.x * Engine::get()->getWindow()->getWidth();
+				int alteredY = (mousePos.y - 65) / renderViewWindowSize.y * Engine::get()->getWindow()->getHeight();
 				int selectedID = Engine::get()->getSubSystem<ObjectPicker>()->pickObject(alteredX, alteredY);
 
 				if (selectedID == -1)
@@ -999,7 +998,7 @@ void RenderViewWindow(float width, float height)
 
 		
 		// Define the size and position of the inner window
-		float innerWindowWidth = windowWidth - 10;
+		float innerWindowWidth = renderViewWindowSize.x - 10;
 		float innerWindowHeight = 35.0f;
 		ImGui::SetNextWindowPos(ImVec2(startX + 7, 72)); // Adjust position as needed
 		ImGui::SetNextWindowSize(ImVec2(innerWindowWidth, innerWindowHeight)); // Adjust size as needed
@@ -1063,7 +1062,7 @@ void RenderViewWindow(float width, float height)
 			static const char* renderModeOptions[] = { "Shaded", "Wireframe"};
 			static int currentItem = 0; // Index of the selected item
 
-			ImGui::SetCursorPosX(windowWidth - 170); // Adjust 200 to match the width of the dropdown
+			ImGui::SetCursorPosX(renderViewWindowSize.x - 170); // Adjust 200 to match the width of the dropdown
 			ImGui::PushItemWidth(150.0f); // Set dropdown width to 150
 			if (ImGui::BeginCombo("##RenderMode", renderModeOptions[currentItem])) // Label for the combo box
 			{
@@ -1099,7 +1098,7 @@ void RenderViewWindow(float width, float height)
 			const float* projectionPtr = glm::value_ptr(projection);
 
 			ImGuizmo::SetDrawlist();
-			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, renderViewWindowSize.x, renderViewWindowSize.y);
 
 			// Set the operation mode based on the selected radio button
 			ImGuizmo::OPERATION operationMode = ImGuizmo::TRANSLATE;
@@ -1133,17 +1132,31 @@ void RenderViewWindow(float width, float height)
 
 	{
 		// Create a child window
-		ImGui::BeginChild("Camera Preview", ImVec2(300, 200), true, ImGuiWindowFlags_NoScrollbar);
+
+		ImVec2 cameraPreviewSize = ImVec2(300, 200);
+		// Placeholder for camera frame
+
+		ImVec2 bottomRightOffset = ImVec2(10, 10);  // Padding from the bottom-right corne
+
+		// Adjust cursor position for the child window
+		ImVec2 childPos = ImVec2(
+			renderViewWindowSize.x - cameraPreviewSize.x - bottomRightOffset.x,
+			renderViewWindowSize.y - cameraPreviewSize.y - bottomRightOffset.y);
+
+		ImGui::SetCursorPos(childPos);
+		ImGui::BeginChild("Camera Preview", cameraPreviewSize, true, ImGuiWindowFlags_NoScrollbar);
+
+		ImVec2 contentSize = ImGui::GetContentRegionAvail(); // Get size of the available region
+
 
 		// Add content to the child window (camera preview)
 		ImGui::Text("Camera Preview");
 		ImGui::Separator();
 
-		// Placeholder for camera frame
-		ImVec2 contentSize = ImGui::GetContentRegionAvail(); // Get size of the available region
+		
 
 		auto renderTargetID = Engine::get()->getContext()->getActiveScene()->getRenderTarget(g_previewWindowID);
-		ImGui::Image((void*)(intptr_t)renderTargetID, contentSize);
+		ImGui::Image(reinterpret_cast<ImTextureID>(renderTargetID), cameraPreviewSize);
 
 		ImGui::EndChild();
 	}
@@ -1924,7 +1937,7 @@ public:
 			debugTerrainFlag = true;
 			});
 
-		g_previewWindowID = Engine::get()->getContext()->getActiveScene()->addRenderView(0, 0, 100, 100, g_primaryCamera);
+		g_previewWindowID = Engine::get()->getContext()->getActiveScene()->addRenderView(0, 0, 300, 200, g_primaryCamera);
 
 		updateScene();
 
