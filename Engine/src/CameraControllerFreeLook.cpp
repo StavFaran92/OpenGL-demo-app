@@ -10,9 +10,16 @@
 
 void CameraControllerFreeLook::calculateOrientation()
 {
-	m_front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-	m_front.y = sin(glm::radians(m_pitch));
-	m_front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	auto quat = m_cameraTransform->getWorldRotation();
+	auto euler = glm::eulerAngles(quat);
+
+	auto yaw = euler.x;
+	auto pitch = euler.y;
+	auto roll = euler.z;
+
+	m_front.x = cos(yaw) * cos(pitch);
+	m_front.y = sin(pitch);
+	m_front.z = sin(yaw) * cos(pitch);
 
 	m_front = glm::normalize(m_front);
 	m_cameraComponent->center = m_cameraTransform->getLocalPosition() + m_front;
@@ -42,18 +49,21 @@ void CameraControllerFreeLook::onCreate(Entity& e)
 				xChange *= m_turnSpeed * system->getDeltaTime();
 				yChange *= m_turnSpeed * system->getDeltaTime();
 
-				m_yaw += xChange;
-				m_pitch -= yChange;
+				//m_yaw += xChange;
+				//m_pitch -= yChange;
 
-				if (m_pitch > 89.0f)
-				{
-					m_pitch = 89.0f;
-				}
+				m_cameraTransform->rotate(glm::vec3{ xChange,0,0 } * Constants::toRadians);
+				m_cameraTransform->rotate(glm::vec3{ 0,-yChange,0 } * Constants::toRadians);
 
-				if (m_pitch < -89.0f)
-				{
-					m_pitch = -89.0f;
-				}
+				//if (m_pitch > 89.0f)
+				//{
+				//	m_pitch = 89.0f;
+				//}
+
+				//if (m_pitch < -89.0f)
+				//{
+				//	m_pitch = -89.0f;
+				//}
 
 				calculateOrientation();
 			}

@@ -21,8 +21,8 @@ private:
 private:
 	bool m_isLocked = true;
 
-	float m_yaw = 0;
-	float m_pitch = 0;
+	//float m_yaw = 0;
+	//float m_pitch = 0;
 	glm::vec3 m_up = { 0,1,0 };
 	glm::vec3 m_right;
 	glm::vec3 m_front;
