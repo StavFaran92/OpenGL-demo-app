@@ -114,7 +114,7 @@ public:
 
 	physx::PxScene* getPhysicsScene() const;
 
-	unsigned int addRenderView(std::shared_ptr<RenderView> renderView);
+	unsigned int addRenderView(int x, int y, int w, int h, const Entity& e);
 
 	unsigned int getRenderTarget(unsigned int) const;
 

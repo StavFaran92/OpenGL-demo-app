@@ -30,6 +30,8 @@ static bool startButtonPressed = false;
 Entity g_primaryCamera;
 Entity g_editorCamera;
 
+uint32_t g_previewWindowID = 0;
+
 std::function<void(std::string uuid)> assetTextureSelectCB;
 Resource<Texture> selectedAssetTexture;
 
@@ -1129,6 +1131,23 @@ void RenderViewWindow(float width, float height)
 
 	}
 
+	{
+		// Create a child window
+		ImGui::BeginChild("Camera Preview", ImVec2(300, 200), true, ImGuiWindowFlags_NoScrollbar);
+
+		// Add content to the child window (camera preview)
+		ImGui::Text("Camera Preview");
+		ImGui::Separator();
+
+		// Placeholder for camera frame
+		ImVec2 contentSize = ImGui::GetContentRegionAvail(); // Get size of the available region
+
+		auto renderTargetID = Engine::get()->getContext()->getActiveScene()->getRenderTarget(g_previewWindowID);
+		ImGui::Image((void*)(intptr_t)renderTargetID, contentSize);
+
+		ImGui::EndChild();
+	}
+
 	ImGui::End();
 }
 
@@ -1905,8 +1924,7 @@ public:
 			debugTerrainFlag = true;
 			});
 
-
-		//Engine::get()->getContext()->getActiveScene()->addRenderView()
+		g_previewWindowID = Engine::get()->getContext()->getActiveScene()->addRenderView(0, 0, 100, 100, g_primaryCamera);
 
 		updateScene();
 

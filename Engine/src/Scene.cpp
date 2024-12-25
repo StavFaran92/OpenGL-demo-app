@@ -75,11 +75,6 @@ void Scene::setIBLData(Resource<Texture> irradianceMap, Resource<Texture> prefil
 	m_prefilterEnvMap = prefilterEnvMap;
 }
 
-//int Scene::getRenderTarget() const
-//{
-//	return m_renderTargetTexture.get()->getID();
-//}
-
 glm::mat4 Scene::getProjection() const
 {
 	return m_defaultPerspectiveProjection;
@@ -91,21 +86,11 @@ Entity Scene::getActiveCamera() const
 	return m_renderViews[0]->getCamera();
 }
 
-//void Scene::setPrimaryEditorCamera(Entity e)
-//{
-//	m_primaryEditorCamera = e;
-//}
-
 void Scene::setPrimaryCamera(Entity e)
 {
 	assert(m_renderViews.size() > 0);
 	m_renderViews[0]->setCamera(e);
 }
-
-//void Scene::setPrimaryCamera(ICamera* camera)
-//{
-//	m_activeCamera = camera;
-//}
 
 void Scene::init(Context* context)
 {
@@ -115,31 +100,6 @@ void Scene::init(Context* context)
 
 	auto width = Engine::get()->getWindow()->getWidth();
 	auto height = Engine::get()->getWindow()->getHeight();
-
-	//m_renderTargetFBO = std::make_shared<FrameBufferObject>();
-	//m_renderTargetRBO = std::make_shared<RenderBufferObject>(
-	//	Engine::get()->getWindow()->getWidth(), 
-	//	Engine::get()->getWindow()->getHeight());
-
-	//m_renderTargetFBO->bind();
-
-	//// Generate Texture for Position data
-	//m_renderTargetTexture = Texture::createEmptyTexture(width, height);
-	//m_renderTargetFBO->attachTexture(m_renderTargetTexture.get()->getID(), GL_COLOR_ATTACHMENT0);
-
-	//unsigned int attachments[1] = { GL_COLOR_ATTACHMENT0 };
-	//glDrawBuffers(1, attachments);
-
-	//// Create RBO and attach to FBO
-	//m_renderTargetFBO->attachRenderBuffer(m_renderTargetRBO->GetID(), FrameBufferObject::AttachmentType::Depth_Stencil);
-
-	//if (!m_renderTargetFBO->isComplete())
-	//{
-	//	logError("FBO is not complete!");
-	//	return;
-	//}
-
-	//m_renderTargetFBO->unbind();
 
 	m_deferredRenderer = std::make_shared<DeferredRenderer>(this);
 	m_deferredRenderer->init();
@@ -208,10 +168,7 @@ void Scene::init(Context* context)
 
 	m_basicBox = ShapeFactory::createBox();
 
-	auto renderView = std::make_shared<RenderView>(
-		RenderView::Viewport{0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight() },
-		Entity::EmptyEntity);
-	addRenderView(renderView);
+	addRenderView(0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight(), Entity::EmptyEntity);
 }
 
 void Scene::update(float deltaTime)
@@ -460,15 +417,6 @@ void Scene::draw(float deltaTime)
 
 	glDisable(GL_BLEND);
 
-#if 1
-
-	//glBindFramebuffer(GL_READ_FRAMEBUFFER, m_renderTargetFBO->getID());
-	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	//glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-#endif 
-
 	for (const auto& cb : m_renderCallbacks[RenderPhase::POST_RENDER_BEGIN])
 	{
 		cb();
@@ -664,11 +612,11 @@ physx::PxScene* Scene::getPhysicsScene() const
 	return m_PhysicsScene;
 }
 
-unsigned int Scene::addRenderView(std::shared_ptr<RenderView> renderView)
+unsigned int Scene::addRenderView(int x, int y, int w, int h, const Entity& e)
 {
 	// todo maybe use map here?
 	unsigned int id = m_renderViews.size();
-	m_renderViews.push_back(renderView);
+	m_renderViews.push_back(std::make_shared<RenderView>(RenderView::Viewport{x, y, w, h}, e));
 	return id;
 }
 
