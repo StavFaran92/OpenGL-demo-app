@@ -75,10 +75,10 @@ void Scene::setIBLData(Resource<Texture> irradianceMap, Resource<Texture> prefil
 	m_prefilterEnvMap = prefilterEnvMap;
 }
 
-int Scene::getRenderTarget() const
-{
-	return m_renderTargetTexture.get()->getID();
-}
+//int Scene::getRenderTarget() const
+//{
+//	return m_renderTargetTexture.get()->getID();
+//}
 
 glm::mat4 Scene::getProjection() const
 {
@@ -116,35 +116,35 @@ void Scene::init(Context* context)
 	auto width = Engine::get()->getWindow()->getWidth();
 	auto height = Engine::get()->getWindow()->getHeight();
 
-	m_renderTargetFBO = std::make_shared<FrameBufferObject>();
-	m_renderTargetRBO = std::make_shared<RenderBufferObject>(
-		Engine::get()->getWindow()->getWidth(), 
-		Engine::get()->getWindow()->getHeight());
+	//m_renderTargetFBO = std::make_shared<FrameBufferObject>();
+	//m_renderTargetRBO = std::make_shared<RenderBufferObject>(
+	//	Engine::get()->getWindow()->getWidth(), 
+	//	Engine::get()->getWindow()->getHeight());
 
-	m_renderTargetFBO->bind();
+	//m_renderTargetFBO->bind();
 
-	// Generate Texture for Position data
-	m_renderTargetTexture = Texture::createEmptyTexture(width, height);
-	m_renderTargetFBO->attachTexture(m_renderTargetTexture.get()->getID(), GL_COLOR_ATTACHMENT0);
+	//// Generate Texture for Position data
+	//m_renderTargetTexture = Texture::createEmptyTexture(width, height);
+	//m_renderTargetFBO->attachTexture(m_renderTargetTexture.get()->getID(), GL_COLOR_ATTACHMENT0);
 
-	unsigned int attachments[1] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, attachments);
+	//unsigned int attachments[1] = { GL_COLOR_ATTACHMENT0 };
+	//glDrawBuffers(1, attachments);
 
-	// Create RBO and attach to FBO
-	m_renderTargetFBO->attachRenderBuffer(m_renderTargetRBO->GetID(), FrameBufferObject::AttachmentType::Depth_Stencil);
+	//// Create RBO and attach to FBO
+	//m_renderTargetFBO->attachRenderBuffer(m_renderTargetRBO->GetID(), FrameBufferObject::AttachmentType::Depth_Stencil);
 
-	if (!m_renderTargetFBO->isComplete())
-	{
-		logError("FBO is not complete!");
-		return;
-	}
+	//if (!m_renderTargetFBO->isComplete())
+	//{
+	//	logError("FBO is not complete!");
+	//	return;
+	//}
 
-	m_renderTargetFBO->unbind();
+	//m_renderTargetFBO->unbind();
 
-	m_deferredRenderer = std::make_shared<DeferredRenderer>(m_renderTargetFBO, this);
+	m_deferredRenderer = std::make_shared<DeferredRenderer>(this);
 	m_deferredRenderer->init();
 
-	m_forwardRenderer = std::make_shared<Renderer>(m_renderTargetFBO, this);
+	m_forwardRenderer = std::make_shared<Renderer>(this);
 	m_forwardRenderer->init();
 
 	//m_skyboxRenderer = std::make_shared<SkyboxRenderer>(*m_renderer.get());
@@ -210,8 +210,7 @@ void Scene::init(Context* context)
 
 	auto renderView = std::make_shared<RenderView>(
 		RenderView::Viewport{0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight() },
-		Entity::EmptyEntity, 
-		0);
+		Entity::EmptyEntity);
 	addRenderView(renderView);
 }
 
@@ -325,7 +324,7 @@ void Scene::draw(float deltaTime)
 		m_deferredRenderer->renderSceneUsingCustomShader(this);
 
 		unsigned int srcID = m_deferredRenderer->getGBuffer().getID();
-		unsigned int dstID = m_forwardRenderer->getRenderTarget();
+		unsigned int dstID = graphics->renderView->getRenderTargetID();
 
 		RenderCommand::copyFrameBufferData(srcID, dstID);
 
@@ -335,7 +334,7 @@ void Scene::draw(float deltaTime)
 		glDepthMask(GL_FALSE);
 		glDepthFunc(GL_LEQUAL);
 		m_skyboxShader->use();
-		m_renderTargetFBO->bind();
+		graphics->renderView->bind();
 
 		m_skyboxShader->setViewMatrix(*graphics->view);
 		m_skyboxShader->setProjectionMatrix(*graphics->projection);
@@ -665,9 +664,19 @@ physx::PxScene* Scene::getPhysicsScene() const
 	return m_PhysicsScene;
 }
 
-void Scene::addRenderView(std::shared_ptr<RenderView> renderView)
+unsigned int Scene::addRenderView(std::shared_ptr<RenderView> renderView)
 {
+	// todo maybe use map here?
+	unsigned int id = m_renderViews.size();
 	m_renderViews.push_back(renderView);
+	return id;
+}
+
+unsigned int Scene::getRenderTarget(unsigned int id) const
+{
+	assert(id < m_renderViews.size());
+
+	return m_renderViews[id]->getRenderTargetID();
 }
 
 bool Scene::isSimulationActive() const

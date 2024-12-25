@@ -34,6 +34,7 @@
 #include "Assets.h"
 #include "Graphics.h"
 #include "System.h"
+#include "RenderCommand.h"
 
 #include "Application.h"
 #include "SDL2/SDL.h"
@@ -317,10 +318,12 @@ void Engine::run(Application* app)
         draw(deltaTime);
         app->update();
 
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_context->getActiveScene()->getRenderTarget());
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-        glBlitFramebuffer(0, 0, m_window->getWidth(), m_window->getHeight(), 0, 0, m_window->getWidth(), m_window->getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        RenderCommand::copyFrameBufferData(m_context->getActiveScene()->getRenderTarget(0), 0);
+
+        //glBindFramebuffer(GL_READ_FRAMEBUFFER, m_context->getActiveScene()->getRenderTarget());
+        //glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        //glBlitFramebuffer(0, 0, m_window->getWidth(), m_window->getHeight(), 0, 0, m_window->getWidth(), m_window->getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         m_imguiHandler->render();
 

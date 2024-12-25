@@ -19,14 +19,15 @@
 #include "Graphics.h"
 #include "System.h"
 #include "ShapeFactory.h"
+#include "RenderView.h"
 
 static float lerp(float a, float b, float t)
 {
 	return a + t * (b - a);
 }
 
-DeferredRenderer::DeferredRenderer(std::shared_ptr<FrameBufferObject> renderTarget, Scene* scene) 
-	: m_renderTargetFBO(renderTarget), m_scene(scene)
+DeferredRenderer::DeferredRenderer(Scene* scene) 
+	: m_scene(scene)
 {
 }
 
@@ -283,7 +284,7 @@ void DeferredRenderer::renderSceneUsingCustomShader(Scene* scene)
 	m_lightPassShader->setValue("gSSAOColorBuffer", 3);
 #endif
 
-	m_renderTargetFBO->bind();
+	graphics->renderView->bind();
 
 	// bind fShader
 	fragmentShader->use();
@@ -300,7 +301,7 @@ void DeferredRenderer::renderSceneUsingCustomShader(Scene* scene)
 		RenderCommand::draw(mesh->getVAO());
 	}
 
-	m_renderTargetFBO->unbind();
+	graphics->renderView->unbind();
 }
 
 void DeferredRenderer::renderScene(Scene* scene)
@@ -482,7 +483,7 @@ void DeferredRenderer::renderScene(Scene* scene)
 	m_lightPassShader->setValue("gSSAOColorBuffer", 3);
 #endif
 
-	m_renderTargetFBO->bind();
+	graphics->renderView->bind();
 
 	// bind fShader
 	m_lightPassShader->use();
@@ -499,12 +500,7 @@ void DeferredRenderer::renderScene(Scene* scene)
 		RenderCommand::draw(mesh->getVAO());
 	}
 
-	m_renderTargetFBO->unbind();
-}
-
-uint32_t DeferredRenderer::getRenderTarget() const
-{
-	return m_renderTargetFBO->getID();
+	//graphics->renderView->unbind();
 }
 
 const FrameBufferObject& DeferredRenderer::getGBuffer() const

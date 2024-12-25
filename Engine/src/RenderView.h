@@ -1,6 +1,10 @@
 #pragma once
 
 #include "Entity.h"
+#include "FrameBufferObject.h"
+#include "RenderBufferObject.h"
+#include "Texture.h"
+#include "Resource.h"
 
 class RenderView
 {
@@ -10,11 +14,7 @@ public:
 		int x, y, w, h;
 	};
 
-	RenderView(Viewport viewport, const Entity& camera, unsigned int renderTarget)
-		: m_viewport(viewport), m_camera(camera), m_renderTarget(renderTarget)
-	{
-		
-	}
+	RenderView(Viewport viewport, const Entity& camera);
 
 	Viewport getViewport() const;
 
@@ -24,10 +24,16 @@ public:
 
 	unsigned int getRenderTargetID() const;
 
-	void setRenderTargetID(unsigned int targetID);
+	void bind();
+	void unbind();
+
+	//void setRenderTargetID(unsigned int targetID);
 
 private:
 	Viewport m_viewport;
 	Entity  m_camera = Entity::EmptyEntity;
-	unsigned int m_renderTarget = 0; // this should hold FBO to be owner of it.
+
+	std::shared_ptr<FrameBufferObject> m_renderTargetFBO;
+	std::shared_ptr<RenderBufferObject> m_renderTargetRBO;
+	Resource<Texture> m_renderTargetTexture = Resource<Texture>::empty;
 };

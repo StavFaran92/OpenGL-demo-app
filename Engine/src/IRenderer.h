@@ -67,7 +67,6 @@ public:
 
 	virtual void render() = 0;
 	virtual void renderScene(Scene* scene) = 0;
-	virtual uint32_t getRenderTarget() const = 0;
 
 	void SetDrawType(DrawType drawType);
 

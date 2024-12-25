@@ -15,13 +15,12 @@ class RenderBufferObject;
 class DeferredRenderer : public RendererIntermediate
 {
 public:
-	DeferredRenderer(std::shared_ptr<FrameBufferObject> renderTarget, Scene* scene);
+	DeferredRenderer(Scene* scene);
 	// Inherited via IRenderer
 	bool init() override;
 	void render() override;
 	void renderScene(Scene* scene) override;
 	void renderSceneUsingCustomShader(Scene* scene);
-	uint32_t getRenderTarget() const override;
 	void setUniforms(Shader* shader);
 
 	const FrameBufferObject& getGBuffer() const;
@@ -42,7 +41,6 @@ private:
 	
 	Scene* m_scene = nullptr;
 
-	std::shared_ptr<FrameBufferObject> m_renderTargetFBO;
 
 	Entity m_quad;
 	std::shared_ptr<Shader> m_screenShader;

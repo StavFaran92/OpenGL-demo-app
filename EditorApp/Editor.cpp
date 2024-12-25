@@ -954,7 +954,7 @@ void RenderViewWindow(float width, float height)
 	
 	// Display the texture
 	ImVec2 imageSize(windowWidth, windowHeight);
-	ImGui::Image(reinterpret_cast<ImTextureID>(Engine::get()->getContext()->getActiveScene()->getRenderTarget()), imageSize, ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::Image(reinterpret_cast<ImTextureID>(Engine::get()->getContext()->getActiveScene()->getRenderTarget(0)), imageSize, ImVec2(0, 1), ImVec2(1, 0));
 
 	if (!Engine::get()->getContext()->getActiveScene()->isSimulationActive() && 
 		!ImGui::IsPopupOpen(1, ImGuiPopupFlags_AnyPopupId | ImGuiPopupFlags_AnyPopupLevel))
@@ -1905,6 +1905,8 @@ public:
 			debugTerrainFlag = true;
 			});
 
+
+		//Engine::get()->getContext()->getActiveScene()->addRenderView()
 
 		updateScene();
 

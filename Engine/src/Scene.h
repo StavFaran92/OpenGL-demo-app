@@ -99,7 +99,7 @@ public:
 
 	void setIBLData(Resource<Texture> irradianceMap, Resource<Texture> prefilterEnvMap);
 
-	int getRenderTarget() const;
+	//int getRenderTarget() const;
 
 	glm::mat4 getProjection() const;
 
@@ -114,7 +114,10 @@ public:
 
 	physx::PxScene* getPhysicsScene() const;
 
-	void addRenderView(std::shared_ptr<RenderView> renderView);
+	unsigned int addRenderView(std::shared_ptr<RenderView> renderView);
+
+	unsigned int getRenderTarget(unsigned int) const;
+
 
 	//void setPrimaryCamera(ICamera* camera);
 
@@ -165,9 +168,9 @@ private:
 
 	std::shared_ptr<UniformBufferObject> m_uboTime;
 
-	std::shared_ptr<FrameBufferObject> m_renderTargetFBO;
-	std::shared_ptr<RenderBufferObject> m_renderTargetRBO;
-	Resource<Texture> m_renderTargetTexture;
+	//std::shared_ptr<FrameBufferObject> m_renderTargetFBO;
+	//std::shared_ptr<RenderBufferObject> m_renderTargetRBO;
+	//Resource<Texture> m_renderTargetTexture;
 
 	Resource<Texture> m_irradianceMap;
 	Resource<Texture> m_prefilterEnvMap;

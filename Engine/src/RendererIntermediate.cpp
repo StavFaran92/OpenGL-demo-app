@@ -22,11 +22,6 @@ void RendererIntermediate::draw(const VertexArrayObject& vao) const
 	}
 }
 
-uint32_t RendererIntermediate::getRenderTarget() const
-{
-	return 0;
-}
-
 void RendererIntermediate::clear() const
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

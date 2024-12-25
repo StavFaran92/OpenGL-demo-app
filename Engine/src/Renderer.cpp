@@ -25,10 +25,11 @@
 #include "CommonShaders.h"
 #include "MeshCollection.h"
 #include "Graphics.h"
+#include "RenderView.h"
 
 
-Renderer::Renderer(std::shared_ptr<FrameBufferObject> renderTarget, Scene* scene)
-    : m_renderTargetFBO(renderTarget), m_scene(scene)
+Renderer::Renderer(Scene* scene)
+    : m_scene(scene)
 {
 }
 
@@ -81,7 +82,7 @@ void Renderer::renderScene(Scene* scene)
     glEnable(GL_DEPTH_TEST);
     SetDrawType(Renderer::DrawType::Triangles);
 
-    m_renderTargetFBO->bind();
+    graphics->renderView->bind();
 
     // Render Phase
     for (auto& entityHandler : graphics->entityGroup)
@@ -114,7 +115,7 @@ void Renderer::renderScene(Scene* scene)
         }
     };
 
-    m_renderTargetFBO->unbind();
+    //graphics->renderView->unbind();
 }
 
 void Renderer::setUniforms()
@@ -183,9 +184,4 @@ void Renderer::setUniforms()
     graphics->shader->bindUniformBlockToBindPoint("Lights", 1);
 
 
-}
-
-uint32_t Renderer::getRenderTarget() const
-{
-    return m_renderTargetFBO->getID();
 }

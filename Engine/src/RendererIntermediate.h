@@ -12,7 +12,6 @@ class EngineAPI RendererIntermediate : public IRenderer
 {
 public:
 	void clear() const override;
-	uint32_t getRenderTarget() const override;
 protected:
 	void draw(const VertexArrayObject& vao) const override;
 
