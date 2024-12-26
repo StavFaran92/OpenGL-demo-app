@@ -276,6 +276,8 @@ void Scene::draw(float deltaTime)
 
 		graphics->frustum = &frustum;
 
+		RenderCommand::setViewport(viewport.x, viewport.y, viewport.w, viewport.h);
+
 		m_deferredRenderer->renderScene(this);
 
 		m_deferredRenderer->renderSceneUsingCustomShader(this);

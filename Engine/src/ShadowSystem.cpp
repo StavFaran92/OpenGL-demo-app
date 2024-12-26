@@ -161,9 +161,9 @@ void ShadowSystem::renderToDepthMap()
 	m_fbo.unbind();
 
 	// Set viewport back to normal
-	auto width = Engine::get()->getWindow()->getWidth();
-	auto height = Engine::get()->getWindow()->getHeight();
-	glViewport(0, 0, width, height);
+	//auto width = Engine::get()->getWindow()->getWidth();
+	//auto height = Engine::get()->getWindow()->getHeight();
+	//glViewport(0, 0, width, height);
 
 	//auto phongShader = m_context->getStandardShader();
 

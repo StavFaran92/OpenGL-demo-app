@@ -1156,7 +1156,7 @@ void RenderViewWindow(float width, float height)
 		
 
 		auto renderTargetID = Engine::get()->getContext()->getActiveScene()->getRenderTargetTextureID(g_previewWindowID);
-		ImGui::Image(reinterpret_cast<ImTextureID>(renderTargetID), cameraPreviewSize);
+		ImGui::Image(reinterpret_cast<ImTextureID>(renderTargetID), cameraPreviewSize, ImVec2(0, 1), ImVec2(1, 0));
 
 		ImGui::EndChild();
 	}
@@ -1937,7 +1937,8 @@ public:
 			debugTerrainFlag = true;
 			});
 
-		g_previewWindowID = Engine::get()->getContext()->getActiveScene()->addRenderView(0, 0, 300, 200, g_primaryCamera);
+		//g_previewWindowID = Engine::get()->getContext()->getActiveScene()->addRenderView(0, 0, 300, 200, g_primaryCamera);
+		g_previewWindowID = Engine::get()->getContext()->getActiveScene()->addRenderView(0, 0, Engine::get()->getWindow()->getWidth(), Engine::get()->getWindow()->getHeight(), g_primaryCamera);
 
 		updateScene();
 
