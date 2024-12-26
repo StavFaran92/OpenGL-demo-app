@@ -955,7 +955,7 @@ void RenderViewWindow(float width, float height)
 	
 	// Display the texture
 	ImVec2 imageSize(renderViewWindowSize.x, renderViewWindowSize.y);
-	ImGui::Image(reinterpret_cast<ImTextureID>(Engine::get()->getContext()->getActiveScene()->getRenderTarget(0)), imageSize, ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::Image(reinterpret_cast<ImTextureID>(Engine::get()->getContext()->getActiveScene()->getRenderTargetTextureID(0)), imageSize, ImVec2(0, 1), ImVec2(1, 0));
 
 	if (!Engine::get()->getContext()->getActiveScene()->isSimulationActive() && 
 		!ImGui::IsPopupOpen(1, ImGuiPopupFlags_AnyPopupId | ImGuiPopupFlags_AnyPopupLevel))
@@ -1155,7 +1155,7 @@ void RenderViewWindow(float width, float height)
 
 		
 
-		auto renderTargetID = Engine::get()->getContext()->getActiveScene()->getRenderTarget(g_previewWindowID);
+		auto renderTargetID = Engine::get()->getContext()->getActiveScene()->getRenderTargetTextureID(g_previewWindowID);
 		ImGui::Image(reinterpret_cast<ImTextureID>(renderTargetID), cameraPreviewSize);
 
 		ImGui::EndChild();

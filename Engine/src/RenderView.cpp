@@ -39,9 +39,14 @@ void RenderView::setCamera(const Entity& camera)
     m_camera = camera;
 }
 
-unsigned int RenderView::getRenderTargetID() const
+unsigned int RenderView::getRenderTargetTextureID() const
 {
     return m_renderTargetTexture.get()->getID();
+}
+
+unsigned int RenderView::getRenderTargetFrameBufferID() const
+{
+	return m_renderTargetFBO->getID();
 }
 
 void RenderView::bind()

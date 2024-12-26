@@ -22,7 +22,9 @@ public:
 
 	void setCamera(const Entity& camera);
 
-	unsigned int getRenderTargetID() const;
+	unsigned int getRenderTargetTextureID() const;
+
+	unsigned int getRenderTargetFrameBufferID() const;
 
 	void bind();
 	void unbind();

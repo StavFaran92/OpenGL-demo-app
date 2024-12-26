@@ -281,7 +281,7 @@ void Scene::draw(float deltaTime)
 		m_deferredRenderer->renderSceneUsingCustomShader(this);
 
 		unsigned int srcID = m_deferredRenderer->getGBuffer().getID();
-		unsigned int dstID = graphics->renderView->getRenderTargetID();
+		unsigned int dstID = graphics->renderView->getRenderTargetFrameBufferID();
 
 		RenderCommand::copyFrameBufferData(srcID, dstID);
 
@@ -620,11 +620,18 @@ unsigned int Scene::addRenderView(int x, int y, int w, int h, const Entity& e)
 	return id;
 }
 
-unsigned int Scene::getRenderTarget(unsigned int id) const
+unsigned int Scene::getRenderTargetFrameBufferID(unsigned int id) const
 {
 	assert(id < m_renderViews.size());
 
-	return m_renderViews[id]->getRenderTargetID();
+	return m_renderViews[id]->getRenderTargetFrameBufferID();
+}
+
+unsigned int Scene::getRenderTargetTextureID(unsigned int id) const
+{
+	assert(id < m_renderViews.size());
+
+	return m_renderViews[id]->getRenderTargetTextureID();
 }
 
 bool Scene::isSimulationActive() const

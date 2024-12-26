@@ -318,7 +318,7 @@ void Engine::run(Application* app)
         draw(deltaTime);
         app->update();
 
-        RenderCommand::copyFrameBufferData(m_context->getActiveScene()->getRenderTarget(0), 0);
+        RenderCommand::copyFrameBufferData(m_context->getActiveScene()->getRenderTargetFrameBufferID(0), 0);
 
         //glBindFramebuffer(GL_READ_FRAMEBUFFER, m_context->getActiveScene()->getRenderTarget());
         //glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);

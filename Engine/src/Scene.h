@@ -116,7 +116,8 @@ public:
 
 	unsigned int addRenderView(int x, int y, int w, int h, const Entity& e);
 
-	unsigned int getRenderTarget(unsigned int) const;
+	unsigned int getRenderTargetFrameBufferID(unsigned int) const;
+	unsigned int getRenderTargetTextureID(unsigned int) const;
 
 
 	//void setPrimaryCamera(ICamera* camera);
