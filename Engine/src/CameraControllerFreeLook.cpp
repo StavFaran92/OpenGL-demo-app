@@ -10,9 +10,31 @@
 
 void CameraControllerFreeLook::calculateOrientation()
 {
-	m_front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-	m_front.y = sin(glm::radians(m_pitch));
-	m_front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	//auto quat = m_cameraTransform->getWorldRotation();
+	//auto euler = glm::eulerAngles(quat);
+
+	//m_yaw = glm::degrees(euler.x);
+	//m_pitch = glm::degrees(euler.y);
+
+	auto yaw = glm::yaw(m_cameraTransform->getWorldRotation());
+	auto pitch = glm::pitch(m_cameraTransform->getWorldRotation());
+
+	if (pitch > Constants::PI / 2)
+	{
+		pitch = Constants::PI / 2;
+	}
+
+	if (pitch < -Constants::PI / 2 + 1.f)
+	{
+		pitch = -Constants::PI / 2 + 1.f;
+	}
+
+	logError("yaw = " + std::to_string(yaw));
+	logError("pitch = " + std::to_string(pitch));
+
+	m_front.x = cos(yaw) * cos(pitch);
+	m_front.y = sin(pitch);
+	m_front.z = sin(yaw) * cos(pitch);
 
 	m_front = glm::normalize(m_front);
 	m_cameraComponent->center = m_cameraTransform->getLocalPosition() + m_front;
@@ -54,6 +76,17 @@ void CameraControllerFreeLook::onCreate(Entity& e)
 				{
 					m_pitch = -89.0f;
 				}
+
+				logError("yaw = " + std::to_string(m_yaw));
+				logError("pitch = " + std::to_string(m_pitch));
+
+				glm::quat pitchQuat = glm::angleAxis(glm::radians(m_pitch), glm::vec3(1, 0, 0));
+				glm::quat yawQuat = glm::angleAxis(glm::radians(m_yaw), glm::vec3(0, 1, 0));
+
+				// Combine the quaternions
+				glm::quat combinedQuat = yawQuat * pitchQuat;
+
+				m_cameraTransform->setWorldRotation(combinedQuat);
 
 				calculateOrientation();
 			}
