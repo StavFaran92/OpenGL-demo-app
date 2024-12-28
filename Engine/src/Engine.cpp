@@ -493,9 +493,19 @@ void Engine::createStartupScene(const std::shared_ptr<Context>& context, const I
     auto mainCamera = startupScene->createEntity("Main Camera");
     mainCamera.addComponent<CameraComponent>(CameraComponent::createPerspectiveCamera(45.0f, (float)4 / 3, 0.1f, 1000.0f));
     startupScene->setPrimaryCamera(mainCamera);
-    mainCamera.getComponent<Transformation>().setLocalPosition({10,1,10});
+    mainCamera.getComponent<Transformation>().setLocalPosition({10,10,10});
     mainCamera.getComponent<CameraComponent>().center = {0,0,0};
     mainCamera.getComponent<CameraComponent>().up = {0,1,0};
+
+    auto modelInfo = Engine::get()->getSubSystem<Assets>()->importMesh(SGE_ROOT_DIR + "Resources/Engine/Meshes/camera.obj");
+    mainCamera.addComponent<MeshComponent>().mesh = modelInfo.mesh;
+    mainCamera.addComponent<RenderableComponent>();
+
+    auto& materialComponent = mainCamera.addComponent<MaterialComponent>();
+    for (auto& [idx, m] : modelInfo.materials)
+    {
+        materialComponent.setMaterial(idx, m);
+    }
 
     if (initParams.templateScene)
     {
