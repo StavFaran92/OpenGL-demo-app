@@ -53,6 +53,25 @@
 #include "Cubemap.h"
 #include "RenderView.h"
 
+void cameraCalculateOrientation(Transformation& transform, CameraComponent& cameraComponent)
+{
+	auto quat = transform.getWorldRotation();
+
+	glm::vec3& front = cameraComponent.front;
+	glm::vec3& right = cameraComponent.right;
+	glm::vec3& up = cameraComponent.up;
+	glm::vec3& center = cameraComponent.center;
+
+	front = quat * glm::vec3(0.0f, 0.0f, -1.0f); // Forward (Z-axis negative in OpenGL)
+	right = quat * glm::vec3(1.0f, 0.0f, 0.0f);  // Right (X-axis)
+
+	front = glm::normalize(front);
+	center = transform.getLocalPosition() + front;
+
+	right = glm::normalize(glm::cross(front, { 0,1,0 }));
+	up = glm::normalize(glm::cross(right, front));
+}
+
 void Scene::displayWireframeMesh(Entity e)
 {
 	auto graphics = Engine::get()->getSubSystem<Graphics>();
@@ -230,6 +249,7 @@ void Scene::draw(float deltaTime)
 		auto& primaryCamera = camera.getComponent<CameraComponent>();
 		auto& primaryCameraTransform = camera.getComponent<Transformation>();
 
+		cameraCalculateOrientation(primaryCameraTransform, primaryCamera);
 
 		graphics->scene = this;
 		graphics->context = m_context;

@@ -7,19 +7,19 @@
 #include <algorithm>
 #include "glm/glm.hpp"
 
-void CameraControllerOrbit::calculateOrientation()
-{
-	float t = m_distance * cos(m_angleY * Constants::toRadians);
-	float y = m_distance * sin(m_angleY * Constants::toRadians);
-	float x = t * cos(m_angleX * Constants::toRadians);
-	float z = t * sin(m_angleX * Constants::toRadians);
-
-	m_cameraTransform->setLocalPosition(glm::vec3(x, y, z) + m_cameraComponent->center);
-
-	auto front = glm::normalize(-m_cameraTransform->getLocalPosition() + m_cameraComponent->center);
-	m_right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
-	m_cameraComponent->up = glm::normalize(glm::cross(m_right, front));
-}
+//void CameraControllerOrbit::calculateOrientation()
+//{
+//	float t = m_distance * cos(m_angleY * Constants::toRadians);
+//	float y = m_distance * sin(m_angleY * Constants::toRadians);
+//	float x = t * cos(m_angleX * Constants::toRadians);
+//	float z = t * sin(m_angleX * Constants::toRadians);
+//
+//	m_cameraTransform->setLocalPosition(glm::vec3(x, y, z) + m_cameraComponent->center);
+//
+//	auto front = glm::normalize(-m_cameraTransform->getLocalPosition() + m_cameraComponent->center);
+//	m_right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
+//	m_cameraComponent->up = glm::normalize(glm::cross(m_right, front));
+//}
 
 void CameraControllerOrbit::onCreate(Entity& e)
 {
@@ -38,8 +38,6 @@ void CameraControllerOrbit::onCreate(Entity& e)
 				m_angleY += yChange * m_turnSpeed;
 
 				m_angleY = std::clamp(m_angleY, -89.f, 89.f);
-
-				calculateOrientation();
 			}
 			else if (m_state == ControllerState::TRANSFORM)
 			{
@@ -55,8 +53,6 @@ void CameraControllerOrbit::onCreate(Entity& e)
 
 				m_cameraComponent->center += m_right * xVelocity;
 				m_cameraComponent->center -= m_cameraComponent->up * yVelocity;
-
-				calculateOrientation();
 			}
 		});
 	eventSystem->addEventListener(SDL_MOUSEBUTTONDOWN, [this](SDL_Event e) {
@@ -85,7 +81,5 @@ void CameraControllerOrbit::onCreate(Entity& e)
 	eventSystem->addEventListener(SDL_MOUSEWHEEL, [this](SDL_Event e)
 		{
 			m_distance = std::clamp(m_distance - e.wheel.y, 1.f, 50.f);
-
-			calculateOrientation();
 		});
 }

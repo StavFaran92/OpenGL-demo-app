@@ -8,22 +8,6 @@
 #include <algorithm>
 #include "glm/glm.hpp"
 
-void CameraControllerFreeLook::calculateOrientation()
-{
-	auto quat = m_cameraTransform->getWorldRotation();
-
-	m_front = quat * glm::vec3(0.0f, 0.0f, -1.0f); // Forward (Z-axis negative in OpenGL)
-	m_right = quat * glm::vec3(1.0f, 0.0f, 0.0f);  // Right (X-axis)
-
-	m_front = glm::normalize(m_front);
-	m_cameraComponent->center = m_cameraTransform->getLocalPosition() + m_front;
-
-	m_right = glm::normalize(glm::cross(m_front, m_up));
-	m_cameraComponent->front = m_front;
-	m_cameraComponent->right = m_right;
-	m_cameraComponent->up = glm::normalize(glm::cross(m_right, m_front));
-}
-
 void CameraControllerFreeLook::onCreate(Entity& e)
 {
 	m_cameraComponent = &e.getComponent<CameraComponent>();
@@ -63,8 +47,6 @@ void CameraControllerFreeLook::onCreate(Entity& e)
 				glm::quat combinedQuat = yawQuat * pitchQuat;
 
 				m_cameraTransform->setWorldRotation(combinedQuat);
-
-				calculateOrientation();
 			}
 
 			if (m_state == ControllerState::TRANSFORM)
@@ -81,10 +63,8 @@ void CameraControllerFreeLook::onCreate(Entity& e)
 				float yVelocity = .1f * yChange;
 
 
-				m_cameraTransform->translate(m_right * xVelocity);
-				m_cameraTransform->translate(-m_up * yVelocity);
-
-				calculateOrientation();
+				m_cameraTransform->translate(m_cameraComponent->right * xVelocity);
+				m_cameraTransform->translate(-m_cameraComponent->up * yVelocity);
 			}
 		});
 	eventSystem->addEventListener(SDL_MOUSEBUTTONDOWN, [this](SDL_Event e){
@@ -111,8 +91,6 @@ void CameraControllerFreeLook::onCreate(Entity& e)
 		}
 	});
 	eventSystem->addEventListener(SDL_MOUSEWHEEL, [this](SDL_Event e){
-		m_cameraTransform->translate(m_front * (float)e.wheel.y);
-
-		calculateOrientation();
+		m_cameraTransform->translate(m_cameraComponent->front * (float)e.wheel.y);
 	});
 }

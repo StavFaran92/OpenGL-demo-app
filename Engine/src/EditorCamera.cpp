@@ -52,5 +52,4 @@ void EditorCamera::setPosition(float x, float y, float z)
 void EditorCamera::onCreate()
 {
 	m_cameraController->onCreate(entity);
-	m_cameraController->calculateOrientation();
 }

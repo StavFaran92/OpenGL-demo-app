@@ -10,7 +10,6 @@ class CameraControllerOrbit : public ICameraController
 public:
 	void onCreate(Entity& e) override;
 
-	void calculateOrientation();
 private:
 	enum class ControllerState
 	{
