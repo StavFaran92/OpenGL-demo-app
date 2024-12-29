@@ -70,7 +70,6 @@ StyleCopReport.xml
 *_h.h
 *.ilk
 *.meta
-*.obj
 *.iobj
 *.pch
 *.pdb
@@ -400,4 +399,4 @@ FodyWeavers.xsd
 *.idb
 *.recipe
 *.txt
-x64/**
+**/x64/**
