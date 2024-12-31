@@ -219,7 +219,9 @@ void PhysicsSystem::createTerrainActor(Scene* scene, entt::entity entity)
     //    -((PxReal)heightFieldDesc.nbColumns * terrain.getWidth()) / 2.0f),
     //    PxQuat(PxIdentity));
 
-    PxTransform pose(PxVec3(0, 0.0f, 0), PxQuat(PxIdentity));
+    PxTransform pose(PxVec3(-(PxReal)heightFieldDesc.nbRows / 2.f,
+        0.0f, 
+        -(PxReal)heightFieldDesc.nbColumns / 2.0f) , PxQuat(PxIdentity));
 
     PxRigidActor* heightFieldActor = m_physics->createRigidStatic(pose); // todo fix
     if (!heightFieldActor)
@@ -230,7 +232,7 @@ void PhysicsSystem::createTerrainActor(Scene* scene, entt::entity entity)
 
     PxShape* shape = PxRigidActorExt::createExclusiveShape(*heightFieldActor, 
         PxHeightFieldGeometry(heightField, PxMeshGeometryFlags(), 
-            terrain.getScale(), 1, 1),
+            10, 1, 1),
         *getDefaultMaterial());
 
     if (!shape)
@@ -422,6 +424,9 @@ void PhysicsSystem::update(Scene* scene, float deltaTime)
         {
             entity_id id = *(entity_id*)actor->userData;
             Entity e{ entt::entity(id),  &scene->getRegistry() };
+
+            if (e.HasComponent<CollisionTerrainComponent>())
+                continue;
 
             auto& transform = e.getComponent<Transformation>();
 
