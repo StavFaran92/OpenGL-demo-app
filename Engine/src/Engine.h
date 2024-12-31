@@ -126,7 +126,7 @@ public:
 
 protected:
     // -------------------- Methods -------------------- //
-    friend void sgeEntry(int, char*[]);
+    friend int sgeEntry(int, char*[]);
     template<typename T>friend class Factory;
 
 #ifdef TESTBED

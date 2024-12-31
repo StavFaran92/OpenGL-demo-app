@@ -280,9 +280,10 @@ void Engine::update(float deltaTime)
 {
     m_context->update(deltaTime);
 }
-
+#include "SGE_Exception.h"
 void Engine::run(Application* app)
 {
+    //SGE_THROW("as");
     //Main loop flag
     bool quit = false;
 

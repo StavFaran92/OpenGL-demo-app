@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include "Application.h"
 #include "ArchiveInitializer.h"
+#include "ErrorHandler.h"
 
 Application* CreateApplication();
 
@@ -48,35 +49,48 @@ InitParams parseArgs(int argc, char* argv[])
     return params;
 }
 
-void sgeEntry(int argc, char* argv[])
+int sgeEntry(int argc, char* argv[])
 {
+#ifndef SGE_DEBUG
+    try
+    {
+#endif //SGE_DEBUG
+
 #if SGE_SHIPPING
-    InitParams initParams;
-    initParams.loadExistingProject = true;
-    initParams.startSimulationOnStartup = true;
-    initParams.shipping = true;
-    initParams.projectDir = "./data/";
+        InitParams initParams;
+        initParams.loadExistingProject = true;
+        initParams.startSimulationOnStartup = true;
+        initParams.shipping = true;
+        initParams.projectDir = "./data/";
 #else
-    InitParams initParams = parseArgs(argc, argv);
-#endif
+        InitParams initParams = parseArgs(argc, argv);
+#endif // SGE_SHIPPING
 
-    ArchiveInitializer::init();
+        ArchiveInitializer::init();
 
-	auto engine = Engine::get();
-    if (!engine->init(initParams)) return;
+        auto engine = Engine::get();
+        if (!engine->init(initParams)) 
+            return 1;
 
-	auto app = CreateApplication();
-	app->start();
+        auto app = CreateApplication();
+        app->start();
 
-	engine->run(app);
+        engine->run(app);
 
-	app->close();
-	engine->close();
+        app->close();
+        engine->close();
+#ifndef SGE_DEBUG
+
+    }
+    catch (const std::runtime_error& e)
+    {
+        return ErrorHandler::handle(e);
+    }
+#endif //SGE_DEBUG
+    return 0;
 }
 
 int main(int argc, char* argv[])
 { 
-	sgeEntry(argc, argv);
-
-	return 0;
+	return sgeEntry(argc, argv);
 }
