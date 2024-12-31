@@ -201,7 +201,7 @@ void PhysicsSystem::createTerrainActor(Scene* scene, entt::entity entity)
         for (int column = 0; column < heightFieldDesc.nbColumns; column++)
         {
             physx::PxHeightFieldSample* currentSample = (physx::PxHeightFieldSample*)currentByte;
-            currentSample->height = static_cast<int16_t>(static_cast<int8_t*>(heightmapData.data)[(row * heightmapData.bpp + column)]); // todo fix
+            currentSample->height = static_cast<int16_t>(static_cast<int8_t*>(heightmapData.data)[(row * heightmapData.width + column) * heightmapData.bpp]); // todo fix
 
             currentSample->clearTessFlag();
             currentByte += heightFieldDesc.samples.stride;
@@ -230,7 +230,7 @@ void PhysicsSystem::createTerrainActor(Scene* scene, entt::entity entity)
 
     PxShape* shape = PxRigidActorExt::createExclusiveShape(*heightFieldActor, 
         PxHeightFieldGeometry(heightField, PxMeshGeometryFlags(), 
-            terrain.getScale(), terrain.getHeight(), terrain.getWidth()),
+            terrain.getScale(), 1, 1),
         *getDefaultMaterial());
 
     if (!shape)

@@ -1946,8 +1946,9 @@ public:
 		Engine::get()->getImguiHandler()->addGUI(gui);
 	}
 
-	void update() override
+	void update(float deltaTime) override
 	{
+		g_editorCamera.getComponent<NativeScriptComponent>().script->onUpdate(deltaTime);
 	}
 	std::shared_ptr<SGE_Regsitry> m_editorRegistry;
 };

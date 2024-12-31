@@ -5,6 +5,7 @@
 #include "ApplicationConstants.h"
 #include "Transformation.h"
 #include "System.h"
+#include "Input.h"
 #include <algorithm>
 #include "glm/glm.hpp"
 
@@ -93,4 +94,52 @@ void CameraControllerFreeLook::onCreate(Entity& e)
 	eventSystem->addEventListener(SDL_MOUSEWHEEL, [this](SDL_Event e){
 		m_cameraTransform->translate(m_cameraComponent->front * (float)e.wheel.y);
 	});
+
+	
+}
+
+void CameraControllerFreeLook::onUpdate(float deltaTime)
+{
+	if(Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_W))
+	{
+		m_velocityF = m_cameraComponent->front * velocity * deltaTime;
+	}
+	else if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_S))
+	{
+		m_velocityF = -m_cameraComponent->front * velocity * deltaTime;
+	}
+	else
+	{
+		m_velocityF = glm::vec3{ 0 };
+	}
+
+	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_D))
+	{
+		m_velocityR = m_cameraComponent->right * velocity * deltaTime;
+	}
+	else if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_A))
+	{
+		m_velocityR = -m_cameraComponent->right * velocity * deltaTime;
+	}
+	else
+	{
+		m_velocityR = glm::vec3{ 0 };
+	}
+
+	if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_E))
+	{
+		m_velocityU = glm::vec3{0,1,0} *velocity * deltaTime;
+	}
+	else if (Engine::get()->getInput()->getKeyboard()->getKeyState(SDL_SCANCODE_Q))
+	{
+		m_velocityU = glm::vec3{ 0,-1,0 }  * velocity * deltaTime;
+	}
+	else
+	{
+		m_velocityU = glm::vec3{ 0 };
+	}
+
+	auto finalMovement = m_velocityF + m_velocityR + m_velocityU;
+
+	m_cameraTransform->translate(finalMovement);
 }

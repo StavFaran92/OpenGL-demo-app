@@ -9,6 +9,7 @@ class CameraControllerFreeLook : public ICameraController
 {
 public:
 	void onCreate(Entity& e) override;
+	void onUpdate(float deltaTime) override;
 
 private:
 	enum class ControllerState
@@ -22,6 +23,12 @@ private:
 
 	float m_yaw = 0;
 	float m_pitch = 0;
+
+	glm::vec3 m_velocityF;
+	glm::vec3 m_velocityR;
+	glm::vec3 m_velocityU;
+
+	float velocity = 50.f;
 	//glm::vec3 m_up = { 0,1,0 };
 	//glm::vec3 m_right;
 	//glm::vec3 m_front;

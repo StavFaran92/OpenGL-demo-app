@@ -317,7 +317,7 @@ void Engine::run(Application* app)
 
         update(deltaTime);
         draw(deltaTime);
-        app->update();
+        app->update(deltaTime);
 
         RenderCommand::copyFrameBufferData(m_context->getActiveScene()->getRenderTargetFrameBufferID(0), 0);
 

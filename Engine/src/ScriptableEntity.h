@@ -7,6 +7,7 @@
 struct NativeScriptComponent;
 class Scene;
 class SceneSerializer;
+class EditorApp;
 
 class EngineAPI ScriptableEntity
 {
@@ -45,4 +46,5 @@ protected:
 	friend NativeScriptComponent;
 	friend Scene;
 	friend SceneSerializer;
+	friend EditorApp;
 };

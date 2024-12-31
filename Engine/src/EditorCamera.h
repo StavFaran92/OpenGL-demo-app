@@ -10,7 +10,7 @@
 #include <cereal/cereal.hpp>
 
 
-class EngineAPI EditorCamera : public ICamera
+class EngineAPI EditorCamera : public ScriptableEntity
 {
 public:
 	enum class CameraState
@@ -21,12 +21,8 @@ public:
 public:
 	EditorCamera();
 
-	void lookAt(float x, float y, float z) override;
-	void setPosition(float distance, float angleX, float angleY) override;
-	glm::mat4 getView() override;
-	glm::vec3 getPosition() override;
-
 	void onCreate() override;
+	void onUpdate(float deltaTime) override;
 private:
 	bool m_isLocked = true;
 
