@@ -36,6 +36,7 @@ public:
 		RG = 0x8227,
 		RG_INTEGER = 0x8228,
 		R8 = 0x8229,
+		RGBA8 = 0x8058,
 		R16 = 0x822A,
 		RG8 = 0x822B,
 		RG16 = 0x822C,

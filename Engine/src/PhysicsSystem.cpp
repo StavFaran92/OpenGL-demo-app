@@ -201,7 +201,10 @@ void PhysicsSystem::createTerrainActor(Scene* scene, entt::entity entity)
         for (int column = 0; column < heightFieldDesc.nbColumns; column++)
         {
             physx::PxHeightFieldSample* currentSample = (physx::PxHeightFieldSample*)currentByte;
-            currentSample->height = -static_cast<int16_t>(static_cast<int8_t*>(heightmapData.data)[(column * heightmapData.width + row) * heightmapData.bpp]); // todo fix
+
+            // we flip the row and col order, I have no idea why physx accept the data like that
+            auto a = static_cast<uint8_t*>(heightmapData.data)[(column * heightmapData.width + row) * heightmapData.bpp]; 
+            currentSample->height = static_cast<int16_t>(a/* * 2^8*/); // we use the full range of the height map field
 
             currentSample->clearTessFlag();
             currentByte += heightFieldDesc.samples.stride;
@@ -219,9 +222,13 @@ void PhysicsSystem::createTerrainActor(Scene* scene, entt::entity entity)
     //    -((PxReal)heightFieldDesc.nbColumns * terrain.getWidth()) / 2.0f),
     //    PxQuat(PxIdentity));
 
-    PxTransform pose(PxVec3(-(PxReal)heightFieldDesc.nbRows / 2.f,
+    float terrainColScale = (float)terrain.getWidth() / (PxReal)heightFieldDesc.nbColumns;
+    float terrainRowScale = (float)terrain.getHeight() / (PxReal)heightFieldDesc.nbRows;
+    float terrainHeightScale = terrain.getScale() / pow(2,8);
+
+    PxTransform pose(PxVec3(-terrain.getHeight() / 2.f,
         0.0f, 
-        -(PxReal)heightFieldDesc.nbColumns / 2.0f) , PxQuat(PxIdentity));
+        -terrain.getWidth() / 2.0f) , PxQuat(PxIdentity));
 
     PxRigidActor* heightFieldActor = m_physics->createRigidStatic(pose); // todo fix
     if (!heightFieldActor)
@@ -230,9 +237,11 @@ void PhysicsSystem::createTerrainActor(Scene* scene, entt::entity entity)
         return;
     }
 
+    
+
     PxShape* shape = PxRigidActorExt::createExclusiveShape(*heightFieldActor, 
         PxHeightFieldGeometry(heightField, PxMeshGeometryFlags(), 
-            10, 1, 1),
+            terrainHeightScale, terrainRowScale, terrainColScale),
         *getDefaultMaterial());
 
     if (!shape)

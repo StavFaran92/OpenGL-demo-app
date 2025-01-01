@@ -111,7 +111,7 @@ Texture::TextureData Assets::extractTextureDataFromFile(const std::string& fileL
 		{ GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR},
 	};
 
-	textureData.genMipMap = true;
+	textureData.genMipMap = true; // todo fix we dont always want to generate mipmaps for loaded textures
 
 	return textureData;
 }
