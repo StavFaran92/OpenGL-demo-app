@@ -159,7 +159,7 @@ Resource<Texture> Assets::importTexture2D(const std::string& fileLocation, bool 
 
 		m_textures[texture.getUID()] = texture;
 
-		stbi_image_free(textureData.data);
+		//stbi_image_free(textureData.data); // todo check if im not cleaning neede memory here
 
 		return texture;
 		});
